@@ -62,4 +62,21 @@
 - `F:/hooxi-zzz/mainline.html`、`stories.html`、`ep-pv.html`、`events.html`：新增档案页面。
 - `F:/hooxi-zzz/multi-page.css`：时间轴页面和发布包控件样式。
 - `F:/hooxi-zzz/app.js`、`index.html`：兼容子页面并新增音频选择/发布清单入口。
-- 回滚方式：恢复提交前版本，或删除新增页面并移除 `data.js`、`page.js`、`multi-page.css`；浏览器排序可用页面“恢复默认顺序”清除。
+
+## 2026-07-11 - Task: 增加高级动态 UI 交互
+
+### What was done
+新增独立动效层，为首页和四个时间轴页面统一加入错峰进入、按钮扫光与按压反馈、导航下划线、卡片指针光泽与低幅 3D 倾斜、时间轴节点脉冲、编辑器/歌单弹层过渡、播放器悬停反馈和拖拽状态动效。触摸设备自动关闭指针倾斜，并支持 `prefers-reduced-motion` 降级，避免过度动画影响阅读。
+
+### Testing
+- `node --check app.js`、`node --check page.js`、`node --check data.js`：通过。
+- 本地静态服务器检查主页、四个子页面和 `motion.css`：全部 HTTP 200。
+- 真实浏览器视觉与手势检查：当前执行环境不具备可用 Chrome/Chromium，保留线上浏览器验证缺口。
+
+### Notes
+- `F:/hooxi-zzz/motion.css`：统一动效系统和响应式降级。
+- `F:/hooxi-zzz/app.js`：首页卡片/控件指针跟随动效绑定。
+- `F:/hooxi-zzz/page.js`：时间轴卡片和拖拽状态动效绑定。
+- 五个 HTML 页面：加载统一 `motion.css`。
+- `F:/hooxi-zzz/README.md`：补充动效说明。
+- 回滚方式：移除各页面的 `motion.css` 引用并删除 `motion.css`，即可恢复上一版静态交互。
