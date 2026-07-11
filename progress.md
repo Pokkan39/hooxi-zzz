@@ -63,17 +63,25 @@
 - `F:/hooxi-zzz/multi-page.css`：时间轴页面和发布包控件样式。
 - `F:/hooxi-zzz/app.js`、`index.html`：兼容子页面并新增音频选择/发布清单入口。
 
-## 2026-07-11 - Task: 增加高级动态 UI 交互
+
+## 2026-07-11 - Task: 修复四个子页面编辑器并增加 B 站封面
 
 ### What was done
-新增独立动效层，为首页和四个时间轴页面统一加入错峰进入、按钮扫光与按压反馈、导航下划线、卡片指针光泽与低幅 3D 倾斜、时间轴节点脉冲、编辑器/歌单弹层过渡、播放器悬停反馈和拖拽状态动效。触摸设备自动关闭指针倾斜，并支持 `prefers-reduced-motion` 降级，避免过度动画影响阅读。
+修复主线、支线/角色、EP/PV、活动四个时间轴页面的右上角编辑入口：现在各页面都能打开独立编辑器，可修改、增加、删除条目并保存到当前浏览器。视频字段支持粘贴 B 站完整链接或 BV 号；页面会尝试读取公开视频封面，读取失败时保留降级占位和 B 站跳转链接。
 
 ### Testing
-- `node --check app.js`、`node --check page.js`、`node --check data.js`：通过。
-- 本地静态服务器检查主页、四个子页面和 `motion.css`：全部 HTTP 200。
-- 真实浏览器视觉与手势检查：当前执行环境不具备可用 Chrome/Chromium，保留线上浏览器验证缺口。
+- `node --check page.js`、`node --check app.js`、`node --check data.js`：通过。
+- 本地静态服务器检查 `index.html`、`mainline.html`、`stories.html`、`ep-pv.html`、`events.html`、`page.js`、`data.js`、`multi-page.css`：全部 HTTP 200。
+- `git diff --check`：通过。
+- 未执行：真实浏览器点击、B 站接口跨域和封面加载验证，需在可联网浏览器环境确认。
 
 ### Notes
+- `F:/hooxi-zzz/page.js`：新增子页面编辑器、B 站 BV 号识别、封面读取与缓存。
+- `F:/hooxi-zzz/multi-page.css`：新增封面区域、编辑侧栏、编辑字段和移动端样式。
+- `F:/hooxi-zzz/docs/README.md`：补充子页面编辑与 B 站封面使用说明。
+- 回滚点：恢复以上三个文件即可撤销本轮功能。
+
+## 2026-07-11 - Task: 增加高级动态 UI 交互
 - `F:/hooxi-zzz/motion.css`：统一动效系统和响应式降级。
 - `F:/hooxi-zzz/app.js`：首页卡片/控件指针跟随动效绑定。
 - `F:/hooxi-zzz/page.js`：时间轴卡片和拖拽状态动效绑定。
