@@ -24,9 +24,10 @@
   function setData(data){layouts=(data&&typeof data==='object'&&!Array.isArray(data))?data:{};persist();apply()}
   function mount(){
     if(document.querySelector('#layoutToggle'))return;
-    document.body.insertAdjacentHTML('beforeend','<div class="layout-toolbar"><button id="layoutToggle">调整位置</button><button id="layoutFront">前移</button><button id="layoutBack">后移</button><button id="layoutReset">恢复当前设备</button><small id="layoutStatus">拖动元素调整位置；拖右下角调整宽度</small></div>');
+    document.body.insertAdjacentHTML('beforeend','<div class="layout-toolbar"><button id="layoutToggle">调整位置</button><button id="layoutFront">前移</button><button id="layoutBack">后移</button><button id="layoutSave">保存布局到云端</button><button id="layoutReset">恢复当前设备</button><small id="layoutStatus">拖动元素调整位置；拖右下角调整宽度</small></div>');
     document.querySelector('#layoutToggle').onclick=toggle;
     document.querySelector('#layoutReset').onclick=reset;
+    document.querySelector('#layoutSave').onclick=async()=>{try{status('正在保存布局到云端…');await window.HooxiSync?.save?.();status('布局已同步到云端')}catch(error){status(error.message||'布局同步失败')}};
     document.querySelector('#layoutFront').onclick=()=>{if(selected){selected.style.setProperty('--layout-z',(Number(selected.style.getPropertyValue('--layout-z'))||0)+1);saveValue()}};
     document.querySelector('#layoutBack').onclick=()=>{if(selected){selected.style.setProperty('--layout-z',(Number(selected.style.getPropertyValue('--layout-z'))||0)-1);saveValue()}};
     document.addEventListener('pointerdown',e=>{if(!editing)return;const el=e.target.closest('[data-layout-target]');if(!el||e.target.closest('.layout-toolbar'))return;e.preventDefault();select(el);const x=parseFloat(el.style.getPropertyValue('--layout-x'))||0,y=parseFloat(el.style.getPropertyValue('--layout-y'))||0;drag={el,sx:e.clientX,sy:e.clientY,x,y};try{el.setPointerCapture?.(e.pointerId)}catch{}});

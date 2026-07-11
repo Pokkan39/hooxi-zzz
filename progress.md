@@ -324,3 +324,20 @@
 - `docs/README.md`、`docs/aliyun-collaboration.md`：补充布局数据随阿里云共享同步的说明。
 - `progress.md`：记录本轮变更、验证和回滚方式。
 - 回滚方式：使用 `git restore sync.js layout-editor.js app.js aliyun/site-data-api/index.js aliyun/site-data-api/index.test.js docs/README.md docs/aliyun-collaboration.md progress.md` 可撤销本轮未提交改动；提交后可使用 `git revert <本轮提交>` 回退。
+
+## 2026-07-12 - Task: 增加布局云端保存按钮
+
+### What was done
+在全站位置编辑工具条中新增“保存布局到云端”按钮。用户调整布局后不必再回到首页或页面编辑器寻找保存入口，可直接在布局工具条内触发现有阿里云共享保存流程；该按钮复用 `HooxiSync.save()`，因此仍沿用共享密码、版本号冲突保护和已有 `layout` 数据模型，不新增额外接口。
+
+### Testing
+- `node --check layout-editor.js`：通过。
+- 浏览器验证：工具条出现“保存布局到云端”，点击后调用 `HooxiSync.save()`，状态文本更新为“布局已同步到云端”。
+- `git diff --check`：通过。
+- 控制台仅有缺失 `favicon.ico` 的 404，不属于本轮功能错误。
+
+### Notes
+- `layout-editor.js`：新增布局工具条保存按钮，并在保存中、成功、失败时更新布局状态文本。
+- `docs/README.md`、`docs/aliyun-collaboration.md`：同步说明布局可通过专用按钮或现有保存按钮写入云端。
+- `progress.md`：记录本轮按钮增强、验证和回滚方式。
+- 回滚方式：使用 `git restore layout-editor.js docs/README.md docs/aliyun-collaboration.md progress.md` 可撤销本轮未提交改动；提交后可使用 `git revert <本轮提交>` 回退。
