@@ -1,4 +1,22 @@
 window.archiveData={
+  "factions": [
+    {
+      "id": "cunning-hares",
+      "name": "狡兔屋",
+      "summary": "以六分街为据点接受各类委托的万事屋，也是绳匠最早并肩行动的伙伴。",
+      "logo": "",
+      "background": "",
+      "theme": "#f3d33b"
+    },
+    {
+      "id": "belobog",
+      "name": "白祇重工",
+      "summary": "活跃于新艾利都工程与空洞作业一线的重工企业。",
+      "logo": "",
+      "background": "",
+      "theme": "#ef6e3a"
+    }
+  ],
   "mainline": [
     {
       "id": "mainline-1783788881092",
@@ -60,7 +78,9 @@ window.archiveData={
       "tag": "角色故事 · 安比",
       "summary": "一份汉堡，一次意外的城市约会。",
       "video": "",
-      "wikiUrl": "https://baike.mihoyo.com/zzz/wiki/"
+      "wikiUrl": "https://baike.mihoyo.com/zzz/wiki/",
+      "faction": "狡兔屋",
+      "factionId": "cunning-hares"
     },
     {
       "id": "s02",

@@ -282,3 +282,23 @@
 - `data.js`：替换为用户提供的最新导出档案数据，新增两条主线 PV 数据，保留支线和活动数据，幕后记录为空；将导出文件的 `const archiveData` 调整为当前站点需要的 `window.archiveData`。
 - `progress.md`：记录本轮上传、验证结果和历史功能差异检查结论。
 - 回滚方式：使用 `git restore data.js progress.md` 可撤销本轮未提交改动；提交后可使用 `git revert <本轮提交>` 回退本次数据上传。
+
+## 2026-07-12 - Task: 恢复全站布局编辑入口和阵营基础能力
+
+### What was done
+恢复首页、主线、支线、幕后和活动页对 `layout-editor.js` 的加载，让左下角“调整位置”工具重新出现在主站页面，并保留桌面、平板、手机独立布局、拖动、宽度、层级、当前设备恢复和 `window.hooxiLayout` 接口。检查本地备份分支 `backup/aliyun-collab-6c7fbfc` 后确认该分支本身不包含 `layout-editor.js`、`faction.html`、`faction.js`，因此布局编辑器与阵营页恢复以当前主线和已验收历史提交为准。恢复 `data.js` 中的基础阵营定义，并给“安比的午后”补回狡兔屋关联，让阵营页有可验证入口；同时让 `faction.js` 显式读取 `window.archiveData`。
+
+### Testing
+- `node --check data.js`、`faction.js`、`layout-editor.js`、`app.js`、`page.js`：通过。
+- `git diff --check`：通过。
+- 浏览器验证：首页、主线、支线、幕后、活动页均出现“调整位置”；点击后均进入 `layout-editing`，且 `window.hooxiLayout.getData()` 可用。
+- 浏览器验证：主线、支线、活动页动态卡片区域重新获得布局目标；幕后页当前数据为空，因此卡片目标数量为 0，但页面级目标和布局工具正常。
+- 浏览器验证：`faction.html?id=cunning-hares` 正确识别“狡兔屋”，显示 1 条关联记录“安比的午后”，布局工具可用。
+- 控制台仅有缺失 `favicon.ico` 的 404，不属于本轮功能错误。
+
+### Notes
+- `index.html`、`mainline.html`、`stories.html`、`behind-scenes.html`、`events.html`：补回 `layout-editor.js` 引用。
+- `data.js`：补回 `factions` 集合，并恢复“安比的午后”的 `cunning-hares` 阵营关联。
+- `faction.js`：改为通过 `window.archiveData` 读取阵营和档案数据。
+- `progress.md`：记录本轮恢复范围、备份分支检查和待验证项。
+- 回滚方式：使用 `git restore index.html mainline.html stories.html behind-scenes.html events.html data.js faction.js progress.md` 可撤销本轮未提交改动；提交后可使用 `git revert <本轮提交>` 回退。
