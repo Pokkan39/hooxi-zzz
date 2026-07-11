@@ -238,3 +238,28 @@
 - 五个 HTML 页面：加载统一 `motion.css`。
 - `F:/hooxi-zzz/README.md`：补充动效说明。
 - 回滚方式：移除各页面的 `motion.css` 引用并删除 `motion.css`，即可恢复上一版静态交互。
+
+## 2026-07-12 - Task: 修复连续播放并实现协作编辑基础设施
+
+### What was done
+修复歌曲结束后切换资源时丢失播放状态的问题，连续歌曲会保持用户音量并自动播放，手动切歌仍保持暂停。首页剧情路线图改为读取四个档案页的最新保存内容。新增 GitHub OAuth 与阿里云函数计算兼容的保存 API，通过仓库协作者权限、文件白名单和 GitHub blob SHA 实现受保护提交及冲突控制。新增全站位置编辑器，支持首页和各档案页的元素拖动、宽度、层级以及桌面/平板/手机独立布局。新增阵营数据和阵营专属页面，剧情卡片可进入阵营页面并自动汇总关联记录。
+
+### Testing
+- `node --check app.js`、`page.js`、`data.js`、`layout-editor.js`、`faction.js`：通过。
+- `npm test`（`backend/`）：通过 OAuth 会话、GitHub 读取、提交载荷和 SHA 冲突载荷测试。
+- `node --check backend/server.js`、`backend/lib/github.js`：通过。
+- 后端使用测试环境变量实际启动，浏览器访问 `/health` 返回 `{"ok":true}`。
+- 浏览器连续播放验收：第一首结束后第二首、第三首均 `paused=false`、播放进度增长、音量保持 0.25；暂停后手动下一首仍暂停且按钮为 `▶`。
+- 浏览器布局验收：首页及主线、支线、幕后、活动页面均加载编辑目标且无控制台错误；同一元素 desktop/tablet/mobile 分别应用独立位置、宽度和层级；前移、后移和仅恢复当前设备验证通过。
+- 浏览器阵营验收：主线卡片正确链接 `faction.html?id=cunning-hares`；狡兔屋页汇总“绳匠的序章”“安比的午后”；无效 ID 显示错误提示和返回链接；均无控制台错误。
+- `git diff --check`：通过。
+- 未完成：缺少用户真实阿里云与 GitHub OAuth 凭据，因此未执行线上 OAuth 登录和真实远程提交；部署后需进行双账号冲突验收。
+
+### Notes
+- `app.js`、`page.js`：修复连续播放、路线图实时数据源、保存广播和阵营入口。
+- `layout-editor.js`、`styles.css`：增加全站位置编辑、断点布局、宽度、层级和恢复功能。
+- `data.js`、`faction.html`、`faction.js`、`multi-page.css`：增加阵营定义、专属页面、记录汇总和样式。
+- `index.html`、`mainline.html`、`stories.html`、`behind-scenes.html`、`events.html`：加载新版播放器和布局编辑器。
+- `backend/`：增加 OAuth、GitHub Contents API、会话、权限、冲突控制、配置示例、部署说明和测试。
+- `docs/README.md`：更新多人发布、布局编辑和阵营页面说明。
+- 回滚方式：使用 `git restore app.js page.js data.js styles.css multi-page.css index.html mainline.html stories.html behind-scenes.html events.html docs/README.md progress.md` 恢复已有文件，并删除未跟踪的 `layout-editor.js`、`faction.html`、`faction.js` 和 `backend/`；或在提交后回退本轮提交。

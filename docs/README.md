@@ -46,7 +46,26 @@
 4. 提交并推送到 GitHub，等待 GitHub Pages 部署完成，所有访客就能看到新内容。
 5. 以后可在编辑器中选择“导入 data.js / JSON”恢复数据；导入只更新当前浏览器，仍需再次导出并发布才能同步给访客。
 
-编辑内容保存在当前浏览器的 `localStorage`，不会自动同步给其他访客。纯静态 GitHub Pages 不能让网页直接写回 GitHub，因此不能在公开网页中放仓库 Token。
+编辑内容保存在当前浏览器的 `localStorage`。仓库已提供 `backend/` 中的 GitHub OAuth + 阿里云函数计算 API：部署并配置 OAuth 凭据后，编辑者可通过受保护后端读取和提交 `data.js` / `layout-data.js`，并使用 GitHub blob SHA 防止多人静默覆盖。不要在公开网页中放仓库 Token。
+
+## GitHub OAuth 多人发布
+
+1. 按 `backend/.env.example` 创建 GitHub OAuth App，并配置准确的回调地址。
+2. 在阿里云函数计算 Node.js 18+ 自定义运行时部署 `backend/`，启动命令为 `node server.js`。
+3. 将 `NODE_ENV` 设为 `production`，`CORS_ORIGINS` 设为 GitHub Pages 的准确 origin。
+4. 公开仓库使用 `public_repo read:user`；私有仓库使用 `repo read:user`。
+5. 只有仓库权限为 `write`、`maintain` 或 `admin` 的用户可以提交。
+6. 当前会话存在单实例内存中；扩展为多实例前应迁移到阿里云 Redis。
+
+API 契约和安全说明见 `backend/README.md`。
+
+## 全站位置编辑
+
+全站页面左下角提供“调整位置”工具。首页、菜单、页面标题、时间线、剧情卡片、封面、文字区、播放器和页脚可以拖动；选中元素后可调整宽度与层级。桌面、平板、手机使用独立布局数据，点击“恢复当前设备”只清除当前断点，不影响其他设备。布局首先保存在浏览器，可通过 `window.hooxiLayout.getData()` 取得并发布到 `layout-data.js`。
+
+## 阵营专属页面
+
+词条填写稳定的 `factionId` 后，标题和“进入阵营档案”会跳转到 `faction.html?id=<factionId>`。阵营定义位于 `data.js` 的 `factions` 集合，支持名称、简介、标识、背景和主题色；专属页会自动汇总主线、支线、幕后/对谈和活动中的相关记录。视频封面仍优先打开视频，不与阵营入口冲突。
 
 
 ## 阿里云多人协作方向
