@@ -264,3 +264,21 @@
 - `styles.css`：新增同步状态颜色样式。
 - `README.md`、`docs/README.md`、`docs/aliyun-collaboration.md`：更新协作说明并新增独立阿里云部署文档。
 - 回滚方式：恢复 `app.js`、`page.js`、`data.js`、`styles.css` 和五个 HTML 页面，删除 `sync.js`、`aliyun/` 目录与 `docs/aliyun-collaboration.md`，还原 `README.md`/`docs/README.md` 协作段落即可撤销本轮改动；线上回退只需将 `sync.js` 的 `HOOXI_API_BASE_URL` 置空，不改动菜谱函数或菜谱 OSS 对象。
+
+## 2026-07-12 - Task: 上传最新导出的档案数据并检查历史功能差异
+
+### What was done
+同步远程最新阿里云共享协作版本后，将用户提供的导出数据上传为站点根目录 `data.js`，保留当前前端要求的 `window.archiveData` 全局挂载形式，避免同步模块无法读取默认档案数据。同时检查了远程历史变更：阿里云共享密码方案已新增 `sync.js`、`aliyun/site-data-api/` 和独立协作文档；相比上一版协作基础设施，GitHub OAuth 后端被替换，阵营专属页和全站位置编辑器曾在用户上传提交中被删除，随后合并提交又恢复了 `faction.html`、`faction.js`、`layout-editor.js` 及相关样式。
+
+### Testing
+- `git pull --ff-only origin main`：通过，本地快进到远程最新提交 `a6c8838`。
+- `node --check data.js`：通过。
+- `node --check sync.js`、`app.js`、`page.js`、`aliyun/site-data-api/index.js`、`aliyun/site-data-api/index.test.js`：通过。
+- `npm test`（`aliyun/site-data-api/`）：受阻，当前本地未安装 `ali-oss` 依赖，Node 报错 `Cannot find module 'ali-oss'`；未按工具安全提示继续安装外部依赖。
+- `git diff --check`：通过。
+- 历史差异检查：`6c7fbfc` 删除了 OAuth 后端、阵营专属页、全站位置编辑器等文件；`a6c8838` 合并提交恢复了 OAuth 后端、阵营页、布局编辑器与相关样式，同时保留阿里云同步入口。
+
+### Notes
+- `data.js`：替换为用户提供的最新导出档案数据，新增两条主线 PV 数据，保留支线和活动数据，幕后记录为空；将导出文件的 `const archiveData` 调整为当前站点需要的 `window.archiveData`。
+- `progress.md`：记录本轮上传、验证结果和历史功能差异检查结论。
+- 回滚方式：使用 `git restore data.js progress.md` 可撤销本轮未提交改动；提交后可使用 `git revert <本轮提交>` 回退本次数据上传。
