@@ -13,6 +13,10 @@ const archiveData={
     {id:'p01',order:1,title:'代理人的信号',tag:'EP / PV · 角色展示',summary:'收录代理人 EP、PV 与战斗演示视频。',video:'',wikiUrl:'https://baike.mihoyo.com/zzz/wiki/'},
     {id:'p02',order:2,title:'新艾利都特别行动',tag:'主题 PV',summary:'城市与阵营的视觉记录，按发布时间整理。',video:'',wikiUrl:'https://baike.mihoyo.com/zzz/wiki/'}
   ],
+  behindScenes:[
+    {id:'b01',order:1,title:'制作组幕后花絮',tag:'系列·幕后',summary:'收录绝区零制作组公开发布的开发花絮、制作记录与幕后内容。',video:'',wikiUrl:'https://www.bilibili.com/'},
+    {id:'b02',order:2,title:'制作人对谈',tag:'系列·对谈',summary:'记录制作团队围绕世界观、角色与音乐创作的公开访谈。',video:'',wikiUrl:'https://www.bilibili.com/'}
+  ],
   events:[
     {id:'e01',order:1,title:'城市的回声',tag:'主题活动',summary:'记录限时活动与特别主题剧情。',video:'',wikiUrl:'https://baike.mihoyo.com/zzz/wiki/'},
     {id:'e02',order:2,title:'空洞调查日志',tag:'活动剧情',summary:'将活动委托、特别任务与限定内容串成时间轴。',video:'',wikiUrl:'https://baike.mihoyo.com/zzz/wiki/'}
