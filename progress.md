@@ -65,7 +65,22 @@
 
 
 
-## 2026-07-11 - Task: 增加页面数据导入导出发布流程
+
+## 2026-07-11 - Task: 修复编辑按钮失效
+
+### What was done
+修复子页面脚本与首页脚本同时加载时的两个问题：补回首页配置读取函数，并避免页面脚本重复声明 `toast` 导致 JavaScript 语法错误。四个子页面的编辑按钮现可正常打开编辑侧栏。
+
+### Testing
+- `node --check app.js`、`node --check page.js`：通过。
+- 本地无控制台错误加载 `mainline.html`：通过。
+- 浏览器点击 `#editorOpen` 后确认编辑器变为 `page-editor open`：通过。
+- `git diff --check`：通过。
+
+### Notes
+- `F:/hooxi-zzz/app.js`：补充缺失的 `loadConfig` 函数。
+- `F:/hooxi-zzz/page.js`：避免 `toast` 重复声明并使用页面级提示函数。
+- 回滚点：恢复本轮修改的 `app.js`、`page.js`、`progress.md`。
 
 ### What was done
 为四个时间轴页面编辑器增加统一的数据导入与导出。编辑者可以导出包含主线、支线/角色、EP/PV、活动全部内容的 `data.js`，覆盖仓库根目录同名文件并发布后，所有访客即可看到相同数据；也可以导入此前导出的 `data.js` 或 JSON 在当前浏览器恢复编辑内容。
