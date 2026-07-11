@@ -1,0 +1,14 @@
+{
+  "name": "hooxi-backend",
+  "version": "1.0.0",
+  "description": "GitHub OAuth + archive API for hooxi-zzz (Aliyun FC compatible)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/test.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}

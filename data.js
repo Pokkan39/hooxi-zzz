@@ -1,11 +1,11 @@
 window.archiveData={
   mainline:[
-    {id:'m01',order:1,title:'绳匠的序章',tag:'序章 · 主线',summary:'从录像店出发，代理人第一次接触空洞与新艾利都的日常。',video:'',wikiUrl:'https://baike.mihoyo.com/zzz/wiki/'},
+    {id:'m01',order:1,title:'绳匠的序章',tag:'序章 · 主线',summary:'从录像店出发，代理人第一次接触空洞与新艾利都的日常。',video:'',wikiUrl:'https://baike.mihoyo.com/zzz/wiki/',faction:'狡兔屋',factionId:'cunning-hares'},
     {id:'m02',order:2,title:'猫的失物',tag:'第一章 · 主线',summary:'在六分街与空洞之间，寻找失踪的委托人。',video:'',wikiUrl:'https://baike.mihoyo.com/zzz/wiki/'},
     {id:'m03',order:3,title:'式舆防卫战',tag:'第二章 · 主线',summary:'以太风暴中的调查记录，代理人继续深入未知区域。',video:'',wikiUrl:'https://baike.mihoyo.com/zzz/wiki/'}
   ],
   stories:[
-    {id:'s01',order:1,title:'安比的午后',tag:'角色故事 · 安比',summary:'一份汉堡，一次意外的城市约会。',video:'',wikiUrl:'https://baike.mihoyo.com/zzz/wiki/'},
+    {id:'s01',order:1,title:'安比的午后',tag:'角色故事 · 安比',summary:'一份汉堡，一次意外的城市约会。',video:'',wikiUrl:'https://baike.mihoyo.com/zzz/wiki/',faction:'狡兔屋',factionId:'cunning-hares'},
     {id:'s02',order:2,title:'录像店营业中',tag:'城市支线',summary:'新艾利都日常观察报告，记录每一个擦肩而过的人。',video:'',wikiUrl:'https://baike.mihoyo.com/zzz/wiki/'},
     {id:'s03',order:3,title:'街角的旧唱片',tag:'支线委托',summary:'城市里的每一段声音，都藏着一条线索。',video:'',wikiUrl:'https://baike.mihoyo.com/zzz/wiki/'}
   ],

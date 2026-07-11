@@ -1,0 +1,12 @@
+'use strict';
+const API='https://api.github.com';
+const headers=token=>({Authorization:`Bearer ${token}`,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'});
+function buildAuthUrl(clientId,state,redirectUri,scope='public_repo read:user'){return `https://github.com/login/oauth/authorize?${new URLSearchParams({client_id:clientId,redirect_uri:redirectUri,scope,state})}`}
+async function exchangeCode(clientId,clientSecret,code,redirectUri){const r=await fetch('https://github.com/login/oauth/access_token',{method:'POST',headers:{Accept:'application/json','Content-Type':'application/json'},body:JSON.stringify({client_id:clientId,client_secret:clientSecret,code,redirect_uri:redirectUri})});const d=await r.json();if(!r.ok||d.error)throw new Error(d.error_description||`GitHub OAuth ${r.status}`);return d}
+async function request(token,url,options={}){const r=await fetch(`${API}${url}`,{...options,headers:{...headers(token),...(options.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(d.message||`GitHub API ${r.status}`);e.status=r.status;e.github=d;throw e}return d}
+const getUser=token=>request(token,'/user');
+async function getCollaboratorPermission(token,owner,repo,login){try{const d=await request(token,`/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/collaborators/${encodeURIComponent(login)}/permission`);return d.permission||'none'}catch(e){if(e.status===404)return'none';throw e}}
+const canEdit=p=>['admin','maintain','write'].includes(p);
+async function getContent(token,owner,repo,file,branch){const d=await request(token,`/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encodeURIComponent(file)}?ref=${encodeURIComponent(branch)}`);return{file,sha:d.sha,content:Buffer.from(d.content||'','base64').toString('utf8'),htmlUrl:d.html_url}}
+async function putContent(token,owner,repo,file,branch,content,sha,login){const d=await request(token,`/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encodeURIComponent(file)}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:`Update ${file} via Hooxi editor (${login})`,content:Buffer.from(content).toString('base64'),sha,branch})});return{sha:d.content?.sha,commitSha:d.commit?.sha,commitUrl:d.commit?.html_url||d.content?.html_url}}
+module.exports={buildAuthUrl,exchangeCode,getUser,getCollaboratorPermission,canEdit,getContent,putContent};
