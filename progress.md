@@ -31,4 +31,18 @@
 - `F:/hooxi-zzz/styles.css`：新增编辑器、动态粒子背景、播放器、弹窗提示及移动端样式。
 - `F:/hooxi-zzz/app.js`：新增本地配置模型、内容/歌单编辑、导入导出、播放控制和实时渲染。
 - `F:/hooxi-zzz/docs/README.md`：补充小白操作、官方 Wiki 来源、音乐授权与自动播放说明。
-- 回滚方式：删除 `F:/hooxi-zzz` 目录，或在编辑器点击“恢复默认”清除本地配置。
+
+## 2026-07-11 - Task: 发布到 GitHub 并补充项目 README
+
+### What was done
+已初始化 Git 仓库，新增面向 GitHub 仓库首页的项目说明，并将网站代码提交到 `Pokkan39/hooxi-zzz` 的 `main` 分支。README 包含在线地址预期、本地运行方式、小白编辑流程、官方 Wiki 来源和版权提示。
+
+### Testing
+- Git 提交成功：`748521f Add editable Zenless Zone Zero archive site`。
+- 推送成功：`main` 已关联 `origin/main`。
+- 当前仍未完成真实浏览器交互和响应式视觉验证，原因是本环境无法启动 Chrome/Chromium。
+
+### Notes
+- `F:/hooxi-zzz/README.md`：新增 GitHub 项目说明和 Pages 访问提示。
+- `.git/`：初始化本地 Git 仓库并配置 `https://github.com/Pokkan39/hooxi-zzz.git`。
+- 回滚方式：删除远程仓库中的本次提交，或在本地执行 `git revert 748521f` 后重新推送；本地文件可保留或删除。
