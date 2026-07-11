@@ -1,4 +1,4 @@
-const archiveData={
+window.archiveData={
   mainline:[
     {id:'m01',order:1,title:'绳匠的序章',tag:'序章 · 主线',summary:'从录像店出发，代理人第一次接触空洞与新艾利都的日常。',video:'',wikiUrl:'https://baike.mihoyo.com/zzz/wiki/'},
     {id:'m02',order:2,title:'猫的失物',tag:'第一章 · 主线',summary:'在六分街与空洞之间，寻找失踪的委托人。',video:'',wikiUrl:'https://baike.mihoyo.com/zzz/wiki/'},

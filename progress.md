@@ -238,3 +238,29 @@
 - 五个 HTML 页面：加载统一 `motion.css`。
 - `F:/hooxi-zzz/README.md`：补充动效说明。
 - 回滚方式：移除各页面的 `motion.css` 引用并删除 `motion.css`，即可恢复上一版静态交互。
+
+## 2026-07-12 - Task: 接入独立阿里云多人在线协作编辑
+
+### What was done
+为绝区零档案站接入独立云端多人协作能力，与菜谱网站完全隔离。编辑者输入共享密码后即可在线编辑首页外观、剧情卡片、歌单元数据及主线/支线/幕后/活动四类档案；输入过程当前页面即时预览，点击保存后写入共享云端，其他在线访客通过秒级轮询自动看到更新。并发保存基于版本号，后保存者会被冲突拦截，云端内容不会被静默覆盖。图片和视频仅同步公开链接或仓库相对路径。新增独立阿里云函数提供 `/site-data` 接口，共享密码只存于函数环境变量并用恒定时间比较，默认对象键为 `hooxi-zzz/site-data.json`，不触碰菜谱 `/recipes` 或 `recipe-site/recipes.json`。播放器 41 首默认歌曲、播放模式和音量偏好保持不变。
+
+### Testing
+- `node --check sync.js`、`app.js`、`page.js`、`data.js`、`aliyun/site-data-api/index.js`、`aliyun/site-data-api/index.test.js`：通过。
+- `git diff --check`：通过。
+- 独立函数 `node --test`：7/7 通过，覆盖首次 GET、错误密码 401、有效保存与版本递增、非法结构 400、OPTIONS/CORS，以及双客户端读取同版后 A 保存成功、B 旧版保存被 409 拦截、重新 GET 读到 A 内容的冲突场景。
+- 本地静态服务器 + 无头浏览器实测：首页同步模块加载、41 首默认歌单与完整 archive 键正常；mainline/stories/behind-scenes/events 分别渲染 3/3/2/2 条记录、编辑器挂载且无控制台错误。
+- 即时预览实测：首页改标题后 `#heroTitle` 立即更新、状态转为“有未保存修改”；主线改条目标题后卡片立即更新、状态转为 dirty。
+- 静态搜索确认游戏站代码未引用 `/recipes`、`recipes.json` 或 `recipe-site`。
+- 未完成：真实阿里云函数与 OSS 的线上部署验证（需配置独立函数公网地址、`EDIT_PASSWORD` 和执行角色后按 `docs/aliyun-collaboration.md` 执行）；真实跨浏览器 5 秒轮询的端到端同步需在部署后确认。
+
+### Notes
+- `sync.js`：新增统一共享数据同步模块（home/archive 模型、5 秒轮询、会话级共享密码、离线缓存、未保存保护、`expectedVersion` 保存与 409 冲突提示、`hooxi:data` 广播）。
+- `aliyun/site-data-api/index.js`：新增独立函数，`/site-data` 的 GET/PUT/OPTIONS、`EDIT_PASSWORD` 恒定时间校验、默认对象键 `hooxi-zzz/site-data.json`、结构与体积校验、版本冲突保护、CORS 含 `X-Edit-Password`。
+- `aliyun/site-data-api/package.json`、`index.test.js`、`node_modules/`：函数依赖 `ali-oss` 与可无 OSS 运行的注入式测试。
+- `app.js`：接入共享保存、`hooxi:data` 应用、`hooxiCollectData` 汇总，内容/歌单/外观编辑改为即时预览并标记未保存，内容编辑保持输入焦点。
+- `page.js`：档案编辑改为即时预览并接入共享保存、远端数据应用与 `hooxiArchiveState` 维护。
+- `data.js`：`archiveData` 挂到 `window`，供同步模块读取。
+- `index.html`、`mainline.html`、`stories.html`、`behind-scenes.html`、`events.html`：引入 `sync.js`、更新脚本版本参数为 `collab-1`、顶栏加入同步状态位。
+- `styles.css`：新增同步状态颜色样式。
+- `README.md`、`docs/README.md`、`docs/aliyun-collaboration.md`：更新协作说明并新增独立阿里云部署文档。
+- 回滚方式：恢复 `app.js`、`page.js`、`data.js`、`styles.css` 和五个 HTML 页面，删除 `sync.js`、`aliyun/` 目录与 `docs/aliyun-collaboration.md`，还原 `README.md`/`docs/README.md` 协作段落即可撤销本轮改动；线上回退只需将 `sync.js` 的 `HOOXI_API_BASE_URL` 置空，不改动菜谱函数或菜谱 OSS 对象。
