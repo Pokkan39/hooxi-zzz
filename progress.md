@@ -66,7 +66,20 @@
 
 
 
-## 2026-07-11 - Task: 修复编辑按钮失效
+
+## 2026-07-11 - Task: 强制刷新子页面脚本缓存
+
+### What was done
+为四个子页面的 `data.js`、`app.js`、`page.js` 引用增加版本查询参数，避免 GitHub Pages/CDN 继续返回旧版脚本，确保编辑器修复能被访客加载。
+
+### Testing
+- `node --check app.js`、`node --check page.js`：通过。
+- `git diff --check`：通过。
+- 待完成：推送后验证线上四个页面脚本请求和编辑按钮。
+
+### Notes
+- `F:/hooxi-zzz/mainline.html`、`stories.html`、`ep-pv.html`、`events.html`：脚本引用增加版本参数。
+- 回滚点：移除四个页面脚本 URL 的 `?v=17861aa` 即可恢复。
 
 ### What was done
 修复子页面脚本与首页脚本同时加载时的两个问题：补回首页配置读取函数，并避免页面脚本重复声明 `toast` 导致 JavaScript 语法错误。四个子页面的编辑按钮现可正常打开编辑侧栏。
