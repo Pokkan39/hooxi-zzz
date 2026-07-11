@@ -20,7 +20,27 @@ GitHub Pages 地址将在仓库启用 Pages 后生成：
 
 配置保存在当前浏览器的 `localStorage` 中，不需要数据库。清理浏览器数据前，请先导出配置。
 
-## 本地运行
+## 多页面时间轴
+
+- `mainline.html`：剧情主线时间轴
+- `stories.html`：支线与角色故事时间轴
+- `ep-pv.html`：代理人专属 EP / PV 索引
+- `events.html`：主题活动时间轴
+
+时间轴卡片支持拖动排序，排序只保存在当前浏览器。右上角编辑器继续用于维护首页内容；配置可导入导出。
+
+## 音频文件发布
+
+编辑器的“歌单”页支持直接选择本地音频文件并立即试听。由于 GitHub Pages 是静态托管，网页不能直接把文件写回 GitHub。要让所有访客听到音频：
+
+1. 在编辑器选择音频文件。
+2. 将授权音频复制到仓库的 `assets/audio/` 目录。
+3. 在编辑器点击“生成发布清单 playlist.json”。
+4. 将清单中的地址改为 `assets/audio/文件名.mp3`。
+5. 把音频和 `playlist.json` 提交到 GitHub，重新部署后所有访客都能播放。
+
+不要在公开网页中放 GitHub Token。请只发布自己创作或取得授权的音频。
+
 
 ```bash
 python -m http.server 8080

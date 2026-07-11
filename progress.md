@@ -45,4 +45,21 @@
 ### Notes
 - `F:/hooxi-zzz/README.md`：新增 GitHub 项目说明和 Pages 访问提示。
 - `.git/`：初始化本地 Git 仓库并配置 `https://github.com/Pokkan39/hooxi-zzz.git`。
-- 回滚方式：删除远程仓库中的本次提交，或在本地执行 `git revert 748521f` 后重新推送；本地文件可保留或删除。
+
+## 2026-07-11 - Task: 增加多页面时间轴与音频发布包
+
+### What was done
+新增主线、支线/角色故事、代理人 EP/PV、主题活动四个独立页面；使用统一的数据文件提供按顺序排列的时间轴，支持在页面上拖动卡片调整顺序并保存到浏览器。编辑器新增本地音频文件选择与试听入口，并提供生成 `playlist.json` 发布清单的流程，避免在公开 GitHub Pages 中暴露高权限 Token。README 与维护文档已补充多页面使用、排序和音频发布说明。
+
+### Testing
+- `node --check app.js`、`node --check page.js`、`node --check data.js`：通过。
+- 本地静态服务器检查 `index.html`、`mainline.html`、`stories.html`、`ep-pv.html`、`events.html`、`data.js`、`page.js`、`multi-page.css`：全部 HTTP 200。
+- 真实浏览器拖动排序、本地音频播放和移动端视觉检查：依赖用户浏览器，当前执行环境未自动执行。
+
+### Notes
+- `F:/hooxi-zzz/data.js`：四类时间轴默认数据。
+- `F:/hooxi-zzz/page.js`：多页面渲染与拖动排序逻辑。
+- `F:/hooxi-zzz/mainline.html`、`stories.html`、`ep-pv.html`、`events.html`：新增档案页面。
+- `F:/hooxi-zzz/multi-page.css`：时间轴页面和发布包控件样式。
+- `F:/hooxi-zzz/app.js`、`index.html`：兼容子页面并新增音频选择/发布清单入口。
+- 回滚方式：恢复提交前版本，或删除新增页面并移除 `data.js`、`page.js`、`multi-page.css`；浏览器排序可用页面“恢复默认顺序”清除。
