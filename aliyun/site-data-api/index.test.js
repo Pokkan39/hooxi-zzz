@@ -1,6 +1,6 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
-const {handleRequest}=require('./index')._test;
+const {handleRequest,validSiteData}=require('./index')._test;
 
 const data={home:{appearance:{title:'Test'},cards:[],tracks:[]},archive:{mainline:[],stories:[],behindScenes:[],events:[]}};
 function storage(initial=null){let value=initial;return{async get(){if(!value){const error=new Error('missing');error.code='NoSuchKey';throw error}return{content:Buffer.from(JSON.stringify(value))}},async put(key,body){assert.equal(key,'hooxi-zzz/site-data.json');value=JSON.parse(body.toString())},read:()=>value}}
@@ -14,3 +14,4 @@ test('PUT prevents stale overwrite',async()=>{process.env.EDIT_PASSWORD='secret'
 test('PUT rejects invalid site document',async()=>{process.env.EDIT_PASSWORD='secret';const response=await handleRequest(request('PUT',{expectedVersion:0,data:{}},{'X-Edit-Password':'secret'}),{}, {storage:storage()});assert.equal(response.statusCode,400)});
 test('two clients sync after save and stale client cannot overwrite',async()=>{process.env.EDIT_PASSWORD='secret';const store=storage();const clientA=body(await handleRequest(request('GET'),{}, {storage:store}));const clientB=body(await handleRequest(request('GET'),{}, {storage:store}));const changed=structuredClone(data);changed.home.appearance.title='Client A saved';const saved=await handleRequest(request('PUT',{expectedVersion:clientA.version,data:changed},{'X-Edit-Password':'secret'}),{}, {storage:store});assert.equal(saved.statusCode,200);const stale=await handleRequest(request('PUT',{expectedVersion:clientB.version,data},{'X-Edit-Password':'secret'}),{}, {storage:store});assert.equal(stale.statusCode,409);const refreshed=body(await handleRequest(request('GET'),{}, {storage:store}));assert.equal(refreshed.version,1);assert.equal(refreshed.data.home.appearance.title,'Client A saved')});
 test('OPTIONS advertises password header',async()=>{const response=await handleRequest(request('OPTIONS'),{}, {storage:storage()});assert.equal(response.statusCode,204);assert.match(response.headers['Access-Control-Allow-Headers'],/X-Edit-Password/)});
+test('site data accepts optional layout object and rejects invalid layout',()=>{assert.equal(validSiteData(data),true);assert.equal(validSiteData({...data,layout:{desktop:{'#heroTitle':{x:12,y:8,w:320,z:1}}}}),true);assert.equal(validSiteData({...data,layout:[]}),false);assert.equal(validSiteData({...data,layout:'bad'}),false)});

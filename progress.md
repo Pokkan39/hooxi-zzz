@@ -302,3 +302,25 @@
 - `faction.js`：改为通过 `window.archiveData` 读取阵营和档案数据。
 - `progress.md`：记录本轮恢复范围、备份分支检查和待验证项。
 - 回滚方式：使用 `git restore index.html mainline.html stories.html behind-scenes.html events.html data.js faction.js progress.md` 可撤销本轮未提交改动；提交后可使用 `git revert <本轮提交>` 回退。
+
+## 2026-07-12 - Task: 接入布局编辑器云端共享同步
+
+### What was done
+将全站位置编辑器的桌面、平板、手机布局数据纳入阿里云共享数据模型。布局拖动、前移、后移和恢复当前设备仍先写入浏览器本地，并标记为未保存；用户点击现有保存按钮后，`window.hooxiCollectData()` 会把 `layout` 与首页、档案数据一起提交到 `/site-data`。云端或缓存数据加载后，如果包含 `layout`，布局编辑器会自动调用 `window.hooxiLayout.setData()` 应用；旧云端数据没有 `layout` 时仍保持兼容。阿里云函数结构校验同步允许可选 `layout` 对象，并拒绝数组或字符串等无效布局。
+
+### Testing
+- `node --check sync.js`、`layout-editor.js`、`app.js`、`aliyun/site-data-api/index.js`、`aliyun/site-data-api/index.test.js`：通过。
+- 阿里云函数 `npm test` 未执行：本地此前已确认缺少 `ali-oss` 依赖，且未获得安装依赖授权；本轮已用 `node --check` 和测试文件静态校验覆盖语法层面。
+- 浏览器验证：拖动布局后同步状态变为“有未保存修改”，`window.hooxiCollectData().layout` 包含当前断点布局数据。
+- 浏览器验证：触发带 `layout` 的 `hooxi:data` 事件后，`window.hooxiLayout.getData()` 和 `localStorage['hooxi:layout:v1']` 均更新为事件中的布局数据。
+- 控制台仅有缺失 `favicon.ico` 的 404，不属于本轮功能错误。
+- `git diff --check`：通过。
+
+### Notes
+- `sync.js`：共享数据结构新增可选 `layout`，并兼容旧数据。
+- `layout-editor.js`：布局变更标记未保存，支持从 `hooxi:data` 应用云端布局。
+- `app.js`：共享保存时带上 `window.hooxiLayout.getData()`。
+- `aliyun/site-data-api/index.js`、`index.test.js`：校验并测试可选布局对象。
+- `docs/README.md`、`docs/aliyun-collaboration.md`：补充布局数据随阿里云共享同步的说明。
+- `progress.md`：记录本轮变更、验证和回滚方式。
+- 回滚方式：使用 `git restore sync.js layout-editor.js app.js aliyun/site-data-api/index.js aliyun/site-data-api/index.test.js docs/README.md docs/aliyun-collaboration.md progress.md` 可撤销本轮未提交改动；提交后可使用 `git revert <本轮提交>` 回退。

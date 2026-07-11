@@ -13,7 +13,8 @@ const HOOXI_CACHE_KEY="hooxi:shared-site-data";
   function endpoint(){return HOOXI_API_BASE_URL?`${HOOXI_API_BASE_URL.replace(/\/+$/,'')}/site-data`:''}
   function status(text,state=''){document.querySelectorAll('[data-sync-status]').forEach(el=>{el.textContent=text;el.dataset.state=state})}
   function clone(value){return JSON.parse(JSON.stringify(value))}
-  function validData(data){return data&&data.home&&data.home.appearance&&Array.isArray(data.home.cards)&&Array.isArray(data.home.tracks)&&data.archive&&['mainline','stories','behindScenes','events'].every(key=>Array.isArray(data.archive[key]))}
+  function validData(data){return data&&data.home&&data.home.appearance&&Array.isArray(data.home.cards)&&Array.isArray(data.home.tracks)&&data.archive&&['mainline','stories','behindScenes','events'].every(key=>Array.isArray(data.archive[key]))&&(!('layout' in data)||isPlainObject(data.layout))}
+  function isPlainObject(value){return value!==null&&typeof value==='object'&&!Array.isArray(value)}
   function cached(){try{const value=JSON.parse(localStorage.getItem(HOOXI_CACHE_KEY));return validData(value?.data)?value:null}catch{return null}}
   function store(payload){localStorage.setItem(HOOXI_CACHE_KEY,JSON.stringify(payload))}
   function apply(payload,source='remote'){
@@ -25,7 +26,7 @@ const HOOXI_CACHE_KEY="hooxi:shared-site-data";
     status(version?`已同步 · v${version}`:'使用默认数据','online');
     return true;
   }
-  function defaults(){return {home:clone(window.hooxiDefaultConfig),archive:clone(window.archiveData||{})}}
+  function defaults(){return {home:clone(window.hooxiDefaultConfig),archive:clone(window.archiveData||{}),layout:clone(window.hooxiLayout?.getData?.()||{})}}
   function currentData(){return window.hooxiCollectData?window.hooxiCollectData():defaults()}
   function markDirty(value=true){dirty=value;if(value)status('有未保存修改','dirty')}
   function beginEdit(){editing=true;dirty=false}
