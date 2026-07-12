@@ -415,3 +415,23 @@
 - `multi-page.css`：封面卡片从等高拉伸改为顶部对齐，封面容器透明，图片高度改为自动，保持完整显示。
 - `progress.md`：记录本轮封面显示调整、验证和回滚方式。
 - 回滚方式：本轮未提交前可使用 `git restore multi-page.css progress.md` 恢复；提交后可使用 `git revert <本轮提交>` 回退。
+
+## 2026-07-12 - Task: 完善全站图片展示与响应式编辑
+
+### What was done
+档案页封面改为透明容器和完整等比展示，清除图片容器黑边；根据图片原始宽高自动识别横图、竖图和近方图，桌面端切换上下或左右图文布局，手机端统一采用上下布局。装饰图片改为透明背景并保持比例，编辑器新增宽度、透明度、旋转角度和角标开关；同时刷新四个档案页静态资源版本参数。
+
+### Testing
+- `node --check page.js && node --check app.js && node --check data.js`：通过。
+- `git diff --check`：通过。
+- 本地 `python -m http.server 8080`：主线页面及新版 CSS/JS 均返回 HTTP 200。
+- 无头浏览器验证：两张 1920×1080 封面均识别为 `landscape`；封面容器边框为 `0px`、背景透明；页面编辑器可生成装饰图宽度、透明度、旋转和角标控件。
+- 浏览器控制台仅有缺失 `favicon.ico` 的 404，不影响页面功能。
+
+### Notes
+- `page.js`：增加图片方向应用、装饰图可编辑属性及渲染样式变量。
+- `multi-page.css`：清除图片容器黑边，增加完整展示、透明装饰图和方向响应式布局。
+- `mainline.html`、`stories.html`、`behind-scenes.html`、`events.html`：刷新图片布局相关 CSS/JS 缓存版本。
+- `docs/README.md`：补充图片识别、透明展示和装饰图编辑说明。
+- `progress.md`：追加本轮实现与验证记录。
+- 回滚方式：恢复上述文件到本轮提交前版本；或对本轮提交执行 `git revert <commit>`。
