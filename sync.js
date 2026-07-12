@@ -9,6 +9,7 @@ const HOOXI_CACHE_KEY="hooxi:shared-site-data";
   let dirty=false;
   let timer=null;
   let loading=false;
+  let appliedOffline=false;
 
   function endpoint(){return HOOXI_API_BASE_URL?`${HOOXI_API_BASE_URL.replace(/\/+$/,'')}/site-data`:''}
   function status(text,state=''){document.querySelectorAll('[data-sync-status]').forEach(el=>{el.textContent=text;el.dataset.state=state})}
@@ -19,6 +20,7 @@ const HOOXI_CACHE_KEY="hooxi:shared-site-data";
   function store(payload){localStorage.setItem(HOOXI_CACHE_KEY,JSON.stringify(payload))}
   function apply(payload,source='remote'){
     if(!validData(payload?.data))return false;
+    if((editing||dirty)&&source!=='saved'){status('有未保存修改，已暂停自动刷新','dirty');return false}
     version=Number(payload.version)||0;
     updatedAt=payload.updatedAt||null;
     store({data:payload.data,version,updatedAt});
@@ -35,7 +37,7 @@ const HOOXI_CACHE_KEY="hooxi:shared-site-data";
   async function load({quiet=false}={}){
     if(loading)return;
     const url=endpoint();
-    if(!url){const saved=cached();if(saved)apply(saved,'cache');else apply({data:defaults(),version:0,updatedAt:null},'default');status('云端 API 待配置','offline');return}
+    if(!url){if(!appliedOffline){const saved=cached();if(saved)apply(saved,'cache');else apply({data:defaults(),version:0,updatedAt:null},'default');appliedOffline=true}if(editing||dirty)status('有未保存修改，云端 API 待配置','dirty');else status('云端 API 待配置','offline');return}
     loading=true;if(!quiet)status('正在连接…','loading');
     try{
       const response=await fetch(url,{cache:'no-store',headers:{Accept:'application/json'}});
@@ -62,6 +64,6 @@ const HOOXI_CACHE_KEY="hooxi:shared-site-data";
   }
   function reload(){dirty=false;editing=false;version=0;return load()}
   window.HooxiSync={load,save,reload,markDirty,beginEdit,endEdit,getVersion:()=>version,getUpdatedAt:()=>updatedAt};
-  document.addEventListener('DOMContentLoaded',()=>{load();timer=setInterval(()=>load({quiet:true}),HOOXI_SYNC_INTERVAL)});
+  document.addEventListener('DOMContentLoaded',()=>{load();if(endpoint())timer=setInterval(()=>load({quiet:true}),HOOXI_SYNC_INTERVAL)});
   window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue=''}});
 })();

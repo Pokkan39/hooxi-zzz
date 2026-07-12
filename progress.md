@@ -341,3 +341,19 @@
 - `docs/README.md`、`docs/aliyun-collaboration.md`：同步说明布局可通过专用按钮或现有保存按钮写入云端。
 - `progress.md`：记录本轮按钮增强、验证和回滚方式。
 - 回滚方式：使用 `git restore layout-editor.js docs/README.md docs/aliyun-collaboration.md progress.md` 可撤销本轮未提交改动；提交后可使用 `git revert <本轮提交>` 回退。
+
+## 2026-07-12 - Task: 避免未配置云端时编辑闪屏
+
+### What was done
+修复云端 API 未配置或编辑中轮询导致的页面反复应用数据问题。同步模块现在只在 API 为空时首次应用默认或缓存数据，不再启动 5 秒轮询；当用户正在编辑或已有未保存修改时，非保存来源的远端/缓存数据不会自动派发到页面，避免重渲染打断输入、造成闪屏或影响保存。保存成功仍允许应用服务端返回的数据，保持版本号与云端状态一致。
+
+### Testing
+- `node --check sync.js`：通过。
+- 浏览器验证：API 地址为空时 `window.HooxiSync.load()` 不再重复派发 `hooxi:data`，页面标题未被重渲染覆盖。
+- 浏览器验证：dirty 状态下手动触发加载后仍保留未保存提示，不再被“云端 API 待配置”覆盖。
+- `git diff --check`：通过。
+
+### Notes
+- `sync.js`：新增离线首次应用标记；编辑中或 dirty 状态下阻止自动 apply；API 未配置时不启动轮询。
+- `progress.md`：记录本轮闪屏修复、验证和回滚方式。
+- 回滚方式：使用 `git restore sync.js progress.md` 可撤销本轮未提交改动；提交后可使用 `git revert <本轮提交>` 回退。
