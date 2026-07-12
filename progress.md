@@ -402,3 +402,16 @@
 - `README.md`、`docs/README.md`：补充父级分组、装饰图片和 `layout-data.js` 发布说明。
 - `progress.md`：记录本轮功能、验证和回滚方式。
 - 回滚方式：本轮未提交前可使用 `git restore README.md docs/README.md progress.md page.js layout-editor.js multi-page.css motion.css index.html mainline.html stories.html behind-scenes.html events.html faction.html` 并删除 `layout-data.js`；提交后可使用 `git revert <本轮提交>` 回退。
+
+## 2026-07-12 - Task: 去除封面黑边并完整显示图片
+
+### What was done
+调整档案卡片封面显示方式：封面容器不再用黑色背景和拉伸高度，图片按自身比例自适应显示。这样横图、竖图都会完整展示，不再因为 `contain` 填充固定黑底容器而出现上下黑边。
+
+### Testing
+- `git diff --check`：通过。
+
+### Notes
+- `multi-page.css`：封面卡片从等高拉伸改为顶部对齐，封面容器透明，图片高度改为自动，保持完整显示。
+- `progress.md`：记录本轮封面显示调整、验证和回滚方式。
+- 回滚方式：本轮未提交前可使用 `git restore multi-page.css progress.md` 恢复；提交后可使用 `git revert <本轮提交>` 回退。
