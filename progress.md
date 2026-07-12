@@ -426,11 +426,13 @@
 - `git diff --check`：通过。
 - 本地 `python -m http.server 8080`：主线页面及新版 CSS/JS 均返回 HTTP 200。
 - 无头浏览器验证：两张 1920×1080 封面均识别为 `landscape`；封面容器边框为 `0px`、背景透明；页面编辑器可生成装饰图宽度、透明度、旋转和角标控件。
-- 浏览器控制台仅有缺失 `favicon.ico` 的 404，不影响页面功能。
+- GitHub Pages 验证：线上已加载 `image-layout-4` 版本资源，横图识别、透明封面容器和装饰图编辑参数生效；装饰图浮动动画保留用户设置的旋转角度。
+- 浏览器控制台无功能性 JavaScript 错误。
 
 ### Notes
 - `page.js`：增加图片方向应用、装饰图可编辑属性及渲染样式变量。
 - `multi-page.css`：清除图片容器黑边，增加完整展示、透明装饰图和方向响应式布局。
+- `motion.css`：让装饰图浮动动画基于编辑器设置的旋转角度运行，避免覆盖用户配置。
 - `mainline.html`、`stories.html`、`behind-scenes.html`、`events.html`：刷新图片布局相关 CSS/JS 缓存版本。
 - `docs/README.md`：补充图片识别、透明展示和装饰图编辑说明。
 - `progress.md`：追加本轮实现与验证记录。
