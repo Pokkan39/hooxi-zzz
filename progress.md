@@ -380,3 +380,25 @@
 - `sync.js`、`aliyun/site-data-api/`、`docs/aliyun-collaboration.md`：删除阿里云共享同步模块、函数和部署文档。
 - `progress.md`：记录本轮回退范围、验证和回滚方式。
 - 回滚方式：本轮未提交前可使用 `git restore README.md app.js page.js layout-editor.js index.html mainline.html stories.html behind-scenes.html events.html styles.css docs/README.md progress.md sync.js docs/aliyun-collaboration.md aliyun/site-data-api/index.js aliyun/site-data-api/index.test.js aliyun/site-data-api/package.json aliyun/site-data-api/package-lock.json` 恢复；提交后可使用 `git revert <本轮提交>` 回退。
+
+## 2026-07-12 - Task: 增加父级分组与自由装饰图片
+
+### What was done
+四个档案页新增可自定义父级分组，记录可归入更大的章节父级，访客可点击父级头展开或收纳。页面编辑器新增父级分组和装饰图片管理区，装饰图片作为独立贴片渲染到页面，可配合左下角“调整位置”拖动、调宽和调整层级。布局工具补齐公开发布能力：新增 `layout-data.js`，各页面加载已发布布局，并可从工具条导出新的 `layout-data.js`。
+
+### Testing
+- `node --check page.js`、`layout-editor.js`、`data.js`、`layout-data.js`：通过。
+- 浏览器验证：在 `behind-scenes.html` 新增父级“PV 与制作记录”，新增两条记录并保存，页面渲染 1 个父级，保存数据包含 `items`、`groups`、`decorations`。
+- 浏览器验证：父级头点击后可收纳，再次点击可展开。
+- 浏览器验证：新增装饰图片后元素带有布局目标，进入“调整位置”后拖动装饰图，`localStorage['hooxi:layout:v1']` 写入 `[data-decor-id=...]` 布局键。
+- 浏览器验证：默认加载 `behind-scenes.html` 时不再加载 `sync.js`，会加载 `layout-data.js`，编辑器存在父级和装饰图入口，布局工具存在“导出布局”按钮。
+
+### Notes
+- `page.js`：新增页面状态对象 `{ items, groups, decorations }`，兼容旧数组数据；新增父级分组渲染、展开收纳、装饰图片渲染、编辑器管理和导出 `data.js` 时的 `pageMeta`。
+- `layout-editor.js`：读取 `window.hooxiPublishedLayout`，支持父级和装饰图片作为可拖动目标，新增“导出布局”按钮。
+- `layout-data.js`：新增公开发布用布局数据入口。
+- `index.html`、`mainline.html`、`stories.html`、`behind-scenes.html`、`events.html`、`faction.html`：加载 `layout-data.js`。
+- `multi-page.css`、`motion.css`：新增父级分组、折叠状态、装饰图片贴片和动效样式。
+- `README.md`、`docs/README.md`：补充父级分组、装饰图片和 `layout-data.js` 发布说明。
+- `progress.md`：记录本轮功能、验证和回滚方式。
+- 回滚方式：本轮未提交前可使用 `git restore README.md docs/README.md progress.md page.js layout-editor.js multi-page.css motion.css index.html mainline.html stories.html behind-scenes.html events.html faction.html` 并删除 `layout-data.js`；提交后可使用 `git revert <本轮提交>` 回退。
