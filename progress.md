@@ -357,3 +357,26 @@
 - `sync.js`：新增离线首次应用标记；编辑中或 dirty 状态下阻止自动 apply；API 未配置时不启动轮询。
 - `progress.md`：记录本轮闪屏修复、验证和回滚方式。
 - 回滚方式：使用 `git restore sync.js progress.md` 可撤销本轮未提交改动；提交后可使用 `git revert <本轮提交>` 回退。
+
+## 2026-07-12 - Task: 回退为单人本地编辑模式
+
+### What was done
+移除阿里云共享同步入口和站点页面中的远程协作调用，将首页、档案页、播放器歌单和全站位置布局保存恢复为当前浏览器本地 `localStorage`。保留全站位置编辑器、阵营专属页、播放器和首页/档案页编辑器；发布流程改为由维护者导出发布数据、覆盖仓库文件后手动提交并推送 GitHub Pages。
+
+### Testing
+- `node --check app.js`、`page.js`、`layout-editor.js`、`faction.js`、`data.js`：通过。
+- 全仓检查：当前代码与文档中不再存在 `sync.js` 页面引用、`HooxiSync` 调用、`data-sync-status` 状态位、`hooxi:data` 监听或阿里云函数文档入口；匹配项仅保留在历史 `progress.md` 记录中。
+- 浏览器验证：首页未加载 `sync.js`，`window.HooxiSync` 不存在，编辑保存写入 `hooxiZZZConfig`，全站“调整位置”入口存在。
+- 浏览器验证：`mainline.html` 未加载 `sync.js`，页面保存写入 `hooxi:mainline` / `hooxi:archive-updated`，全站布局编辑器仍可用。
+- 浏览器验证：`faction.html?id=cunning-hares` 可打开“狡兔屋阵营档案”，展示 1 条关联记录，并只加载 `data.js`、`faction.js`、`layout-editor.js`。
+
+### Notes
+- `app.js`：首页编辑器保存恢复为本地写入，移除云端保存、脏标记、远端数据应用和同步事件汇总逻辑。
+- `page.js`：档案页编辑器保存恢复为本地写入，移除云端同步和远端事件应用逻辑，提示文字改为当前浏览器语义。
+- `layout-editor.js`：全站位置编辑器只保存到本地，移除“保存布局到云端”按钮和远端布局应用逻辑。
+- `index.html`、`mainline.html`、`stories.html`、`behind-scenes.html`、`events.html`：移除 `sync.js` 引用和同步状态位，保留 `layout-editor.js`。
+- `styles.css`：移除同步状态颜色规则。
+- `README.md`、`docs/README.md`：发布和维护说明改为单人本地编辑、手动 `git push` 到 `https://pokkan39.github.io/hooxi-zzz/`。
+- `sync.js`、`aliyun/site-data-api/`、`docs/aliyun-collaboration.md`：删除阿里云共享同步模块、函数和部署文档。
+- `progress.md`：记录本轮回退范围、验证和回滚方式。
+- 回滚方式：本轮未提交前可使用 `git restore README.md app.js page.js layout-editor.js index.html mainline.html stories.html behind-scenes.html events.html styles.css docs/README.md progress.md sync.js docs/aliyun-collaboration.md aliyun/site-data-api/index.js aliyun/site-data-api/index.test.js aliyun/site-data-api/package.json aliyun/site-data-api/package-lock.json` 恢复；提交后可使用 `git revert <本轮提交>` 回退。
