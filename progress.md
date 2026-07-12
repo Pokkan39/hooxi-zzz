@@ -437,3 +437,47 @@
 - `docs/README.md`：补充图片识别、透明展示和装饰图编辑说明。
 - `progress.md`：追加本轮实现与验证记录。
 - 回滚方式：恢复上述文件到本轮提交前版本；或对本轮提交执行 `git revert <commit>`。
+
+## 2026-07-13 - Task: 升级多页面游戏化档案视觉
+
+### What was done
+
+为主线、角色故事、幕后/对谈、活动和阵营档案建立区分明确的游戏化首屏与主题视觉：各栏目具备独立主题色、档案编号、HUD 信息组件和背景纹理。时间轴卡片按封面比例自适应阅读布局，幕后/对谈在无资料时呈现“等待制作信号”空状态；阵营页支持主题色、关联记录和无标识时的字母占位徽章。交互动效同时遵守系统“减少动态效果”设置。
+
+### Testing
+
+- `node --check page.js && node --check faction.js && node --check app.js`：通过。
+- `git diff --check`：通过；仅提示既有工作区文件的 LF/CRLF 转换预警，无补丁空白错误。
+- 本地 `python -m http.server 8090` 配合无头浏览器（1280×900）：主线、角色故事、幕后/对谈、活动、有效阵营和无效阵营链接均可打开；所有已测页面无横向溢出。
+- 浏览器数据验证：主线渲染 2 张横图卡片，角色故事渲染 3 张卡片，活动渲染 2 张卡片；幕后页显示“等待制作信号”空状态；`faction.html?id=cunning-hares` 显示“狡兔屋”、1 条关联记录及无图片标识的占位徽章。
+- 浏览器控制台：主线和阵营页无 JavaScript 错误；幕后页网络请求中无 HTTP 4xx/5xx。`prefers-reduced-motion: reduce` 媒体规则已被浏览器识别。
+
+### Notes
+
+- `mainline.html`、`stories.html`、`behind-scenes.html`、`events.html`、`faction.html`：加载游戏化档案主题资源并加入对应页面标识。
+- `multi-page.css`：新增栏目主题变量、HUD 首屏、空状态、阵营占位与卡片/移动端游戏化样式。
+- `motion.css`：补充触摸设备与“减少动态效果”下的交互动效降级。
+- `page.js`：渲染封面方向、空状态和卡片交互所需的数据属性。
+- `faction.js`：读取阵营主题和关联记录，并处理不存在阵营的降级内容。
+- `docs/README.md`：补充游戏化界面、空状态、阵营占位及动效降级维护说明。
+- `progress.md`：追加本轮实现和验证记录。
+- 回滚方式：未提交前执行 `git restore mainline.html stories.html behind-scenes.html events.html faction.html multi-page.css motion.css page.js faction.js docs/README.md progress.md`；提交后对本轮提交执行 `git revert <commit>`。
+
+## 2026-07-13 - Task: 完成本地多尺寸视觉和功能回归
+
+### What was done
+
+使用本地 Playwright Chromium 对关键档案场景执行桌面、平板和手机三档视口回归，覆盖主线时间轴、幕后/对谈空状态与狡兔屋阵营档案。
+
+### Testing
+
+- 已安装本地测试依赖 `@playwright/test` 及 Chromium 浏览器运行时，仅用于本地验证，未写入项目依赖清单。
+- 在桌面 `1280×900`、平板 `768×1024`、手机 `390×844` 三种视口下，依次打开 `mainline.html`、`behind-scenes.html`、`faction.html?id=cunning-hares`：9/9 场景通过。
+- 三档视口均确认：首屏、页面标题和工具栏可见，无横向溢出，无页面 JavaScript 错误。
+- 功能内容确认：主线始终渲染 2 张卡片；幕后页始终显示空状态；狡兔屋阵营页始终显示 1 条关联记录。手机端导航链接按现有响应式规则折叠为 0 个可见项。
+- `git diff --check`：通过；仅有既有工作区文件的 LF/CRLF 转换预警。
+
+### Notes
+
+- `progress.md`：追加多尺寸回归的工具、视口、场景和结果。
+- 回滚方式：本轮只追加验证日志；未提交前执行 `git restore progress.md` 可撤销记录，提交后对本轮提交执行 `git revert <commit>`。
