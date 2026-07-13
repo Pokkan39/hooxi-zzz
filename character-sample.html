@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Character Sample // Wiki Module Editor</title>
+  <link rel="stylesheet" href="character-sample.css" />
+</head>
+<body>
+  <div class="sample-page" data-layout-root>
+    <header class="sample-topbar">
+      <a class="sample-brand" href="#">
+        <span class="sample-brand-mark">H</span>
+        <span class="sample-brand-copy">
+          <strong>HOOXI <span>//</span></strong>
+          <small>CHARACTER SAMPLE EDITOR</small>
+        </span>
+      </a>
+      <div class="sample-toolbar" aria-label="编辑操作">
+        <button type="button" class="tool-button" data-action="undo">撤销</button>
+        <button type="button" class="tool-button" data-action="redo">重做</button>
+        <button type="button" class="tool-button" data-action="save">保存</button>
+        <button type="button" class="tool-button" data-action="reset">恢复默认</button>
+        <button type="button" class="tool-button" data-action="export">导出 JSON</button>
+        <button type="button" class="tool-button" data-action="import">导入 JSON</button>
+        <button type="button" class="tool-button" data-action="swap-layout">切换手机布局</button>
+      </div>
+    </header>
+
+    <main class="sample-main">
+      <section class="sample-canvas-panel">
+        <div class="sample-panel-head">
+          <div>
+            <p class="eyebrow">// LIVE LAYOUT SANDBOX</p>
+            <h1>角色 Wiki 样板</h1>
+            <p class="panel-copy">点击任意模块选中；支持鼠标、触摸拖拽，桌面与手机布局分别保存。</p>
+          </div>
+          <div class="sample-status" aria-live="polite">
+            <span data-role="layout-indicator">桌面布局</span>
+            <b data-role="selection-indicator">未选中组件</b>
+          </div>
+        </div>
+
+        <div class="canvas-shell">
+          <div class="canvas-frame" data-role="canvas-frame">
+            <div class="character-stage-editor" data-role="canvas" tabindex="0" aria-label="角色 Wiki 可视化编辑区">
+              <div class="canvas-grid" aria-hidden="true"></div>
+              <div class="canvas-noise" aria-hidden="true"></div>
+              <div class="component is-decor component-shape panel-accent" data-component-id="bg-accent" data-component-type="shape" data-name="背景高光"></div>
+              <div class="component is-decor component-shape panel-grid" data-component-id="bg-grid-badge" data-component-type="shape" data-name="网格徽标"></div>
+              <div class="component is-decor panel-code" data-component-id="bg-code" data-component-type="text" data-name="背景编码">AGENT / 02</div>
+              <div class="component is-decor panel-orbit" data-component-id="bg-orbit" data-component-type="shape" data-name="舞台环形"></div>
+
+              <button type="button" class="component component-button nav-button" data-component-id="back-button" data-component-type="button" data-name="返回按钮">← 角色目录</button>
+              <div class="component component-title hero-kicker" data-component-id="hero-kicker" data-component-type="text" data-name="眉标文本">// AGENT DOSSIER</div>
+              <div class="component component-title hero-title" data-component-id="hero-title" data-component-type="text" data-name="角色标题">安比·德玛拉</div>
+              <div class="component component-text hero-subtitle" data-component-id="hero-subtitle" data-component-type="text" data-name="副标题">狡兔屋 / 电属性 / 击破定位</div>
+              <div class="component component-text hero-summary" data-component-id="hero-summary" data-component-type="text" data-name="角色简介">以完整 Wiki 模块方式展示角色核心档案、配装建议与培养资料，适合作为独立静态样板与编辑器演示。</div>
+              <a class="component component-button cta-button" href="https://example.com" target="_blank" rel="noreferrer" data-component-id="cta-link" data-component-type="link" data-name="跳转按钮">查看完整资料 ↗</a>
+
+              <div class="component component-card portrait-card" data-component-id="portrait-card" data-component-type="card" data-name="角色立绘卡">
+                <div class="portrait-stage" data-component-id="portrait-stage" data-component-type="stage" data-name="角色舞台">
+                  <div class="component faction-logo" data-component-id="faction-logo" data-component-type="badge" data-name="阵营 Logo 水印" tabindex="0" role="button" aria-label="阵营 Logo 水印">
+                    <img src="assets/icons/cunning-hares-logo.png" alt="狡兔屋阵营标识" />
+                  </div>
+                  <img src="assets/portraits/anby-portrait.png" alt="安比角色立绘示例" data-component-id="portrait-image" data-component-type="image" data-name="角色立绘图" />
+                </div>
+                <div class="portrait-caption" data-component-id="portrait-caption" data-component-type="text" data-name="舞台说明">LIVE PERSONNEL FEED</div>
+              </div>
+
+              <section class="component component-card info-card" data-component-id="profile-card" data-component-type="card" data-name="档案卡片">
+                <div class="card-tag">PROFILE</div>
+                <h2>档案</h2>
+                <ul>
+                  <li>编号：A-02</li>
+                  <li>阵营：狡兔屋</li>
+                  <li>属性：电</li>
+                  <li>特性：击破</li>
+                  <li>定位：前场失衡支援</li>
+                </ul>
+              </section>
+
+              <section class="component component-card battle-card" data-component-id="battle-card" data-component-type="card" data-name="战斗要点卡片">
+                <div class="card-tag">COMBAT</div>
+                <h2>战斗要点</h2>
+                <ul>
+                  <li>通过第三段普攻后衔接雷电招式，提高失衡效率。</li>
+                  <li>强化特殊技优先用于快速积累失衡值。</li>
+                  <li>配装以冲击力与团队增益为主要方向。</li>
+                </ul>
+              </section>
+
+              <section class="component component-card wengine-card" data-component-id="wengine-card" data-component-type="card" data-name="音擎卡片">
+                <div class="card-tag">W-ENGINE</div>
+                <h2>音擎</h2>
+                <p>示例：燃狱齿轮、蒸汽烤箱、贵重骨核；以适用版本和来源标注为准。</p>
+              </section>
+
+              <section class="component component-card drive-build-card" data-component-id="drive-build-card" data-component-type="card" data-name="驱动盘与词条卡片">
+                <div class="card-tag">DRIVE BUILD</div>
+                <h2>驱动盘与词条</h2>
+                <div class="drive-build-grid">
+                  <article>
+                    <h3>套装建议</h3>
+                    <ul>
+                      <li>4 件：震星迪斯科</li>
+                      <li>2 件：激素朋克 / 摇摆爵士</li>
+                      <li>备选：山大王 4 件 + 冲击力 2 件</li>
+                    </ul>
+                  </article>
+                  <article>
+                    <h3>4 / 5 / 6 号位</h3>
+                    <ul>
+                      <li>4 号位：暴击率 / 暴击伤害</li>
+                      <li>5 号位：电属性伤害 / 攻击力</li>
+                      <li>6 号位：冲击力</li>
+                    </ul>
+                  </article>
+                  <article>
+                    <h3>副词条</h3>
+                    <ul>
+                      <li>优先：暴击率、暴击伤害、攻击力%</li>
+                      <li>次选：穿透值、能量自动回复</li>
+                      <li>说明：按版本环境与队伍需求微调</li>
+                    </ul>
+                  </article>
+                </div>
+              </section>
+
+              <section class="component component-card talent-card" data-component-id="talent-card" data-component-type="card" data-name="技能展示卡片">
+                <div class="card-tag">TALENT</div>
+                <div class="card-head-row">
+                  <div>
+                    <h2>技能展示</h2>
+                    <p class="card-meta">安比技能样板模块：普攻 / 闪避 / 支援 / 特殊 / 连携 / 核心。</p>
+                  </div>
+                  <div class="talent-level-box">
+                    <span class="talent-level-label">等级</span>
+                    <div class="talent-level-controls">
+                      <button type="button" class="mini-button" data-talent-action="level-down" aria-label="技能等级降低一级">−</button>
+                      <span class="talent-level-value" data-role="talent-level-display">Lv.1</span>
+                      <button type="button" class="mini-button" data-talent-action="level-up" aria-label="技能等级提高一级">＋</button>
+                    </div>
+                    <label class="sr-only" for="talent-level-range">技能等级</label>
+                    <input id="talent-level-range" class="talent-level-range" type="range" min="1" max="16" step="1" value="1" data-role="talent-level-range" />
+                  </div>
+                </div>
+                <div class="talent-tabs" role="tablist" aria-label="技能类别">
+                  <button type="button" class="chip-button is-active" role="tab" aria-selected="true" data-talent-category="basic">普攻</button>
+                  <button type="button" class="chip-button" role="tab" aria-selected="false" data-talent-category="dodge">闪避</button>
+                  <button type="button" class="chip-button" role="tab" aria-selected="false" data-talent-category="assist">支援</button>
+                  <button type="button" class="chip-button" role="tab" aria-selected="false" data-talent-category="special">特殊</button>
+                  <button type="button" class="chip-button" role="tab" aria-selected="false" data-talent-category="chain">连携</button>
+                  <button type="button" class="chip-button" role="tab" aria-selected="false" data-talent-category="core">核心</button>
+                </div>
+                <div class="talent-subtabs" data-role="talent-subtabs" aria-label="技能子项"></div>
+                <div class="talent-metric-toggle" role="tablist" aria-label="倍率类型">
+                  <button type="button" class="chip-button is-active" role="tab" aria-selected="true" data-talent-metric="damage">伤害倍率</button>
+                  <button type="button" class="chip-button" role="tab" aria-selected="false" data-talent-metric="daze">失衡倍率</button>
+                </div>
+                <div class="talent-panel" data-role="talent-panel">
+                  <div>
+                    <p class="talent-title" data-role="talent-name">普通攻击：伏特速攻</p>
+                    <p class="talent-description" data-role="talent-description">连续发动最多四段斩击与落雷，样板演示将按等级线性插值显示倍率，后续可替换成官方逐级表。</p>
+                  </div>
+                  <div class="talent-values">
+                    <div class="talent-values-head">
+                      <strong data-role="talent-metric-label">伤害倍率</strong>
+                      <span data-role="talent-demo-note">样板演示：等级间采用线性增长，待替换官方逐级表</span>
+                    </div>
+                    <ol class="talent-hit-list" data-role="talent-hit-list"></ol>
+                  </div>
+                  <div class="talent-materials-grid">
+                    <section class="talent-material-card">
+                      <h3>当前升级需求</h3>
+                      <p class="talent-material-note" data-role="talent-upgrade-note"></p>
+                      <ul data-role="talent-upgrade-materials"></ul>
+                    </section>
+                    <section class="talent-material-card">
+                      <h3>累计需求</h3>
+                      <p class="talent-material-note">样板汇总，待逐级核验</p>
+                      <ul data-role="talent-total-materials"></ul>
+                    </section>
+                  </div>
+                </div>
+              </section>
+
+              <section class="component component-card promotion-card" data-component-id="promotion-card" data-component-type="card" data-name="晋升需求卡片">
+                <div class="card-tag">PROMOTION</div>
+                <h2>角色晋升需求</h2>
+                <p>以安比为例展示角色等级阶段材料结构：基础击破认证章、进阶击破认证章、统御者认证章与丁尼。当前为独立角色样板，正式上线前需逐项按游戏内版本核验。</p>
+                <div class="promotion-grid">
+                  <article>
+                    <h3>20 / 30 级</h3>
+                    <ul>
+                      <li>基础击破认证章 ×4</li>
+                      <li>丁尼 ×24,000</li>
+                    </ul>
+                  </article>
+                  <article>
+                    <h3>40 / 50 级</h3>
+                    <ul>
+                      <li>进阶击破认证章 ×12</li>
+                      <li>丁尼 ×56,000</li>
+                    </ul>
+                  </article>
+                  <article>
+                    <h3>60 级</h3>
+                    <ul>
+                      <li>统御者认证章 ×20</li>
+                      <li>丁尼 ×120,000</li>
+                    </ul>
+                  </article>
+                  <article>
+                    <h3>说明</h3>
+                    <ul>
+                      <li>晋升材料结构可信，数量为样板展示。</li>
+                      <li>建议正式使用前以当前版本角色页面复核。</li>
+                    </ul>
+                  </article>
+                </div>
+              </section>
+
+              <section class="component component-card team-card" data-component-id="team-card" data-component-type="card" data-name="配队卡片">
+                <div class="card-tag">TEAM</div>
+                <div class="team-head">
+                  <div>
+                    <h2>推荐配队</h2>
+                    <p>演示为可编辑模块，槽位点击只切换选中状态，不触发拖拽。</p>
+                  </div>
+                  <p class="team-subcopy">桌面约 850×280 的底部游戏队伍界面，窄屏自动重排。</p>
+                </div>
+                <div class="team-grid">
+                  <button type="button" class="component team-slot is-active" data-component-id="team-slot-1" data-component-type="slot" data-name="一号代理人槽" aria-pressed="true">
+                    <span class="team-slot-pos">01</span>
+                    <img src="assets/portraits/anby-card.webp" alt="安比卡面" class="team-slot-art" />
+                    <span class="team-slot-meta">Lv.60 / 电 / 击破</span>
+                    <strong class="team-slot-name">安比</strong>
+                  </button>
+                  <button type="button" class="component team-slot" data-component-id="team-slot-2" data-component-type="slot" data-name="二号代理人槽" aria-pressed="false">
+                    <span class="team-slot-pos">02</span>
+                    <img src="assets/portraits/nicole-demara-card.webp" alt="妮可卡面" class="team-slot-art" />
+                    <span class="team-slot-meta">Lv.60 / 以太 / 支援</span>
+                    <strong class="team-slot-name">妮可</strong>
+                  </button>
+                  <button type="button" class="component team-slot" data-component-id="team-slot-3" data-component-type="slot" data-name="三号代理人槽" aria-pressed="false">
+                    <span class="team-slot-pos">03</span>
+                    <img src="assets/portraits/billy-kid-card.webp" alt="比利卡面" class="team-slot-art" />
+                    <span class="team-slot-meta">Lv.60 / 物理 / 强攻</span>
+                    <strong class="team-slot-name">比利</strong>
+                  </button>
+                  <button type="button" class="component team-slot team-slot-bangboo" data-component-id="team-slot-bangboo" data-component-type="slot" data-name="邦布槽" aria-pressed="false">
+                    <span class="team-slot-pos">B</span>
+                    <span class="team-slot-icon">01</span>
+                    <span class="team-slot-meta">邦布支援位</span>
+                    <strong class="team-slot-name">插头布 / 待替换</strong>
+                  </button>
+                  <button type="button" class="component team-slot team-slot-empty" data-component-id="team-slot-empty" data-component-type="slot" data-name="可选空槽" aria-pressed="false">
+                    <span class="team-slot-pos">+</span>
+                    <span class="team-slot-icon">OPT</span>
+                    <span class="team-slot-meta">可选空槽</span>
+                    <strong class="team-slot-name">保留扩展位</strong>
+                  </button>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="sample-sidebar" aria-label="属性编辑面板">
+        <section class="editor-panel">
+          <div class="panel-section">
+            <p class="eyebrow">// SELECTED COMPONENT</p>
+            <h2 data-role="selected-name">未选中组件</h2>
+            <p class="panel-tip">所有可编辑对象都带稳定的 data-component-id，点击后可拖拽，也可在此输入精确数值。</p>
+          </div>
+
+          <div class="panel-section field-grid">
+            <label><span>X</span><input type="number" step="1" data-field="x" /></label>
+            <label><span>Y</span><input type="number" step="1" data-field="y" /></label>
+            <label><span>宽</span><input type="number" step="1" data-field="width" /></label>
+            <label><span>高</span><input type="number" step="1" data-field="height" /></label>
+            <label><span>缩放</span><input type="number" step="0.01" data-field="scale" /></label>
+            <label><span>旋转</span><input type="number" step="1" data-field="rotation" /></label>
+            <label><span>透明度</span><input type="number" step="0.05" min="0" max="1" data-field="opacity" /></label>
+            <label><span>Z-Index</span><input type="number" step="1" data-field="z" /></label>
+            <label><span>颜色</span><input type="color" data-field="color" /></label>
+            <label class="field-wide"><span>文字</span><textarea rows="4" data-field="text"></textarea></label>
+            <label class="field-wide"><span>链接</span><input type="url" data-field="href" placeholder="https://example.com" /></label>
+            <label class="toggle-field field-wide"><span>显示</span><input type="checkbox" data-field="visible" /></label>
+          </div>
+
+          <div class="panel-section panel-actions">
+            <button type="button" class="tool-button" data-action="nudge-up">↑ 微调</button>
+            <button type="button" class="tool-button" data-action="nudge-down">↓ 微调</button>
+            <button type="button" class="tool-button" data-action="nudge-left">← 微调</button>
+            <button type="button" class="tool-button" data-action="nudge-right">→ 微调</button>
+          </div>
+
+          <div class="panel-section import-export-box">
+            <label>
+              <span>JSON 导入 / 导出区</span>
+              <textarea rows="10" data-role="json-box" spellcheck="false"></textarea>
+            </label>
+          </div>
+
+          <div class="panel-section panel-footer">
+            <p>快捷键：方向键微调，Shift + 方向键大步微调，Delete 仅隐藏当前组件，Ctrl/Cmd + Z 撤销，Ctrl/Cmd + Shift + Z 重做。</p>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script src="character-sample.js"></script>
+</body>
+</html>
