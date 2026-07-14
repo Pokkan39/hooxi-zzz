@@ -228,3 +228,21 @@
 - `README.md`、`docs/README.md`：补充锁定说明。
 - `progress.md`：追加本轮锁定机制记录。
 - 回滚：将 `editor.js`、`editor.html`、`README.md`、`docs/README.md`、`progress.md` 的本轮新增内容定点删除即可；不要整文件回退，避免覆盖其他既有改动。
+
+## 2026-07-14 - Task: 修复公开首页入口脚本回归
+### What was done
+- 修复移除首页内联编辑器后，首页脚本仍访问旧编辑字段导致脚本提前中断的问题。
+- 为公开页的编辑字段和内容编辑器调用增加存在性保护，并递增首页脚本缓存版本，确保 Pages 加载修复后的脚本。
+
+### Testing
+- `node --check app.js`：通过。
+- `git diff --check -- app.js` 与 `git diff --check -- index.html`：通过（仅有 Git 换行符提示）。
+- GitHub Pages workflow 对提交 `82a8773` 返回 completed/success。
+- 线上首页无控制台错误；公开页无内联编辑器、登录弹窗、排序维护文案，仅保留右上角入口。
+- 线上点击右上角入口成功跳转 `editor.html`；输入 `Hooxi777771` 后登录面板隐藏、编辑面板显示。
+
+### Notes
+- `app.js`：仅在对应编辑 DOM 存在时同步编辑字段和渲染内容编辑器。
+- `index.html`：将 `app.js` 缓存版本更新为 `e578ef8`。
+- `progress.md`：追加本轮回归修复与线上验证记录。
+- 回滚：将 `app.js` 两处存在性保护和 `index.html` 的 `app.js` 版本参数恢复到修改前值；不要整文件回退，以免覆盖其他既有改动。
