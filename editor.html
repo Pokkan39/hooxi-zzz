@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Hooxi 编辑后台</title>
+  <link rel="stylesheet" href="editor.css"/>
+</head>
+<body>
+<div class="editor-app" id="app">
+  <!-- Login -->
+  <section class="login-panel" id="loginPanel">
+    <div class="panel-card">
+      <h1>Hooxi <span>编辑后台</span></h1>
+      <p class="subtitle">请使用编辑员或管理员账号登录</p>
+      <form id="loginForm">
+        <label>账号 ID<input type="text" id="loginId" autocomplete="username" required/></label>
+        <label>密码<input type="password" id="loginPassword" autocomplete="current-password" required/></label>
+        <p class="error" id="loginError"></p>
+        <button type="submit" class="btn primary full" id="loginBtn">登录</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Editor (hidden until login) -->
+  <section class="editor-panel hidden" id="editorPanel">
+    <header class="editor-topbar">
+      <h1>Hooxi <span>编辑后台</span></h1>
+      <div class="user-bar">
+        <span id="userInfo"></span>
+        <button class="btn ghost" id="logoutBtn">登出</button>
+      </div>
+    </header>
+
+    <div class="editor-layout">
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <h3>文件</h3>
+          <button class="file-tab active" data-file="data.js">data.js</button>
+          <button class="file-tab" data-file="layout-data.js">layout-data.js</button>
+        </div>
+        <div class="sidebar-section">
+          <h3>草稿</h3>
+          <button class="btn small" id="saveDraftBtn">保存到本机</button>
+          <button class="btn small ghost" id="loadDraftBtn">加载草稿</button>
+          <button class="btn small ghost" id="revertBtn">恢复线上版本</button>
+          <p class="hint" id="draftStatus"></p>
+        </div>
+        <div class="sidebar-section" id="reviewSection">
+          <h3>检阅</h3>
+          <button class="btn small primary" id="pushReviewBtn">提交检阅分支</button>
+          <p class="hint" id="pushStatus"></p>
+          <div id="reviewList"></div>
+        </div>
+      </aside>
+
+      <main class="editor-main">
+        <div class="editor-header">
+          <h2 id="currentFile">data.js</h2>
+          <p class="hint">结构化内容编辑 — 修改 JSON 数据后保存草稿，确认无误后提交检阅</p>
+        </div>
+        <textarea id="contentEditor" spellcheck="false"></textarea>
+        <div id="editorStatus" class="editor-status"></div>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </section>
+</div>
+<script src="editor.js"></script>
+</body>
+</html>

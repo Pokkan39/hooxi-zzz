@@ -23,7 +23,7 @@ function createSession(payload, secret) {
  * Verify and decode a session cookie value.
  * Returns payload object or null on invalid/tampered.
  */
-function readSession(cookieValue, secret) {
+function readSession(cookieValue, secret, now = Date.now()) {
   if (!cookieValue || typeof cookieValue !== 'string') return null;
   const dot = cookieValue.lastIndexOf('.');
   if (dot < 1) return null;
@@ -37,7 +37,11 @@ function readSession(cookieValue, secret) {
     if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
   } catch { return null; }
   try {
-    return JSON.parse(Buffer.from(data, 'base64url').toString('utf8'));
+    const payload = JSON.parse(Buffer.from(data, 'base64url').toString('utf8'));
+    if (payload && typeof payload.expires === 'number' && payload.expires < now) {
+      return null;
+    }
+    return payload;
   } catch { return null; }
 }
 
