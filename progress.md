@@ -246,3 +246,25 @@
 - `index.html`：将 `app.js` 缓存版本更新为 `e578ef8`。
 - `progress.md`：追加本轮回归修复与线上验证记录。
 - 回滚：将 `app.js` 两处存在性保护和 `index.html` 的 `app.js` 版本参数恢复到修改前值；不要整文件回退，以免覆盖其他既有改动。
+
+## 2026-07-14 - Task: 编辑页改为小白可用的可视化表单
+### What was done
+- 将 `data.js` 编辑从默认源码文本框改为默认可视化表单，覆盖阵营、角色、主线剧情、角色故事、往期活动和幕后/对谈。
+- 表单输入会实时同步回 `data.js` 源码文本，原有保存本机草稿、加载草稿、恢复线上版本和导出当前文件流程继续可用。
+- 保留“源码编辑”模式作为兜底；`layout-data.js` 暂时保持源码模式，避免对空布局结构做过度设计。
+- 同步维护说明，让小白按入口、表单、保存草稿、导出、推送的流程操作。
+
+### Testing
+- 已执行 `node --check editor.js`，通过。
+- 已执行 `git diff --check -- editor.html editor.js editor.css README.md docs/README.md`，通过（仅有 Git 换行符提示）。
+- 本地静态服务 `python -m http.server 4173` 下验证：输入 `Hooxi777771` 后默认显示可视化表单，包含阵营、角色、主线剧情、角色故事、往期活动、幕后/对谈六组。
+- 浏览器验证修改主线标题后，隐藏源码中的 `data.js` 文本同步包含新标题；新增往期活动条目后源码同步包含新 ID。
+- 浏览器验证切换到 `layout-data.js` 后自动禁用可视化模式，并显示源码编辑状态；控制台无错误。
+
+### Notes
+- `editor.html`：新增可视化/源码模式切换、可视化编辑容器和隐藏用户名字段。
+- `editor.js`：新增 `data.js` 解析、表单渲染、字段同步、新增/删除剧情条目和源码兜底逻辑。
+- `editor.css`：新增可视化表单、模式切换、响应式布局和源码隐藏样式。
+- `README.md`、`docs/README.md`：更新小白编辑和发布流程说明。
+- `progress.md`：追加本轮可视化编辑器改造和验证记录。
+- 回滚：将 `editor.html`、`editor.js`、`editor.css` 恢复到本轮修改前版本，并定点删除 `README.md`、`docs/README.md`、`progress.md` 本轮新增说明；不要整仓回退，以免覆盖其他既有改动。

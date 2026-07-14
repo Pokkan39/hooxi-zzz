@@ -13,6 +13,7 @@
       <h1>Hooxi <span>编辑入口</span></h1>
       <p class="subtitle">连续输错 5 次会锁定 10 分钟</p>
       <form id="loginForm">
+        <input type="text" name="username" autocomplete="username" value="Hooxi" hidden/>
         <label>编辑密码<input type="password" id="loginPassword" autocomplete="current-password" required/></label>
         <p class="error" id="loginError"></p>
         <button type="submit" class="btn primary full" id="loginBtn">进入编辑</button>
@@ -53,8 +54,13 @@
       <main class="editor-main">
         <div class="editor-header">
           <h2 id="currentFile">data.js</h2>
-          <p class="hint">直接编辑当前文件内容，保存只写入本机浏览器。</p>
+          <p class="hint" id="editorHint">用表单改内容；保存只写入本机浏览器，导出后再覆盖仓库文件。</p>
+          <div class="mode-tabs" role="group" aria-label="编辑模式">
+            <button class="mode-tab active" data-mode="visual" type="button">可视化编辑</button>
+            <button class="mode-tab" data-mode="source" type="button">源码编辑</button>
+          </div>
         </div>
+        <div id="visualEditor" class="visual-editor"></div>
         <textarea id="contentEditor" spellcheck="false" placeholder="在这里编辑文件内容"></textarea>
         <div id="editorStatus" class="editor-status"></div>
       </main>
