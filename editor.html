@@ -3,32 +3,29 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Hooxi 编辑后台</title>
+  <title>Hooxi 编辑入口</title>
   <link rel="stylesheet" href="editor.css"/>
 </head>
 <body>
 <div class="editor-app" id="app">
-  <!-- Login -->
   <section class="login-panel" id="loginPanel">
     <div class="panel-card">
-      <h1>Hooxi <span>编辑后台</span></h1>
-      <p class="subtitle">请使用编辑员或管理员账号登录</p>
+      <h1>Hooxi <span>编辑入口</span></h1>
+      <p class="subtitle">连续输错 5 次会锁定 10 分钟</p>
       <form id="loginForm">
-        <label>账号 ID<input type="text" id="loginId" autocomplete="username" required/></label>
-        <label>密码<input type="password" id="loginPassword" autocomplete="current-password" required/></label>
+        <label>编辑密码<input type="password" id="loginPassword" autocomplete="current-password" required/></label>
         <p class="error" id="loginError"></p>
-        <button type="submit" class="btn primary full" id="loginBtn">登录</button>
+        <button type="submit" class="btn primary full" id="loginBtn">进入编辑</button>
       </form>
     </div>
   </section>
 
-  <!-- Editor (hidden until login) -->
   <section class="editor-panel hidden" id="editorPanel">
     <header class="editor-topbar">
-      <h1>Hooxi <span>编辑后台</span></h1>
+      <h1>Hooxi <span>本地编辑</span></h1>
       <div class="user-bar">
-        <span id="userInfo"></span>
-        <button class="btn ghost" id="logoutBtn">登出</button>
+        <span id="userInfo">本机编辑</span>
+        <button class="btn ghost" id="lockBtn">重新锁定</button>
       </div>
     </header>
 
@@ -44,22 +41,21 @@
           <button class="btn small" id="saveDraftBtn">保存到本机</button>
           <button class="btn small ghost" id="loadDraftBtn">加载草稿</button>
           <button class="btn small ghost" id="revertBtn">恢复线上版本</button>
+          <button class="btn small ghost" id="downloadBtn">导出当前文件</button>
           <p class="hint" id="draftStatus"></p>
         </div>
-        <div class="sidebar-section" id="reviewSection">
-          <h3>检阅</h3>
-          <button class="btn small primary" id="pushReviewBtn">提交检阅分支</button>
-          <p class="hint" id="pushStatus"></p>
-          <div id="reviewList"></div>
+        <div class="sidebar-section">
+          <h3>发布提醒</h3>
+          <p class="hint">编辑完后，把导出的文件覆盖到仓库根目录，再手动 git add、git commit、git push。</p>
         </div>
       </aside>
 
       <main class="editor-main">
         <div class="editor-header">
           <h2 id="currentFile">data.js</h2>
-          <p class="hint">结构化内容编辑 — 修改 JSON 数据后保存草稿，确认无误后提交检阅</p>
+          <p class="hint">直接编辑当前文件内容，保存只写入本机浏览器。</p>
         </div>
-        <textarea id="contentEditor" spellcheck="false"></textarea>
+        <textarea id="contentEditor" spellcheck="false" placeholder="在这里编辑文件内容"></textarea>
         <div id="editorStatus" class="editor-status"></div>
       </main>
     </div>
@@ -68,5 +64,4 @@
   </section>
 </div>
 <script src="editor.js"></script>
-</body>
-</html>
+</body></html>

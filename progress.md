@@ -149,6 +149,22 @@
 - `editor.css`：新建，编辑器样式。
 - 回滚：删除 `editor.html`、`editor.js`、`editor.css` 三个文件即可；后端改动不影响。
 
+## 2026-07-14 - Task: 收口游客页编辑入口到专属登录页
+### What was done
+- 将游客页右上角编辑入口改为直达 `editor.html` 的专属登录页，并移除首页可见的编辑提示文案。
+- 访客继续看到正常站点；管理员从右上角入口进入后，先在 `editor.html` 输入账号密码，再进入编辑后台。
+
+### Testing
+- 已执行 `node --check app.js`、`node --check page.js`、`node --check login-modal.js`，均通过。
+- 已执行 `git diff --check`，未发现补丁格式错误。
+
+### Notes
+- `app.js`：把首页编辑按钮改为跳转 `editor.html`。
+- `page.js`：把各子页编辑按钮改为跳转 `editor.html`。
+- `index.html`：收起首页可见的编辑提示文案，并更新编辑入口文案。
+- `docs/README.md`：同步更新编辑入口说明。
+- 回滚：将 `app.js`、`page.js`、`index.html`、`docs/README.md` 恢复到本轮修改前内容即可；不要整文件回退其他无关改动。
+
 ## 2026-07-13 - Task: 完成安全测试、浏览器回归、文档和进度记录
 
 ### What was done
@@ -172,3 +188,43 @@
 - `docs/README.md`：新增编辑后台与检阅/发布流程章节。
 - `progress.md`：追加本轮全部变更和验证记录。
 - 回滚：将 `backend/server.js`、`backend/lib/github.js`、`backend/test/test.js`、`backend/.env.example`、`backend/README.md`、`docs/README.md` 恢复为本轮修改前版本，并删除 `editor.html`、`editor.js`、`editor.css`。
+
+## 2026-07-14 - Task: 公开页与编辑入口收口
+### What was done
+- 把公共首页里的隐藏编辑模板、登录弹窗和旧入口脚本全部移除，首页现在只保留右上角 `✦` 入口。
+- 子页移除“拖动排序”“恢复默认顺序”和拖动把手等公开维护痕迹，普通访客只看到档案内容。
+- 右上角入口统一跳到独立的 `editor.html`，编辑页继续走静态密码 `Hooxi777771` 和本机草稿 / 导出 / Git 提交流程。
+- 公开页不再默认展示任何施工工具，避免访客看到维护界面。
+
+### Testing
+- 已执行 `node --check editor.js`、`node --check layout-editor.js`、`node --check app.js`、`node --check page.js`，均通过。
+- 已执行 `git diff --check`，未发现补丁格式错误。
+- 已用 `Grep` 静态确认首页、主线页、往期活动页和幕后/对谈页不再包含登录弹窗、公开编辑面板、拖动排序或恢复默认顺序等可见维护文案。
+
+### Notes
+- `index.html`：删除公开可见的登录弹窗和站内编辑面板，只保留右上角入口。
+- `mainline.html`、`events.html`、`behind-scenes.html`：移除公开排序提示和恢复按钮。
+- `app.js`：保证首页右上角按钮直接跳转 `editor.html`。
+- `page.js`：移除公开拖动把手，停止向子页注入隐藏页面编辑器，并将异常封面提示改成访客文案。
+- `multi-page.css`：去掉拖动把手列，避免卡片右侧留下空白维护位。
+- `README.md`、`docs/README.md`：继续保留静态编辑入口和发布说明。
+- `progress.md`：追加本轮公开页收口记录。
+- 回滚：将 `index.html`、`mainline.html`、`events.html`、`behind-scenes.html`、`app.js`、`page.js`、`multi-page.css`、`progress.md` 的本轮新增内容定点删除即可；不要整文件回退，避免覆盖其他既有改动。
+
+## 2026-07-14 - Task: 编辑密码增加本机五次锁十分钟
+### What was done
+- 给 `editor.html` 加了固定密码 `Hooxi777771` 的错误次数锁定：同一浏览器连续输错 5 次后锁 10 分钟。
+- 锁定状态只存在当前浏览器的 `localStorage`，正确密码会清空失败记录并恢复编辑入口。
+- 同步更新编辑页和维护文档，明确写出锁定规则。
+
+### Testing
+- 已执行 `node --check editor.js`、`node --check app.js`、`node --check page.js`、`node --check layout-editor.js`，均通过。
+- 已执行 `git diff --check`，未发现补丁格式错误。
+- 已用 `Grep` 静态确认 `editor.js` 中包含失败计数、锁定到期时间和解锁逻辑。
+
+### Notes
+- `editor.js`：新增本机失败计数、10 分钟锁定、剩余时间提示和成功解锁清理。
+- `editor.html`：补充锁定提示文案。
+- `README.md`、`docs/README.md`：补充锁定说明。
+- `progress.md`：追加本轮锁定机制记录。
+- 回滚：将 `editor.js`、`editor.html`、`README.md`、`docs/README.md`、`progress.md` 的本轮新增内容定点删除即可；不要整文件回退，避免覆盖其他既有改动。

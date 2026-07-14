@@ -28,15 +28,18 @@
   function exportLayout(){const source=`window.hooxiPublishedLayout=${JSON.stringify(layouts,null,2)};\n`;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([source],{type:'text/javascript'}));a.download='layout-data.js';a.click();URL.revokeObjectURL(a.href);status('已导出 layout-data.js，请覆盖仓库同名文件后发布')}
   function mount(){
     if(document.querySelector('#layoutToggle'))return;
-    document.body.insertAdjacentHTML('beforeend','<div class="layout-toolbar"><button id="layoutToggle">调整位置</button><button id="layoutFront">前移</button><button id="layoutBack">后移</button><button id="layoutExport">导出布局</button><button id="layoutReset">恢复当前设备</button><small id="layoutStatus">拖动元素调整位置；拖右下角调整宽度</small></div>');
-    document.querySelector('#layoutToggle').onclick=toggle;
-    document.querySelector('#layoutReset').onclick=reset;
-    document.querySelector('#layoutExport').onclick=exportLayout;
-    document.querySelector('#layoutFront').onclick=()=>{if(selected){selected.style.setProperty('--layout-z',(Number(selected.style.getPropertyValue('--layout-z'))||0)+1);saveValue()}};
-    document.querySelector('#layoutBack').onclick=()=>{if(selected){selected.style.setProperty('--layout-z',(Number(selected.style.getPropertyValue('--layout-z'))||0)-1);saveValue()}};
-    document.addEventListener('pointerdown',e=>{if(!editing)return;const el=e.target.closest('[data-layout-target]');if(!el||e.target.closest('.layout-toolbar'))return;e.preventDefault();select(el);const x=parseFloat(el.style.getPropertyValue('--layout-x'))||0,y=parseFloat(el.style.getPropertyValue('--layout-y'))||0;drag={el,sx:e.clientX,sy:e.clientY,x,y};try{el.setPointerCapture?.(e.pointerId)}catch{}});
-    document.addEventListener('pointermove',e=>{if(!drag)return;drag.el.style.setProperty('--layout-x',`${drag.x+e.clientX-drag.sx}px`);drag.el.style.setProperty('--layout-y',`${drag.y+e.clientY-drag.sy}px`);drag.el.classList.add('layout-custom')});
-    document.addEventListener('pointerup',()=>{if(drag){saveValue();drag=null}});
+    const editEnabled=new URLSearchParams(location.search).get('layout')==='1'||location.hash==='#layout';
+    if(editEnabled){
+      document.body.insertAdjacentHTML('beforeend','<div class="layout-toolbar"><button id="layoutToggle">调整位置</button><button id="layoutFront">前移</button><button id="layoutBack">后移</button><button id="layoutExport">导出布局</button><button id="layoutReset">恢复当前设备</button><small id="layoutStatus">拖动元素调整位置；拖右下角调整宽度</small></div>');
+      document.querySelector('#layoutToggle').onclick=toggle;
+      document.querySelector('#layoutReset').onclick=reset;
+      document.querySelector('#layoutExport').onclick=exportLayout;
+      document.querySelector('#layoutFront').onclick=()=>{if(selected){selected.style.setProperty('--layout-z',(Number(selected.style.getPropertyValue('--layout-z'))||0)+1);saveValue()}};
+      document.querySelector('#layoutBack').onclick=()=>{if(selected){selected.style.setProperty('--layout-z',(Number(selected.style.getPropertyValue('--layout-z'))||0)-1);saveValue()}};
+      document.addEventListener('pointerdown',e=>{if(!editing)return;const el=e.target.closest('[data-layout-target]');if(!el||e.target.closest('.layout-toolbar'))return;e.preventDefault();select(el);const x=parseFloat(el.style.getPropertyValue('--layout-x'))||0,y=parseFloat(el.style.getPropertyValue('--layout-y'))||0;drag={el,sx:e.clientX,sy:e.clientY,x,y};try{el.setPointerCapture?.(e.pointerId)}catch{}});
+      document.addEventListener('pointermove',e=>{if(!drag)return;drag.el.style.setProperty('--layout-x',`${drag.x+e.clientX-drag.sx}px`);drag.el.style.setProperty('--layout-y',`${drag.y+e.clientY-drag.sy}px`);drag.el.classList.add('layout-custom')});
+      document.addEventListener('pointerup',()=>{if(drag){saveValue();drag=null}});
+    }
     new MutationObserver(()=>prepare()).observe(document.body,{childList:true,subtree:true});
     window.addEventListener('resize',apply);
     prepare();
