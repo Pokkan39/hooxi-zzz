@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /editor.html
+Disallow: /editor.js
+Disallow: /editor.css
+Disallow: /login-modal.js
+Disallow: /backend/
+
+Allow: /
