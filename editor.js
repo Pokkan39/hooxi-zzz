@@ -2,7 +2,8 @@
   'use strict';
 
   // --- Configuration ---
-  const API_BASE = 'http://localhost:3001';
+  // Auto-detect: same origin as page = relative, else use localhost:3001
+  const API_BASE = location.hostname === 'localhost' && location.port === '3001' ? '' : 'http://localhost:3001';
   const ALLOWED_FILES = ['data.js', 'layout-data.js'];
 
   // --- State ---
@@ -319,7 +320,27 @@
   });
 
   // --- Init ---
+  // Try localStorage session first (passed from index.html login modal)
+  const stored = localStorage.getItem('hooxi:session');
+  if (stored) {
+    try {
+      const s = JSON.parse(stored);
+      if (s.id && s.csrfToken) {
+        auth = s;
+        loginPanel.classList.add('hidden');
+        editorPanel.classList.remove('hidden');
+        userInfo.textContent = `${s.name}（${s.role === 'admin' ? '管理员' : '编辑员'}）`;
+        if (s.role !== 'admin') reviewSection.classList.add('hidden');
+        loadCurrentFile();
+        loadReviewList();
+      }
+    } catch (_) { /* fall through to server check */ }
+  }
+  // Also verify with server (updates csrfToken if cookie works)
   checkSession().then(authed => {
-    if (authed) loadReviewList();
+    if (authed) {
+      localStorage.setItem('hooxi:session', JSON.stringify(auth));
+      loadReviewList();
+    }
   });
 })();

@@ -3,6 +3,7 @@ const http = require('http');
 const crypto = require('crypto');
 const { createSession, readSession, parseCookies, buildSetCookie } = require('./lib/session');
 const path = require('path');
+const fs = require('fs');
 const { login, checkAdmin } = require('./lib/accounts');
 const { getContent: ghGetContent, putContent: ghPutContent, getRef, createBranch, listBranches } = require('./lib/github');
 const { ALLOWED_FILES, readAllowed } = require('./lib/files');
@@ -338,6 +339,37 @@ async function router(req, res, clock = Date.now) {
       }
       const result = await ghPutContent(GITHUB_TOKEN, GITHUB_REPO_OWNER, GITHUB_REPO_NAME, filename, 'main', reviewFile.content, mainSha, s.name);
       return json(res, 200, { published: true, filename, ...result });
+    }
+
+    // Serve static files from site root (catch-all for GET requests)
+    if (req.method === 'GET') {
+      const siteRoot = SITE_ROOT || path.resolve(__dirname, '..');
+      const filePath = p === '/' ? '/index.html' : p;
+      const absPath = path.join(siteRoot, filePath);
+      if (!absPath.startsWith(path.resolve(siteRoot))) {
+        return json(res, 403, { error: 'forbidden' });
+      }
+      try {
+        const stat = fs.statSync(absPath);
+        if (stat.isFile()) {
+          const ext = path.extname(absPath).toLowerCase();
+          const mime = {
+            '.html': 'text/html; charset=utf-8',
+            '.css': 'text/css; charset=utf-8',
+            '.js': 'application/javascript; charset=utf-8',
+            '.json': 'application/json; charset=utf-8',
+            '.png': 'image/png',
+            '.webp': 'image/webp',
+            '.jpg': 'image/jpeg',
+            '.svg': 'image/svg+xml',
+            '.ico': 'image/x-icon'
+          };
+          const ct = mime[ext] || 'application/octet-stream';
+          const buf = fs.readFileSync(absPath);
+          res.writeHead(200, { 'Content-Type': ct, 'Content-Length': buf.length });
+          return res.end(buf);
+        }
+      } catch (_) { /* fall through to 404 */ }
     }
 
     return json(res, 404, { error: 'not_found' });
