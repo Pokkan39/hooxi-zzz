@@ -4,7 +4,6 @@
   // Auto-detect: same origin as page = relative, else use localhost:3001
   const API_BASE = location.hostname === 'localhost' && location.port === '3001' ? '' : 'http://localhost:3001';
 
-  const entry = document.getElementById('adminEntry');
   const modal = document.getElementById('loginModal');
   const form = document.getElementById('loginModalForm');
   const idInput = document.getElementById('modalLoginId');
@@ -12,19 +11,26 @@
   const errorEl = document.getElementById('modalLoginError');
   const closeBtn = document.getElementById('modalLoginClose');
 
-  if (!entry || !modal) return;
+  if (!modal) return;
 
-  // Open modal
-  entry.addEventListener('click', () => {
-    modal.classList.remove('hidden');
-    idInput.focus();
-  });
+  // Only show login when URL hash is #admin
+  function showIfAdminHash() {
+    if (location.hash === '#admin') {
+      modal.classList.remove('hidden');
+      idInput.focus();
+    }
+  }
+  showIfAdminHash();
+  window.addEventListener('hashchange', showIfAdminHash);
 
-  // Close modal
+  // Close modal (also clears hash so refreshing doesn't re-open)
   function closeModal() {
     modal.classList.add('hidden');
     errorEl.textContent = '';
     form.reset();
+    if (location.hash === '#admin') {
+      history.replaceState(null, '', location.pathname + location.search);
+    }
   }
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => {
@@ -61,7 +67,6 @@
         throw new Error(data.message || '登录失败');
       }
 
-      // Save session to localStorage so editor.html can pick it up
       localStorage.setItem('hooxi:session', JSON.stringify({
         id: data.id,
         name: data.name,
@@ -69,7 +74,6 @@
         csrfToken: data.csrfToken
       }));
 
-      // Redirect to editor
       window.location.href = 'editor.html';
     } catch (err) {
       errorEl.textContent = err.message;
