@@ -268,3 +268,148 @@
 - `README.md`、`docs/README.md`：更新小白编辑和发布流程说明。
 - `progress.md`：追加本轮可视化编辑器改造和验证记录。
 - 回滚：将 `editor.html`、`editor.js`、`editor.css` 恢复到本轮修改前版本，并定点删除 `README.md`、`docs/README.md`、`progress.md` 本轮新增说明；不要整仓回退，以免覆盖其他既有改动。
+
+## 2026-07-14 - Task: 制作绝区零 Wiki 风格视觉样板
+### What was done
+- 新增独立样板页，参考米哈游百科首页的深色 Wiki 结构，包含黑色顶部栏、搜索框、大横幅、右侧信息栏、快捷导航图标网格、攻略合集和推荐代理人模块。
+- 样板复用仓库内已有绝区零角色卡面资源，避免新增外部热链；快捷导航图标使用 CSS 绘制，保持可替换性。
+- README 增加样板入口说明，明确该页面不影响当前首页。
+
+### Testing
+- 已执行 `git diff --check -- wiki-style-sample.html wiki-style-sample.css`，通过。
+- 本地静态服务 `python -m http.server 4174` 下打开 `wiki-style-sample.html`，页面标题、12 个快捷入口、4 个攻略卡和角色图片均正常渲染。
+- 浏览器网络检查确认样板引用的 12 张图片均返回 200，图片自然尺寸为 374×512；清理 favicon 后控制台无错误。
+- 桌面 1280px 验证 `documentElement.scrollWidth` 与视口宽度一致，无横向溢出，并生成 `wiki-style-sample-preview.png` 作为视觉预览。
+
+### Notes
+- `wiki-style-sample.html`：新增独立 Wiki 风格视觉样板页。
+- `wiki-style-sample.css`：新增样板页布局、深色视觉、快捷导航图标和响应式样式。
+- `wiki-style-sample-preview.png`：新增浏览器截图，便于快速评审样板首屏。
+- `README.md`：增加样板页入口说明。
+- `progress.md`：追加本轮样板制作与验证记录。
+- 回滚：删除 `wiki-style-sample.html`、`wiki-style-sample.css`、`wiki-style-sample-preview.png`，并定点删除 `README.md` 与 `progress.md` 的本轮新增说明即可。
+
+## 2026-07-14 - Task: 编辑页升级为真实预览工作台
+### What was done
+- 将 `editor.html` 登录后的编辑区升级为左侧控制台和右侧真实网页预览 iframe，支持按页面选择主线、角色故事、幕后/对谈、往期活动、首页和 Wiki 样板。
+- `editor.js` 增加页面级内容编辑：父级分组、条目、装饰图片、封面、立绘、视频、资料来源、父条目和分支名称都可通过表单编辑，并实时同步到隐藏源码和预览草稿。
+- `page.js` 增加 `?editorPreview=1` 草稿读取能力，右侧 iframe 刷新后会读取当前浏览器中的 `hooxi:preview:data`，让编辑内容和真实页面预览同步。
+- 布局拖动模式会让右侧 iframe 加载当前页面的 `?layout=1`，复用现有布局工具条，用户可在真实页面里拖动模块并导出 `layout-data.js`。
+- README 和 docs 同步改为“左侧改内容、右侧看预览、布局模式拖动、导出 data.js/layout-data.js”的小白流程。
+
+### Testing
+- 已执行 `node --check editor.js` 和 `node --check page.js`，均通过。
+- 已执行 `git diff --check -- editor.html editor.js editor.css page.js`，通过（仅有 Git 换行符提示）。
+- 本地静态服务 `python -m http.server 4175` 下验证：输入 `Hooxi777771` 后进入工作台，左侧显示 6 个页面选择，右侧 iframe 默认加载主线预览。
+- 浏览器验证修改第一条主线标题后，隐藏源码同步包含新标题；点击“刷新预览”后，iframe 内主线页面显示新标题。
+- 浏览器验证新增父级并把条目分配到该父级后，源码和 iframe 预览均显示父级标题。
+- 浏览器验证切到“布局拖动”后，iframe 加载 `mainline.html?layout=1`，布局工具条出现；点击“调整位置”并模拟拖动 `.page-card` 后，模块位移从 0px 变为 40px。
+
+### Notes
+- `editor.html`：改为工作台骨架，新增页面选择、预览模式、刷新预览按钮和 iframe 画布。
+- `editor.js`：重构为页面级可视化编辑器，新增预览草稿、父级分组、装饰图、父条目、分支和布局模式联动。
+- `editor.css`：新增工作台双栏布局、控制台、iframe 浏览器壳、页面按钮和移动端样式。
+- `page.js`：支持在 `?editorPreview=1` 下读取本机预览草稿。
+- `README.md`、`docs/README.md`：更新小白编辑与发布流程。
+- `progress.md`：追加本轮真实预览工作台实施和验证记录。
+- 回滚：将 `editor.html`、`editor.js`、`editor.css`、`page.js` 恢复到本轮修改前版本，并定点删除 `README.md`、`docs/README.md`、`progress.md` 的本轮新增说明即可；不要整仓回退，避免覆盖已有样板和截图文件。
+
+## 2026-07-14 - Task: 点选编辑、双击原地文字和小白说明系统第一阶段
+### What was done
+- 在编辑器与同源 iframe 之间增加轻量消息桥：内容编辑模式下可单击真实页面模块，左侧自动定位对应字段；双击标题或简介可在页面原位置输入并同步回编辑草稿。
+- 首页 Hero 和主线页头、父级、条目、标题、简介、标签、图片区域增加稳定编辑 ID，不依赖 DOM 顺序；普通访客页面不启用编辑桥。
+- 编辑器新增内容编辑、布局拖动、正常浏览、手机编辑四种模式；内容编辑拦截普通链接，正常浏览恢复页面交互。
+- 所有当前可见表单字段统一增加带圈感叹号说明按钮，支持悬停、键盘聚焦和点击固定；说明覆盖用途、填写格式与影响范围。
+- 新增四步首次使用引导和选中模块面包屑；引导只在登录后首次显示。
+- 在 `archiveData.site.pages` 中自动补首页与四个档案页的页头默认结构，使首页和主线页头文字可进入编辑草稿。
+
+### Testing
+- 已执行 `node --check editor.js`、`node --check page.js`、`node --check layout-editor.js`、`node --check app.js`，均通过。
+- 已执行 `git diff --check` 检查本轮编辑器、桥接、页面标记和样式文件，未发现补丁格式错误（仅有 Git 换行符提示）。
+- 本地服务 `python -m http.server 4176` 下验证：首次登录后显示 4 步引导，关闭后本机记录状态。
+- 主线预览中检测到 16 个稳定可编辑节点；单击真实条目标题后，左侧对应条目卡片高亮并更新选中面包屑。
+- 双击主线标题输入“工作台同步验证”后，隐藏源码、左侧字段和 iframe 预览均同步显示新文字。
+- 首页预览在 `?editorPreview=1` 下启用编辑桥；双击首页 Hero 标题后，`site.pages.home.hero.title`、左侧字段和预览同步更新。
+- 当前主线可见表单生成 45 个说明按钮；点击后 `aria-expanded=true`，显示对应字段说明。
+- 正常浏览模式验证 iframe 移除编辑态 class；布局拖动模式仍复用原有布局工具。
+
+### Notes
+- `editor.html`：新增选中状态、首次引导和编辑器资源版本参数。
+- `editor.js`：新增站点页头默认结构、字段帮助字典、说明渲染、选中定位、原地编辑消息处理和四模式控制。
+- `editor.css`：新增引导、说明气泡、选中字段和模块状态样式。
+- `layout-editor.js`：新增仅在 `?editorPreview=1` 启用的 iframe 点选/双击编辑桥。
+- `page.js`：为页头、父级、条目和字段输出稳定编辑标记，并应用预览草稿中的页头配置。
+- `app.js`、`index.html`：首页读取预览页头草稿并启用编辑桥。
+- `styles.css`：新增 iframe 编辑选中遮罩和原地输入状态样式。
+- `README.md`、`docs/README.md`：补充点选、双击和字段说明的小白操作流程。
+- `progress.md`：追加本轮实现和验证记录。
+- 本轮未实现自由组件库和其余角色/阵营详情页全覆盖；它们按已批准方案进入下一阶段，不能视为已完成。
+- 回滚：定点恢复 `editor.html`、`editor.js`、`editor.css`、`layout-editor.js`、`page.js`、`app.js`、`index.html`、`styles.css` 的本轮改动，并删除 README/docs/progress 本轮说明；不要整仓回退，避免覆盖上一轮工作台和 Wiki 样板。
+
+## 2026-07-14 - Task: 制作 Hooxi 凌晨录像店磁带墙电影级样板
+### What was done
+- 新增与正式首页隔离的凌晨录像店样板，以橱窗、木质 VHS 磁带墙、安比立牌和 CRT 看片台形成 Hooxi 自有视觉方向。
+- 接入 10 盘剧情/角色磁带，支持分类筛选、磁带抽出与送片动画、看片台详情、吞带离场、轻视差和完整馆藏入口。
+- 补齐键盘方向键、Escape 归还磁带、焦点状态、44px 触控目标、减少动态效果与移动端横向吸附货架。
+- 修正桌面磁带脊背比例、筛选按钮和看片台主链接样式，并生成首屏与货架评审截图。
+
+### Testing
+- 已执行 `node --check tape-wall-sample.js` 与 `git diff --check -- tape-wall-sample.html tape-wall-sample.css tape-wall-sample.js`，均通过。
+- Chromium 1280px 验证页面宽度 1280/1280，无横向溢出；全部、剧情、角色筛选分别显示 10、4、6 盘，类型匹配。
+- 390×844 移动视口验证页面宽度 390/390；货架为横向滚动并启用 `scroll-snap-type: x mandatory`，看片台固定在底部，最小可见触控目标为 44px。
+- 键盘方向键、Enter 选片、Escape/按钮归还磁带和焦点状态正常；减少动态效果环境会跳过强入场动画。
+- 首屏立绘与 7 张去重卡图请求均返回 200，页面控制台无错误。
+
+### Notes
+- `tape-wall-sample.html`：新增独立录像店样板结构和可访问入口。
+- `tape-wall-sample.css`：新增隔离的电影级视觉、响应式货架、动画与无障碍降级样式。
+- `tape-wall-sample.js`：新增磁带数据、筛选、看片台、键盘导航、转场与视差交互。
+- `tape-wall-sample-hero.png`、`tape-wall-sample-preview.png`：新增首屏与磁带墙评审截图。
+- `README.md`、`docs/README.md`：记录独立样板入口、能力和与正式首页的隔离关系。
+- `progress.md`：追加本轮实施与验证记录。
+- 回滚：删除三个 `tape-wall-sample.*` 文件及两张 `tape-wall-sample-*.png` 截图，并定点删除 `README.md`、`docs/README.md`、`progress.md` 本轮新增段落；不要还原 `index.html` 或整仓回退。
+
+## 2026-07-15 - Task: 升级 HOOXI PLAY 店外开门与邦布接待样板
+### What was done
+- 将独立录像店样板升级为 HOOXI PLAY 完整入店动线：店外夜景待机、用户点击或键盘开门、灯牌与双门动画、镜头推进和店内欢迎分流。
+- 店内左侧保留书目分类、VHS 磁带墙与 CRT 看片台，右侧新增原创 CSS 邦布接待台、快捷建议和站内关键词导航。
+- DeepSeek 当前明确标记为待接入，不在静态前端放置密钥；关键词模式在 AI 不可用时仍能完成站内导航。
+- 编写 HOOXI PLAY 搭建计划书，明确图片 2.5D 与 GLB/GLTF 3D 的边界、滚动镜头、性能预算、移动降级、无障碍和 AI 服务端代理方案。
+
+### Testing
+- `node --check tape-wall-sample.js` 与定点 `git diff --check` 通过。
+- Chromium 1280px 验证店外待机、开门后自动进入店内、左右两个入口、四类书目、磁带筛选、看片台和邦布导航正常，控制台无错误。
+- 390×844 视口验证页面宽度 390/390，无页面级横向溢出；移动货架启用 `scroll-snap-type: x mandatory`，最小可见触控目标为 44px。
+
+### Notes
+- `tape-wall-sample.html`、`tape-wall-sample.css`、`tape-wall-sample.js`：重构 HOOXI PLAY 店外、开门、店内分流、邦布与导航交互。
+- `hooxi-play-storefront.png`、`hooxi-play-interior.png`：新增店外和店内评审截图。
+- `docs/HOOXI-PLAY-BUILD-PLAN.md`：新增网站 2.5D/3D、滚动叙事与 DeepSeek 接入计划书。
+- `README.md`、`docs/README.md`：更新独立样板能力与计划书入口。
+- `progress.md`：追加本轮实施与验证记录。
+- 回滚：定点恢复三个 `tape-wall-sample.*` 文件并删除两张 `hooxi-play-*.png` 与 `docs/HOOXI-PLAY-BUILD-PLAN.md`，再删除 README/docs/progress 本轮新增段落；不要恢复正式首页。
+
+## 2026-07-15 - Task: 完成角色阵营点选编辑与最小自由组件库
+### What was done
+- 编辑器增加角色目录、具体阵营和具体角色入口，详情预览保留实体 ID，并提供对应基础字段表单。
+- 角色目录、阵营详情和角色详情读取同源预览草稿，输出稳定编辑标记；阵营名与角色名支持点选定位和双击原地同步。
+- 修正角色目录快照在编辑预览中覆盖草稿的问题，普通访客仍使用完整 56 名角色和 17 个阵营数据。
+- 新增文字、图片、链接三类最小自由组件；内容写入 `data.js` 草稿，位置继续交给现有 `layout-data.js`，避免第二套布局系统。
+
+### Testing
+- `editor.js`、`layout-editor.js`、`page.js`、`app.js`、`stories.js`、`faction.js`、`character.js`、`agent-catalog.js` 均通过 `node --check`；全仓 `git diff --check` 通过。
+- 编辑器浏览器回归：页面标签包含角色目录/具体阵营/具体角色；狡兔屋预览 URL 保留 `id=cunning-hares`，安比预览保留 `id=anby`；字段分别映射到 factions/characters。
+- 点击角色名后左侧面包屑定位正确，双击改名后 `hooxi:preview:data` 同步；新增文字组件刷新后可见，并在布局模式带稳定布局目标。
+- 普通访客回归：角色目录显示 17 个阵营，狡兔屋显示 5 名成员，安比页立绘宽 1268px、养成模块切换正常；桌面页面宽度均为 1280/1280，无横向溢出。
+- `node backend/test/test.js` 共 15 项测试全部通过。
+- 发布安全复核：编辑器加载并预览完整 56 名角色与 17 个阵营；选择朱鸢后导出源码包含完整角色条目。自由链接填入 `javascript:` 后渲染为 `#`，点击未执行脚本。
+- 全页面覆盖回归：首页、主线、角色目录、阵营、角色、幕后、活动共 7 页均可渲染文字/图片/链接三类自由组件，点选后编辑器定位发生变化，草稿各保存 3 个组件；预览宽度均为 866/866，无横向溢出。
+- 在活动页验证组件新增数量 3→4、删除 4→3、保存草稿包含修改文本，并可重新加载草稿恢复该文本。
+
+### Notes
+- `editor.html`、`editor.js`、`editor.css`：新增实体选择、角色阵营字段和自由组件管理。
+- `stories.js`、`faction.js`、`character.js`：接入预览草稿、稳定编辑标记和自由组件渲染。
+- `agent-catalog.js`：编辑预览时保留草稿角色与阵营数据。
+- `layout-editor.js`、`styles.css`：自由组件复用现有布局目标和基础显示样式。
+- `progress.md`：追加本轮实施与验证记录。
+- 回滚：定点恢复上述编辑器、角色/阵营脚本、目录合并和自由组件样式改动，并删除本轮 progress 记录；不要回滚 HOOXI PLAY 样板或已有内容数据。

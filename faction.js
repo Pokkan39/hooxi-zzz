@@ -1,7 +1,9 @@
 (()=>{
   const esc=value=>String(value||'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  const safeUrl=(value,{image=false}={})=>{const text=String(value||'').trim();if(!text)return '';if(image&&(text.startsWith('data:image/')||text.startsWith('blob:')))return text;try{const url=new URL(text,location.href);return ['http:','https:'].includes(url.protocol)||url.origin===location.origin?url.href:''}catch{return ''}};
   const id=new URLSearchParams(location.search).get('id')||'';
-  const archiveData=window.archiveData||{};
+  const preview=()=>{if(!new URLSearchParams(location.search).has('editorPreview'))return null;try{return JSON.parse(localStorage.getItem('hooxi:preview:data'))}catch{return null}};
+  const archiveData=preview()||window.archiveData||{};
   const factions=archiveData.factions||[];
   const characters=archiveData.characters||[];
   const faction=factions.find(item=>item.id===id);
@@ -39,16 +41,20 @@
   }
   document.title=`${faction.name} // Hooxi 阵营档案`;
   document.documentElement.style.setProperty('--faction-theme',faction.theme||'#f3d33b');
-  document.querySelector('#factionName').innerHTML=`${esc(faction.name)}<br/><span>阵营档案</span>`;
+  document.querySelector('#factionName').innerHTML=`<span data-editor-id="faction.${esc(faction.id)}.name" data-editor-type="faction" data-editor-field="name">${esc(faction.name)}</span><br/><span>阵营档案</span>`;
   document.querySelector('#factionSummary').textContent=faction.summary||'';
+  document.querySelector('#factionSummary').dataset.editorId=`faction.${faction.id}.summary`;
+  document.querySelector('#factionSummary').dataset.editorField='summary';
   if(faction.background)document.querySelector('#factionHero').style.backgroundImage=`linear-gradient(#151719cc,#151719cc),url("${String(faction.background).replaceAll('"','')}")`;
   if(faction.logo)document.querySelector('#factionLogo').innerHTML=`<img src="${esc(faction.logo)}" alt="${esc(faction.name)} 标识"/>`;
   const members=memberList();
   document.querySelector('#memberCount').textContent=members.length;
   document.querySelector('#factionMembers').innerHTML=members.length
-    ?members.map((member,index)=>`<a class="agent-entry agent-entry-${index%3}" href="character.html?id=${encodeURIComponent(member.id)}" style="--agent-order:${index}"><span class="agent-entry-index">AGENT ${String(index+1).padStart(2,'0')}</span><span class="agent-entry-stage"><span class="agent-entry-glow" aria-hidden="true"></span><span class="agent-entry-head">${headshot(member)}</span><span class="agent-entry-portrait">${portrait(member)}</span></span><span class="agent-entry-copy"><b>${esc(member.name)}</b><small>${esc(member.attribute||'属性待补充')} · ${esc(member.specialty||member.role||'资料待补充')}</small></span><span class="agent-entry-action" aria-hidden="true">OPEN FILE ↗</span></a>`).join('')
+    ?members.map((member,index)=>`<a class="agent-entry agent-entry-${index%3}" href="character.html?id=${encodeURIComponent(member.id)}" style="--agent-order:${index}" data-editor-id="character.${esc(member.id)}" data-editor-type="character" data-editor-bind="characters.${esc(member.id)}"><span class="agent-entry-index">AGENT ${String(index+1).padStart(2,'0')}</span><span class="agent-entry-stage"><span class="agent-entry-glow" aria-hidden="true"></span><span class="agent-entry-head">${headshot(member)}</span><span class="agent-entry-portrait">${portrait(member)}</span></span><span class="agent-entry-copy"><b data-editor-id="character.${esc(member.id)}.name" data-editor-field="name">${esc(member.name)}</b><small>${esc(member.attribute||'属性待补充')} · ${esc(member.specialty||member.role||'资料待补充')}</small></span><span class="agent-entry-action" aria-hidden="true">OPEN FILE ↗</span></a>`).join('')
     :'<p class="character-empty">该阵营暂未录入成员。请在 data.js 的 characters 集合中添加角色，并在 factions.members 中关联角色 ID。</p>';
   bindAgentDepth();
+  const components=archiveData.site?.pages?.faction?.components||[];
+  document.querySelector('.faction-detail-page').insertAdjacentHTML('beforeend',`<div class="free-components">${components.map(component=>component.type==='image'?`<img class="free-component" src="${esc(safeUrl(component.src,{image:true}))}" alt="${esc(component.alt)}" data-editor-id="component.${esc(component.id)}" data-editor-type="image" data-editor-field="src" data-component-id="${esc(component.id)}"/>`:component.type==='link'?`<a class="free-component" href="${esc(safeUrl(component.href)||'#')}" data-editor-id="component.${esc(component.id)}" data-editor-type="link" data-editor-field="text" data-component-id="${esc(component.id)}">${esc(component.text)}</a>`:`<p class="free-component" data-editor-id="component.${esc(component.id)}" data-editor-type="text" data-editor-field="text" data-component-id="${esc(component.id)}">${esc(component.text)}</p>`).join('')}</div>`);
   const rows=records();
   document.querySelector('#factionCount').textContent=rows.length;
   document.querySelector('#factionRecords').innerHTML=rows.length

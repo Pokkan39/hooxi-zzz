@@ -82,6 +82,7 @@
   const catalog={snapshotDate,sources:sourceLinks,factions,characters};
   window.agentCatalog=catalog;
   const archive=window.archiveData||(window.archiveData={});
-  archive.factions=factions;
-  archive.characters=characters;
+  const mergeById=(defaults,overrides)=>{const edited=new Map((overrides||[]).map(item=>[item.id,item]));const merged=defaults.map(item=>({...item,...(edited.get(item.id)||{})}));(overrides||[]).forEach(item=>{if(!defaults.some(row=>row.id===item.id))merged.push(item)});return merged};
+  archive.factions=mergeById(factions,archive.factions);
+  archive.characters=mergeById(characters,archive.characters);
 })();

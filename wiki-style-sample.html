@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="description" content="Hooxi 绝区零 Wiki 风格视觉样板"/>
+  <title>Hooxi Wiki 风格样板</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23f6d241'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-size='34' font-family='Arial' font-weight='900' fill='%23111'%3EH%3C/text%3E%3C/svg%3E"/>
+  <link rel="stylesheet" href="wiki-style-sample.css"/>
+</head>
+<body>
+  <header class="wiki-topbar">
+    <a class="wiki-brand" href="index.html" aria-label="返回 Hooxi 首页">
+      <span class="brand-badge">H</span>
+      <span><b>Hooxi Wiki</b><small>Zenless Archive Sample</small></span>
+    </a>
+    <nav class="wiki-nav" aria-label="样板导航">
+      <a href="#agents">代理人</a>
+      <a href="#guides">攻略合集</a>
+      <a href="#items">图鉴资料</a>
+      <a href="#updates">更新日志</a>
+    </nav>
+    <label class="wiki-search"><span>搜索</span><input placeholder="代理人 / 剧情 / 道具"/></label>
+    <button class="profile-dot" aria-label="用户入口">Lv</button>
+  </header>
+
+  <main class="wiki-shell">
+    <section class="hero-card">
+      <div class="hero-copy">
+        <p class="eyebrow">NEW ERIDU DATABASE</p>
+        <h1>绝区零<br/>剧情与攻略索引</h1>
+        <p>把主线、代理人档案、活动记录和素材资料集中到一个更像 Wiki 首页的入口。此页仅用于视觉方向评审。</p>
+        <div class="hero-actions">
+          <a href="mainline.html">进入剧情路线</a>
+          <a href="stories.html" class="secondary">查看代理人</a>
+        </div>
+      </div>
+      <div class="agent-stack" aria-label="角色视觉样板">
+        <img class="agent-card card-a" src="assets/portraits/anby-card.webp" alt="安比卡面"/>
+        <img class="agent-card card-b" src="assets/portraits/nicole-demara-card.webp" alt="妮可卡面"/>
+        <img class="agent-card card-c" src="assets/portraits/billy-kid-card.webp" alt="比利卡面"/>
+      </div>
+      <div class="hero-stamp">VERSION 3.0<br/><b>攻略合集</b></div>
+    </section>
+
+    <aside class="side-panel">
+      <section class="info-box about-box">
+        <h2>关于 Hooxi Wiki</h2>
+        <p>面向绝区零剧情视频整理的资料首页样板，强调快速入口、卡片导航和版本活动信息。</p>
+        <dl><div><dt>收录条目</dt><dd>64</dd></div><div><dt>代理人</dt><dd>56</dd></div><div><dt>阵营</dt><dd>17</dd></div></dl>
+      </section>
+      <section class="info-box notice-box" id="updates">
+        <h2>最近更新</h2>
+        <ol>
+          <li><b>可视化编辑器</b><span>表单编辑 data.js</span></li>
+          <li><b>角色卡面</b><span>本地 WebP 资源</span></li>
+          <li><b>主线路线</b><span>版本筛选与卡片封面</span></li>
+        </ol>
+      </section>
+      <section class="info-box event-box">
+        <h2>热点活动</h2>
+        <img src="assets/portraits/miyabi-card.webp" alt="星见雅卡面"/>
+        <p>样板右栏可承载活动 Banner、推荐角色、版本公告。</p>
+      </section>
+    </aside>
+
+    <section class="quick-panel" id="items">
+      <div class="section-title"><span>快捷导航</span><b>QUICK ACCESS</b></div>
+      <div class="quick-grid">
+        <a href="stories.html"><i data-icon="agent"></i><span>代理人</span></a>
+        <a href="faction.html?id=cunning-hares"><i data-icon="faction"></i><span>阵营</span></a>
+        <a href="mainline.html"><i data-icon="story"></i><span>主线剧情</span></a>
+        <a href="events.html"><i data-icon="event"></i><span>活动攻略</span></a>
+        <a href="#"><i data-icon="engine"></i><span>音擎</span></a>
+        <a href="#"><i data-icon="disc"></i><span>驱动盘</span></a>
+        <a href="#"><i data-icon="boo"></i><span>邦布</span></a>
+        <a href="#"><i data-icon="mat"></i><span>养成材料</span></a>
+        <a href="#"><i data-icon="map"></i><span>地图收集</span></a>
+        <a href="#"><i data-icon="enemy"></i><span>敌人图鉴</span></a>
+        <a href="#"><i data-icon="wallpaper"></i><span>壁纸收录</span></a>
+        <a href="#"><i data-icon="guide"></i><span>萌新指南</span></a>
+      </div>
+    </section>
+
+    <section class="feature-panel" id="guides">
+      <div class="section-title"><span>攻略合集</span><b>FEATURED GUIDES</b></div>
+      <div class="feature-grid">
+        <article class="guide-card big">
+          <img src="assets/portraits/yixuan-card.webp" alt="仪玄卡面"/>
+          <div><span>版本专题</span><h2>新艾利都档案站首页方案</h2><p>用 Wiki 首页的方式，把角色、剧情、材料和活动入口放在第一屏。</p></div>
+        </article>
+        <article class="guide-card"><img src="assets/portraits/zhu-yuan-card.webp" alt="朱鸢卡面"/><h3>角色档案样板</h3><p>阵营、属性、定位、PV 与剧情关联。</p></article>
+        <article class="guide-card"><img src="assets/portraits/ellen-card.webp" alt="艾莲卡面"/><h3>剧情路线样板</h3><p>按版本、章节和剧透等级筛选。</p></article>
+        <article class="guide-card"><img src="assets/portraits/caesar-card.webp" alt="凯撒卡面"/><h3>活动收录样板</h3><p>限时活动、复刻记录和视频入口。</p></article>
+      </div>
+    </section>
+
+    <section class="agent-panel" id="agents">
+      <div class="section-title"><span>推荐代理人</span><b>AGENT FILES</b></div>
+      <div class="agent-row">
+        <article><img src="assets/portraits/anby-card.webp" alt="安比"/><b>安比</b><span>电 / 击破</span></article>
+        <article><img src="assets/portraits/nicole-demara-card.webp" alt="妮可"/><b>妮可</b><span>以太 / 支援</span></article>
+        <article><img src="assets/portraits/billy-kid-card.webp" alt="比利"/><b>比利</b><span>物理 / 强攻</span></article>
+        <article><img src="assets/portraits/miyabi-card.webp" alt="星见雅"/><b>星见雅</b><span>霜烈 / 异常</span></article>
+      </div>
+    </section>
+
+    <section class="source-panel">
+      <b>素材说明</b>
+      <p>本样板复用仓库内已保存的角色卡面资源，并参考官方百科与公开 Wiki 的信息架构。正式上线前建议逐项确认素材授权或替换为自有资源。</p>
+      <a href="https://baike.mihoyo.com/zzz/wiki/" target="_blank" rel="noreferrer">米哈游百科参考</a>
+      <a href="https://zenless-zone-zero.fandom.com/wiki/Zenless_Zone_Zero_Wiki" target="_blank" rel="noreferrer">Fandom 资料参考</a>
+    </section>
+  </main>
+</body>
+</html>

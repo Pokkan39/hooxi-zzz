@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="description" content="HOOXI PLAY 凌晨录像店沉浸式视觉样板"/>
+  <title>HOOXI PLAY · 凌晨录像店</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23ffd21c'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-size='34' font-family='Arial' font-weight='900' fill='%2315140f'%3EH%3C/text%3E%3C/svg%3E"/>
+  <link rel="stylesheet" href="tape-wall-sample.css?v=hooxi-play-2"/>
+  <script src="tape-wall-sample.js?v=hooxi-play-2" defer></script>
+</head>
+<body class="tape-wall-page is-outside">
+  <a class="skip-link" href="#store-interior">跳过开门动画，直接进店</a>
+
+  <section class="storefront" data-storefront aria-labelledby="store-name">
+    <div class="storefront__sky" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="storefront__building" aria-hidden="true">
+      <div class="storefront__brick"></div>
+      <div class="storefront__stairs"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="storefront__awning"></div>
+      <div class="storefront__window storefront__window--left"><span>OPEN<br/>00:47</span></div>
+      <div class="storefront__window storefront__window--right"><span>REWIND<br/>YOUR STORY</span></div>
+    </div>
+
+    <div class="storefront__sign" id="store-name" aria-label="HOOXI PLAY">
+      <span class="storefront__sign-hooxi">HOOXI</span>
+      <span class="storefront__sign-play">PLAY</span>
+      <small>VIDEO · STORY · NEW ERIDU</small>
+    </div>
+
+    <button class="storefront__door" type="button" data-enter-store aria-label="打开 HOOXI PLAY 大门">
+      <span class="storefront__door-leaf storefront__door-leaf--left"><i></i></span>
+      <span class="storefront__door-leaf storefront__door-leaf--right"><i></i></span>
+      <span class="storefront__door-glow" aria-hidden="true"></span>
+    </button>
+
+    <div class="storefront__standby">
+      <p>HOOXI PLAY // NIGHT SHIFT</p>
+      <button type="button" data-enter-store><span>点击任意处开启大门</span><small>CLICK / ENTER TO OPEN</small></button>
+    </div>
+    <p class="storefront__timecode" aria-hidden="true">REC ● 00:00:47 · SIXTH STREET</p>
+  </section>
+
+  <div class="door-transition" aria-hidden="true"><span>WELCOME TO</span><strong>HOOXI PLAY</strong><small>LOADING STORE · 01</small></div>
+
+  <header class="store-nav" data-store-nav hidden>
+    <a class="store-brand" href="#store-interior"><b>HOOXI PLAY</b><span>凌晨录像店</span></a>
+    <nav aria-label="店内导航"><a href="#catalog">自由翻看</a><a href="#bangboo-desk">问问邦布</a><a href="index.html">返回正式首页</a></nav>
+    <span class="store-open"><i></i> OPEN · 00:47</span>
+  </header>
+
+  <main class="store-interior" id="store-interior" data-store-interior hidden tabindex="-1">
+    <section class="store-hall" aria-labelledby="hall-title">
+      <div class="store-hall__heading">
+        <p>// CHOOSE YOUR ROUTE</p>
+        <h1 id="hall-title">欢迎光临<br/><em>HOOXI PLAY</em></h1>
+        <p>往左，自由翻看每一排录像；往右，让接待邦布带你找到今晚想看的故事。</p>
+      </div>
+
+      <div class="store-routes">
+        <a class="store-route store-route--catalog" href="#catalog">
+          <span>01 / BROWSE</span><b>自己逛逛</b><small>剧情 · 角色 · 活动 · 幕后</small><i aria-hidden="true">←</i>
+        </a>
+        <a class="store-route store-route--desk" href="#bangboo-desk">
+          <span>02 / CONCIERGE</span><b>问问邦布</b><small>第一次来？从导航台开始</small><i aria-hidden="true">→</i>
+        </a>
+      </div>
+    </section>
+
+    <div class="store-floor">
+      <section class="catalog" id="catalog" aria-labelledby="catalog-title">
+        <header class="section-heading">
+          <p>// SELF-SERVICE ARCHIVE</p>
+          <h2 id="catalog-title">左侧书目区</h2>
+          <p>按类型翻架，或直接抽出一盘送到看片台。</p>
+        </header>
+
+        <nav class="catalog-categories" aria-label="书目分类">
+          <a href="mainline.html"><span>MAIN STORY</span><b>主线剧情</b><small>版本路线与章节档案</small></a>
+          <a href="stories.html"><span>AGENT FILES</span><b>角色故事</b><small>阵营、代理人与个人影像</small></a>
+          <a href="events.html"><span>LIMITED RUN</span><b>往期活动</b><small>限时事件与特别录像</small></a>
+          <a href="behind-scenes.html"><span>BACKSTAGE</span><b>幕后 / 对谈</b><small>制作记录与深夜访谈</small></a>
+        </nav>
+
+        <div class="tape-wall-filters" role="group" aria-label="筛选磁带">
+          <button type="button" data-filter="all" aria-pressed="true">全部</button>
+          <button type="button" data-filter="story" aria-pressed="false">剧情录像</button>
+          <button type="button" data-filter="character" aria-pressed="false">角色专柜</button>
+        </div>
+
+        <div class="tape-wall-room">
+          <div class="tape-wall-shelves" aria-label="三排磁带货架">
+            <section class="tape-wall-shelf-wrap"><h3>今晚推荐 <small>STAFF PICKS</small></h3><div class="tape-wall-shelf" data-tape-row="featured" role="list"></div></section>
+            <section class="tape-wall-shelf-wrap"><h3>剧情录像 <small>STORY TAPES</small></h3><div class="tape-wall-shelf" data-tape-row="story" role="list"></div></section>
+            <section class="tape-wall-shelf-wrap"><h3>代理人专柜 <small>AGENT FILES</small></h3><div class="tape-wall-shelf" data-tape-row="character" role="list"></div></section>
+          </div>
+
+          <aside class="tape-wall-viewer" aria-labelledby="viewer-title">
+            <div class="tape-wall-viewer__screen"><span data-viewer-empty>NO TAPE<br/>请从货架选片</span><img class="tape-wall-viewer__media" data-viewer-image hidden alt=""/></div>
+            <div class="tape-wall-viewer__meta">
+              <p data-viewer-kind>// WAITING SIGNAL</p>
+              <h3 id="viewer-title" data-viewer-title>看片台待机中</h3>
+              <p data-viewer-description>选择一盘录像，封套与档案说明会在 CRT 屏幕中显影。</p>
+              <small data-viewer-code>TIME CODE · --:--:--</small>
+              <div class="tape-wall-viewer__controls"><a data-viewer-link href="#catalog" aria-disabled="true">吞带播放 →</a><button type="button" data-viewer-close disabled>放回墙上</button></div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <aside class="bangboo-desk" id="bangboo-desk" aria-labelledby="bangboo-title">
+        <header><p>// HOOXI CONCIERGE</p><span>DEEPSEEK · 待接入</span></header>
+        <div class="bangboo-stage" aria-hidden="true">
+          <div class="bangboo">
+            <i class="bangboo__ear bangboo__ear--left"></i><i class="bangboo__ear bangboo__ear--right"></i>
+            <div class="bangboo__head"><span class="bangboo__eye bangboo__eye--left"></span><span class="bangboo__eye bangboo__eye--right"></span><b>H</b></div>
+            <div class="bangboo__body"><span>PLAY</span></div>
+            <i class="bangboo__arm bangboo__arm--left"></i><i class="bangboo__arm bangboo__arm--right"></i>
+          </div>
+          <div class="bangboo-stage__signal">EN-NAA!</div>
+        </div>
+
+        <div class="bangboo-copy">
+          <p>接待编号 H-01</p>
+          <h2 id="bangboo-title">想看什么？<br/>交给本店邦布。</h2>
+          <p>现在先由站内导航模式回答；接入 DeepSeek 后，可根据本站档案继续帮你查找。</p>
+        </div>
+
+        <div class="bangboo-suggestions" aria-label="推荐问题">
+          <button type="button" data-query="我想看主线剧情">我想看主线剧情</button>
+          <button type="button" data-query="找一个角色故事">找一个角色故事</button>
+          <button type="button" data-query="店里还有什么类型">店里还有什么类型</button>
+        </div>
+
+        <form class="concierge" data-concierge-form>
+          <label for="concierge-query">问问接待邦布</label>
+          <div><input id="concierge-query" name="query" maxlength="120" placeholder="例如：我想看安比的故事" autocomplete="off"/><button type="submit">发送</button></div>
+          <p class="concierge__status" data-concierge-status aria-live="polite">导航模式在线 · AI 尚未接入</p>
+          <div class="concierge__reply" data-concierge-reply hidden></div>
+        </form>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="store-footer" data-store-footer hidden><span>HOOXI PLAY · NIGHT SHIFT</span><span>请在天亮前归还磁带</span></footer>
+  <div class="tape-wall-eject-wipe" aria-hidden="true"><strong data-eject-title>PLAY</strong><small>LOADING TAPE · 00:00:01</small></div>
+  <div class="visually-hidden" data-live-status aria-live="polite" aria-atomic="true"></div>
+
+  <noscript><div class="tape-wall-noscript"><p>互动入店需要 JavaScript，你仍可直接浏览：</p><a href="mainline.html">主线剧情</a><a href="stories.html">角色故事</a><a href="events.html">往期活动</a><a href="behind-scenes.html">幕后 / 对谈</a></div></noscript>
+</body>
+</html>

@@ -10,13 +10,14 @@
   function keyFor(el){
     if(el.id)return`#${el.id}`;
     if(el.dataset.decorId)return`[data-decor-id="${CSS.escape(el.dataset.decorId)}"]`;
+    if(el.dataset.componentId)return`[data-component-id="${CSS.escape(el.dataset.componentId)}"]`;
     const scope=el.closest('[data-id]');
     if(scope)return`[data-id="${CSS.escape(scope.dataset.id)}"] ${el.classList.contains('video-cover-wrap')?'.video-cover-wrap':el.classList.contains('page-copy')?'.page-copy':el.classList.contains('page-card')?'.page-card':'.page-timeline-item'}`;
     const group=el.closest('[data-group-id]');
     if(group)return`[data-group-id="${CSS.escape(group.dataset.groupId)}"] ${el.classList.contains('archive-group-head')?'.archive-group-head':'.archive-group'}`;
     return el.dataset.layoutId?`[data-layout-id="${CSS.escape(el.dataset.layoutId)}"]`:'';
   }
-  function candidates(){return document.querySelectorAll('.topbar,.brand,nav,nav a,.hero-copy,.hero-art,.hero-actions,.intro,.route-section,.section-head,.timeline,.chapter,.episode,.about,.about-label,.page-hero,.timeline-page,.archive-group,.archive-group-head,.page-timeline,.page-timeline-item,.page-card,.video-cover-wrap,.page-copy,.archive-decor,.music-player,footer')}
+  function candidates(){return document.querySelectorAll('.topbar,.brand,nav,nav a,.hero-copy,.hero-art,.hero-actions,.intro,.route-section,.section-head,.timeline,.chapter,.episode,.about,.about-label,.page-hero,.timeline-page,.archive-group,.archive-group-head,.page-timeline,.page-timeline-item,.page-card,.video-cover-wrap,.page-copy,.archive-decor,.free-component,.music-player,footer')}
   function clear(el){el.style.removeProperty('--layout-x');el.style.removeProperty('--layout-y');el.style.removeProperty('--layout-w');el.style.removeProperty('--layout-z');el.classList.remove('layout-custom')}
   function prepare(){let n=document.querySelectorAll('[data-layout-id]').length;candidates().forEach(el=>{if(!el.id&&!el.closest('[data-id]')&&!el.closest('[data-group-id]')&&!el.dataset.decorId&&!el.dataset.layoutId)el.dataset.layoutId=`auto-${n++}`;el.dataset.layoutTarget='1'});apply()}
   function apply(){const data=layouts[breakpoint()]||{};candidates().forEach(el=>{clear(el);const v=data[keyFor(el)];if(!v)return;el.style.setProperty('--layout-x',`${v.x||0}px`);el.style.setProperty('--layout-y',`${v.y||0}px`);el.style.setProperty('--layout-w',v.w?`${v.w}px`:'');el.style.setProperty('--layout-z',v.z??'');el.classList.add('layout-custom')})}
@@ -45,6 +46,23 @@
     prepare();
   }
 
+  function mountEditorBridge(){
+    if(!new URLSearchParams(location.search).has('editorPreview')||parent===window)return;
+    let mode='content',selected=null,inline=null;
+    const overlay=document.createElement('div');overlay.className='editor-selection-overlay';overlay.innerHTML='<span></span>';document.body.append(overlay);
+    const send=(type,payload={})=>parent.postMessage({channel:'hooxi.editor',version:1,type,pageKey:location.pathname.split('/').pop().replace('.html',''),payload},location.origin);
+    const updateOverlay=()=>{if(!selected||!selected.isConnected||mode==='interact'){overlay.hidden=true;return}const r=selected.getBoundingClientRect();overlay.hidden=false;overlay.style.cssText=`left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px`;overlay.querySelector('span').textContent=selected.dataset.editorType||selected.dataset.editorField||'模块'};
+    const selectEditorElement=el=>{selected=el;updateOverlay();send('SELECT_COMPONENT',{id:el.dataset.editorId||'',type:el.dataset.editorType||'',bind:el.dataset.editorBind||el.closest('[data-editor-bind]')?.dataset.editorBind||'',field:el.dataset.editorField||'',label:(el.textContent||el.getAttribute('alt')||'模块').trim().slice(0,80)});};
+    const cancelInline=()=>{if(!inline)return;inline.el.textContent=inline.before;inline.el.removeAttribute('contenteditable');inline=null};
+    document.addEventListener('click',event=>{if(mode!=='content')return;const el=event.target.closest('[data-editor-id]');if(!el)return;if(event.target.closest('a')&&!event.ctrlKey&&!event.metaKey){event.preventDefault();event.stopPropagation()}selectEditorElement(event.altKey?el.parentElement.closest('[data-editor-id]')||el:el)},true);
+    document.addEventListener('dblclick',event=>{if(mode!=='content')return;const el=event.target.closest('[data-editor-field]');if(!el)return;event.preventDefault();event.stopPropagation();selectEditorElement(el);inline={el,before:el.textContent};el.setAttribute('contenteditable','plaintext-only');el.focus();const range=document.createRange();range.selectNodeContents(el);range.collapse(false);const selection=getSelection();selection.removeAllRanges();selection.addRange(range)},true);
+    document.addEventListener('keydown',event=>{if(!inline)return;if(event.key==='Escape'){event.preventDefault();cancelInline()}else if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();inline.el.blur()}},true);
+    document.addEventListener('focusout',event=>{if(!inline||event.target!==inline.el)return;const {el,before}=inline;inline=null;el.removeAttribute('contenteditable');const value=el.textContent.trim();if(value===before)return;send('SET_FIELD',{id:el.dataset.editorId||'',bind:el.dataset.editorBind||el.closest('[data-editor-bind]')?.dataset.editorBind||'',field:el.dataset.editorField||'',value})},true);
+    addEventListener('scroll',updateOverlay,true);addEventListener('resize',updateOverlay);
+    addEventListener('message',event=>{if(event.origin!==location.origin||event.source!==parent||event.data?.channel!=='hooxi.editor'||event.data?.version!==1)return;if(event.data.type==='EDITOR_MODE'){mode=event.data.payload?.mode||'content';document.body.classList.toggle('iframe-editor-active',mode==='content');if(mode!=='content')cancelInline();updateOverlay()}if(event.data.type==='CLEAR_SELECTION'){selected=null;updateOverlay()}if(event.data.type==='REFRESH_SELECTION')updateOverlay()});
+    document.body.classList.add('iframe-editor-active');send('PREVIEW_READY',{mode});
+  }
+
   window.hooxiLayout={getData:()=>layouts,setData,refresh:prepare};
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{mount();mountEditorBridge()});else{mount();mountEditorBridge()}
 })();
