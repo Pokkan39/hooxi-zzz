@@ -22,6 +22,7 @@
   --ease:cubic-bezier(.22,1,.36,1);
   --t-fast:140ms;
   --t-base:200ms;
+  --t-mid:260ms;
 
   --gut:clamp(20px,5vw,64px);
   --maxw:1200px;
@@ -258,6 +259,168 @@
   .d-xray-veil{display:none}
 }
 
+/* ---------- 8b. 角色影画背景（可变色光栅）----------
+   影画铺满角色页舞台作背景：底层黑白，鼠标周围透出彩色原图。
+   --ax/--ay 由脚本写入指针位置，--acc 是该角色影画采样出的主色
+   （见 agent-xray.js）。素材本身各角色色调不同，所以"可变色"
+   来自影画自己，不是叠色滤镜。 */
+/* 宿主 .character-screen 是 grid 且带 isolation:isolate 与不透明底色。
+   背景层必须 absolute 脱离网格流（否则会占一个网格单元），
+   并盖掉宿主底色；isolate 封死了 z-index:-1 的退路，所以走正数层级，
+   由内容层各自的 z-index(1/2) 压在它上面。 */
+/* 角色页 3 列网格修复。
+   .character-screen 同时带 page-hero 类，live-hud.css:166 用
+   `.subpage .page-hero{grid-template-columns:...!important}` 强制成 2 列，
+   把 multi-page.css 定义的 88px 侧栏列吃掉，导致 .character-profile-panel
+   被挤到第二行 y=803、首屏看不到正文。这里按角色页恢复 3 列，
+   不改 live-hud.css 以免影响其他子页。 */
+/* 正文列给到 1.15fr：原 .8fr 只剩 433px，属性标签被挤成三行、
+   黄标签与白值贴死，读起来费劲。立绘舞台不需要那么宽。
+   第 4 列是 ZZZ 复刻新增的代理人名录，右侧再留出荧光黄竖条的宽度。 */
+.subpage.archive-character .character-screen{
+  grid-template-columns:88px minmax(280px,1fr) minmax(360px,.95fr) clamp(210px,17vw,290px)!important;
+  align-items:stretch!important;
+  padding-right:clamp(40px,4vw,62px)!important;
+}
+/* 首屏整体限高，否则名录/立绘任一变高都会把首屏拉长到几千像素 */
+.subpage.archive-character .character-screen,
+.subpage.archive-character .character-stage{
+  max-height:min(760px,calc(100vh - 70px));
+}
+.subpage.archive-character .character-stage{overflow:hidden}
+@media(max-width:900px){
+  .subpage.archive-character .character-screen{
+    grid-template-columns:68px minmax(220px,1fr) minmax(250px,.8fr) clamp(180px,20vw,230px)!important;
+  }
+}
+/* 880px 而非 760px：design.md 第 9.1.1 节要求 <=880px 须改为自然纵向流
+   并移除覆盖式名册与斜切接缝。760px 会让 800px 级设备仍用桌面覆盖布局。 */
+@media(max-width:880px){
+  .subpage.archive-character .character-screen{
+    display:block!important;
+    grid-template-columns:none!important;
+    padding-right:0!important;
+  }
+  /* 窄屏是单列纵向流，桌面端的首屏限高会把内容截断 */
+  .subpage.archive-character .character-screen,
+  .subpage.archive-character .character-stage{
+    max-height:none;
+  }
+}
+.archive-character .character-screen{background:#0b0d10}
+/* 影画作氛围底，不占首屏主位。
+   早前试过铺满 660px 高的整屏方案：正文面板被推到 y=803，首屏一个字都
+   看不到，背景反成主角。所以退为整屏低透明度氛围层，正文照常在最上层。 */
+.d-keyart{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+  opacity:.42;
+  --ax:50%;
+  --ay:40%;
+  --ar:0px;
+  --acc:200,60,80;
+}
+.d-keyart.is-live{--ar:300px}
+/* 底：黑白压暗，作常态背景，不与正文抢注意力 */
+.d-keyart-bw,
+.d-keyart-hot{
+  position:absolute;
+  inset:0;
+  background-image:var(--art);
+  /* 作氛围层时铺满更自然；顶部偏移避开影画上部的大字排版。 */
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-position:50% 22%;
+}
+/* 影画原图本身偏暗（铺满后裸亮度约 38），不再额外压暗，
+   否则会糊成一团。正文可读性由内容面板自己的底色负责。 */
+/* 静止态不做纯灰：留 12% 原色，避免整屏脏灰、认不出画面。
+   鼠标周围仍会透出完整彩色，对比依然明显。 */
+.d-keyart-bw{
+  filter:grayscale(.88) contrast(1.06) saturate(1.1);
+}
+/* 上：彩色原图，只在指针周围显形 */
+.d-keyart-hot{
+  filter:saturate(1.25) brightness(1.02);
+  -webkit-mask-image:radial-gradient(circle var(--ar) at var(--ax) var(--ay),
+                #000 0,#000 42%,transparent 100%);
+          mask-image:radial-gradient(circle var(--ar) at var(--ax) var(--ay),
+                #000 0,#000 42%,transparent 100%);
+  transition:-webkit-mask-image var(--t-fast) linear,mask-image var(--t-fast) linear;
+}
+/* 角色主色微光，跟随指针，面积小、透明度低，避免变成 AI 发光 */
+.d-keyart-glow{
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle 340px at var(--ax) var(--ay),
+    rgba(var(--acc),.13) 0,transparent 70%);
+  opacity:0;
+  transition:opacity var(--t-mid) ease;
+}
+.d-keyart.is-live .d-keyart-glow{opacity:1}
+/* 扫描线 + 底部渐隐，压住背景让正文可读 */
+.d-keyart::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.14) 3px 4px),
+    linear-gradient(180deg,rgba(11,13,16,.06) 0,transparent 26%,
+      rgba(11,13,16,.72) 82%,#0b0d10 100%);
+}
+/* 舞台原有不透明渐变会盖住影画，接入背景后减弱为半透明，
+   同时保留角色主题色的中心光；网格与轨道环收淡避免与影画打架。 */
+.character-screen:has(.d-keyart) .character-stage{
+  background:
+    radial-gradient(circle at 50% 42%,
+      color-mix(in srgb,var(--character-theme) 22%,transparent),transparent 38%),
+    linear-gradient(145deg,rgba(48,52,56,.30),rgba(16,18,20,.55) 72%);
+}
+.character-screen:has(.d-keyart) .character-stage-grid{opacity:.10}
+.character-screen:has(.d-keyart) .character-stage-orbit{opacity:.45}
+/* 有影画背景时立绘保持彩色：立绘与背景各挂一套光栅会两层灰度叠加，
+   主体反而比背景更灰。黑白只留给背景，立绘始终是彩色主角。 */
+.character-screen:has(.d-keyart) .character-portrait .d-xray-veil{display:none}
+/* 标题修复两处：
+   1) multi-page.css 给 h1 设 line-height:.82，59px 字号只有 48px 行高，
+      长角色名换行后两行叠字；
+   2) live-hud.css 用 `.subpage .page-hero h1{font-size:...!important}`
+      压过普通规则（与它强制 2 列网格是同一手法），所以这里也要 !important。
+   正文列变窄后 59px 装不下「安比·德玛拉」，需降到 52px 上限。 */
+.subpage.archive-character .character-profile-panel h1{
+  font-size:clamp(30px,3.2vw,50px)!important;
+  line-height:1.06!important;
+}
+/* 属性标签修复：结构是 <span><b>标签</b>值</span>，但 multi-page.css 给
+   `.hero-status span,.hero-status b` 同时加了 padding:7px 10px 与边框，
+   于是内层 <b> 高度撑满外层 29px，黄块压住后面的值。
+   这里让内层 <b> 退为紧凑内联标签，值才有呼吸空间。 */
+.archive-character .character-profile-panel .hero-status{gap:10px}
+.archive-character .character-profile-panel .hero-status span{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 11px;
+}
+.archive-character .character-profile-panel .hero-status span>b{
+  padding:2px 6px;
+  border:0;
+  box-shadow:none;
+  font-size:9px;
+  line-height:1.5;
+}
+/* 正文面板补实底：字直接压在影画上会读不清 */
+.character-screen:has(.d-keyart) .character-profile-panel{
+  background:linear-gradient(90deg,rgba(9,11,14,.95),rgba(9,11,14,.78));
+}
+/* 触屏或减动效：静态黑白背景，不做指针交互 */
+@media (hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){
+  .d-keyart-hot,.d-keyart-glow{display:none}
+}
+
 /* ---------- 9. 页脚 ---------- */
 .d-foot{
   padding-block:32px;
@@ -284,4 +447,415 @@
   .d-section-head{flex-direction:column;gap:8px}
   .d-btn{width:100%;justify-content:center}
   .d-entry{padding:18px}
+}
+
+/* ============================================================
+   12. ZZZ 角色页视觉复刻
+   参考素材：artifacts/ref/zzz-ui.png（游戏内代理人界面截图）
+   全部作用域限定 .archive-character，不影响其他页面。
+
+   配色依据：截图像素采样 + 社区 Wiki CSS 变量双向验证。
+   注意这些都不是米哈游官方公布的色板，详见 DESIGN.md。
+   ============================================================ */
+.archive-character{
+  /* 酸性荧光黄绿。实测截图均值 #B1C00F、社区 Wiki #D7F300，
+     两者都指向黄绿而非纯黄；取中间值。 */
+  --zzz-acid:#D4E00A;
+  --zzz-acid-dim:#A8B808;
+
+  /* 属性色。电是蓝、物理是黄——这个映射反直觉但已双向验证。 */
+  --at-electric:#33B6FE;
+  --at-physical:#EDCC2C;
+  --at-ether:#FE427E;
+  --at-fire:#FF5623;
+  --at-ice:#95EAE9;
+  --at-wind:#A6C5FD;
+}
+/* 子属性复用父色：数据里烈霜/风/霜锋/玄墨各只有 1 个角色 */
+.zzz-at-电{--at:var(--at-electric)}
+.zzz-at-物理{--at:var(--at-physical)}
+.zzz-at-以太{--at:var(--at-ether)}
+.zzz-at-火{--at:var(--at-fire)}
+.zzz-at-冰{--at:var(--at-ice)}
+.zzz-at-风{--at:var(--at-wind)}
+.zzz-at-烈霜{--at:var(--at-ice)}
+.zzz-at-霜锋{--at:var(--at-ice)}
+.zzz-at-玄墨{--at:var(--at-physical)}
+
+/* ---------- 12a. 立绘背后的水印大字 ---------- */
+.zzz-watermark{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  overflow:hidden;
+  pointer-events:none;
+  font-family:var(--font-en);
+  text-transform:uppercase;
+  line-height:.82;
+}
+/* 镂空描边大字：填充透明 + 描边，参考图主标题做法 */
+.zzz-wm-out{
+  position:absolute;
+  left:2%;
+  top:6%;
+  font-size:clamp(72px,11vw,190px);
+  font-weight:800;
+  letter-spacing:-.02em;
+  color:transparent;
+  -webkit-text-stroke:2px rgba(255,255,255,.20);
+  white-space:nowrap;
+}
+/* 实心副标，压在描边字下方偏移处 */
+.zzz-wm-solid{
+  position:absolute;
+  left:4%;
+  top:26%;
+  font-size:clamp(44px,7vw,120px);
+  font-weight:800;
+  color:rgba(255,255,255,.055);
+  white-space:nowrap;
+}
+/* 弧形英文小字：参考图里绕立绘排布的一圈说明文 */
+/* 弧形字要避开上方的水印大字，否则两者叠在一起都看不清。
+   下移到立绘中段、放大到接近舞台宽度。 */
+.zzz-wm-arc{
+  position:absolute;
+  left:-6%;
+  top:34%;
+  width:min(620px,104%);
+  height:auto;
+  opacity:.62;
+}
+.zzz-wm-arc text{
+  fill:var(--zzz-acid);
+  font-family:var(--font-mono);
+  font-size:15px;
+  letter-spacing:.2em;
+}
+
+/* ---------- 12b. 左下身份牌 ---------- */
+.zzz-idcard{
+  position:absolute;
+  left:26px;
+  bottom:22px;
+  z-index:4;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:10px 20px 10px 12px;
+  background:rgba(12,12,14,.86);
+  border:1px solid var(--line);
+  border-radius:52px;
+}
+/* 阵营 logo 圆环（参考图里是阵营徽记，不是角色头像） */
+.zzz-idcard-ring{
+  width:56px;
+  height:56px;
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  border:2px solid var(--character-theme,#ff9c52);
+  background:#0b0d10;
+  overflow:hidden;
+}
+.zzz-idcard-ring img{width:78%;height:78%;object-fit:contain}
+.zzz-idcard-name{
+  font:800 24px/1 var(--font-zh);
+  color:var(--paper);
+  white-space:nowrap;
+}
+.zzz-idcard-tags{display:flex;align-items:center;gap:7px}
+
+/* ---------- 12c. 属性 / rank 图标（内联 SVG 重画，非官方素材裁贴）---------- */
+.zzz-icon{
+  width:22px;
+  height:22px;
+  flex:0 0 auto;
+  display:block;
+  fill:var(--at,var(--paper-dim));
+}
+.zzz-icon-sm{width:16px;height:16px}
+/* rank 花边章：参考图是圆形波浪外缘 + 中心字母 */
+.zzz-rank{
+  width:24px;
+  height:24px;
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  font:800 13px/1 var(--font-en);
+  color:#1a1205;
+  background:var(--zzz-acid);
+}
+.zzz-rank[data-rank="S"]{background:#FFB500;color:#3a2600}
+.zzz-rank[data-rank="I"]{background:#FFB500;color:#3a2600}
+.zzz-rank[data-rank="A"]{background:var(--zzz-acid);color:#1a1f01}
+
+/* ---------- 12d. 右侧角色网格 ---------- */
+/* 名录必须自己限高。若让它随 56 张卡自然堆叠，会把整个
+   .character-screen 撑到 3800px 以上，身份牌被推出视口，
+   而且容器装得下全部卡片后就不再需要滚动，"独立滚动"失效。 */
+.zzz-roster{
+  position:relative;
+  z-index:3;
+  align-self:start;
+  position:sticky;
+  top:78px;
+  display:flex;
+  flex-direction:column;
+  height:min(640px,calc(100vh - 130px));
+  padding:16px 0 16px 8px;
+}
+.zzz-roster-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 14px 10px 4px;
+  color:var(--paper-dim);
+  font:700 9px/1 var(--font-mono);
+  letter-spacing:.18em;
+}
+.zzz-roster-head b{color:var(--zzz-acid)}
+/* 独立滚动：页面滚动时这里自己滚，不带动整页 */
+.zzz-roster-scroll{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color:var(--zzz-acid-dim) transparent;
+  display:grid;
+  /* 单列。两列时卡片只有 93×124px，等级条也塞不下内容；
+     参考图的卡片是竖长条大图，单列更接近。
+     必须显式给 grid-auto-rows：只靠卡片自身的 aspect-ratio 时行高
+     会塌成 10px，56 张卡全部重叠堆在一起（scrollHeight 只有 846）。 */
+  grid-template-columns:minmax(0,1fr);
+  grid-auto-rows:max-content;
+  align-content:start;
+  gap:9px;
+  /* 右侧留出间距，否则卡片直接贴到荧光黄竖条上 */
+  padding:2px 18px 2px 4px;
+}
+.zzz-roster-scroll::-webkit-scrollbar{width:6px}
+.zzz-roster-scroll::-webkit-scrollbar-thumb{
+  background:var(--zzz-acid-dim);
+  border-radius:3px;
+}
+/* 卡片：左边竖直、右边内收的不规则四边形（实测参考图轮廓） */
+.zzz-card{
+  position:relative;
+  display:block;
+  /* 用固定高度而非 aspect-ratio：在 grid 单元内 aspect-ratio 不参与
+     行高计算，会导致行高塌陷、卡片互相重叠。 */
+  height:180px;
+  border:0;
+  padding:0;
+  cursor:pointer;
+  background:linear-gradient(160deg,#23262c,#121418);
+  clip-path:polygon(0 0,100% 0,92% 100%,0 100%);
+  text-decoration:none;
+  overflow:hidden;
+  transition:transform var(--t-fast) var(--ease);
+}
+.zzz-card img{
+  width:100%;
+  height:100%;
+  /* 用 cover 取头肩部。先试过 contain，但 -portrait 是 1600×1800
+     的透明底全身立绘，contain 会把人物缩到极小并留出大片透明区，
+     卡片看起来是空框。cover + 顶部取景才能得到可辨识的头肩像。 */
+  object-fit:cover;
+  object-position:50% 8%;
+  display:block;
+}
+/* 透明底立绘需要自带底色，否则卡片背景直接透出显得空 */
+.zzz-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at 50% 30%,#2b3038,#12141a 72%);
+}
+.zzz-card img{position:relative;z-index:1}
+/* 选中态用固定的 HOOXI 选择色，不用 --zzz-acid。
+   design.md 第 9.1.1 节要求：确认状态必须使用固定的 HOOXI 选择色，
+   对象主题色只驱动角色舞台氛围，不得替代确认语义。 */
+.zzz-card.is-current{
+  outline:3px solid var(--color-accent,var(--accent));
+  outline-offset:-3px;
+}
+.zzz-card.is-current::after{
+  /* 右上五角星 = 当前档案标记 */
+  content:"★";
+  position:absolute;
+  right:12%;
+  top:5px;
+  color:var(--color-accent,var(--accent));
+  font-size:15px;
+  line-height:1;
+  text-shadow:0 1px 2px #000;
+}
+.zzz-card:focus-visible{
+  outline:3px solid var(--color-focus,var(--accent));
+  outline-offset:2px;
+}
+/* 卡片左下等级条 */
+.zzz-card-bar{
+  position:absolute;
+  left:0;
+  right:8%;
+  bottom:0;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  padding:5px 6px;
+  background:linear-gradient(0deg,rgba(6,7,9,.96),rgba(6,7,9,.42));
+}
+.zzz-card-lv{
+  flex:1 1 auto;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--paper);
+  font:700 10px/1.2 var(--font-zh);
+}
+/* 角色名单独一行压在卡片下沿，长名可省略号收尾 */
+.zzz-card-name{
+  position:absolute;
+  left:0;
+  right:8%;
+  bottom:34px;
+  padding:3px 7px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--paper);
+  font:800 12px/1.25 var(--font-zh);
+  text-shadow:0 1px 3px #000;
+}
+
+/* ---------- 12e. 最右荧光黄竖条 + SELECT 徽章 ---------- */
+.zzz-edge{
+  position:absolute;
+  right:0;
+  top:0;
+  bottom:0;
+  width:clamp(40px,4vw,62px);
+  z-index:4;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(-58deg,
+      rgba(0,0,0,.13) 0 3px,transparent 3px 8px),
+    var(--zzz-acid);
+  clip-path:polygon(30% 0,100% 0,100% 100%,8% 100%);
+}
+.zzz-edge-badge{
+  position:absolute;
+  right:clamp(6px,.8vw,12px);
+  top:50%;
+  transform:translateY(-50%);
+  display:grid;
+  place-items:center;
+  gap:6px;
+  padding:12px 5px;
+  border:2px solid #0b0d10;
+  border-radius:22px;
+  color:#0b0d10;
+  font:800 10px/1 var(--font-mono);
+  letter-spacing:.22em;
+  writing-mode:vertical-rl;
+}
+
+/* ---------- 12f. 胶囊页签（复用现有 data-character-tab）---------- */
+/* 侧栏页签是 writing-mode:vertical-rl 的竖排文字（29×38），
+   给它套水平胶囊会变成细长条。这里按竖排本身的方向做圆角。 */
+.archive-character .character-rail-action{
+  border:1px solid transparent;
+  border-radius:18px;
+  padding:12px 6px;
+  transition:color var(--t-fast) var(--ease),
+             border-color var(--t-fast) var(--ease),
+             background var(--t-fast) var(--ease);
+}
+/* 激活态属确认语义，用 HOOXI 选择色 */
+.archive-character .character-rail-action:hover,
+.archive-character .character-rail-action.is-active{
+  color:#14180a;
+  background:var(--color-accent,var(--accent));
+  border-color:var(--color-accent,var(--accent));
+}
+
+/* ---------- 12g. 入场与切换动画 ---------- */
+@media (prefers-reduced-motion:no-preference){
+  .archive-character .zzz-watermark,
+  .archive-character .character-portrait,
+  .archive-character .zzz-idcard,
+  .archive-character .zzz-roster{
+    opacity:0;
+    transform:translateY(16px);
+    animation:zzz-in 460ms var(--ease) forwards;
+  }
+  .archive-character .zzz-watermark{animation-delay:0ms}
+  .archive-character .character-portrait{animation-delay:60ms}
+  .archive-character .zzz-idcard{animation-delay:120ms}
+  .archive-character .zzz-roster{animation-delay:180ms}
+  @keyframes zzz-in{to{opacity:1;transform:none}}
+
+  /* 网格卡逐条滑入，只对前 24 张排队，后面的直接显示 */
+  .zzz-card{
+    opacity:0;
+    animation:zzz-in 320ms var(--ease) forwards;
+    animation-delay:calc(200ms + var(--i,0)*25ms);
+  }
+  /* 悬停描边用 outline 而非 ::before —— ::before 已被卡片底色占用。
+     用 HOOXI 选择色保持交互语义一致；不做 translateY 浮起，
+     design.md 第 10 节第 3 条禁止无业务意义的 hover 浮起。 */
+  .zzz-card:hover{
+    outline:2px solid var(--color-accent,var(--accent));
+    outline-offset:-2px;
+  }
+}
+/* 减动效：直接呈现终态 */
+@media (prefers-reduced-motion:reduce){
+  .archive-character .zzz-watermark,
+  .archive-character .character-portrait,
+  .archive-character .zzz-idcard,
+  .archive-character .zzz-roster,
+  .zzz-card{opacity:1;transform:none;animation:none}
+}
+
+/* ---------- 12h. 与影画背景共存 ---------- */
+/* 有水印时影画降到 .22，让水印成为主纹理，两者不打架 */
+.character-screen:has(.zzz-watermark) .d-keyart{opacity:.22}
+
+/* ---------- 12i. 窄屏降级 ----------
+   断点 880px 对齐 design.md 第 9.1.1 节：<=880px 须自然纵向流，
+   并移除覆盖式名册、斜切接缝及其他覆盖关系。 */
+@media(max-width:880px){
+  .zzz-edge,.zzz-edge-badge{display:none}
+  /* 移除斜切接缝：合同要求窄屏去掉覆盖关系与斜切 */
+  .zzz-card{clip-path:none}
+  .zzz-card-bar,.zzz-card-name{right:0}
+  .zzz-idcard{
+    position:static;
+    margin:14px 0 0;
+    border-radius:14px;
+  }
+  /* 桌面端名录是 640px 高的 sticky 竖列；窄屏改横向滑动后必须
+     解除限高与 sticky，否则留下一个 640px 高的空容器。 */
+  .zzz-roster{
+    padding:12px 0;
+    position:static;
+    height:auto;
+  }
+  /* 竖屏塞不下 56 张卡，改横向滑动 */
+  .zzz-roster-scroll{
+    grid-template-columns:repeat(56,120px);
+    grid-auto-flow:column;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding-bottom:10px;
+  }
+  .zzz-wm-out{font-size:clamp(48px,15vw,86px)}
+  .zzz-wm-arc{display:none}
 }

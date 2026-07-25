@@ -355,9 +355,57 @@
     });
   }
 
+  /* ---------- 6. 角色影画背景（可变色光栅）----------
+     把该角色的影画铺成角色页背景：常态黑白压暗，鼠标周围透出彩色，
+     并叠一层取自影画主色的微光。配色与选图来自 agent-xray.js
+     （由素材采样生成），各角色色调天然不同。
+     顺带填掉角色页左侧原本大片空白。 */
+  function injectKeyartBackdrop() {
+    var screen = document.querySelector('.character-screen');
+    if (!screen || screen.dataset.keyartReady) return;
+    var table = window.agentXray;
+    if (!table) return;
+
+    var id = new URLSearchParams(location.search).get('id') || '';
+    var rec = table[id];
+    if (!rec) return;                 // 3 个角色无影画素材，保持原背景
+
+    screen.dataset.keyartReady = '1';
+
+    var art = document.createElement('div');
+    art.className = 'd-keyart';
+    art.setAttribute('aria-hidden', 'true');
+    art.style.setProperty('--art', 'url("' + rec.a + '")');
+    art.style.setProperty('--acc', rec.c.join(','));
+    art.innerHTML = '<div class="d-keyart-bw"></div>'
+      + '<div class="d-keyart-hot"></div>'
+      + '<div class="d-keyart-glow"></div>';
+    screen.insertBefore(art, screen.firstChild);
+
+    if (!canHoverXray()) return;
+
+    var raf = null, px = 50, py = 40;
+    function paint() {
+      art.style.setProperty('--ax', px + '%');
+      art.style.setProperty('--ay', py + '%');
+      raf = null;
+    }
+    screen.addEventListener('pointermove', function (e) {
+      var r = screen.getBoundingClientRect();
+      px = ((e.clientX - r.left) / r.width * 100).toFixed(1);
+      py = ((e.clientY - r.top) / r.height * 100).toFixed(1);
+      art.classList.add('is-live');
+      if (!raf) raf = requestAnimationFrame(paint);
+    }, { passive: true });
+    screen.addEventListener('pointerleave', function () {
+      art.classList.remove('is-live');
+    }, { passive: true });
+  }
+
   function boot() {
     try { injectSkipLink(); } catch (e) { }
     try { injectPortraitXray(); } catch (e) { }
+    try { injectKeyartBackdrop(); } catch (e) { }
     try { injectStoriesEntry(); } catch (e) { }
     // 检索面板先建，活动筛选再插到其后，保证纵向顺序稳定
     try { buildSearchPanel(); } catch (e) { }
