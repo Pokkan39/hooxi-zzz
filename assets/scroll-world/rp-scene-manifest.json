@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "asset_id": "rp-zone-shelf-l",
+  "source": "blender/00-import-raw.blend",
+  "selection_basis": "User-designated hall-north far-left red wall-fixed floor-standing multilayer shelf; blue wheeled foreground display excluded. Four prominent items selected left-to-right from one clearly visible middle row.",
+  "coordinate_system": {
+    "source": "Blender Z-up",
+    "glb": "glTF Y-up",
+    "unit": "meter"
+  },
+  "fixed_camera": "CAM_shelf_L_focus",
+  "display_anchor": "ANCHOR_shelf_L_display",
+  "objects": [
+    {
+      "name": "FIX_shelf_L_shell",
+      "type": "MESH",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 310,
+      "triangles": 162,
+      "bounds_min": [
+        -8.389422,
+        -5.092803,
+        -0.001134
+      ],
+      "bounds_max": [
+        -7.771197,
+        -2.11161,
+        2.794934
+      ]
+    },
+    {
+      "name": "INT_shelf_L_item_001",
+      "type": "MESH",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 24,
+      "triangles": 12,
+      "bounds_min": [
+        -8.099063,
+        -3.979077,
+        1.589341
+      ],
+      "bounds_max": [
+        -7.951807,
+        -3.83853,
+        1.818197
+      ]
+    },
+    {
+      "name": "INT_shelf_L_item_002",
+      "type": "MESH",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 24,
+      "triangles": 12,
+      "bounds_min": [
+        -8.099062,
+        -3.831011,
+        1.589341
+      ],
+      "bounds_max": [
+        -7.951807,
+        -3.690462,
+        1.818197
+      ]
+    },
+    {
+      "name": "INT_shelf_L_item_003",
+      "type": "MESH",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 24,
+      "triangles": 12,
+      "bounds_min": [
+        -8.10225,
+        -3.519061,
+        1.59139
+      ],
+      "bounds_max": [
+        -7.954996,
+        -3.378512,
+        1.820246
+      ]
+    },
+    {
+      "name": "INT_shelf_L_item_004",
+      "type": "MESH",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "vertices": 24,
+      "triangles": 12,
+      "bounds_min": [
+        -8.10225,
+        -3.367364,
+        1.59139
+      ],
+      "bounds_max": [
+        -7.954996,
+        -3.226818,
+        1.820246
+      ]
+    },
+    {
+      "name": "HIT_shelf_L_shell",
+      "type": "MESH",
+      "location": [
+        -8.08031,
+        -3.602206,
+        1.3969
+      ],
+      "vertices": 8,
+      "triangles": 12,
+      "bounds_min": [
+        -8.396922,
+        -5.100303,
+        -0.008634
+      ],
+      "bounds_max": [
+        -7.763697,
+        -2.10411,
+        2.802434
+      ]
+    },
+    {
+      "name": "HIT_shelf_L_item_001",
+      "type": "MESH",
+      "location": [
+        -8.025435,
+        -3.908803,
+        1.703769
+      ],
+      "vertices": 8,
+      "triangles": 12,
+      "bounds_min": [
+        -8.106564,
+        -3.986577,
+        1.581841
+      ],
+      "bounds_max": [
+        -7.944308,
+        -3.831029,
+        1.825697
+      ]
+    },
+    {
+      "name": "HIT_shelf_L_item_002",
+      "type": "MESH",
+      "location": [
+        -8.025434,
+        -3.760737,
+        1.703769
+      ],
+      "vertices": 8,
+      "triangles": 12,
+      "bounds_min": [
+        -8.106562,
+        -3.838511,
+        1.581841
+      ],
+      "bounds_max": [
+        -7.944307,
+        -3.682962,
+        1.825697
+      ]
+    },
+    {
+      "name": "HIT_shelf_L_item_003",
+      "type": "MESH",
+      "location": [
+        -8.028624,
+        -3.448787,
+        1.705818
+      ],
+      "vertices": 8,
+      "triangles": 12,
+      "bounds_min": [
+        -8.109751,
+        -3.526561,
+        1.58389
+      ],
+      "bounds_max": [
+        -7.947496,
+        -3.371012,
+        1.827746
+      ]
+    },
+    {
+      "name": "HIT_shelf_L_item_004",
+      "type": "MESH",
+      "location": [
+        -8.028624,
+        -3.297091,
+        1.705818
+      ],
+      "vertices": 8,
+      "triangles": 12,
+      "bounds_min": [
+        -8.109751,
+        -3.374864,
+        1.58389
+      ],
+      "bounds_max": [
+        -7.947496,
+        -3.219318,
+        1.827746
+      ]
+    },
+    {
+      "name": "ANCHOR_shelf_L_display",
+      "type": "EMPTY",
+      "location": [
+        -7.88,
+        -4.18,
+        1.65
+      ]
+    },
+    {
+      "name": "CAM_shelf_L_focus",
+      "type": "CAMERA",
+      "location": [
+        -4.85,
+        -3.63,
+        1.68
+      ]
+    }
+  ],
+  "interactive_items": [
+    { "id": "shelf-l-item-001", "node": "INT_shelf_L_item_001", "hit_node": "HIT_shelf_L_item_001", "content_id": "story-launch" },
+    { "id": "shelf-l-item-002", "node": "INT_shelf_L_item_002", "hit_node": "HIT_shelf_L_item_002", "content_id": "story-origin" },
+    { "id": "shelf-l-item-003", "node": "INT_shelf_L_item_003", "hit_node": "HIT_shelf_L_item_003", "content_id": "story-store" },
+    { "id": "shelf-l-item-004", "node": "INT_shelf_L_item_004", "hit_node": "HIT_shelf_L_item_004", "content_id": "hollow-log" }
+  ],
+  "outputs": {
+    "blend": "C:\\Users\\Rage\\Documents\\Hooxi-Model-Lab\\random-play\\blender\\10-semantic-split.blend",
+    "glb": "C:\\Users\\Rage\\Documents\\Hooxi-Model-Lab\\random-play\\exports\\research\\rp-zone-shelf-l.glb",
+    "calibration": "C:\\Users\\Rage\\Documents\\Hooxi-Model-Lab\\random-play\\renders\\rp-semantic\\calibration\\shelf-l-focus.png"
+  }
+}

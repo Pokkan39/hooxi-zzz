@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "asset_id": "rp-store-complete",
+  "glb": "rp-store-complete.glb",
+  "source": "RandomPlay blender/00-import-raw.blend",
+  "scene_node": "RandomPlay_mesh",
+  "overview_camera": "CAM_store_overview",
+  "left_camera": "CAM_shelf_L_focus",
+  "right_camera": null,
+  "interaction_asset": {
+    "manifest": "rp-scene-manifest.json",
+    "glb": "rp-zone-shelf-l.glb",
+    "cabinet": "left"
+  },
+  "coordinate_system": {
+    "source": "Blender Z-up",
+    "glb": "glTF Y-up",
+    "unit": "meter"
+  },
+  "notes": "Complete store is the browse/idle visual. No right-cabinet semantic camera or interaction node is asserted."
+}
