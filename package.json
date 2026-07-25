@@ -20,11 +20,13 @@
     "build:stories": "esbuild src/stories.jsx --bundle --minify --format=iife --platform=browser --target=es2020 --outfile=stories.js",
     "build:stories:draft": "esbuild src/stories.jsx --bundle --minify --format=iife --platform=browser --target=es2020 --outfile=artifacts/stories-draft.js",
     "test:stories": "node scripts/regression.mjs",
-    "test:content": "node scripts/validate-archive.mjs && node scripts/check-link-integrity.mjs",
+    "test:content": "node scripts/validate-archive.mjs && node scripts/check-link-integrity.mjs && node scripts/check-unofficial-boundary.mjs",
     "test:ui": "node scripts/capture-r1-baseline.mjs",
     "test:formal": "python scripts/check-formal-site-gate.py",
     "test:links": "node scripts/check-link-integrity.mjs",
-    "test:links:online": "node scripts/check-link-integrity.mjs --online"
+    "test:links:online": "node scripts/check-link-integrity.mjs --online",
+    "test:boundary": "node scripts/check-unofficial-boundary.mjs",
+    "test:boundary:runtime": "node scripts/check-boundary-runtime.mjs"
   },
   "repository": {
     "type": "git",

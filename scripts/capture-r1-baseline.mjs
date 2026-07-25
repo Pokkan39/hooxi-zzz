@@ -3,7 +3,12 @@ import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { extname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { chromium } from 'playwright';
+
+/* 同 regression.mjs：Windows + MSYS2 下 playwright-core 加载时设置
+   process.title 会触发 libuv 断言而崩溃，需先占位短 title。
+   静态 import 会被提升，必须用动态 import。 */
+process.title = 'pw';
+const { chromium } = await import('playwright');
 
 const rootDir = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\..*/, '').replace('T', '-');

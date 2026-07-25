@@ -26,6 +26,18 @@
   document.title=`${character.name} // Hooxi 角色档案`;
   const setMetaDescription=(text)=>{let m=document.querySelector('meta[name="description"]');if(!m){m=document.createElement('meta');m.setAttribute('name','description');document.head.appendChild(m);}m.setAttribute('content',text);};
   setMetaDescription(`${character.name} · ${character.factionName||'代理人'}档案：相关影像、剧情与来源。Hooxi 粉丝非官方剧情档案站。`);
+  /* 分享卡标题必须自带「粉丝非官方」：多数平台的预览卡只显示标题与配图，
+     描述常被截断，而配图是官方立绘——不写身份就会被当成官方页面。 */
+  const setMetaProp=(key,val)=>{const sel=key.startsWith('og:')?`meta[property="${key}"]`:`meta[name="${key}"]`;
+    let m=document.querySelector(sel);
+    if(!m){m=document.createElement('meta');m.setAttribute(key.startsWith('og:')?'property':'name',key);document.head.appendChild(m);}
+    m.setAttribute('content',val);};
+  const shareTitle=`${character.name} // HOOXI 代理人档案（粉丝非官方）`;
+  const shareDesc=`${character.name} · ${character.factionName||'代理人'}档案。粉丝非官方，与米哈游无隶属。`;
+  setMetaProp('og:title',shareTitle);
+  setMetaProp('og:description',shareDesc);
+  setMetaProp('twitter:title',shareTitle);
+  setMetaProp('twitter:description',shareDesc);
 
   document.documentElement.style.setProperty('--character-theme',faction?.theme||'#ff9c52');
   document.querySelector('#characterName').innerHTML=`<span data-editor-id="character.${esc(character.id)}.name" data-editor-type="character" data-editor-field="name">${esc(character.name)}</span><br/><span>角色档案</span>`;

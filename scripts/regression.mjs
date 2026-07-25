@@ -3,7 +3,13 @@ import { mkdir, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { extname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { chromium } from 'playwright';
+
+/* Windows + MSYS2/Git Bash 下 playwright-core 加载时设置 process.title
+   会触发 libuv 断言 `Assertion failed: process_title, src\win\util.c:412`，
+   在加载阶段就崩溃。是否触发取决于父进程 title 长度，所以表现为间歇性。
+   静态 import 会被提升到文件顶部、赋值来不及生效，必须用动态 import。 */
+process.title = 'pw';
+const { chromium } = await import('playwright');
 
 const rootDir = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const contentTypes = { '.css':'text/css; charset=utf-8', '.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.json':'application/json; charset=utf-8', '.png':'image/png', '.svg':'image/svg+xml', '.webp':'image/webp', '.woff2':'font/woff2' };

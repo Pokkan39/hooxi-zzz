@@ -49,6 +49,18 @@
   document.title=`${faction.name} // Hooxi 阵营档案`;
   const setMetaDescription=(text)=>{let m=document.querySelector('meta[name="description"]');if(!m){m=document.createElement('meta');m.setAttribute('name','description');document.head.appendChild(m);}m.setAttribute('content',text);};
   setMetaDescription(`${faction.name} 阵营档案与成员导航。Hooxi 粉丝非官方剧情档案站。`);
+  /* 同 character.js：分享卡标题自带「粉丝非官方」，避免官方立绘配阵营名
+     被误认为官方页面。 */
+  const setMetaProp=(key,val)=>{const sel=key.startsWith('og:')?`meta[property="${key}"]`:`meta[name="${key}"]`;
+    let m=document.querySelector(sel);
+    if(!m){m=document.createElement('meta');m.setAttribute(key.startsWith('og:')?'property':'name',key);document.head.appendChild(m);}
+    m.setAttribute('content',val);};
+  const shareTitle=`${faction.name} // HOOXI 阵营档案（粉丝非官方）`;
+  const shareDesc=`${faction.name} 阵营档案与成员导航。粉丝非官方，与米哈游无隶属。`;
+  setMetaProp('og:title',shareTitle);
+  setMetaProp('og:description',shareDesc);
+  setMetaProp('twitter:title',shareTitle);
+  setMetaProp('twitter:description',shareDesc);
 
   document.documentElement.style.setProperty('--faction-theme',faction.theme||'#f3d33b');
   document.querySelector('#factionName').innerHTML=`<span data-editor-id="faction.${esc(faction.id)}.name" data-editor-type="faction" data-editor-field="name">${esc(faction.name)}</span><br/><span>阵营档案</span>`;
