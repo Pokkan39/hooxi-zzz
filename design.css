@@ -15,9 +15,9 @@
   --paper-dim:#9A9892;
   --accent:#FBD83F;
 
-  --font-zh:"Source Han Sans SC","Noto Sans CJK SC","Microsoft YaHei","PingFang SC",sans-serif;
-  --font-en:"Barlow Condensed","Arial Narrow",sans-serif;
-  --font-mono:"Space Mono","Consolas",monospace;
+  /* 字体栈不在此另立一套。design.md 第 9.2 节要求全站共享字体栈，
+     第 5.1 节规定中文优先系统中文、不打包来源不明中文字体。
+     统一用 tokens.css 定义的 --font-display / --font-body / --font-mono。 */
 
   --ease:cubic-bezier(.22,1,.36,1);
   --t-fast:140ms;
@@ -35,7 +35,7 @@
   margin:0;
   background:var(--ink);
   color:var(--paper);
-  font:400 16px/1.7 var(--font-zh);
+  font:400 16px/1.7 var(--font-body);
   -webkit-font-smoothing:antialiased;
   overflow-x:clip;
 }
@@ -69,7 +69,7 @@
   border:2px solid var(--ink);
   background:var(--accent);
   color:var(--ink);
-  font:800 13px/1 var(--font-zh);
+  font:800 13px/1 var(--font-body);
   text-decoration:none;
   transition:transform var(--t-base) var(--ease);
 }
@@ -78,12 +78,12 @@
 /* ---------- 3. 排版 ---------- */
 .d-h1{
   margin:0;
-  font:900 clamp(40px,5vw,72px)/1.06 var(--font-zh);
+  font:900 clamp(40px,5vw,72px)/1.06 var(--font-body);
   letter-spacing:-.02em;
 }
 .d-h2{
   margin:0;
-  font:800 clamp(24px,2.6vw,34px)/1.15 var(--font-zh);
+  font:800 clamp(24px,2.6vw,34px)/1.15 var(--font-body);
   letter-spacing:-.01em;
 }
 .d-lead{
@@ -97,7 +97,7 @@
 .d-code{
   display:inline-block;
   color:var(--accent);
-  font:700 11px/1 var(--font-en);
+  font:700 11px/1 var(--font-display);
   letter-spacing:.14em;
   text-transform:uppercase;
 }
@@ -133,7 +133,7 @@
   min-height:48px;
   padding:12px 22px;
   border:1px solid transparent;
-  font:800 15px/1 var(--font-zh);
+  font:800 15px/1 var(--font-body);
   text-decoration:none;
   cursor:pointer;
   transition:transform var(--t-fast) var(--ease),
@@ -188,7 +188,7 @@
   border-color:var(--accent);
   background:var(--panel-2);
 }
-.d-entry b{font:800 19px/1.3 var(--font-zh)}
+.d-entry b{font:800 19px/1.3 var(--font-body)}
 .d-entry span{color:var(--paper-dim);font-size:13px;line-height:1.6}
 .d-entry .d-entry-go{
   margin-top:auto;
@@ -489,7 +489,7 @@
   z-index:1;
   overflow:hidden;
   pointer-events:none;
-  font-family:var(--font-en);
+  font-family:var(--font-display);
   text-transform:uppercase;
   line-height:.82;
 }
@@ -561,7 +561,7 @@
 }
 .zzz-idcard-ring img{width:78%;height:78%;object-fit:contain}
 .zzz-idcard-name{
-  font:800 24px/1 var(--font-zh);
+  font:800 24px/1 var(--font-body);
   color:var(--paper);
   white-space:nowrap;
 }
@@ -584,7 +584,7 @@
   display:grid;
   place-items:center;
   border-radius:50%;
-  font:800 13px/1 var(--font-en);
+  font:800 13px/1 var(--font-display);
   color:#1a1205;
   background:var(--zzz-acid);
 }
@@ -717,7 +717,7 @@
   text-overflow:ellipsis;
   white-space:nowrap;
   color:var(--paper);
-  font:700 10px/1.2 var(--font-zh);
+  font:700 10px/1.2 var(--font-body);
 }
 /* 角色名单独一行压在卡片下沿，长名可省略号收尾 */
 .zzz-card-name{
@@ -730,7 +730,7 @@
   text-overflow:ellipsis;
   white-space:nowrap;
   color:var(--paper);
-  font:800 12px/1.25 var(--font-zh);
+  font:800 12px/1.25 var(--font-body);
   text-shadow:0 1px 3px #000;
 }
 
@@ -807,13 +807,14 @@
     animation:zzz-in 320ms var(--ease) forwards;
     animation-delay:calc(200ms + var(--i,0)*25ms);
   }
-  /* 悬停描边用 outline 而非 ::before —— ::before 已被卡片底色占用。
-     用 HOOXI 选择色保持交互语义一致；不做 translateY 浮起，
-     design.md 第 10 节第 3 条禁止无业务意义的 hover 浮起。 */
-  .zzz-card:hover{
-    outline:2px solid var(--color-accent,var(--accent));
-    outline-offset:-2px;
-  }
+}
+/* 悬停描边放在减动效块之外：design.md 第 6 节要求 reduce 下 L1 仍保留
+   颜色/边框反馈。此前它被包在 no-preference 内，减动效用户完全没有
+   悬停反馈。用 outline 而非 ::before（后者已被卡片底色占用）；
+   不做 translateY 浮起，第 10 节第 3 条禁止无业务意义的 hover 浮起。 */
+.zzz-card:hover{
+  outline:2px solid var(--color-accent,var(--accent));
+  outline-offset:-2px;
 }
 /* 减动效：直接呈现终态 */
 @media (prefers-reduced-motion:reduce){
