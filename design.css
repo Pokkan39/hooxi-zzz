@@ -749,6 +749,7 @@
     var(--zzz-acid);
   clip-path:polygon(30% 0,100% 0,100% 100%,8% 100%);
 }
+/* 承载真实档案编号，不再是假的 SELECT 操作提示，因此不设 aria-hidden */
 .zzz-edge-badge{
   position:absolute;
   right:clamp(6px,.8vw,12px);
@@ -756,13 +757,13 @@
   transform:translateY(-50%);
   display:grid;
   place-items:center;
-  gap:6px;
-  padding:12px 5px;
+  padding:14px 5px;
   border:2px solid #0b0d10;
   border-radius:22px;
   color:#0b0d10;
   font:800 10px/1 var(--font-mono);
-  letter-spacing:.22em;
+  letter-spacing:.16em;
+  white-space:nowrap;
   writing-mode:vertical-rl;
 }
 

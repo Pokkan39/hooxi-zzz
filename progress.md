@@ -3573,3 +3573,25 @@ wiki 类在各页声明中有合法别名（活动页写「活动图」、培养
 残留限制：ALIAS 表仍是人工维护的。若以后某页把 wiki 图在声明里改写成新措辞而未登记别名，运行时门禁会误报（而非漏判），属安全方向的失败。
 
 回滚方式：撤销 scripts/check-boundary-runtime.mjs 中 DIR_KEYWORD 与 uncovered 相关代码及对应 problems 判定，删除 design.md 两处新增说明。本轮未做 git 提交。上一稳定点 9e63aa6。
+
+## 2026-07-26 - Task: 按恢复后的设计合同核对字体与动效，修两处违规
+
+### What was done
+上一轮恢复了被我误覆盖的 design.md 设计系统合同后，继续核对此前没查的两项：字体与动效。发现并修掉两处违规。
+
+一是字体栈立了第二套。合同第 9.2 节要求全站共享字体栈、第 5.1 节规定中文优先系统中文且不打包来源不明中文字体，但我在 design.css 里自建了 --font-zh 与 --font-en，与合同定义的 --font-body、--font-display 并行，其中 --font-zh 引入了 Source Han Sans SC 与 Noto Sans CJK SC。实测确认同一页面出现两套中文字体栈：body 用合同栈，我的 ZZZ 组件用自建栈。改为统一使用 tokens.css 的合同 token，12 处引用全部替换，自建定义删除。
+
+二是减动效用户失去悬停反馈。合同第 6 节要求 prefers-reduced-motion 下 L1 仍保留颜色与边框，但卡片悬停 outline 被我包在 no-preference 块内，减动效环境下完全没有反馈。已移出媒体查询。
+
+动效其余部分核对合规：入场 460ms 属 L2 区间（240 至 480ms），缓动用的正是合同指定的 cubic-bezier(.22,1,.36,1)，减动效下卡片 animation 为 none 且 opacity 为 1，内容直接可读，未把动画完成作为读取条件。
+
+### Testing
+字体修正验证：ZZZ 组件中文栈现与 body 一致（Segoe UI / PingFang SC），水印用合同的 Barlow Condensed，等宽用 Space Mono，未再引入 Source Han Sans SC。三页抽查（首页、角色页、阵营页）非合同字体 0 处。
+CSS 完整性验证：编辑过程中曾出现括号层级错乱，修正后 design.css 规则数 118 条正常解析，悬停规则确认位于媒体查询之外，布局四列、56 卡、选中 1 张、无横向溢出。
+门禁：npm test 全 PASS，运行时边界门禁 PASS。
+
+### Notes
+改动文件清单：
+- design.css — 删除自建 --font-zh 与 --font-en 定义改用合同 token，12 处引用替换；悬停 outline 移出 no-preference 媒体查询
+
+已推送 759f3cf。回滚方式：git revert 759f3cf。上一稳定点 839dfce。
