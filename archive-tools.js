@@ -290,29 +290,43 @@
     document.body.insertBefore(a, document.body.firstChild);
   }
 
-  /* ---------- 5. 角色页立绘光栅影画（X-ray）----------
+  /* ---------- 5. 立绘光栅影画（X-ray）----------
      黑白线稿为底，鼠标位置透出彩色原图。规范见 DESIGN.md 第 6 节。
-     纯 CSS mask 实现，不用 Canvas/WebGL；触屏与减动效下直接显示彩色。 */
-  function injectPortraitXray() {
-    var host = document.querySelector('.character-portrait');
+     纯 CSS mask 实现，不用 Canvas/WebGL；触屏与减动效下直接显示彩色。
+
+     zoneSel 是感应区选择器：角色页给整个立绘舞台（单张大立绘，
+     指针不必精确压在图上），阵营页留空表示各卡片独立感应。 */
+  var XRAY_TARGETS = [
+    { host: '.character-portrait', zone: '.character-stage' },
+    // .agent-entry-head 自身 pointer-events:none，且被兄弟层 .agent-entry-glow
+    // 盖住，事件只能挂在外层链接上
+    { host: '.agent-entry-head', zone: '.agent-entry' }
+  ];
+
+  function canHoverXray() {
+    return window.matchMedia('(hover:hover) and (pointer:fine)').matches
+      && !window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  }
+
+  function mountXray(host, zoneSel) {
     if (!host || host.dataset.xrayReady) return;
     var img = host.querySelector('img');
     if (!img) return;
     host.dataset.xrayReady = '1';
     host.classList.add('d-xray');
 
-    // 复制一份同图作为黑白覆盖层
+    // 同图副本作黑白覆盖层，alt 清空避免读屏重复播报
     var veil = document.createElement('span');
     veil.className = 'd-xray-veil';
     veil.setAttribute('aria-hidden', 'true');
     var copy = img.cloneNode(true);
     copy.removeAttribute('id');
     copy.setAttribute('alt', '');
+    copy.setAttribute('loading', 'lazy');
     veil.appendChild(copy);
     host.appendChild(veil);
 
-    if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
-    if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    if (!canHoverXray()) return;
 
     var raf = null, px = 50, py = 30;
     function paint() {
@@ -320,8 +334,7 @@
       host.style.setProperty('--my', py + '%');
       raf = null;
     }
-    // 以整个立绘舞台为感应区，指针不必精确压在图片上
-    var zone = host.closest('.character-stage') || host;
+    var zone = (zoneSel && host.closest(zoneSel)) || host;
     zone.addEventListener('pointermove', function (e) {
       var r = host.getBoundingClientRect();
       px = ((e.clientX - r.left) / r.width * 100).toFixed(1);
@@ -332,6 +345,14 @@
     zone.addEventListener('pointerleave', function () {
       host.classList.remove('is-live');
     }, { passive: true });
+  }
+
+  function injectPortraitXray() {
+    XRAY_TARGETS.forEach(function (t) {
+      document.querySelectorAll(t.host).forEach(function (host) {
+        mountXray(host, t.zone);
+      });
+    });
   }
 
   function boot() {

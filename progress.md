@@ -3259,3 +3259,26 @@
 - `docs/README.md`：替换“正式首页现在是”段落；`docs/zzz-archive-positioning.md`：替换“2026-07-23 的 Dual Gate”与“首页保留稳定 ID”段落；回滚时仅回置对应段落。
 - `progress.md`：本条为本轮唯一追加记录；回滚时仅删除本条。
 - 测试产物定点删除：`rm -rf "artifacts/home-midnight-screening-r2"`。禁止整仓 `restore`、`checkout` 或 `reset`；Hallmark 未改。
+
+## 2026-07-26 - Task: 光栅影画推广到阵营页
+
+### What was done
+把角色页已验证的 X-ray 光栅影画推广到阵营页成员卡：5 张（不同阵营按实际成员数 4-5 张）立绘由整体黑白改为鼠标位置透出彩色，各卡独立感应，同一时刻只点亮指针所在那张。原先写死在角色页的注入逻辑抽成表驱动的通用函数，新增页面只需在 XRAY_TARGETS 登记宿主与感应区。
+
+首页经排查只有 1 张立绘且已接入光栅，没有第二个可用位，未硬加图片凑数。主线/活动/幕后/剧情/培养五页以文字与截图为主，无整幅立绘，明确不接入并写入设计文档。
+
+### Testing
+全站回归 18 项（9 页 x 桌面/移动）全部 PASS：零 JS 报错、零横向溢出、时间轴无隐形项、非官方声明在位、黑白副本无残留 alt。
+阵营页交互专项：5 张卡全部挂载（mounted 5 / veils 5），悬停第 2 张时 liveIdx 为 [1] 且 --mx/--my 正确写入，移开后复位为空，确认无互相干扰。
+两个阵营对照：cunning-hares 挂 5 张、victoria-housekeeping 挂 4 张，按成员数正确适配。
+截图证据 artifacts/faction-xray.png：AGENT 02 透出彩色、相邻 AGENT 03 保持黑白。
+
+### Notes
+改动文件清单：
+- archive-tools.js — 角色页专用的 injectPortraitXray 重写为表驱动 mountXray + XRAY_TARGETS 配置表，新增阵营页目标项
+- faction.html — 引入 design.css（光栅样式来源）
+- DESIGN.md — 第 6 节标题由"角色页背景"改为"立绘交互"，补适用范围表、感应区选择原理、不接入页面的理由、黑白副本清空 alt 的无障碍要求
+
+排查记录：阵营页首次接入悬停无反应，根因是 .agent-entry-head 自身 pointer-events:none 且被兄弟层 .agent-entry-glow 覆盖，事件改挂外层 .agent-entry 后正常。此坑已写入 DESIGN.md 避免复现。
+
+回滚方式：git revert 本次 commit 即可。若只想关掉阵营页光栅而保留角色页，删除 archive-tools.js 中 XRAY_TARGETS 里 .agent-entry-head 那一项。上一稳定点 dd80e34。
