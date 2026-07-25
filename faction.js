@@ -18,20 +18,27 @@
     const ids=faction?.members||[];
     return characters.filter(character=>character.factionId===id||ids.includes(character.id));
   };
+  const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
   const headshot=member=>{
-    const source=member.headshot||member.avatar;
+    const source=safeUrl(member.headshot||member.avatar,{image:true})||member.headshot||member.avatar||'';
     return source?`<img src="${esc(source)}" alt="${esc(member.name)} 头部立绘" loading="lazy"/>`:`<span>${esc(member.name.slice(0,1))}</span>`;
   };
-  const portrait=member=>member.portrait?`<img src="${esc(member.portrait)}" alt="${esc(member.name)} 全身立绘" loading="lazy"/>`:'';
-  const bindAgentDepth=()=>document.querySelectorAll('.agent-entry').forEach(card=>{
-    card.addEventListener('pointermove',event=>{
-      if(event.pointerType==='touch')return;
-      const rect=card.getBoundingClientRect();
-      card.style.setProperty('--agent-x',`${((event.clientX-rect.left)/rect.width-.5)*2}`);
-      card.style.setProperty('--agent-y',`${((event.clientY-rect.top)/rect.height-.5)*2}`);
+  const portrait=member=>{
+    const source=safeUrl(member.portrait,{image:true})||member.portrait||'';
+    return source?`<img src="${esc(source)}" alt="${esc(member.name)} 全身立绘" loading="lazy"/>`:'';
+  };
+  const bindAgentDepth=()=>{
+    if(reducedMotion.matches)return;
+    document.querySelectorAll('.agent-entry').forEach(card=>{
+      card.addEventListener('pointermove',event=>{
+        if(reducedMotion.matches||event.pointerType==='touch')return;
+        const rect=card.getBoundingClientRect();
+        card.style.setProperty('--agent-x',`${((event.clientX-rect.left)/rect.width-.5)*2}`);
+        card.style.setProperty('--agent-y',`${((event.clientY-rect.top)/rect.height-.5)*2}`);
+      });
+      card.addEventListener('pointerleave',()=>{card.style.removeProperty('--agent-x');card.style.removeProperty('--agent-y')});
     });
-    card.addEventListener('pointerleave',()=>{card.style.removeProperty('--agent-x');card.style.removeProperty('--agent-y')});
-  });
+  };
   if(!faction){
     document.title='Hooxi // 阵营不存在';
     document.querySelector('#factionName').innerHTML='阵营<br/><span>不存在</span>';
@@ -40,6 +47,9 @@
     return;
   }
   document.title=`${faction.name} // Hooxi 阵营档案`;
+  const setMetaDescription=(text)=>{let m=document.querySelector('meta[name="description"]');if(!m){m=document.createElement('meta');m.setAttribute('name','description');document.head.appendChild(m);}m.setAttribute('content',text);};
+  setMetaDescription(`${faction.name} 阵营档案与成员导航。Hooxi 粉丝非官方剧情档案站。`);
+
   document.documentElement.style.setProperty('--faction-theme',faction.theme||'#f3d33b');
   document.querySelector('#factionName').innerHTML=`<span data-editor-id="faction.${esc(faction.id)}.name" data-editor-type="faction" data-editor-field="name">${esc(faction.name)}</span><br/><span>阵营档案</span>`;
   document.querySelector('#factionSummary').textContent=faction.summary||'';

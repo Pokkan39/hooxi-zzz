@@ -1,0 +1,23 @@
+{
+  "scanDate": "2026-07-20",
+  "design": {
+    "path": "design.md",
+    "management": "system-managed",
+    "locked": true
+  },
+  "framework": "vanilla static HTML with a React page bundle/island",
+  "build": ["React", "ReactDOM", "esbuild"],
+  "fonts": {
+    "selfHosted": ["Barlow Condensed", "Space Mono"],
+    "chinese": "system"
+  },
+  "tokens": "custom OKLCH/legacy token stack",
+  "spacing": "4pt",
+  "motion": {
+    "library": null,
+    "mode": "motion-cut",
+    "page": "CSS state motion"
+  },
+  "preserve": ["design.md", "tokens", "fonts", "spacing"],
+  "introduce": ["Split Studio React workbench", "slop gates"]
+}

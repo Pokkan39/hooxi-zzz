@@ -1,0 +1,95 @@
+/* Hallmark · macrostructure: Long Document · tone: utilitarian cold-gray archive
+ * theme: custom (vibe: "cold steel dossier" · paper cool charcoal · accent muted amber · condensed + ui sans)
+ * enrichment: none · product: HOOXI ZZZ story archive · readability pass
+ * axes: dark / grotesk-sans / warm-amber
+ */
+:root{
+  /* surfaces — cool charcoal ladder, no warm cream paper */
+  --bg-0:#0b0e13;
+  --bg-1:#121820;
+  --bg-2:#1a222d;
+  --bg-3:#243041;
+  --bg-elev:#17202a;
+  --panel:rgba(26,34,45,.94);
+  --panel-solid:#17202a;
+
+  /* ink — cool off-white */
+  --text:#e8ecf1;
+  --text-2:rgba(232,236,241,.78);
+  --text-3:rgba(232,236,241,.55);
+  --text-4:rgba(232,236,241,.34);
+
+  /* single accent — muted amber; signal cyan as rare secondary (ZZZ street UI) */
+  --amber:#e0b41c;
+  --amber-hot:#f0c93a;
+  --amber-dim:rgba(224,180,28,.16);
+  --amber-line:rgba(224,180,28,.48);
+  --signal:#3ec7d6;
+  --signal-dim:rgba(62,199,214,.14);
+  --signal-line:rgba(62,199,214,.42);
+  --coral:#e07a45;
+  --teal:var(--signal);
+
+  /* lines */
+  --line:rgba(255,255,255,.09);
+  --line-strong:rgba(255,255,255,.16);
+  --shadow:0 18px 40px rgba(0,0,0,.38);
+  --shadow-hard:4px 4px 0 rgba(0,0,0,.72);
+
+  /* legacy aliases used by older CSS */
+  --ink:var(--bg-0);
+  --paper:var(--bg-1);
+  --paper-2:var(--bg-2);
+  --yellow:var(--amber);
+  --yellow-hot:var(--amber-hot);
+  --orange:var(--amber);
+  --muted:var(--text-3);
+  --text-dim:var(--text-2);
+  --text-faint:var(--text-3);
+  --line-soft:var(--line);
+  --glow-yellow:0 0 22px rgba(201,162,39,.18);
+  --archive-accent:var(--amber);
+  --archive-secondary:var(--amber-hot);
+
+  /* type */
+  --font-display:"Barlow Condensed","Segoe UI",system-ui,sans-serif;
+  --font-body:"Segoe UI","PingFang SC","Microsoft YaHei UI",sans-serif;
+  --font-mono:"Space Mono","Consolas",monospace;
+
+  /* space 4pt */
+  --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:24px;--s-6:32px;--s-7:48px;--s-8:64px;
+  --radius:2px;
+  --radius-lg:8px;
+  --max:1180px;
+
+  /* design.md semantic contract — aliases only; components consume these names */
+  --color-bg-stage:var(--bg-0);
+  --color-bg-base:var(--bg-1);
+  --color-surface-1:var(--bg-2);
+  --color-surface-2:var(--bg-3);
+  --color-surface-raised:var(--bg-elev);
+  --color-text-1:var(--text);
+  --color-text-2:var(--text-2);
+  --color-text-3:var(--text-3);
+  --color-line:var(--line);
+  --color-line-strong:var(--line-strong);
+  --color-accent:var(--amber);
+  --color-accent-hover:var(--amber-hot);
+  --color-accent-soft:var(--amber-dim);
+  --color-cool:var(--signal);
+  --color-warm:var(--coral);
+  --color-danger:var(--coral);
+  --color-success:var(--signal);
+  --color-focus:var(--amber-hot);
+  --content-max:var(--max);
+  --radius-sm:var(--radius);
+  --radius-md:var(--radius-lg);
+
+  /* motion */
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --ease-spring:cubic-bezier(.16,1,.3,1);
+  --motion-fast:.16s;
+  --motion-mid:.4s;
+
+  color-scheme:dark;
+}

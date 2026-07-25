@@ -1,13 +1,65 @@
 (()=>{
-  const snapshotDate='2026-07-13';
+  const snapshotDate='2026-07-18';
   const sourceLinks={
     official:'https://zenless.hoyoverse.com/',
-    wiki:'https://zenless-zone-zero.fandom.com/wiki/Agent',
+    wiki:'https://baike.mihoyo.com/zzz/wiki/',
     prydwen:'https://www.prydwen.gg/zenless/characters'
+  };
+  const factionBlurbs={
+    'cunning-hares':'以六分街为据点的万事屋，承接各类空洞相关委托，也是绳匠最早并肩行动的伙伴。',
+    'belobog':'专注工程与空洞作业的重工企业，以机械、体能与火线突击见长。',
+    'victoria-housekeeping':'看似优雅的家政团队，实际擅长清理高危目标与维持都市暗面秩序。',
+    'sons-of-calydon':'驰骋外环的摩托帮，重视义气、自由与当面说清的规矩。',
+    'section-6':'对空洞特别行动部第六课，负责特殊威胁研判与高优先级空洞任务。',
+    'criminal-investigation-srt':'刑侦特勤相关队伍，在都市案件与异常事件一线取证作战。',
+    'obol-squad':'防卫军序列中的精锐小队，执行高强度战术行动。',
+    'stars-of-lyra':'以演出与经纪事务为表层身份的协作阵营，成员风格鲜明。',
+    'mockingbird':'游走在都市暗面的搭档组合，行动风格狡黠且目标明确。',
+    'yunkui-summit':'云岿山一脉，功法与门派传承并重，处事自有章法。',
+    'spook-shack':'怪啖屋相关代理人集结地，风格灵异、幽默，任务往往出人意料。',
+    'krampus-compliance-authority':'负责合规与惩戒执行的黑枝序列，行动冷静而直接。',
+    'angels-of-delusion':'新兴偶像与执行一体的组合，表层是舞台，里层是委托。',
+    'metropolitan-order-division':'都市秩序相关编制，关注街头秩序与异常事件处置。',
+    'defense-force-silver-squad':'防卫军白银小队，保留军旅痕迹与高强度训练背景。',
+    'external-strategy-department':'外务筹策相关编制，偏重情报、协调与特殊勤务。',
+    'phaethon':'绳匠「法厄同」一侧的档案入口，串联录像店与城市委托线。'
+  };
+  const factionLogos={
+    'cunning-hares':'assets/icons/cunning-hares.png',
+    'victoria-housekeeping':'assets/icons/victoria-housekeeping.png',
+    'belobog':'assets/icons/belobog.png',
+    'sons-of-calydon':'assets/icons/sons-of-calydon.png',
+    'section-6':'assets/icons/section-6.png',
+    'criminal-investigation-srt':'assets/icons/criminal-investigation-srt.png',
+    'obol-squad':'assets/icons/obol-squad.png',
+    'stars-of-lyra':'assets/icons/stars-of-lyra.png',
+    'mockingbird':'assets/icons/mockingbird.png',
+    'yunkui-summit':'assets/icons/yunkui-summit.png',
+    'spook-shack':'assets/icons/spook-shack.png',
+    'krampus-compliance-authority':'assets/icons/krampus-compliance-authority.png',
+    'angels-of-delusion':'assets/icons/angels-of-delusion.png',
+    'metropolitan-order-division':'assets/icons/metropolitan-order-division.png',
+    'defense-force-silver-squad':'assets/icons/defense-force-silver-squad.png',
+    'external-strategy-department':'assets/icons/external-strategy-department.png',
+    'phaethon':'assets/icons/phaethon.png'
   };
   const factions=[
     ['cunning-hares','狡兔屋','#f3d33b'],['belobog','白祇重工','#ef6e3a'],['victoria-housekeeping','维多利亚家政','#bfc9dc'],['sons-of-calydon','卡吕冬之子','#e65031'],['section-6','对空洞特别行动部第六课','#65bce8'],['criminal-investigation-srt','刑侦特勤组','#3aaad8'],['obol-squad','奥波勒斯小队','#db3848'],['stars-of-lyra','天琴座','#f6a3cc'],['mockingbird','「反舌鸟」','#8169c7'],['yunkui-summit','云岿山','#d9b553'],['spook-shack','怪啖屋','#6bb68d'],['krampus-compliance-authority','「坎卜斯黑枝」','#a55555'],['angels-of-delusion','「妄想天使」','#ef8fc0'],['metropolitan-order-division','都市秩序部','#5b86b8'],['defense-force-silver-squad','防卫军・白银小队','#b8c3d1'],['external-strategy-department','外务筹策局','#988bc4'],['phaethon','「法厄同」','#e6c33b']
-  ].map(([id,name,theme])=>({id,name,theme,logo:'',background:'',summary:'绝区零代理人所属阵营。成员与角色资料按资料快照维护。',members:[]}));
+  ].map(([id,name,theme])=>{
+    const wikiId=({
+      'cunning-hares':'547',
+      'victoria-housekeeping':'548'
+    })[id]||'';
+    return {
+      id,name,theme,
+      logo:factionLogos[id]||'',
+      background:'',
+      summary:factionBlurbs[id]||`${name}相关代理人阵营档案。`,
+      members:[],
+      wikiId,
+      wikiUrl:wikiId?`https://baike.mihoyo.com/zzz/wiki/content/${wikiId}/detail`:''
+    };
+  });
   const rows=[
     ['rina','亚历山德丽娜·莎芭丝缇安','Alexandrina Sebastiane','victoria-housekeeping','S','Electric','Support','Strike','2024-07-04','Weeping Cradle','September 23rd'],
     ['alice','爱丽丝·泰姆菲尔德','Alice Thymefield','spook-shack','S','Physical','Anomaly','Slash','2025-08-06','Practiced Perfection','August 30th'],
@@ -67,22 +119,123 @@
     ['zhu-yuan','朱鸢','Zhu Yuan','criminal-investigation-srt','S','Ether','Attack','Pierce','2024-07-24','Riot Suppressor Mark VI','September 1st']
   ];
   const zh={Physical:'物理',Fire:'火',Ice:'冰',Electric:'电',Ether:'以太',Frost:'烈霜','Auric Ink':'玄墨','Honed Edge':'霜锋',Wind:'风',Attack:'强攻',Stun:'击破',Anomaly:'异常',Support:'支援',Defense:'防护',Rupture:'命破',Slash:'斩击',Strike:'打击',Pierce:'穿透'};
-  const characters=rows.map(([id,name,englishName,factionId,rank,attribute,specialty,attackType,releaseDate,signatureWEngine,birthday])=>({
-    id,name,englishName,factionId,rank,attribute:zh[attribute]||attribute,specialty:zh[specialty]||specialty,attackType:attackType.split(' / ').map(value=>zh[value]||value).join(' / '),releaseDate,signatureWEngine,birthday,
-    avatar:`assets/portraits/${id}-card.webp`,headshot:`assets/portraits/${id}-card.webp`,portrait:id==='anby'?'assets/portraits/anby-portrait.png':`assets/portraits/${id}-card.webp`,
-    summary:`${name}是${factions.find(item=>item.id===factionId)?.name||'待核验阵营'}的${zh[specialty]||specialty}代理人。基础档案按 ${snapshotDate} 资料快照维护。`,
-    role:`${zh[attribute]||attribute} · ${zh[specialty]||specialty}`,
-    combat:{overview:'核心机制、技能循环与实战要点待按官方技能资料补齐。',skillPriority:[]},
-    materials:{level:[],skills:[],core:[],note:'材料名称与总量正在按官方游戏数据核验；未完成前不展示推测数字。'},
-    build:{wEngines:[signatureWEngine],driveDiscs:[],mainStats:[],subStats:[],teams:[],note:'配装与配队属于版本攻略建议，后续条目会标注适用版本与来源。'},
-    sources:[{label:'绝区零官方资料',url:sourceLinks.official,type:'官方资料'},{label:'Zenless Zone Zero Wiki',url:sourceLinks.wiki,type:'资料汇总'},{label:'Prydwen 角色卡面与攻略',url:`https://www.prydwen.gg/zenless/characters/${id==='anby'?'anby-demara':id==='soldier-0-anby'?'anby-demara-soldier-0':id==='starlight-billy'?'billy-starlight':id}`,type:'第三方资料'}],
-    updatedAt:snapshotDate,personalStories:[],relatedIds:[]
-  }));
-  factions.forEach(faction=>{faction.members=characters.filter(character=>character.factionId===faction.id).map(character=>character.id)});
-  const catalog={snapshotDate,sources:sourceLinks,factions,characters};
+  const firstLine=value=>{
+    const text=String(value||'').replace(/\r/g,'').trim();
+    if(!text) return '';
+    return text.split('\n').map(line=>line.trim()).find(Boolean)||'';
+  };
+  // 正式站只加载同源媒体；外部详情链接仍保留为用户主动点击的跳转。
+  const mediaUrl=value=>{
+    const text=String(value||'').trim();
+    if(!text||text.startsWith('//')||/^https?:/i.test(text)||text.startsWith('/zzz/wiki/')) return '';
+    return text;
+  };
+  const localCard=id=>`assets/portraits/${id}-card.webp`;
+  const enrichmentBag=window.agentEnrichment?.agents||{};
+  const characters=rows.map(([id,name,englishName,factionId,rank,attribute,specialty,attackType,releaseDate,signatureWEngine,birthday])=>{
+    const enrich=enrichmentBag[id]||{};
+    const factionName=factions.find(item=>item.id===factionId)?.name||'待核验阵营';
+    const impression=String(enrich.impression||'').trim();
+    const summary=firstLine(impression)||`${name}是${factionName}的${zh[specialty]||specialty}代理人。`;
+    const personalStories=(enrich.personalStories||[]).filter(item=>item&&item.summary).map(item=>({
+      title:item.title||'角色故事',
+      summary:item.summary,
+      source:'角色档案摘录'
+    }));
+    const card=localCard(id);
+    const wikiIcon=mediaUrl(enrich.iconUrl);
+    const wikiHeader=mediaUrl(enrich.headerImgUrl);
+    const growth=(enrich.growth||[]).map(stage=>({
+      ...stage,
+      materials:(stage?.materials||[]).map(material=>({
+        ...material,
+        url:material?.url||'',
+        // 仅保留经 mediaUrl 校验的同源本地图标；丢弃远程热链。
+        icon:mediaUrl(material?.icon)||''
+      }))
+    }));
+    const gallery=(enrich.gallery||[]).map(item=>{
+      if(!item) return null;
+      // 仅保留同源本地图集；丢弃远程热链，避免 ||item.image 把外链带回页面。
+      const image=mediaUrl(item.image||item.url||item.src)||'';
+      if(!image) return null;
+      return {...item,image};
+    }).filter(Boolean);
+    const wikiDetail=enrich.wikiUrl||(enrich.wikiId?`https://baike.mihoyo.com/zzz/wiki/content/${enrich.wikiId}/detail`:'');
+    const sources=[
+      {label:'绝区零官方资料',url:sourceLinks.official,type:'官方资料'},
+      {label:'米哈游绝区零百科',url:wikiDetail||sourceLinks.wiki,type:'资料汇总'},
+      {label:'Prydwen 角色卡面与攻略',url:`https://www.prydwen.gg/zenless/characters/${id==='anby'?'anby-demara':id==='soldier-0-anby'?'anby-demara-soldier-0':id==='starlight-billy'?'billy-starlight':id}`,type:'第三方资料'}
+    ];
+    (enrich.strategyLinks||[]).forEach(link=>{
+      if(link?.url) sources.push({label:link.title||'相关资料',url:link.url,type:'攻略合集'});
+    });
+    return {
+      id,name,englishName,factionId,rank,
+      attribute:zh[attribute]||attribute,
+      specialty:zh[specialty]||specialty,
+      attackType:attackType.split(' / ').map(value=>zh[value]||value).join(' / '),
+      releaseDate,signatureWEngine,birthday,
+      avatar:card,
+      headshot:card,
+      portrait:id==='anby'?'assets/portraits/anby-portrait.png':card,
+      iconUrl:wikiIcon,
+      headerImgUrl:wikiHeader,
+      summary,
+      impression,
+      cv:String(enrich.cv||'').trim(),
+      shopNotes:enrich.shopNotes||[],
+      gallery,
+      growth,
+      role:`${zh[attribute]||attribute} · ${zh[specialty]||specialty}`,
+      combat:{overview:impression?`档案印象摘录：${firstLine(impression)}`:'核心机制、技能循环与实战要点待按技能资料补齐。',skillPriority:[]},
+      materials:{level:[],skills:[],core:[],note:'材料名称与总量按官方游戏数据核验中；本站优先维护剧情关系与档案导航。'},
+      build:{wEngines:[signatureWEngine],driveDiscs:[],mainStats:[],subStats:[],teams:[],note:'配装与配队属于版本向建议；正式档案层以角色关系、印象与剧情导航为主。'},
+      sources,
+      updatedAt:snapshotDate,
+      personalStories,
+      relatedIds:[],
+      wikiId:enrich.wikiId||'',
+      archiveNote:window.agentEnrichment?.note||''
+    };
+  });
+  factions.forEach(faction=>{
+    const members=characters.filter(character=>character.factionId===faction.id);
+    faction.members=members.map(character=>character.id);
+    if(members.length){
+      const names=members.slice(0,4).map(character=>character.name).join('、');
+      const more=members.length>4?`等 ${members.length} 人`:`共 ${members.length} 人`;
+      faction.summary=`${faction.summary} 现收录：${names}${more.startsWith('等')?more:`，${more}`}。`;
+    }
+  });
+  const catalog={snapshotDate,sources:sourceLinks,factions,characters,enrichment:window.agentEnrichment||null};
   window.agentCatalog=catalog;
   const archive=window.archiveData||(window.archiveData={});
-  const mergeById=(defaults,overrides)=>{const edited=new Map((overrides||[]).map(item=>[item.id,item]));const merged=defaults.map(item=>({...item,...(edited.get(item.id)||{})}));(overrides||[]).forEach(item=>{if(!defaults.some(row=>row.id===item.id))merged.push(item)});return merged};
+  const mergeById=(defaults,overrides)=>{
+    const edited=new Map((overrides||[]).map(item=>[item.id,item]));
+    // catalog is source of truth for roster; only keep non-conflicting local fields from data.js
+    return defaults.map(item=>{
+      const local=edited.get(item.id)||{};
+      const merged={...item,...local,id:item.id};
+      // prefer enrichment-backed narrative fields when local still looks like placeholder
+      if(item.summary&&(!local.summary||/待补充|资料快照维护|可替换/.test(local.summary))) merged.summary=item.summary;
+      if(item.personalStories?.length&&(!local.personalStories||!local.personalStories.length||local.personalStories.every(row=>/待补充|待接入/.test(row.title||'')))) merged.personalStories=item.personalStories;
+      if(item.impression) merged.impression=item.impression;
+      if(item.cv) merged.cv=item.cv;
+      if(item.gallery?.length) merged.gallery=item.gallery;
+      if(item.growth?.length) merged.growth=item.growth;
+      if(item.sources?.length) merged.sources=item.sources;
+      if(item.members) merged.members=item.members;
+      if(item.theme&&!local.theme) merged.theme=item.theme;
+      // 美术路径以 catalog 为准，避免旧空 logo / 坏相对路径覆盖
+      if(item.logo!==undefined) merged.logo=item.logo||local.logo||'';
+      if(item.avatar) merged.avatar=item.avatar;
+      if(item.headshot) merged.headshot=item.headshot;
+      if(item.portrait) merged.portrait=item.portrait;
+      return merged;
+    });
+  };
   archive.factions=mergeById(factions,archive.factions);
   archive.characters=mergeById(characters,archive.characters);
+  archive.meta={...(archive.meta||{}),agentSnapshotDate:snapshotDate,agentSource:window.agentEnrichment?.source||'agent-catalog',agentCount:archive.characters.length,factionCount:archive.factions.length};
 })();

@@ -1,0 +1,262 @@
+/* Site lane sidebar — cold gray + amber archive rail */
+
+:root{
+  --site-sidebar-w:0px;
+  --site-sidebar-rail:60px;
+  --site-sidebar-expanded:200px;
+  --site-sidebar-bg:#10141a;
+  --site-sidebar-line:#2a313c;
+  --site-sidebar-ink:#d7dde8;
+  --site-sidebar-muted:#8b93a3;
+  --site-sidebar-amber:#f3d33b;
+  --site-sidebar-z:48;
+  --site-sidebar-motion:.18s ease;
+}
+
+body.subpage.has-site-sidebar{
+  --site-sidebar-w:var(--site-sidebar-rail);
+  padding-left:var(--site-sidebar-w);
+}
+
+body.subpage.has-site-sidebar.is-sidebar-expanded{
+  --site-sidebar-w:var(--site-sidebar-expanded);
+}
+
+.site-sidebar-root{
+  position:relative;
+  z-index:var(--site-sidebar-z);
+}
+
+.site-sidebar-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:calc(var(--site-sidebar-z) - 1);
+  border:0;
+  margin:0;
+  padding:0;
+  background:rgba(4,6,10,.55);
+  cursor:pointer;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity var(--site-sidebar-motion);
+}
+
+.site-sidebar-backdrop.is-visible{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.site-sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  z-index:var(--site-sidebar-z);
+  width:var(--site-sidebar-w);
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding:8px 6px 10px;
+  box-sizing:border-box;
+  background:var(--site-sidebar-bg);
+  color:var(--site-sidebar-ink);
+  border-right:1px solid var(--site-sidebar-line);
+  box-shadow:4px 0 0 rgba(0,0,0,.28);
+  overflow:hidden;
+  transition:width var(--site-sidebar-motion);
+}
+
+.site-sidebar-head,
+.site-sidebar-foot{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  flex:none;
+}
+
+.site-sidebar-nav{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  flex:1 1 auto;
+  min-height:0;
+  overflow:auto;
+  overscroll-behavior:contain;
+  padding:2px 0;
+}
+
+.site-sidebar-toggle,
+.site-sidebar-link,
+.site-sidebar-tool{
+  appearance:none;
+  box-sizing:border-box;
+  min-height:44px;
+  min-width:44px;
+  margin:0;
+  border:1px solid transparent;
+  border-radius:0;
+  background:transparent;
+  color:inherit;
+  font:700 12px/1.1 'Space Mono',ui-monospace,monospace;
+  letter-spacing:.04em;
+  text-decoration:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:0 8px;
+  width:100%;
+  text-align:left;
+}
+
+.site-sidebar-toggle{
+  justify-content:center;
+  border-color:var(--site-sidebar-line);
+  background:#161c25;
+  color:var(--site-sidebar-amber);
+}
+
+.site-sidebar-toggle:hover,
+.site-sidebar-toggle:focus-visible{
+  border-color:var(--site-sidebar-amber);
+  outline:none;
+}
+
+.site-sidebar-toggle-mark{
+  font-size:14px;
+  line-height:1;
+}
+
+.site-sidebar-link{
+  color:var(--site-sidebar-muted);
+  border-left:2px solid transparent;
+  padding-left:6px;
+}
+
+.site-sidebar-link:hover,
+.site-sidebar-link:focus-visible{
+  color:var(--site-sidebar-ink);
+  background:#171d27;
+  outline:none;
+}
+
+.site-sidebar-link.is-active,
+.site-sidebar-link[aria-current="page"]{
+  color:var(--site-sidebar-amber);
+  border-left-color:var(--site-sidebar-amber);
+  background:#1a2230;
+}
+
+.site-sidebar-short{
+  flex:none;
+  width:28px;
+  text-align:center;
+  font-size:13px;
+  color:inherit;
+}
+
+.site-sidebar-label{
+  display:none;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+body.subpage.has-site-sidebar.is-sidebar-expanded .site-sidebar-label{
+  display:inline;
+}
+
+body.subpage.has-site-sidebar.is-sidebar-expanded .site-sidebar-toggle{
+  justify-content:flex-start;
+}
+
+.site-sidebar-tools{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:4px;
+}
+
+.site-sidebar-tool{
+  justify-content:center;
+  border-color:var(--site-sidebar-line);
+  background:#141a22;
+  color:var(--site-sidebar-ink);
+  padding:0;
+  font-size:14px;
+}
+
+.site-sidebar-tool:hover,
+.site-sidebar-tool:focus-visible{
+  border-color:var(--site-sidebar-amber);
+  color:var(--site-sidebar-amber);
+  outline:none;
+}
+
+.site-sidebar-tool:disabled,
+.site-sidebar-tool[aria-disabled="true"]{
+  opacity:.38;
+  cursor:not-allowed;
+}
+
+.site-sidebar-editor{
+  gap:8px;
+}
+
+body.subpage.has-site-sidebar.is-sidebar-expanded .site-sidebar-editor{
+  justify-content:flex-start;
+  padding:0 8px;
+}
+
+/* Sticky topbar lives in the padded content box already (body padding-left).
+   Fixed music player ignores padding, so recenter into the remaining viewport. */
+body.subpage.has-site-sidebar .music-player{
+  left:calc(50% + (var(--site-sidebar-w) / 2));
+  width:min(820px, calc(92vw - var(--site-sidebar-w)));
+}
+
+body.subpage.has-site-sidebar .topbar.topbar-slim{
+  justify-content:flex-start;
+  gap:16px;
+}
+
+body.subpage.has-site-sidebar .topbar.topbar-slim .top-meta{
+  margin-left:auto;
+}
+
+body.subpage.has-site-sidebar .topbar.topbar-slim > .icon-button{
+  margin-left:0;
+}
+
+/* Keep character module rail inside page content; site rail is outer. */
+body.subpage.has-site-sidebar .character-left-rail{
+  width:76px;
+  padding-inline:8px;
+}
+
+@media (max-width:760px){
+  body.subpage.has-site-sidebar,
+  body.subpage.has-site-sidebar.is-sidebar-expanded{
+    --site-sidebar-w:var(--site-sidebar-rail);
+  }
+
+  body.subpage.has-site-sidebar.is-sidebar-expanded .site-sidebar{
+    width:min(84vw, var(--site-sidebar-expanded));
+    box-shadow:8px 0 0 rgba(0,0,0,.35);
+  }
+
+  body.subpage.has-site-sidebar .character-left-rail{
+    width:52px;
+    padding-inline:6px;
+  }
+
+  body.subpage.has-site-sidebar .topbar.topbar-slim .top-meta{
+    display:none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .site-sidebar,
+  .site-sidebar-backdrop{
+    transition:none;
+  }
+}

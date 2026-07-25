@@ -1,10 +1,7 @@
 (function () {
   'use strict';
 
-  const EDITOR_PASSWORD = 'Hooxi777771';
-  const MAX_FAILED_ATTEMPTS = 5;
-  const LOCK_MS = 10 * 60 * 1000;
-  const GATE_STATE_KEY = 'hooxi:editor-gate';
+  const API_BASE = location.hostname === 'localhost' && location.port === '3001' ? '' : 'http://localhost:3001';
   const PREVIEW_KEY = 'hooxi:preview:data';
   const GUIDE_KEY = 'hooxi:editor-guide-seen';
   const FIELD_HELP = {
@@ -42,7 +39,10 @@
     rotation: '顺时针旋转角度；负数会逆时针旋转。',
     showCaption: '控制是否显示图片角标文字。',
     eyebrow: '页头上方的小号英文或分类提示，用来快速说明当前页面主题。',
-    intro: '页头的大段简介，会出现在页面主标题下方。'
+    intro: '页头的大段简介，会出现在页面主标题下方。',
+    image: '首页右侧视觉主角图。仓库内建议 assets/hooxi-rebuild/ 下的相对路径；本地预览可用临时 blob。',
+    titleScale: '首页主标题缩放百分比。100 为默认，建议 90–120。',
+    bodyScale: '首页正文/简介缩放百分比。100 为默认，建议 95–110。'
   };
   const PAGE_OPTIONS = [
     { key: 'home', label: '首页', file: 'data.js', url: 'index.html', dataKey: 'mainline', siteKey: 'home' },
@@ -60,6 +60,7 @@
   const loginPanel = $('#loginPanel');
   const editorPanel = $('#editorPanel');
   const loginForm = $('#loginForm');
+  const loginId = $('#loginId');
   const loginPassword = $('#loginPassword');
   const loginError = $('#loginError');
   const loginBtn = $('#loginBtn');
@@ -87,6 +88,7 @@
   const entitySelector = $('#entitySelector');
   const entitySelectorLabel = $('#entitySelectorLabel');
   const entitySelect = $('#entitySelect');
+  const userInfo = $('#userInfo');
 
   let currentFile = 'data.js';
   let currentPageKey = 'mainline';
@@ -96,6 +98,8 @@
   let toastTimer = 0;
   let editorMode = 'visual';
   let archiveDraft = null;
+  let csrfToken = '';
+  let editorLoaded = false;
   const selectedEntityIds = { faction: '', character: '' };
 
   function showToast(message, isError = false) {
@@ -109,57 +113,6 @@
 
   function esc(value) {
     return String(value ?? '').replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char]));
-  }
-
-  function readGateState() {
-    try {
-      return JSON.parse(localStorage.getItem(GATE_STATE_KEY)) || { failures: 0, lockedUntil: 0 };
-    } catch {
-      return { failures: 0, lockedUntil: 0 };
-    }
-  }
-
-  function writeGateState(state) {
-    localStorage.setItem(GATE_STATE_KEY, JSON.stringify(state));
-  }
-
-  function clearGateState() {
-    localStorage.removeItem(GATE_STATE_KEY);
-  }
-
-  function lockRemainingText(ms) {
-    const totalSeconds = Math.ceil(ms / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}分${String(seconds).padStart(2, '0')}秒`;
-  }
-
-  function updateGateLock() {
-    const state = readGateState();
-    const remaining = state.lockedUntil - Date.now();
-    if (remaining <= 0) {
-      if (state.lockedUntil) clearGateState();
-      loginBtn.disabled = false;
-      loginBtn.textContent = '进入编辑';
-      return false;
-    }
-    loginBtn.disabled = true;
-    loginBtn.textContent = '已锁定';
-    loginError.textContent = '输错过多，请 ' + lockRemainingText(remaining) + ' 后再试';
-    window.setTimeout(updateGateLock, Math.min(remaining, 1000));
-    return true;
-  }
-
-  function recordFailedPassword() {
-    const state = readGateState();
-    const failures = (state.failures || 0) + 1;
-    if (failures >= MAX_FAILED_ATTEMPTS) {
-      writeGateState({ failures, lockedUntil: Date.now() + LOCK_MS });
-      updateGateLock();
-      return;
-    }
-    writeGateState({ failures, lockedUntil: 0 });
-    loginError.textContent = `密码错误，还剩 ${MAX_FAILED_ATTEMPTS - failures} 次机会`;
   }
 
   function draftKey(file) {
@@ -220,9 +173,19 @@
       character: { eyebrow: '// AGENT PERSONAL ARCHIVE', title: '角色 / 档案', intro: '代理人个人资料。' },
       behindScenes: { eyebrow: '// BEHIND THE SIGNAL', title: '系列·幕后 / 对谈', intro: '收录创作幕后、访谈与特别记录。' },
       events: { eyebrow: '// EVENT ARCHIVE', title: '往期 / 活动', intro: '回看限时活动与特别主题剧情。' },
-      home: { eyebrow: '// VIDEO STORY ARCHIVE · 绝区零', title: '新艾利都 / 剧情档案', intro: 'Hooxi 的绝区零剧情视频整合站。沿着代理人的记录，重新进入每一段被以太侵蚀的故事。' }
+      home: { eyebrow: '// VIDEO STORY ARCHIVE · 绝区零', title: '先找到片 / 再决定看哪段', intro: '《绝区零》剧情视频档案与角色关系导航。按主线补课、按代理人找关联，少剧透，再回视频平台观看。', image: 'assets/hero/zzz-random-play-keyart.png', titleScale: 100, bodyScale: 100 }
     };
-    Object.entries(pageDefaults).forEach(([key, hero]) => { archiveDraft.site.pages[key] ??= { hero }; archiveDraft.site.pages[key].hero ??= hero; archiveDraft.site.pages[key].components ??= []; });
+    Object.entries(pageDefaults).forEach(([key, hero]) => {
+      archiveDraft.site.pages[key] ??= { hero: { ...hero } };
+      archiveDraft.site.pages[key].hero ??= { ...hero };
+      if (key === 'home') {
+        const h = archiveDraft.site.pages.home.hero;
+        h.image ??= hero.image;
+        h.titleScale ??= 100;
+        h.bodyScale ??= 100;
+      }
+      archiveDraft.site.pages[key].components ??= [];
+    });
     archiveDraft.pageMeta ??= {};
     editablePages.forEach((page) => {
       archiveDraft.pageMeta[page.dataKey] ??= {};
@@ -330,10 +293,16 @@
     if (!siteKey || page.key === 'faction' || page.key === 'character') return '';
 
     const hero = archiveDraft.site.pages[siteKey]?.hero || {};
+    const isHome = siteKey === 'home';
     return `<section class="visual-section"><h3>页面外观</h3><article class="visual-card compact-card">
       ${field('页头小标题', `site.pages.${siteKey}.hero.eyebrow`, hero.eyebrow)}
       ${field('页头大标题（用 / 分行）', `site.pages.${siteKey}.hero.title`, hero.title)}
       ${field('页头简介', `site.pages.${siteKey}.hero.intro`, hero.intro, 'textarea')}
+      ${isHome ? field('首页主角图路径', `site.pages.home.hero.image`, hero.image || 'assets/hero/zzz-random-play-keyart.png') : ''}
+      ${isHome ? `<label class="file-pick"><span class="field-label">本地预览替换主角图</span><input type="file" accept="image/*" data-hero-image-file="home"/></label>
+      <p class="field-hint">本地文件仅本机预览；发布前请把图片放到 <code>assets/</code> 并填写上方路径。</p>
+      ${field('标题字号 %（80-140）', `site.pages.home.hero.titleScale`, hero.titleScale ?? 100, 'number')}
+      ${field('正文字号 %（85-130）', `site.pages.home.hero.bodyScale`, hero.bodyScale ?? 100, 'number')}` : ''}
     </article></section>`;
   }
 
@@ -846,40 +815,103 @@
     syncSourceFromVisual();
   }
 
-  function unlockEditor() {
-    clearGateState();
+  function showEditor(session) {
+    csrfToken = session.csrfToken;
     loginPanel.classList.add('hidden');
     editorPanel.classList.remove('hidden');
     loginError.textContent = '';
     loginBtn.disabled = false;
-    loginBtn.textContent = '进入编辑';
+    loginBtn.textContent = '登录并进入编辑';
+    userInfo.textContent = session.name || session.id;
     renderPageSelector();
     updatePreviewModeTabs();
     if (!localStorage.getItem(GUIDE_KEY)) editorGuide?.showModal();
-    loadCurrentFile();
+    if (!editorLoaded) {
+      editorLoaded = true;
+      loadCurrentFile();
+    }
   }
 
-  function lockEditor() {
+  function showLogin(message = '') {
+    csrfToken = '';
     editorPanel.classList.add('hidden');
     loginPanel.classList.remove('hidden');
     loginPassword.value = '';
-    loginError.textContent = '';
-    loginPassword.focus();
+    loginError.textContent = message;
+    loginBtn.disabled = false;
+    loginBtn.textContent = '登录并进入编辑';
+    loginId.focus();
   }
 
-  loginForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    if (updateGateLock()) return;
-    const password = loginPassword.value.trim();
-    if (!password) return;
-    if (password !== EDITOR_PASSWORD) {
-      recordFailedPassword();
-      return;
+  async function checkSession() {
+    try {
+      const response = await fetch(API_BASE + '/api/auth/session', { credentials: 'include' });
+      if (response.status === 401) {
+        showLogin();
+        return;
+      }
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const session = await response.json();
+      if (!session.authenticated || !session.csrfToken) {
+        showLogin();
+        return;
+      }
+      showEditor(session);
+    } catch {
+      showLogin('无法连接登录服务，请确认后端服务已启动后重试。');
     }
-    unlockEditor();
+  }
+
+  loginForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const id = loginId.value.trim();
+    const password = loginPassword.value;
+    if (!id || !password) return;
+    loginError.textContent = '';
+    loginBtn.disabled = true;
+    loginBtn.textContent = '登录中...';
+    try {
+      const response = await fetch(API_BASE + '/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ id, password })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if (data.error === 'invalid_credentials') throw new Error('账号或密码错误');
+        if (data.error === 'rate_limited') throw new Error('尝试过多，请稍后再试');
+        if (data.error === 'forbidden') throw new Error('当前页面来源不允许登录，请检查后端 Origin 配置');
+        throw new Error(data.message || '登录失败');
+      }
+      loginPassword.value = '';
+      showEditor(data);
+    } catch (error) {
+      const message = error instanceof TypeError
+        ? '无法连接登录服务，请确认后端服务已启动后重试。'
+        : error.message;
+      loginError.textContent = message;
+      loginBtn.disabled = false;
+      loginBtn.textContent = '登录并进入编辑';
+    }
   });
 
-  lockBtn.addEventListener('click', lockEditor);
+  lockBtn.addEventListener('click', async () => {
+    lockBtn.disabled = true;
+    try {
+      const response = await fetch(API_BASE + '/api/auth/logout', {
+        method: 'POST',
+        headers: { 'X-CSRF-Token': csrfToken },
+        credentials: 'include'
+      });
+      if (!response.ok && response.status !== 401) throw new Error(`HTTP ${response.status}`);
+      showLogin();
+    } catch {
+      showToast('退出登录失败：无法连接登录服务，请稍后重试。', true);
+    } finally {
+      lockBtn.disabled = false;
+    }
+  });
   saveDraftBtn.addEventListener('click', saveDraft);
   loadDraftBtn.addEventListener('click', loadDraft);
   revertBtn.addEventListener('click', revertToLive);
@@ -933,6 +965,14 @@
 
   visualEditor.addEventListener('change', (event) => {
     const target = event.target;
+    if (target.dataset.heroImageFile === 'home' && target.files?.[0]) {
+      const url = URL.createObjectURL(target.files[0]);
+      setPath('site.pages.home.hero.image', url);
+      const pathInput = visualEditor.querySelector('[data-path="site.pages.home.hero.image"]');
+      if (pathInput) pathInput.value = url;
+      showToast('已生成本地主角图预览；发布前请复制到 assets/ 并改回相对路径');
+      return;
+    }
     if (!target.dataset.path) return;
     setPath(target.dataset.path, normalizeInputValue(target));
   });
@@ -983,6 +1023,5 @@
     }
   });
 
-  updateGateLock();
-  lockEditor();
+  checkSession();
 })();

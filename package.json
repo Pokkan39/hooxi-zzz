@@ -1,0 +1,41 @@
+{
+  "name": "hooxi-zzz",
+  "version": "1.0.0",
+  "description": "Hooxi 的《绝区零》剧情视频档案站。访客页面按静态网站发布；编辑入口通过后端账号会话认证，编辑在本机完成后手动推送到 Git 仓库。",
+  "main": "active-theory-sample.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {
+    "playwright-core": "^1.61.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1",
+    "playwright": "^1.61.1"
+  },
+  "scripts": {
+    "test": "npm run test:content",
+    "build:stories": "esbuild src/stories.jsx --bundle --minify --format=iife --platform=browser --target=es2020 --outfile=stories.js",
+    "build:stories:draft": "esbuild src/stories.jsx --bundle --minify --format=iife --platform=browser --target=es2020 --outfile=artifacts/stories-draft.js",
+    "test:stories": "node scripts/regression.mjs",
+    "test:content": "node scripts/validate-archive.mjs && node scripts/check-link-integrity.mjs",
+    "test:ui": "node scripts/capture-r1-baseline.mjs",
+    "test:formal": "python scripts/check-formal-site-gate.py",
+    "test:links": "node scripts/check-link-integrity.mjs",
+    "test:links:online": "node scripts/check-link-integrity.mjs --online"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pokkan39/hooxi-zzz.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Pokkan39/hooxi-zzz/issues"
+  },
+  "homepage": "https://github.com/Pokkan39/hooxi-zzz#readme"
+}

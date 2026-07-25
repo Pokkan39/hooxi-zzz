@@ -1,8 +1,15 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Hooxi // 绝区零角色档案</title><link rel="stylesheet" href="styles.css"/><link rel="stylesheet" href="multi-page.css?v=character-1"/><link rel="stylesheet" href="motion.css?v=game-ui-1"/></head>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="description" content="搜索并选择代理人，快速进入角色影像、剧情、档案与来源。Hooxi 粉丝非官方剧情档案站。"/><title>代理人工作台 // Hooxi 绝区零档案</title><link rel="stylesheet" href="styles.css"/><link rel="stylesheet" href="multi-page.css?v=cold-gray-2"/><link rel="stylesheet" href="motion.css?v=signal-ui-r3"/><link rel="stylesheet" href="theme-zzz.css?v=play-ui-1"/><meta name="theme-color" content="#0e1014"/><meta name="author" content="Hooxi"/><meta name="robots" content="index,follow"/><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/><link rel="stylesheet" href="site-sidebar.css?v=rail-1"/><link rel="stylesheet" href="live-hud.css?v=hud-1"/><link rel="stylesheet" href="archive-tools.css?v=tools-1"/>
+</head>
 <body class="subpage archive-stories character-directory-page"><div class="ambient"><i></i><i></i><i></i><i></i><i></i></div><div class="noise"></div>
-<header class="topbar"><a class="brand" href="index.html"><span class="brand-mark">H</span><span><strong>HOOXI<span class="accent"> //</span></strong><small>ZENLESS ARCHIVE</small></span></a><div class="top-meta"><span class="signal-dot"></span> AGENT DATABASE</div><nav><a href="index.html">总览</a><a href="mainline.html">主线</a><a href="stories.html">角色</a><a href="behind-scenes.html">系列·幕后 / 对谈</a><a href="events.html">往期活动</a></nav></header>
-<main><section class="page-hero"><div class="hero-grid" aria-hidden="true"></div><div class="hero-copy-panel"><p class="eyebrow">// AGENT AFFILIATION DIRECTORY</p><h1>代理人<br/><span>角色档案</span></h1><p>按阵营进入代理人档案，查看角色 PV、养成建议与个人剧情记录。</p><div class="hero-status"><span>FACTION INDEX</span><b>SELECT A SIGNAL</b><span>NE-02</span></div></div><div class="hero-hud" aria-hidden="true"><span class="hud-kicker">AGENT ACCESS</span><strong id="factionCount">0</strong><i class="hud-portrait"></i><small>FACTIONS / AGENTS<br/>CITY NETWORK</small></div></section>
-<section class="timeline-page character-directory"><div class="directory-head"><p class="eyebrow">// FACTION SELECT</p><h2>选择一个阵营</h2><p>悬停图标查看入口，点击后进入该阵营的代理人档案。</p></div><div id="factionGrid" class="faction-entry-grid"></div></section></main>
-<footer><span>HOOXI // ZZZ AGENT ARCHIVE</span><span>FACTION DIRECTORY</span></footer>
-<script src="data.js?v=character-1"></script><script src="agent-catalog.js?v=wiki-1"></script><script src="layout-data.js?v=1"></script><script src="stories.js?v=character-1"></script><script src="layout-editor.js?v=1"></script></body></html>
+<header class="topbar topbar-slim"><a class="brand" href="index.html"><span class="brand-mark">H</span><span><strong>HOOXI<span class="accent"> //</span></strong><small>ZENLESS ARCHIVE</small></span></a><div class="top-meta"><span class="signal-dot"></span> AGENT DATABASE</div></header>
+<main><div id="storiesRoot"></div></main>
+<footer><span class="footer-disclaimer">粉丝非官方档案站 · 与米哈游无隶属 · Hooxi 个人品牌剧情档案</span><span>HOOXI // ZZZ AGENT ARCHIVE</span><span>AGENT WORKBENCH</span></footer>
+<script src="site-motion.js?v=signal-ui-r3"></script>
+<script src="site-sidebar.js?v=rail-1"></script>
+<script src="data.js?v=s1-1"></script>
+<script src="agent-catalog.js?v=archive-2"></script>
+<script src="layout-data.js?v=s1-1"></script><script src="image-webp.js?v=webp-4"></script>
+<script src="stories.js?v=react-game-client-1"></script>
+<script src="layout-editor.js?v=1"></script>
+<script src="live-hud.js?v=hud-1"></script><script src="archive-tools.js?v=tools-1"></script></body></html>

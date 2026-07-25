@@ -5,19 +5,19 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Hooxi 编辑入口</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2358a6ff'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-size='34' font-family='Arial' font-weight='900' fill='%230d1117'%3EH%3C/text%3E%3C/svg%3E"/>
-  <link rel="stylesheet" href="editor.css?v=wysiwyg-1"/>
+  <link rel="stylesheet" href="editor.css?v=play-ui-1"/>
 </head>
 <body>
 <div class="editor-app" id="app">
   <section class="login-panel" id="loginPanel">
     <div class="panel-card">
       <h1>Hooxi <span>编辑入口</span></h1>
-      <p class="subtitle">连续输错 5 次会锁定 10 分钟</p>
+      <p class="subtitle">使用服务端配置的账号密码登录</p>
       <form id="loginForm">
-        <input type="text" name="username" autocomplete="username" value="Hooxi" hidden/>
-        <label>编辑密码<input type="password" id="loginPassword" autocomplete="current-password" required/></label>
+        <label>账号<input type="text" id="loginId" name="username" autocomplete="username" required/></label>
+        <label>密码<input type="password" id="loginPassword" autocomplete="current-password" required/></label>
         <p class="error" id="loginError"></p>
-        <button type="submit" class="btn primary full" id="loginBtn">进入编辑</button>
+        <button type="submit" class="btn primary full" id="loginBtn">登录并进入编辑</button>
       </form>
     </div>
   </section>
@@ -26,8 +26,8 @@
     <header class="editor-topbar">
       <h1>Hooxi <span>本地编辑</span></h1>
       <div class="user-bar">
-        <span id="userInfo">本机编辑</span>
-        <button class="btn ghost" id="lockBtn">重新锁定</button>
+        <span id="userInfo">已登录</span>
+        <button class="btn ghost" id="lockBtn">退出登录</button>
       </div>
     </header>
 
@@ -134,5 +134,5 @@
   </section>
 </div>
 <script src="agent-catalog.js?v=wiki-2"></script>
-<script src="editor.js?v=wysiwyg-3"></script>
+<script src="editor.js?v=play-ui-1"></script>
 </body></html>

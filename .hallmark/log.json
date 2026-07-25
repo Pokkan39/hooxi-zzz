@@ -1,0 +1,155 @@
+[
+  {
+    "date": "2026-07-25",
+    "scope": "home",
+    "macrostructure": "Seven-Act Midnight Screening Scroll",
+    "theme": "custom",
+    "brief": "将旧 Dual Gate 扩展为七幕午夜放映档案长卷，以章节化滚动连接查档、代理人、正片、加映、幕后与档案声明。",
+    "critique": "借用电影放映的章节、银幕与场次语法，拒绝玻璃界面、持续扫光、全卡 3D 和官方 UI 复刻；保留查档为主任务，PLAY 为可跳过次行动，不声称外部参考。"
+  },
+  {
+    "date": "2026-07-24",
+    "scope": "prototype/film-archive-directions",
+    "macrostructure": "Visual Direction Board",
+    "theme": "custom",
+    "theme_axes": "dark / grotesk-sans / warm-amber",
+    "enrichment": "3-way comparison: Midnight Screening Room / VHS Index Cabinet / Chapter Screen Scroll",
+    "brief": "三套全站视觉方向板原型，可并排对比或单套聚焦，展示首页/列表/详情微缩构图与色板/字体/风险规格。"
+  },
+  {
+    "date": "2026-07-23",
+    "scope": "home",
+    "macrostructure": "Dual Gate",
+    "theme": "custom",
+    "theme_axes": "dark / grotesk-sans / warm-amber",
+    "enrichment": "local Random Play keyart + runtime archive index",
+    "brief": "将首页收敛为电影化技术档案扉页，以单一查档门导向真实档案。",
+    "critique": "借用电影档案封面的构图节奏与技术索引层级，拒绝官方 UI 复刻、虚构实时状态、重资产视频和重复首页长列表。最终门禁补齐 design.md 语义 token 别名、<=640px 键盘折叠导航、44px 目标及 mobile/reduced-motion 发布矩阵。Pre-emit critique: P5 H5 E5 S5 R5 V5."
+  },
+  {
+    "date": "2026-07-22",
+    "scope": "archive/character-directory",
+    "macrostructure": "Parallel Skew Roster Stage",
+    "theme": "studied-DNA",
+    "enrichment": "explicit short roster labels + full-name accessibility contract + two-line cut-safe title zone",
+    "brief": "Close the roster naming layer after visual review found full formal names technically collision-free but unreadable.",
+    "studied": true,
+    "source": "user acceptance screenshot + artifacts/agent-select-roster.png",
+    "critique": "Catalog names remain unchanged for detail, editing and accessibility. Only the compact card presentation uses explicit official/common short forms; no algorithmic truncation, ellipsis or per-character font shrinking. Regression now gates non-empty bounded labels, two-line geometry, clipping, adjacency, full-name aria labels and full selected detail names."
+  },
+  {
+    "date": "2026-07-22",
+    "scope": "archive/character-directory",
+    "macrostructure": "Parallel Skew Roster Stage",
+    "theme": "studied-DNA",
+    "enrichment": "collision-safe card titles + precision text controls + stage-through translucent roster",
+    "brief": "Repair the failed 1440x900 visual acceptance without changing the approved workbench scope.",
+    "studied": true,
+    "source": "user acceptance screenshot + artifacts/agent-select-roster.png",
+    "critique": "The prior negative track overlap treated card silhouettes as the only geometry and allowed adjacent title text to collide. This repair keeps the parallel skew silhouette while making every title a one/two-line safe-polygon occupant, adds explicit adjacent-rect gates, replaces debug-square controls with readable HOOXI strips, and lowers panel opacity so stage colour and restrained selected-theme archive captions remain perceptible without neon pollution."
+  },
+  {
+    "date": "2026-07-22",
+    "scope": "archive/character-directory",
+    "macrostructure": "Parallel Skew Roster Stage",
+    "theme": "studied-DNA",
+    "enrichment": "translucent roster hierarchy + transform-only archive tickers + restrained tactile controls",
+    "brief": "Refine the approved character directory workbench with a readable translucent roster, low-contrast live archive type, precise controls and a compact page ending.",
+    "studied": true,
+    "source": "user brief + existing HOOXI workbench",
+    "critique": "Borrow moving type and translucent information hierarchy only. Preserve HOOXI's parallel skew roster, archive language and yellow action semantics; reject official component copying, recognizable official composition, and Apple-template white rounded glass skins. Pre-emit critique: P5 H5 E5 S5 R5 V5."
+  },
+  {
+    "date": "2026-07-21",
+    "scope": "app/route-transition + archive/character-detail",
+    "macrostructure": "Signal Workbench",
+    "theme": "custom",
+    "theme_axes": "dark / grotesk-sans / warm-amber",
+    "enrichment": "pointer/scroll signal field + HOOXI route handoff loader",
+    "brief": "本轮全站可读性、动态背景和页面加载转场",
+    "critique": "保留单一黄色强调，拒绝光污染、持续扫描、阻塞内容；prefers-reduced-motion 使用静态退化。Pre-emit critique: P5 H5 E5 S5 R5 V4."
+  },
+  {
+    "date": "2026-07-21",
+    "scope": "archive/character-directory",
+    "macrostructure": "Parallel Skew Roster Stage",
+    "theme": "studied-DNA",
+    "enrichment": "geometry-locked waist-up portrait stage + parallel polygon frames + continuous input states",
+    "brief": "Correct the formal selector after visual acceptance found portrait bleed, small full-body staging, non-parallel card borders, coarse interaction and clipped rank badges.",
+    "studied": true,
+    "source": "user acceptance screenshots + existing HOOXI Skew Roster Stage",
+    "critique": "Keep the approved macrostructure but remove fake inset borders and transform conflicts. Hard-clip portraits above the information layer, standardize desktop and mobile on a head-to-waist crop, and render non-transparent fallback cards as honest borderless contain closeups rather than tiny profile frames or face-only cover crops. Use one polygon frame with a parallel inner face, separate selected state from temporary input feedback, and require every source rank badge to remain inside the cut geometry. Pre-emit critique: P5 H5 E5 S5 R5 V4."
+  },
+  {
+    "date": "2026-07-20",
+    "scope": "archive/character-directory",
+    "macrostructure": "Parallel Skew Roster Stage",
+    "theme": "studied-DNA",
+    "enrichment": "18% same-direction cut cards + selected-agent colour rail + pointer-driven stage/card response",
+    "brief": "Repair the agent selector at the visual root: make the roster itself read as three parallel slanted tracks, bind SELECT and selected-card chrome to the active agent theme, and replace autonomous drift with visible input-driven feedback.",
+    "studied": true,
+    "source": "user-provided selector screenshots + artifacts/bili-ui-ref-anby-t08.png",
+    "critique": "Borrow only the parallel roster geometry and focus rhythm. Keep HOOXI archive typography, metadata and navigation; reject the previous fixed lime skin, official component chrome and perpetual ambient motion. Reduced-motion keeps colour, text and focus state while removing spatial feedback."
+  },
+  {
+    "date": "2026-07-20",
+    "macrostructure": "Skew Roster Stage",
+    "theme": "studied-DNA",
+    "enrichment": "right-down parallelogram roster tracks + rank/trust/loadout HUD",
+    "brief": "Correct the HOOXI agent selector to match the reference direction: card tops left, bottoms right, three offset parallel tracks, upright head crops and a matching lime edge rail",
+    "studied": true,
+    "source": "user-provided in-game character selector screenshot and direction specification",
+    "critique": "Same requested macrostructure with explicit knob deltas: card clip reversed to 0/88/100/12, panel seam reversed to top-left/bottom-right, lower rows advance 5px right, selected card remains in the upper-right track; mobile removes the full-panel cut while preserving card silhouettes."
+  },
+  {
+    "date": "2026-07-19",
+    "macrostructure": "Skew Roster Stage",
+    "theme": "studied-DNA",
+    "enrichment": "54 normalized transparent full-body WebP portraits + 2 compact archive-card fallbacks",
+    "brief": "Final HOOXI agent workbench with a height-anchored full-body stage, diagonal roster seam, cut-aware desktop controls, midpoint wipe commit, pointer parallax and stacked mobile fallback",
+    "studied": true,
+    "source": "artifacts/bili-ui-dense/p01-anby/t00.0.png + artifacts/bili-ui-ref-anby-t08.png",
+    "critique": "Use the reference for left-stage/right-roster hierarchy and transition rhythm only; keep HOOXI typography, colors, archive metadata and navigation. At <=880px remove the diagonal seam; aria/sunna remain honest compact-card fallbacks until trustworthy transparent full-body art exists."
+  },
+  {
+    "date": "2026-07-19",
+    "macrostructure": "Workbench",
+    "theme": "studied-DNA",
+    "enrichment": "local character portraits from wiki CDN mirror",
+    "brief": "HOOXI agent selection workbench: full-stage portrait + overlay skew roster, dynamic theme, wipe transitions, RAF background drift",
+    "studied": true,
+    "source": "artifacts/bili-ui-dense/p01-anby/t00.0.png + artifacts/bili-ui-ref-anby-t08.png",
+    "critique": "skew clip-path competes with SELECT stripe at small card sizes; portrait canvas constrained to existing card-only sources (aria/sunna fallback); bg drift disabled in reduced-motion"
+  },
+  {
+    "date": "2026-07-19",
+    "macrostructure": "Split Studio",
+    "theme": "studied-DNA",
+    "enrichment": "existing local character portraits",
+    "brief": "HOOXI agent selector workbench inspired by in-game split catalogue",
+    "studied": true,
+    "source": "image+public motion reference"
+  },
+  {
+    "date": "2026-07-19",
+    "macrostructure": "Signal Workbench",
+    "theme": "custom",
+    "theme_axes": "dark / grotesk-sans / warm-amber",
+    "vibe": "midnight tape desk",
+    "enrichment": "none",
+    "brief": "HOOXI S1 archive purify home IA + tokens"
+  },
+  {
+    "date": "2026-07-19",
+    "scope": "app",
+    "macrostructure": "Archive Core + Storefront Shell",
+    "theme": "studied-DNA",
+    "theme_axes": "canvas-ink / signal-yellow / crt-cyan / archive-paper",
+    "vibe": "late-night New Eridu tape archive",
+    "enrichment": "design contract, media provenance ledger and formal route baselines",
+    "brief": "R1 M0 freezes HOOXI's non-official archive identity, shared design grammar and local-first media rules before any page-wide visual migration.",
+    "studied": true,
+    "source": "docs/VISUAL-TECH-REFERENCE-COMPARE.md + approved R1 implementation plan",
+    "critique": "Borrow information hierarchy and cinematic pacing only; reject official UI copying, external runtime cover proxies, forced immersion and repeated glass-card templates."
+  }
+]

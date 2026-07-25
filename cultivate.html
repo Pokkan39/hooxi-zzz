@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="description" content="代理人养成问答与素材索引。Hooxi 非官方内测档案，不替代游戏内数值。"/>
+  <title>代理人养成 // Hooxi 绝区零档案</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="multi-page.css?v=contrast-1"/>
+  <link rel="stylesheet" href="motion.css?v=signal-ui-r3"/>
+  <link rel="stylesheet" href="theme-zzz.css?v=play-ui-1"/>
+  <meta name="theme-color" content="#0e1014"/>
+  <meta name="author" content="Hooxi"/>
+  <meta name="robots" content="index,follow"/>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
+<link rel="stylesheet" href="site-sidebar.css?v=rail-1"/>  <link rel="stylesheet" href="live-hud.css?v=hud-1"/>
+  <link rel="stylesheet" href="archive-tools.css?v=tools-1"/>
+</head>
+<body class="subpage archive-cultivate">
+  <div class="ambient" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="topbar topbar-slim"><a class="brand" href="index.html"><span class="brand-mark">H</span><span><strong>HOOXI<span class="accent"> //</span></strong><small>ZENLESS ARCHIVE</small></span></a><div class="top-meta"><span class="signal-dot"></span> CULTIVATE INDEX</div><button class="icon-button" id="editorOpen">✦</button></header>
+  <main>
+    <section class="page-hero">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-copy-panel">
+        <p class="eyebrow">// AGENT CULTIVATE INDEX</p>
+        <h1>代理人<br/><span>养成索引</span></h1>
+        <p>内测迁入的市民指南问答与养成素材索引。数值以游戏内与官方百科为准，本页不做数值 Wiki。</p>
+        <div class="hero-status" aria-label="养成档案状态"><span>TRAINING LOG</span><b id="cultivateStatus">LOADING</b><span>NE-05</span></div>
+      </div>
+      <div class="hero-hud hero-hud-quiet" aria-hidden="true"><span class="hud-kicker">PROXY GROWTH</span><strong>05</strong><i class="hud-ticket"></i><small>FAQ / MATS<br/>INDEX ONLY</small></div>
+    </section>
+
+    <section class="timeline-page cultivate-layout">
+      <div class="timeline-toolbar">
+        <div><b id="faqCount">0</b> 条问答 · <b id="matCount">0</b> 个素材</div>
+        <label class="cultivate-search">检索<input id="cultivateQuery" type="search" placeholder="问题、素材名或关键词"/></label>
+      </div>
+      <section class="cultivate-faq" aria-labelledby="faqTitle">
+        <div class="section-head">
+          <div>
+            <span class="section-code">GUIDE / 市民指南</span>
+            <h2 id="faqTitle">代理人养成问答</h2>
+          </div>
+          <a class="button small" id="guideSource" href="https://baike.mihoyo.com/zzz/wiki/content/698/detail" target="_blank" rel="noreferrer">百科原文 ↗</a>
+        </div>
+        <div id="faqList" class="cultivate-faq-list"></div>
+      </section>
+      <section class="cultivate-materials" aria-labelledby="matTitle">
+        <div class="section-head">
+          <div>
+            <span class="section-code">MATERIALS / INDEX</span>
+            <h2 id="matTitle">养成素材索引</h2>
+          </div>
+        </div>
+        <div id="matGrid" class="cultivate-mat-grid"></div>
+      </section>
+    </section>
+  </main>
+  <footer>
+    <span class="footer-disclaimer">粉丝非官方档案站 · 与米哈游无隶属 · 内测资源迁移自本地百科镜像</span>
+    <span>HOOXI // ZZZ STORY ARCHIVE</span>
+    <span>CULTIVATE INDEX</span>
+  </footer>
+  <div class="toast" id="toast"></div>
+    <script src="site-motion.js?v=signal-ui-r3"></script>
+  <script src="site-sidebar.js?v=rail-1"></script>
+  <script src="cultivate-data.js?v=wiki-cu-1"></script><script src="image-webp.js?v=webp-4"></script>
+  <script src="cultivate.js?v=wiki-cu-1"></script>
+  <script src="archive-tools.js?v=tools-1"></script>
+</body>
+</html>

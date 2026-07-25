@@ -144,3 +144,11 @@ label input:focus{outline:none;border-color:#58a6ff;box-shadow:0 0 0 2px rgba(88
   .preview-mode-tab,#refreshPreviewBtn{width:100%}
   .form-grid{grid-template-columns:1fr}
 }
+
+
+/* Appearance: hero image + type scale */
+.file-pick{display:grid;gap:6px;margin-top:8px}
+.file-pick input[type=file]{width:100%;padding:8px;border:1px dashed #30363d;background:#0d1117;color:#c9d1d9}
+.field-hint{margin:6px 0 10px;color:#8b949e;font-size:12px;line-height:1.45}
+.field-hint code{color:#58a6ff}
+.visual-card input[type=number]{max-width:140px}

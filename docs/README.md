@@ -4,30 +4,76 @@
 
 这是一个不依赖构建工具的静态网站，包含绝区零主题路线图、章节展开/折叠、动态背景、站内音乐播放器和“小白可用”的可视化编辑器。内容栏目为：主线剧情、角色档案、系列·幕后/对谈、往期活动。角色页已作为游戏式代理人档案入口，提供阵营、成员、个人剧情、PV 和养成攻略；主线页提供版本总览、组合筛选、剧透控制和版本路线图；站内条目是 Hooxi 档案的可编辑示例，不代表 Hooxi 的真实投稿。
 
+## 网站定位与正式规划
+
+网站的正式定位、目标用户、双层产品结构、内容边界、建模素材要求、技术架构、分阶段路线、验收指标和风险门禁，统一见 [`HOOXI-WEBSITE-POSITIONING-PLAN.md`](HOOXI-WEBSITE-POSITIONING-PLAN.md)。后续首页、HOOXI PLAY、角色与阵营、编辑发布和 AI 接待施工均应以该文件为范围基线。
+
+三方视觉与技术对照（官方 wiki / 南孚 / `F:/web` Active Theory）与「学什么、不学什么、何时才能改正式站」见 [`VISUAL-TECH-REFERENCE-COMPARE.md`](VISUAL-TECH-REFERENCE-COMPARE.md)。该文档是重建参考，**不构成自动施工授权**；未获用户明确要求前，不得把对照结论直接改入正式站主链路代码。
+
+正式 R1 已于 2026-07-19 获得施工授权。全站视觉与交互唯一合同见根目录 [`../design.md`](../design.md)；媒体来源、封面和权利状态规则见 [`media-source-policy.md`](media-source-policy.md)。发布前至少执行 `npm run test:content` 与 `npm run test:formal`；`npm run test:ui` 默认生成带时间戳的 `artifacts/r1-baseline-YYYYMMDD-HHMMSS/`，不会删除既有视觉证据，并同时阻断正式路由外联、无效页面结构和失效深链。代理人工作台由 `src/stories.jsx` 构建为正式 `stories.js`；`npm run test:stories` 直接自启临时静态服务，不会覆盖正式脚本。
+
+`site-motion.js` 是 `index.html`、`mainline.html`、`stories.html`、`character.html`、`faction.html`、`events.html`、`behind-scenes.html` 7 个核心公开页共享的动态背景与同源页面转场层。发布时必须与 `motion.css` 一起纳入正式门禁基线；编辑器不挂载该层，内容可用性不得依赖转场动画。
+
+设计重想讨论稿（用户价值、信息架构、双层体验、视觉优先级；只讨论不定案施工）见 [`HOOXI-DESIGN-RETHINK.md`](HOOXI-DESIGN-RETHINK.md)。该稿不替代 [`HOOXI-WEBSITE-POSITIONING-PLAN.md`](HOOXI-WEBSITE-POSITIONING-PLAN.md)，也**不构成施工授权**。
+
+**功能 + 视觉设计审核稿**见 [`HOOXI-FUNCTION-VISUAL-REVIEW.md`](HOOXI-FUNCTION-VISUAL-REVIEW.md)。分步改时优先改裁片 [`HOOXI-FUNCTION-VISUAL-PART-0.md`](HOOXI-FUNCTION-VISUAL-PART-0.md)（仅 1.1 之前）。长版备份见 [`HOOXI-FUNCTION-VISUAL-REVIEW.v0.1-full.md`](HOOXI-FUNCTION-VISUAL-REVIEW.v0.1-full.md)。**改设计稿 ≠ 改正式站**。
+
+按仓库现况填写的**网站需求填空工单**见 [`网站需求填空工单-HOOXI-现况填写.md`](网站需求填空工单-HOOXI-现况填写.md)（定位/用户/双层入口/页面范围/禁忌与验收；标注现况 vs 建议默认 vs 待拍板；**不构成施工授权**）。
+
+**S1 重构落点**（统一 token + 首页三条路径、去假模块墙）见 progress 2026-07-19 条目；token 文件 `tokens.css`。
+
+**用户本轮要求 vs 现况对照**（难看/不协调/配色/模块少；先对齐再按 skill 重构）见 [`USER-REQ-VS-STATUS-2026-07-19.md`](USER-REQ-VS-STATUS-2026-07-19.md)。**不等于施工授权。**
+
+**正式站缺口清单**（产品 Spec vs 现况、原型边界、D1–D8 决策板、施工包 C1–C5；skill 复查摘要）见 [`HOOXI-FORMAL-SITE-GAP-CHECKLIST.md`](HOOXI-FORMAL-SITE-GAP-CHECKLIST.md)。**C1–C4 与美术增强（17 阵营 logo + 56 角色卡面）已落地**；**P1 品牌可读（7 页 SEO TDK + favicon + 首页轻量关于）已落地**；正式首页当前采用“午夜放映档案”七幕长卷，不再采用 2026-07-19 的 10 模块（6 LIVE / 4 LOCK）模块墙事实。主线页 `?lane=` 车道切换与正式档案可读性继续保留；C5 本阶段不做。本站不是官方 wiki 整站复刻。
+
+对照审核稿 §3 的**抛砖视觉 Demo**（非正式站）：[`../prototype/visual-review-demos/`](../prototype/visual-review-demos/README.md)。五版可切换：门面档案为主 / 门面进店为主 / 主线终端 / 角色阵营墙 / PLAY 店内 2D。**仅讨论视觉，不替换正式首页。**
+
+官方绳网情报站**高保真视觉复刻原型 v1**（非正式站）：[`../prototype/wiki-visual-replica/`](../prototype/wiki-visual-replica/README.md)。含首页骨架 + **游戏式代理人选取 UI**：默认**左角色大展示 + 右真机斜切花名册**（更陡左斜边 parallelogram、**3 列近方卡**、底栏「稀有度+等级N+属性」、**黄框选中**、左轨基础/技能/装备、右缘黄绿 `SELECT` 混角色 tone；筛选折叠；点选只换左图不拆页）；背景氛围动效保留；可切「档案」；切人斜切扫场 + 分角色待机。数据 `roster.json`/`agents.json` 同源 56 名（含 rank `I`），卡面 56/56；`?motion=1` 可强制全动效评审。对照真机选角帧与 B 站 UI 动作合集。**不是整站复制，也不改正式站主链路。**
+
 ## 游戏化档案界面
+
+正式首页现在是“午夜放映档案”七幕长卷：序幕·今晚放映、第一幕·选片、第二幕·演员表、第三幕·正片、第四幕·加映、第五幕·片后谈、片尾·关于档案；序幕保留 Dual Gate，正式查档为主行动，PLAY 录像店是可跳过的次行动。首页职责是把访客送入真实查档路径和代理人精选索引；主线、角色剧情、活动与幕后长列表仍由各自正式栏目承载。页面尾部磁带坞保留完整播放器功能，但作为文档流内的次级面板，不遮挡内容或成为主 CTA。
+
+首页长期 CSS 约定：伪元素只承担单一装饰职责；第二视觉职责必须落在具名 DOM 节点，不把内容或多个交互状态藏进同一个 `::before` / `::after`；`motion.css` 只表达状态、节奏和轻量转场，不定义最终几何；首页规则必须挂在 `.home-page` / `.home-act` 等首页作用域下，不向正式子页泄漏。Home / Feature Reel 的中文展示字体是明确例外，正文、导航和数据字段仍遵循全站字体 token。
 
 主线、角色故事、幕后/对谈、活动和阵营页使用各自的主题色、档案编号与 HUD 首屏，便于快速分辨内容类型。时间轴卡片会按封面实际比例采用横向或纵向阅读布局；幕后页在没有资料时显示“等待制作信号”空状态，而不是留出空白区域。
 
-`tape-wall-sample.html` 是与正式首页隔离的 HOOXI PLAY 沉浸式录像店样板。它使用独立 CSS 和脚本，从店外待机开始，经用户点击/键盘开门与镜头推进进入店内；左侧提供书目分类、窄版 VHS 磁带墙和 CRT 看片台，右侧由原创接待邦布提供站内导航与 DeepSeek 待接入界面。页面支持筛选、键盘操作、移动端横向吸附货架和减少动态效果偏好。当前实现为 2.5D，不会替换 `index.html`；3D 模型、滚动镜头、性能预算和 AI 服务端代理方案见 `docs/HOOXI-PLAY-BUILD-PLAN.md`。
+`cinematic-slice.html` 是与正式首页隔离的 Active Theory 氛围首屏切片验证稿：使用黑场电影感、店外夜景 2.5D 视差、颗粒扫描线、极简 HUD、Space Grotesk/Space Mono 免费可商用字体和点击进店预渲染视频，用来验证“高级、丝滑、有格调”的首页方向，不替换正式 `index.html`。
+
+`tech-direction-demos.html` 是与正式首页隔离的技术方向对照合集，用于讨论 HOOXI 首页该走哪条技术路径，不替换正式 `index.html`。当前包含五向：01 巨物首屏（低成本高冲击）、02 预渲染帧序列滚动（中成本强沉浸，进入段落后后台预热 48 帧）、03 信号控制台状态机（低成本强导航）、04 点击才加载的进店视频（可控加载 + 失败/减动效终帧兜底）、05 高配/移动弱网降级层（工程兜底）。每屏带决策标签；`prefers-reduced-motion` 下停止自动 scrub/扫描线/视频播放，帧序列改为按钮步进。
+
+`tape-wall-sample.html` 是与正式首页隔离的 HOOXI PLAY 沉浸式录像店样板。它使用独立 CSS 和脚本，从店外待机开始，经用户点击/键盘开门与镜头推进进入店内；左侧提供书目分类、窄版 VHS 磁带墙和 CRT 看片台，右侧由原创接待邦布提供站内导航与 DeepSeek 待接入界面。`prototype/hooxi-rebuild/` 是重建后的隔离游戏式 Demo：先显示 HOOXI 厂商屏和 `CLICK TO CONNECT` 标题页，点击后才加载连接成片；到达店铺入口后必须依次确认橱窗、进入门廊，再点击播放进门成片并落到店内。流程仅由按钮、热点、返回和 Escape 推进，不使用滚动驱动；`?motion=1` 可强制评审完整动效，减少动态效果时直接使用海报切换。当前视觉层使用电影化全屏构图、倾斜粗体标题、场景色彩分级和无卡片式热点；同一会话重复进场会复用已加载视频，店内“继续探索”会显示明确的未开放状态。该页面不会替换正式 `index.html`。
+
+`scroll-world-prototype.html` 已升级为真实长页滚动叙事原型：页面保留原生 `body` 纵向滚动，以 sticky `100dvh` 舞台覆盖约 9 屏轨道，依次经历 Gate、Entry、Reveal、Choice、Explore。Entry 的 48 帧进店镜头占约 3 屏，由 `scrollY` 经 `requestAnimationFrame` 连续、双向映射；滚动事件不调用 `preventDefault`，也不排队补间。真实 GLB 会在 Entry 开始时接管底层画面，帧序列只在前段短暂叠加并在门体近景前淡出，避免平面门框遮挡实时场景。完整 GLB 使用 sRGB 输出、ACES 色调映射、暖色主光、冷色轮廓光和软阴影；原始 PBR 材质与贴图继续保留。相同连续进度同步写入 CSS、帧序列与完整 GLB 相机，进入 Choice 后仍沿用左右书柜、左柜真实模型命中、录像带抽取/归位、fallback 和 Escape 返回闭环。减少动态效果会压缩轨道并直接使用末帧，移动端保持原生滚动和可访问 DOM 控件。Three.js 动态导入或 WebGL 失败时仍保留 DOM/CSS fallback。默认从同源 `assets/scroll-world/door-entry/` 读取 poster、choice 和 48 张进门帧；本地研究时仍可用 `?frames=http://127.0.0.1:8092` 覆盖素材根目录。适配器提供连续 `setScrollProgress(progress, detail)`，滚动期间直接设置相机姿态，不创建补间。适配接口与资产边界见 `docs/RANDOMPLAY-MODEL-INTEGRATION-PLAN.md`。
+
+用户提供的 RandomPlay PMX 已在仓库外隔离区完成安全审计、Blender 导入诊断，并拆出“最左贴墙书柜 + 4 件物品”的本地研究 GLB Spike；网页仅在显式 `assets` 参数下接入该左柜样件，其余柜体、门、CRT、前台和邦布仍使用 DOM/CSS 或预渲染表现。授权仍未知，原始 ZIP、PMX、FX、来源不明贴图、Blend、GLB 和衍生渲染不得进入公开仓库。完整流程与后续扩展见 `docs/RANDOMPLAY-MODEL-INTEGRATION-PLAN.md`。
 
 阵营页会根据 `faction.html?id=<factionId>` 读取阵营主题、关联记录和标识。未设置阵营标识图片时，页面使用字母占位徽章，保证档案仍然可阅读。站点会遵守系统“减少动态效果”偏好，自动缩短或取消非必要动画。
 
 ## 角色 Wiki 数据快照
 
-角色区现通过 `agent-catalog.js` 维护代理人 Wiki 数据，并在 `data.js` 之后加载。当前快照日期为 **2026-07-13**，收录 56 名截至该日已实装、可操作的代理人及 17 个阵营；仅预告、尚未实装角色不纳入。每名代理人记录稳定 ID、中文名/英文名、阵营、稀有度、属性、特性、攻击类型、实装日期、生日、专属音擎、养成资料结构、来源和更新时间。
+角色区由三层数据拼成正式档案花名册，加载顺序为 `data.js` → `agent-enrichment.js` → `agent-catalog.js`：
 
-- 基础事实优先核对绝区零官方资料，并以角色资料汇总页交叉验证；攻略建议可参考 Prydwen 等攻略站，但必须标记适用版本和来源。
-- 不复制第三方长篇攻略；站内只保留结构化事实、简要总结和来源链接。材料总量、配装、词条和配队未完成核验时显示“待核验”，不得用推测数字填充。
-- `character.html` 已提供角色资料、养成材料、养成攻略、来源/关联四个模块；缺失数据有明确空状态。
-- `character-sample.html` 是与正式角色页隔离的可视化样板。点击组件即可拖动；右侧面板可改位置、尺寸、缩放、旋转、透明度、层级、颜色、文字、链接和显隐。桌面/手机布局分别保存，并支持撤销、重做、本地保存、恢复默认、JSON 导入与导出。技能区支持 Lv.1–16、伤害/失衡倍率切换、逐级材料与影画解锁提示；配队槽可直接选择。狡兔屋标识固定使用 `assets/icons/cunning-hares-logo.png`。调整完成后可把导出的 JSON 交回，用作后续全角色页面的统一模板。
+1. `data.js`：保留主线 / 支线 / 活动等剧情条目；`factions` 与 `characters` 默认可为空，只放本地覆盖。
+2. `agent-enrichment.js`：从本地归档 `website-archives/zzz-wiki` 抽取的代理人印象、个人故事摘要、图集、来源链接及职级晋升阶段（纯文本属性与有限材料字段，不向浏览器透传 Wiki HTML；结构化摘要，不是整站复制）。
+3. `agent-catalog.js`：维护 56 名可操作代理人与 17 个阵营的稳定 ID、属性、阵营归属，并把 enrichment 合并进 `window.archiveData`。
 
-“角色 / 阵营”页面是角色内容的第一层入口：访客先选择阵营图标，再进入成员列表，最后打开角色个人档案。阵营图标卡在鼠标悬停、键盘聚焦时会抬升、强化主题光效并显示入口提示；点击或触摸按下时会给出短暂按压反馈。系统启用“减少动态效果”时，位移动画会自动停用，但颜色和焦点反馈仍会保留。
+当前快照日期为 **2026-07-18**。仅预告、尚未实装角色不纳入。每名代理人记录稳定 ID、中文名/英文名、阵营、稀有度、属性、特性、攻击类型、实装日期、生日、专属音擎、印象摘要、个人剧情摘录、来源和更新时间。
 
-角色数据位于 `data.js` 的 `characters` 集合，建议为每位角色维护：`id`、`name`、`factionId`、`avatar`、`portrait`、`summary`、`attribute`、`specialty`、`role`、`pv`、`buildGuide`、`personalStories`、`relatedIds`。阵营的 `members` 是角色 ID 列表；图标路径填写在 `factions[].logo`。
+- 基础事实优先核对绝区零官方 / 米游社百科归档；攻略建议可参考 Prydwen 等站，但必须标记来源。
+- 不复制官方 wiki 整站或第三方长篇攻略；站内只保留结构化事实、短摘要和来源链接。材料总量、配装、词条和配队未完成核验时显示“待核验”，不得用推测数字填充。
+- `stories.html` 是角色关系导航主入口：可按关键词搜索代理人，可按阵营筛选，并同时浏览阵营卡与代理人列表。
+- `faction.html` 展示阵营摘要与成员；`character.html` 提供角色资料、个人剧情、职级晋升阶段/材料、养成方向、来源/关联等模块。成长阶段使用标准 ARIA tabs，支持点击、方向键、Home/End 与 roving tabindex；`#growth` 继续兼容并落到 `#story`。材料图标从本地 wiki 镜像复制到 `assets/materials/<epId>.<ext>`，页面只加载同源 `icon`；无图标时降级为等级字母。档案图集从镜像按原格式（含 GIF）复制到 `assets/gallery/<agentId>/<nn>.<ext>`，每角色最多 8 张，镜像缺失项跳过；页面只加载同源图集，禁止热链。材料详情若来自 `/zzz/wiki/...`，规范化为 `https://baike.mihoyo.com/...`，仅在用户点击时外跳。
+- `character-sample.html`、`tech-direction-demos.html`、`cinematic-slice.html`、`prototype/` 等仍是隔离实验/样板，不替换正式档案首页。
+- 重新生成 enrichment：`python scripts/build-agent-enrichment.py`（读取 `F:/website-archives/zzz-wiki`，写出 `artifacts/agent-enrichment.json`、`agent-enrichment.js`，并本地化材料图标到 `assets/materials/`、档案图集到 `assets/gallery/`）。
+
+角色数据建议字段：`id`、`name`、`factionId`、`avatar`、`portrait`、`summary`、`impression`、`attribute`、`specialty`、`role`、`personalStories`、`sources`、`relatedIds`。阵营的 `members` 由 catalog 自动按 `factionId` 汇总；图标路径填写在 `factions[].logo`。
 
 - 阵营图标放入 `assets/icons/`；角色头像和立绘放入 `assets/portraits/`。只保存相对路径，静态页面不会上传本地文件。
 - `pv` 应标注为官方资料并链接到公开视频；`buildGuide` 必须标注“玩家整理”，并注明以游戏内实际版本为准；个人剧情和关联档案可用已有记录 ID 互相连接。
 - 角色视觉资源已按本次用户确认的口径保存到 `assets/portraits/<characterId>-card.webp`：56 名角色均有 374×512 的本地 WebP 卡面，来源标注为 Prydwen 第三方角色资料；安比详情页继续优先使用已有透明全身立绘。第三方图片仅作为当前站点资料展示资源，后续发布前仍应复核转载许可。
+- **2026-07-19 美术增强**：17 个阵营均已配置本地 logo（`assets/icons/<factionId>.png`，由 `agent-catalog.js` 注入）；列表头像优先本地卡面，不再因错误的 `/zzz/wiki/...` 相对路径回退首字母。仅当 logo/头像字段仍为空时，目录才显示名称首字占位。
+- **批次A 官方 B 站媒体**：`media-catalog.js` 统一收录公测 PV 与世界观 PV；`data.js` 只保存对应 `mediaIds` / `sourceIds`，来源链接指向各自 B 站官方详情页。`mainline.html`、`events.html`、`behind-scenes.html` 会在 `data.js` 后、`page.js` 前加载媒体目录；`page.js` 用首个有效 `mediaIds` 派生缺失的视频、封面和官方详情来源，同时保留条目显式字段及本地编辑器覆盖，派生的目录对象不会写入导出数据。公开档案页不再运行时请求 B 站 API，已有媒体目录的正式条目只使用同源本地封面，图片和“资料来源”分别链接对应官方视频详情。维护时可执行 `python scripts/collect-official-bilibili.py`，脚本串行调用本机 yt-dlp、只采元数据、不下载视频，并把可恢复进度写入 `artifacts/bilibili-official-1636034895.json`；仅在 stderr 错误行或非零退出内容明确出现 HTTP 412、错误码/code=-352、风控文本时立即停止，正常 JSON stdout 中偶然出现数字 412/352 不视为风控；重试仍为 0，重新枚举不会清空已有 BVID 与 pending。2026-07-23 空间枚举仍停于 HTTP 412；当前两条 checked 明确标为 `manualVerifiedApiEvidence`，来自已人工核验的官方详情 API 证据，并非本次脚本在线成功。两张官方原缩略图已按原图 1920×1080 转为本地 WebP 且不去水印；证据记录本地 `coverSha256`，并对各自原 JPEG 仅做一次精确下载且成功记录 `sourceImageSha256`。`npm run test:content` 会读取该证据文件，逐条交叉核对身份、标题、日期、时长、转载状态、原图 URL、详情页，并用 Node 标准库解析本地 WebP 实际尺寸及校验 SHA-256，替换 fallback 或证据缺失均会失败。目录分别记录 `isReprint`（copyright）与 `noReprint`（rights.no_reprint），中文 P1 时长为 133/247 秒，总时长为 517/973 秒。世界观 PV 官方 pubdate 为 2024-07-06。
 - 图片未提供时会显示站内占位，阵营、成员和角色页面仍可正常打开。添加资源后，提交图片与更新后的 `agent-catalog.js` 一并发布。
 
 阵营成员区采用游戏内角色选择风格的错位立绘卡阵列：默认展示 `headshot`（未填写时回退到 `avatar`），桌面端悬停或键盘聚焦时显示 `portrait` 全身立绘。指针移动会使前景立绘、头部近景与背景高光以不同速度偏移，形成无需 3D 模型的 2.5D 景深效果；触摸设备仍是单击直接进入角色详情，避免要求二次点击。系统开启“减少动态效果”时会停用位移和缩放，仅保留全身立绘显示、颜色与焦点反馈。
@@ -49,7 +95,7 @@
 ## 小白编辑流程
 
 1. 打开网站，点击右上角黄色 `✦` 进入 `editor.html`。
-2. 输入编辑密码 `Hooxi777771`，进入本地编辑工作台。
+2. 输入服务端配置的账号和密码，进入本地编辑工作台。
 3. 在左侧选择页面，例如主线剧情、角色故事、往期活动或幕后/对谈。
 4. 在左侧直接修改标题、简介、图片路径、视频链接、父级分组、父条目和分支名称。
 5. 在“内容编辑”模式下，单击右侧模块会自动定位左侧设置；双击标题或简介可直接原地修改。
@@ -60,7 +106,7 @@
 10. 确认无误后点击“导出当前文件”，用下载的 `data.js` 覆盖仓库根目录同名文件，并同步覆盖拖动导出的 `layout-data.js`。
 11. 执行 `git add`、`git commit`、`git push origin main`，等待 GitHub Pages 或绑定域名的托管服务更新。
 
-编辑页是静态密码门，不是后端账号系统。没有仓库写权限的人，即使知道密码，也只能改自己浏览器里的草稿，不能改线上网站。公开页不会默认显示任何编辑模板或施工工具，只有点右上角 `✦` 才会进入编辑页。
+编辑页使用后端账号会话认证，账号密码由服务端环境变量 `EDITOR_ACCOUNTS_JSON` 配置，仓库和公开页面不保存账号密码。没有仓库写权限的人即使登录，也只能改自己浏览器里的草稿，不能改线上网站。公开页不会默认显示任何编辑模板或施工工具，只有点右上角 `✦` 才会进入编辑页。
 
 ## 内容来源标注
 
@@ -86,11 +132,11 @@
 
 网站现在提供四个独立档案页：主线时间轴、角色档案、系列·幕后/对谈、往期活动。角色的 PV、个人剧情和养成内容归入角色详情页；`data.js` 是默认数据源。
 
-公开页面只保留右上角 `✦` 编辑入口。点击后进入 `editor.html`，输入密码 `Hooxi777771` 才能看到本地编辑页。编辑页不会直接写回线上网站，发布仍需导出文件并手动推送 Git。
+公开页面只保留右上角 `✦` 编辑入口。点击后进入 `editor.html`，通过服务端账号登录后才能看到本地编辑页。编辑页不会直接写回线上网站，发布仍需导出文件并手动推送 Git。
 
 ### 让所有访客看到编辑结果
 
-1. 在 `editor.html` 输入编辑密码。
+1. 在 `editor.html` 输入服务端配置的账号和密码。
 2. 修改 `data.js` 或 `layout-data.js`。
 3. 点击“导出当前文件”。
 4. 用下载文件覆盖仓库根目录同名文件。
@@ -110,19 +156,13 @@
 
 ## 本地编辑与发布
 
-本站默认按纯静态站维护，不需要部署后端。公开页面只展示内容，编辑入口在右上角 `✦`。
+访客页面按静态站发布，编辑入口在右上角 `✦`；账号登录依赖已配置并启动的后端认证服务。
 
 ### 编辑入口
 
-浏览器打开 `editor.html`（例如 `http://localhost:8080/editor.html`），输入编辑密码：
+浏览器打开 `editor.html`（例如 `http://localhost:8080/editor.html`），输入服务端配置的账号和密码。账号由环境变量 `EDITOR_ACCOUNTS_JSON` 在服务端配置，文档和公开页面不应记录任何真实凭据。
 
-```text
-Hooxi777771
-```
-
-连续输错 5 次会锁定 10 分钟。
-
-密码通过后进入可视化工作台：左侧改内容、父级、子级和图片路径，右侧用真实网页预览草稿；布局拖动模式会在右侧页面中复用现有布局工具。编辑器只会保存到当前浏览器或导出文件，不会直接改线上站点。
+登录成功后进入可视化工作台：左侧改内容、父级、子级和图片路径，右侧用真实网页预览草稿；布局拖动模式会在右侧页面中复用现有布局工具。编辑器只会保存到当前浏览器或导出文件，不会直接改线上站点。
 
 ### Git 发布流程
 
@@ -152,3 +192,40 @@ python -m http.server 8080
 ```
 
 然后访问 `http://localhost:8080/`。
+
+
+- 正式站切口进度：C1–C4 已落地（2026-07-19）；详见缺口清单。C5 本阶段不做。
+
+## 2026-07-23 可读性改版
+- 正式站配色：冷灰档案站（`tokens.css`），单一琥珀强调。
+- 角色页：档案图集横向滑块；职级晋升 range 滑块（`character.js` + `wiki-readability.css`）。
+- 活动页：顶部目录跳转 `wiki-page-toc`，锚点 `event-group-*` / `event-item-*`。
+
+## 2026-07-23 冷灰美术全站扩展
+- 正式子页统一冷灰档案站表面（顶栏/英雄区/时间轴/分组头/卡片），覆盖 `multi-page.css` 奶油纸与多色霓虹频道色。
+- 入口样式：`tokens.css` + `theme-zzz.css` → `wiki-readability.css`；缓存 `cold-gray-2`。
+
+## 2026-07-23 P0 视觉层级
+- 首页视觉主角：录像店海报；主标题去大块实心黄。
+- 主线 HUD 降不透明度；播放器暗轨。
+- 样式：`wiki-readability.css` Hierarchy pass；缓存 `hierarchy-2`。
+
+## 2026-07-23 录像店视觉与外观编辑
+- 首页主角图：HOOXI PLAY 正门插画。
+- 编辑器可改首页主角图路径/本地预览，以及标题、正文字号百分比。
+- 字段：。
+
+## 2026-07-23 ZZZ 美术语言
+- 复古×潮流：硬色块切角、琥珀主强调 + 稀有信号青。
+- 首页海报板、路径卡、卡带式播放器；缓存 。
+
+## 2026-07-23 最终成品收口
+- 首页播放器默认收为左下 136px 磁带小坞，悬停或键盘聚焦时展开完整控制；手机子页播放器收为 220px，避免遮挡主线赛道控件。
+- `npm run test:stories` 当前覆盖 98 项；`npm run test:ui` 覆盖 8 个页面、桌面/手机/减动效 3 个视口、24 张截图、9 个深链接与原生 View Transition / 旧 route-loader 双路径。
+- 正式门禁基线现包含 41 个文件；`wiki-readability.css` 虽由 `theme-zzz.css` 的 `@import` 间接加载，也必须纳入指纹，发布时不得遗漏。
+- 独立预览位于 `artifacts/final-preview-2026-07-23/`，使用 `node serve-preview.mjs` 启动。该轻量闭包包含正式页面、运行脚本、字体、封面、立绘、图标、材料与音频，不包含约 1.3GB 的可选角色动态图集、后端凭据或无关原型。
+- 内容边界不变：当前只有 2 条已核验官方 PV / 世界观媒体；主线与部分档案缺口属于内容采编欠账，不得用推测材料伪装完成。
+
+## 2026-07-25 首页首刀
+- 正式首页完成“午夜放映档案”七幕首刀，保留稳定 ID、动态内容宿主和既有链接；“开始查档”为主行动，PLAY 为可跳过次行动。
+- 验证入口：`HOOXI_UI_OUTPUT_DIR="artifacts/home-midnight-screening-r2" npm run test:ui`；最终报告见 `../artifacts/home-midnight-screening-r2/report.json`。内容与 formal 的已知失败及归因见根目录 `progress.md` 的 2026-07-25 记录。

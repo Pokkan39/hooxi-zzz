@@ -1,16 +1,287 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="description" content="Hooxi 的绝区零剧情视频档案站"/><title>Hooxi // 绝区零剧情档案</title><link rel="stylesheet" href="styles.css"/><link rel="stylesheet" href="motion.css"/></head>
-<body>
-<div class="ambient" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="noise" aria-hidden="true"></div>
-<header class="topbar"><a class="brand" href="#top"><span class="brand-mark">H</span><span><strong>HOOXI<span class="accent"> //</span></strong><small>ZENLESS ARCHIVE</small></span></a><div class="top-meta"><span class="signal-dot"></span> LIVE ARCHIVE <span class="slash">/</span> <span id="statusText">S01</span></div><nav><a href="#route">剧情路线</a><a href="mainline.html">主线时间轴</a><a href="stories.html">角色</a><a href="behind-scenes.html">系列·幕后 / 对谈</a><a href="events.html">往期活动</a><a class="bili" href="https://space.bilibili.com/271887040" target="_blank" rel="noreferrer">B站主页 ↗</a></nav><button class="icon-button" id="editorOpen" aria-label="进入编辑页" title="编辑入口">✦</button></header>
-<main id="top"><section class="hero"><div class="hero-copy"><p class="eyebrow">// VIDEO STORY ARCHIVE · 绝区零</p><h1 id="heroTitle">新艾利都<br/><span>剧情档案</span></h1><p class="intro" id="heroIntro">Hooxi 的绝区零剧情视频整合站。沿着代理人的记录，重新进入每一段被以太侵蚀的故事。</p><div class="hero-actions"><a class="button primary" href="#route">进入路线图 <span>↓</span></a><span class="updated">ARCHIVE STATUS<br/><b id="archiveStatus">示例内容 · 可替换</b></span></div></div><div class="hero-art" role="img" aria-label="绝区零主题装饰图"><div class="sun"></div><div class="ring ring-a"></div><div class="ring ring-b"></div><div class="sticker">代理人<br/>档案 01</div><div class="coordinates">N 39° 54' E 116° 23'<br/><span>NEW ERIDU / SIGNAL FOUND</span></div></div></section>
-<section class="route-section" id="route"><div class="section-head"><div><p class="eyebrow">// STORY ROUTE MAP</p><h2>剧情路线图</h2></div><div class="controls"><button id="expandAll" class="button small">全部展开</button><button id="collapseAll" class="button small ghost">全部折叠</button></div></div><div class="legend"><span><i class="legend-dot yellow"></i>主线剧情</span><span><i class="legend-dot white"></i>角色档案 / 系列·幕后 / 对谈 / 往期活动</span></div><div class="timeline" id="timeline"></div></section>
-<section class="about" id="about"><div class="about-label">ABOUT<br/>THE ARCHIVE</div><div><p class="eyebrow">// KEEP THE SIGNAL ALIVE</p><h2>记录每一次<br/><span>深入空洞。</span></h2></div><p>这是一个为 Hooxi 打造的《绝区零》剧情视频索引。内容按主线、角色档案、系列·幕后/对谈与往期活动整理；角色个人剧情作为角色档案内部内容维护，首版条目会随发布持续补全。</p></section></main>
-<footer><span>HOOXI // ZZZ STORY ARCHIVE</span><span>NEW ERIDU, 2025</span></footer>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="description" content="Hooxi 的《绝区零》剧情视频档案与角色关系导航站。主线、角色与阵营、活动可检索；粉丝非官方，与米哈游无隶属。"/>
+  <title>Hooxi // 绝区零剧情档案</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="motion.css?v=home-midnight-screening-r2"/>
+  <link rel="stylesheet" href="theme-zzz.css?v=home-midnight-screening-r2"/>
+  <link rel="stylesheet" href="home-neon.css?v=neon-r1"/>
+  <meta name="theme-color" content="#18171A"/>
+  <meta name="author" content="Hooxi"/>
+  <meta name="robots" content="index,follow"/>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
+</head>
+<body class="home-page">
+  <a class="skip-link" href="#top">跳到主要内容</a>
+  <div class="ambient" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="noise" aria-hidden="true"></div>
 
-<div class="music-player" id="musicPlayer"><button id="musicToggle" class="play-button" aria-label="播放音乐">▶</button><div class="track-info"><small>NOW TRANSMITTING</small><b id="trackName">未选择音乐</b></div><button id="prevTrack" class="player-control" aria-label="上一首" title="上一首">◀</button><button id="nextTrack" class="player-control" aria-label="下一首" title="下一首">▶</button><button id="playMode" class="player-control mode-control" aria-label="播放模式：顺序播放" title="播放模式：顺序播放">顺序</button><input id="volume" type="range" min="0" max="1" step=".05" value=".25" aria-label="音量"/><button class="playlist-button" id="playlistOpen">歌单 <span>☰</span></button><audio id="audio"></audio></div>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <header class="topbar">
+    <a class="brand" href="#top">
+      <span class="brand-mark">H</span>
+      <span><strong>HOOXI<span class="accent"> //</span></strong><small>ZENLESS ARCHIVE</small></span>
+    </a>
+    <div class="top-meta"><span class="signal-dot"></span> ARCHIVE INDEX <span class="slash">/</span> <span id="statusText">S01</span></div>
+    <button class="home-nav-toggle" id="homeNavToggle" type="button" aria-controls="homeNav" aria-expanded="false" aria-label="打开主导航菜单">菜单</button>
+    <nav id="homeNav" aria-label="主导航">
+      <a href="mainline.html">主线</a>
+      <a href="stories.html">角色与阵营</a>
+      <a href="events.html">活动</a>
+      <a href="cultivate.html">养成</a>
+      <a href="behind-scenes.html">幕后</a>
+      <a href="stories.html#agentSearchForm" class="nav-search">搜索</a>
+      <a href="#about">关于</a>
+      <a class="bili" href="https://space.bilibili.com/271887040" target="_blank" rel="noreferrer">B站 ↗</a>
+    </nav>
+    <button class="icon-button" id="editorOpen" aria-label="进入编辑页" title="编辑入口">✦</button>
+  </header>
 
-<div class="playlist-popover hidden" id="playlist"><strong>播放列表</strong><div id="playlistItems"></div></div>
-<script src="data.js?v=local-1"></script><script src="layout-data.js?v=1"></script><script src="app.js?v=editor-3"></script><script src="layout-editor.js?v=editor-2"></script></body></html>
+  <main id="top">
+    <section class="hero home-act home-act--prologue hero-has-star" data-home-act="00" aria-labelledby="heroTitle">
+      <div class="hero__projector-light" aria-hidden="true"></div>
+      <div class="hero__curtain" aria-hidden="true"></div>
+      <div class="hero__screen-grain" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <p class="home-act-label"><span class="home-act-label__zh">序幕·今晚放映</span><span class="home-act-label__en">PROLOGUE / SCREEN 00</span></p>
+        <p class="eyebrow">HOOXI / ZENLESS STORY VIDEO ARCHIVE</p>
+        <h1 id="heroTitle">绝区零剧情影像档案</h1>
+        <p class="intro" id="heroIntro">按版本补剧情，按代理人追关联。先定位片段，再前往来源观看。</p>
+        <div class="hero-actions">
+          <a class="button primary hero-primary-action" href="#start" data-fx="press">开始查档 <span aria-hidden="true">→</span></a>
+          <a class="button secondary hero-play-action" href="tape-wall-sample.html" data-fx="press">PLAY · 进入录像店</a>
+        </div>
+        <div class="hero-index" aria-label="当前档案索引">
+          <span>ARCHIVE INDEX</span>
+          <b id="archiveStatus">装载中…</b>
+          <small>计数来自当前本地档案 · PLAY 可跳过</small>
+        </div>
+      </div>
+      <div class="hero-art" id="homeHeroArt" data-hero-carousel>
+        <div class="hero-carousel-viewport">
+          <div class="hero-carousel-track" id="heroCarouselTrack">
+            <figure class="hero-carousel-slide is-active" data-hero-slide="0">
+              <img class="hero-star" id="heroStarImg" src="assets/hero/zzz-random-play-keyart.webp" alt="哲与铃所在 Random Play 录像店的《绝区零》主视觉" width="1146" height="717" decoding="async" fetchpriority="high" data-editor-id="site.page.home.hero.image" data-editor-type="image" data-editor-field="image"/>
+            </figure>
+          </div>
+        </div>
+        <div class="hero-art-veil" aria-hidden="true"></div>
+        <div class="hero-cover-index" id="heroCoverIndex" aria-hidden="true"><span>FILE / RP-00</span><b>RANDOM PLAY</b><small>LOCAL KEYART · 16:10</small></div>
+        <div class="coordinates">NEW ERIDU / STORY RECORDS<br/><span>UNOFFICIAL ARCHIVE INDEX</span></div>
+        <div class="hero-carousel-ui">
+          <button type="button" class="hero-carousel-nav prev" id="heroCarouselPrev" aria-label="上一张大图">‹</button>
+          <button type="button" class="hero-carousel-nav next" id="heroCarouselNext" aria-label="下一张大图">›</button>
+          <div class="hero-carousel-dots" id="heroCarouselDots" role="tablist" aria-label="首页大图轮播"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="route-section home-act home-act--select" id="start" data-home-act="01" aria-labelledby="selectTitle">
+      <div class="section-head">
+        <div>
+          <p class="home-act-label"><span class="home-act-label__zh">第一幕·选片</span><span class="home-act-label__en">ACT 01 / SELECT</span></p>
+          <h2 id="selectTitle">从哪里开始查</h2>
+        </div>
+        <p class="section-note">按剧情、角色或名字进入档案。</p>
+      </div>
+      <div class="start-paths" id="homeModules" aria-label="查档路径"></div>
+      <div class="secondary-rail" id="homeSecondaryRail" aria-label="次要入口"></div>
+    </section>
+
+    <section class="route-section home-act home-act--cast" id="featured-agents" data-home-act="02" aria-labelledby="castTitle">
+      <div class="section-head">
+        <div>
+          <p class="home-act-label"><span class="home-act-label__zh">第二幕·演员表</span><span class="home-act-label__en">ACT 02 / CAST</span></p>
+          <h2 id="castTitle">代理人精选</h2>
+        </div>
+        <div class="home-act-side">
+          <p class="section-note">从角色进入相关剧情、阵营和影像。</p>
+          <div class="controls">
+            <a class="button small" href="stories.html" data-fx="press">查看全部代理人</a>
+          </div>
+        </div>
+      </div>
+      <div class="home-agent-rail" id="homeAgentRail"></div>
+    </section>
+
+    <nav class="home-lane-jump" aria-label="长滚动分区跳转">
+      <a href="#lane-mainline">正片</a>
+      <a href="#lane-events">加映</a>
+      <a href="#lane-behind">片后谈</a>
+      <a href="#about">片尾</a>
+    </nav>
+
+    <section class="route-section home-lane-section home-act home-act--mainline" id="lane-mainline" data-home-act="03" aria-labelledby="mainlineTitle">
+      <div class="section-head">
+        <div>
+          <p class="home-act-label"><span class="home-act-label__zh">第三幕·正片</span><span class="home-act-label__en">ACT 03 / FEATURE</span></p>
+          <h2 id="mainlineTitle">主线与官方媒体</h2>
+        </div>
+        <div class="home-act-side">
+          <p class="section-note">按版本进入主线与已核验媒体。</p>
+          <div class="controls">
+            <a class="button small" href="mainline.html" data-fx="press">进入主线</a>
+          </div>
+        </div>
+      </div>
+      <div class="home-lane-grid" id="homeLaneMainline" aria-label="主线预览"></div>
+    </section>
+
+    <section class="route-section home-lane-section home-act home-act--events" id="lane-events" data-home-act="04" aria-labelledby="eventsTitle">
+      <div class="section-head">
+        <div>
+          <p class="home-act-label"><span class="home-act-label__zh">第四幕·加映</span><span class="home-act-label__en">ACT 04 / ENCORE</span></p>
+          <h2 id="eventsTitle">往期活动</h2>
+        </div>
+        <div class="home-act-side">
+          <p class="section-note">从版本封面继续筛选活动。</p>
+          <div class="controls">
+            <a class="button small" href="events.html" data-fx="press">进入活动</a>
+          </div>
+        </div>
+      </div>
+      <div class="home-lane-grid" id="homeLaneEvents" aria-label="活动预览"></div>
+    </section>
+
+    <section class="route-section home-lane-section home-act home-act--behind" id="lane-behind" data-home-act="05" aria-labelledby="behindTitle">
+      <div class="section-head">
+        <div>
+          <p class="home-act-label"><span class="home-act-label__zh">第五幕·片后谈</span><span class="home-act-label__en">ACT 05 / AFTERTALK</span></p>
+          <h2 id="behindTitle">幕后与对谈</h2>
+        </div>
+        <div class="home-act-side">
+          <p class="section-note">收录制作记录、ZTALK 与幕后内容。</p>
+          <div class="controls">
+            <a class="button small" href="behind-scenes.html" data-fx="press">进入幕后</a>
+          </div>
+        </div>
+      </div>
+      <div class="home-lane-grid" id="homeLaneBehind" aria-label="幕后预览"></div>
+    </section>
+
+    <section class="about home-act home-act--credits" id="about" data-home-act="06" aria-labelledby="creditsTitle">
+      <div class="about-heading">
+        <p class="home-act-label"><span class="home-act-label__zh">片尾·关于档案</span><span class="home-act-label__en">EPILOGUE / CREDITS</span></p>
+        <h2 id="creditsTitle">档案优先，气氛可选。</h2>
+        <p class="about-intro">主线补课、角色关系和搜索始终直达；录像店可以跳过。</p>
+      </div>
+      <div class="about-credits">
+        <div class="about-column">
+          <p class="about-label">身份 / IDENTITY</p>
+          <h3>非官方剧情影像档案</h3>
+          <p>这是 <b>Hooxi</b> 个人品牌下的《绝区零》剧情视频档案与角色关系导航站，与米哈游、HoYoverse 无隶属。</p>
+        </div>
+        <div class="about-column">
+          <p class="about-label">原则 / PRINCIPLES</p>
+          <h3>先查档，再决定观看方式</h3>
+          <p>按版本补剧情，按角色追关联；正式档案可搜索、可分享，HOOXI PLAY 始终是可跳过的次入口。</p>
+        </div>
+        <div class="about-column about-side">
+          <p class="about-label">来源 / SOURCES</p>
+          <h3>入口与权利说明保持可见</h3>
+          <p class="about-meta">来源与核验状态见各正式档案页；本站不伪造官方直达。<br/>
+            <a class="about-link" href="https://space.bilibili.com/271887040" target="_blank" rel="noreferrer">Hooxi B站主页 ↗</a>
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="footer-disclaimer">粉丝非官方档案站 · 与米哈游无隶属 · Hooxi 个人品牌剧情档案</span>
+    <span>HOOXI // ZZZ STORY ARCHIVE</span>
+    <span>NEW ERIDU, 2025</span>
+  </footer>
+
+  <div class="music-player cassette-dock" id="musicPlayer" data-cassette="dock">
+    <div class="deck-left">
+      <button type="button" class="cassette-mini" id="cassetteOpen" aria-label="打开全屏磁带机" title="打开磁带机">
+        <span class="cassette-mini-window" aria-hidden="true">
+          <i class="reel reel-l"></i>
+          <i class="reel reel-r"></i>
+          <b class="cassette-mini-label">C60</b>
+        </span>
+        <span class="cassette-mini-spine">TAPE</span>
+      </button>
+      <button id="musicToggle" class="play-button" aria-label="播放音乐">▶</button>
+      <div class="track-info"><small>NOW ON TAPE</small><b id="trackName">未选择音乐</b></div>
+    </div>
+    <div class="deck-right">
+      <button id="prevTrack" class="player-control" aria-label="上一首" title="上一首">◀</button>
+      <button id="nextTrack" class="player-control" aria-label="下一首" title="下一首">▶</button>
+      <button id="playMode" class="player-control mode-control" aria-label="播放模式：顺序播放" title="播放模式：顺序播放">顺序</button>
+      <label class="deck-vol"><span class="sr-only">音量</span><input id="volume" type="range" min="0" max="1" step=".05" value=".25" aria-label="音量"/></label>
+      <button class="playlist-button" id="playlistOpen">歌单</button>
+    </div>
+    <audio id="audio"></audio>
+  </div>
+
+  <div class="cassette-stage hidden" id="cassetteStage" hidden>
+    <button type="button" class="cassette-stage-scrim" id="cassetteCloseScrim" aria-label="关闭磁带机"></button>
+    <div class="cassette-deck" role="dialog" aria-modal="true" aria-labelledby="cassetteDeckTitle">
+      <header class="cassette-deck-head">
+        <div>
+          <p class="eyebrow">// RANDOM PLAY · DECK</p>
+          <h2 id="cassetteDeckTitle">磁带机</h2>
+        </div>
+        <button type="button" class="cassette-close" id="cassetteClose" aria-label="关闭">✕</button>
+      </header>
+
+      <div class="cassette-body">
+        <div class="cassette-shell" id="cassetteShell" data-side="A" aria-hidden="true">
+          <div class="cassette-top">
+            <span id="cassetteSideBadge">SIDE A</span>
+            <span id="cassetteSideMeta">C60 · TYPE I</span>
+          </div>
+          <div class="cassette-window">
+            <div class="reel reel-l"><i></i><em></em></div>
+            <div class="tape-bridge"><span class="tape-sheen"></span></div>
+            <div class="reel reel-r"><i></i><em></em></div>
+          </div>
+          <div class="cassette-label">
+            <small>NOW PLAYING</small>
+            <b id="cassetteTrackName">未选择音乐</b>
+          </div>
+          <div class="cassette-screws" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        </div>
+
+        <div class="cassette-transport" aria-label="走带进度">
+          <span id="cassetteTimeNow">0:00</span>
+          <input id="cassetteSeek" type="range" min="0" max="1000" value="0" step="1" aria-label="走带进度条"/>
+          <span id="cassetteTimeEnd">0:00</span>
+        </div>
+
+        <div class="cassette-side-switch" role="group" aria-label="磁带面">
+          <button type="button" class="side-btn is-active" id="cassetteSideA" data-side="A" aria-pressed="true">SIDE A</button>
+          <button type="button" class="side-btn" id="cassetteSideB" data-side="B" aria-pressed="false">SIDE B</button>
+          <span class="side-hint" id="cassetteSideHint">A 面顺序走带</span>
+        </div>
+
+        <div class="cassette-controls">
+          <button type="button" class="deck-btn" id="cassettePrev" aria-label="上一首">◀◀</button>
+          <button type="button" class="deck-btn deck-main" id="cassetteToggle" aria-label="播放或暂停">▶</button>
+          <button type="button" class="deck-btn" id="cassetteNext" aria-label="下一首">▶▶</button>
+          <button type="button" class="deck-btn" id="cassetteMode" aria-label="播放模式">顺序</button>
+          <label class="deck-volume">音量<input id="cassetteVolume" type="range" min="0" max="1" step=".05" value=".25"/></label>
+          <button type="button" class="deck-btn" id="cassettePlaylistBtn">歌单</button>
+        </div>
+        <div class="cassette-playlist" id="cassettePlaylist" hidden></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="playlist-popover hidden" id="playlist"><strong>播放列表</strong><div id="playlistItems"></div></div>
+
+  <script src="site-motion.js?v=signal-ui-r3"></script>
+  <script src="data.js?v=wiki-mb-1"></script>
+  <script src="agent-enrichment.js?v=archive-2"></script>
+  <script src="agent-catalog.js?v=archive-2"></script>
+  <script src="layout-data.js?v=1"></script><script src="image-webp.js?v=webp-4"></script>
+  <script src="app.js?v=home-local-cover-1"></script>
+  <script src="layout-editor.js?v=editor-2"></script>
+  <script src="home-neon.js?v=neon-r1"></script>
+</body>
+</html>
