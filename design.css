@@ -1,0 +1,287 @@
+/* ============================================================
+   HOOXI design.css — 可复用组件库
+   规范见 DESIGN.md。本文件只放可跨页复用的组件，
+   页面专属样式不写在这里。
+   ============================================================ */
+
+/* ---------- 1. 令牌 ---------- */
+:root{
+  --ink:#0C0C0E;
+  --panel:#16161A;
+  --panel-2:#1C1C21;
+  --line:#26262C;
+  --line-soft:#1F1F24;
+  --paper:#E8E6E1;
+  --paper-dim:#9A9892;
+  --accent:#FBD83F;
+
+  --font-zh:"Source Han Sans SC","Noto Sans CJK SC","Microsoft YaHei","PingFang SC",sans-serif;
+  --font-en:"Barlow Condensed","Arial Narrow",sans-serif;
+  --font-mono:"Space Mono","Consolas",monospace;
+
+  --ease:cubic-bezier(.22,1,.36,1);
+  --t-fast:140ms;
+  --t-base:200ms;
+
+  --gut:clamp(20px,5vw,64px);
+  --maxw:1200px;
+}
+
+/* ---------- 2. 基础 ---------- */
+*,*::before,*::after{box-sizing:border-box}
+
+.d-body{
+  margin:0;
+  background:var(--ink);
+  color:var(--paper);
+  font:400 16px/1.7 var(--font-zh);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:clip;
+}
+
+/* 网格底纹：唯一允许的背景纹理，透明度极低 */
+.d-grid-bg{
+  background-color:var(--ink);
+  background-image:
+    linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);
+  background-size:44px 44px;
+}
+
+.d-shell{
+  width:100%;
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding-inline:var(--gut);
+}
+
+/* 键盘直达正文 */
+.d-skip{
+  position:fixed;
+  top:8px;left:8px;
+  z-index:300;
+  display:inline-flex;
+  align-items:center;
+  min-height:44px;
+  padding:10px 16px;
+  transform:translateY(-160%);
+  border:2px solid var(--ink);
+  background:var(--accent);
+  color:var(--ink);
+  font:800 13px/1 var(--font-zh);
+  text-decoration:none;
+  transition:transform var(--t-base) var(--ease);
+}
+.d-skip:focus,.d-skip:focus-visible{transform:translateY(0)}
+
+/* ---------- 3. 排版 ---------- */
+.d-h1{
+  margin:0;
+  font:900 clamp(40px,5vw,72px)/1.06 var(--font-zh);
+  letter-spacing:-.02em;
+}
+.d-h2{
+  margin:0;
+  font:800 clamp(24px,2.6vw,34px)/1.15 var(--font-zh);
+  letter-spacing:-.01em;
+}
+.d-lead{
+  margin:0;
+  max-width:46ch;
+  color:var(--paper-dim);
+  font-size:16px;
+  line-height:1.7;
+}
+/* 英文编号：仅作辅助，不承载信息 */
+.d-code{
+  display:inline-block;
+  color:var(--accent);
+  font:700 11px/1 var(--font-en);
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.d-meta{
+  color:var(--paper-dim);
+  font:400 12px/1.5 var(--font-mono);
+}
+
+/* ---------- 4. 区块 ---------- */
+.d-section{
+  position:relative;
+  padding-block:clamp(40px,4.5vw,64px);
+}
+.d-section+.d-section{border-top:1px solid var(--line-soft)}
+
+.d-section-head{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px 24px;
+  align-items:baseline;
+  justify-content:space-between;
+  margin-bottom:28px;
+  padding-left:14px;
+  border-left:3px solid var(--accent);
+}
+.d-section-head .d-lead{max-width:38ch}
+
+/* ---------- 5. 按钮 ---------- */
+.d-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-height:48px;
+  padding:12px 22px;
+  border:1px solid transparent;
+  font:800 15px/1 var(--font-zh);
+  text-decoration:none;
+  cursor:pointer;
+  transition:transform var(--t-fast) var(--ease),
+             background var(--t-fast) var(--ease),
+             border-color var(--t-fast) var(--ease),
+             color var(--t-fast) var(--ease);
+}
+/* 主动作：每屏最多一个 */
+.d-btn-primary{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:var(--ink);
+}
+.d-btn-primary:is(:hover,:focus-visible){transform:translateY(-2px)}
+/* 次动作：描边，无填充 */
+.d-btn-ghost{
+  background:transparent;
+  border-color:var(--line);
+  color:var(--paper);
+}
+.d-btn-ghost:is(:hover,:focus-visible){border-color:var(--accent);color:var(--accent)}
+
+.d-link{
+  color:var(--paper);
+  text-decoration:none;
+  border-bottom:1px solid var(--line);
+  transition:color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease);
+}
+.d-link:is(:hover,:focus-visible){color:var(--accent);border-color:var(--accent)}
+
+/* ---------- 6. 入口卡 ---------- */
+.d-entries{
+  display:grid;
+  gap:14px;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));
+}
+.d-entry{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding:22px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  color:var(--paper);
+  text-decoration:none;
+  transition:transform var(--t-fast) var(--ease),
+             border-color var(--t-fast) var(--ease),
+             background var(--t-fast) var(--ease);
+}
+.d-entry:is(:hover,:focus-visible){
+  transform:translateY(-2px);
+  border-color:var(--accent);
+  background:var(--panel-2);
+}
+.d-entry b{font:800 19px/1.3 var(--font-zh)}
+.d-entry span{color:var(--paper-dim);font-size:13px;line-height:1.6}
+.d-entry .d-entry-go{
+  margin-top:auto;
+  color:var(--accent);
+  font:700 12px/1 var(--font-mono);
+}
+
+/* ---------- 7. 数据条 ---------- */
+.d-stats{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.d-stat{
+  display:flex;
+  align-items:baseline;
+  gap:7px;
+  padding:8px 12px;
+  background:var(--panel);
+  border:1px solid var(--line);
+}
+.d-stat b{color:var(--accent);font:700 17px/1 var(--font-mono)}
+.d-stat small{color:var(--paper-dim);font-size:11px;letter-spacing:.04em}
+
+/* ---------- 8. 光栅影画（X-ray）----------
+   底层彩色立绘 + 上层黑白覆盖，鼠标位置擦除上层露出彩色。
+   仅用 CSS mask，无 Canvas / WebGL。 */
+.d-xray{
+  position:relative;
+  overflow:hidden;
+  background:var(--panel);
+  --mx:50%;
+  --my:45%;
+  /* 默认半径 0：静止时整体黑白，指针进入后才透出彩色 */
+  --r:0px;
+}
+.d-xray.is-live{--r:200px}
+.d-xray img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:50% 18%;
+}
+/* 上层：同图黑白，按鼠标位置挖空 */
+.d-xray-veil{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  filter:grayscale(1) contrast(1.18) brightness(.82);
+  -webkit-mask-image:radial-gradient(circle var(--r) at var(--mx) var(--my),
+                transparent 0,transparent 58%,#000 100%);
+          mask-image:radial-gradient(circle var(--r) at var(--mx) var(--my),
+                transparent 0,transparent 58%,#000 100%);
+  transition:-webkit-mask-image var(--t-fast) linear,mask-image var(--t-fast) linear;
+}
+/* 扫描线：呼应影画质感，静态不动 */
+.d-xray::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:repeating-linear-gradient(
+    0deg,transparent 0 3px,rgba(0,0,0,.16) 3px 4px);
+}
+/* 无精确指针或减动效：直接显示彩色，不做交互 */
+@media (hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){
+  .d-xray-veil{display:none}
+}
+
+/* ---------- 9. 页脚 ---------- */
+.d-foot{
+  padding-block:32px;
+  border-top:1px solid var(--line);
+  color:var(--paper-dim);
+  font-size:12px;
+  line-height:1.8;
+}
+.d-foot strong{color:var(--paper);font-weight:700}
+
+/* ---------- 10. 入场（一次性） ---------- */
+@media (prefers-reduced-motion:no-preference){
+  .d-in{
+    opacity:0;
+    transform:translateY(14px);
+    animation:d-fade-in 420ms var(--ease) forwards;
+    animation-delay:calc(var(--i,0)*70ms);
+  }
+  @keyframes d-fade-in{to{opacity:1;transform:none}}
+}
+
+/* ---------- 11. 窄屏 ---------- */
+@media(max-width:640px){
+  .d-section-head{flex-direction:column;gap:8px}
+  .d-btn{width:100%;justify-content:center}
+  .d-entry{padding:18px}
+}
