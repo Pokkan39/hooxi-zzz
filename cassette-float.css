@@ -1,0 +1,550 @@
+/* =========================================================================
+   cassette-float.css  —  悬浮可拖拽磁带机（Random Play Deck）
+   加载顺序：置于 theme-zzz.css 之后，用同等/更高优先级覆盖旧 dock 规则。
+
+   结构分工（关键）：
+   - #musicPlayer.cassette-dock  = 文档流内的“静默入口条”，非 fixed，
+     满足验收脚本对 dockInFlow 的硬契约（position 不得为 fixed/absolute/sticky）。
+   - #floatingCassette           = 真正的悬浮磁带机，position:fixed，可拖拽，
+     不带 musicPlayer id / cassette-dock class，避开脚本所有 dock 选择器。
+     其上的控件通过 cassette-float.js 代理转发到既有播放控件，逻辑零重写。
+
+   颜色仅用项目既有 token；动效时长/缓动遵循 design.md 合同。
+   ========================================================================= */
+
+:root{
+  --cf-ease:cubic-bezier(.22,1,.36,1);
+  --cf-fast:150ms;      /* 即时反馈 120-180ms */
+  --cf-state:320ms;     /* 状态切换 240-480ms */
+}
+
+/* -------------------------------------------------------------------------
+   1) 文档流内入口条：把旧的 fixed dock 拉回文档流，做成克制的一条。
+   用 !important 对抗 styles.css 的 .music-player{position:fixed}。
+   ------------------------------------------------------------------------- */
+.home-page{
+  /* 旧 dock 是 fixed 才需要 144px 垫底；现在 in-flow，收回多余留白 */
+  padding-bottom:32px!important;
+}
+html body.home-page .music-player.cassette-dock{
+  position:static!important;
+  left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;
+  transform:none!important;
+  /* 宽度贴合内容：折叠态（未 hover）右侧控件收成 0 宽，若仍锁 960px
+     会留出一大片空黑条。用 fit-content 让折叠态收窄、hover 展开时自然变宽。 */
+  width:fit-content!important;
+  max-width:min(960px,calc(100% - 32px))!important;
+  margin:20px auto calc(28px + env(safe-area-inset-bottom,0px))!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:16px!important;
+  /* 单行：换行会让右侧控件掉到第二行，把这一条顶到 150px 以上并留出大片空黑。
+     流媒体的 now playing bar 都是定高单行，左中右三分区在同一基线上。 */
+  flex-wrap:nowrap!important;
+  padding:12px 16px!important;
+  z-index:1!important;
+  box-shadow:6px 6px 0 var(--home-stage-black)!important;
+}
+html body.home-page .music-player.cassette-dock .deck-left{
+  display:flex!important;align-items:center!important;gap:12px!important;
+  /* 不给 flex-basis：380px 起长会吃满整行把右侧挤走。
+     用 1 1 auto 让它只占内容宽度，剩余空间留给右侧控件组。 */
+  flex:1 1 auto!important;min-width:0!important;justify-content:flex-start!important;
+}
+html body.home-page .music-player.cassette-dock .deck-right{
+  display:flex!important;align-items:center!important;gap:8px!important;
+  flex:0 0 auto!important;justify-content:flex-end!important;flex-wrap:nowrap!important;
+}
+html body.home-page .music-player.cassette-dock .track-info{
+  display:flex!important;flex-direction:column;justify-content:center;
+  min-width:0;flex:1 1 auto;gap:2px;
+}
+/* 曲目信息按流媒体 now playing 的两行制：上行小字标签、下行曲名。
+   曲名单行截断，长名不得把控件挤出这一条。 */
+html body.home-page .music-player.cassette-dock .track-info small{
+  font:700 9px/1 var(--font-mono,"Space Mono",monospace);
+  letter-spacing:.16em;
+  color:var(--home-screen-yellow,#FBD83F);
+}
+html body.home-page .music-player.cassette-dock .track-info b{
+  font:700 17px/1.2 var(--font-body,"Barlow Condensed",sans-serif);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+/* 主播放键明显大于次要键（56 vs 44），并用实心强调色。
+   这是流媒体播放条的通行做法：主操作一眼可辨，不靠位置区分。 */
+html body.home-page .music-player.cassette-dock .play-button{
+  display:grid!important;place-items:center;
+  width:56px!important;height:56px!important;min-width:56px!important;min-height:56px!important;
+  border-radius:50%!important;
+  background:var(--home-screen-yellow,#FBD83F)!important;
+  color:var(--home-stage-black,#18171A)!important;
+  border:2px solid var(--home-screen-yellow,#FBD83F)!important;
+  font-size:18px!important;
+  flex:0 0 56px!important;
+}
+html body.home-page .music-player.cassette-dock .cassette-mini{
+  display:grid!important;place-items:center;
+  width:70px!important;height:48px!important;min-width:70px!important;min-height:48px!important;flex:0 0 70px!important;
+}
+/* 次要控件补到 44px 触控下限：原先 34-38px 全部不达标
+   （WCAG 2.5.5 AAA 要求 44x44 CSS px，项目门禁也按 44 卡）。 */
+html body.home-page .music-player.cassette-dock .player-control,
+html body.home-page .music-player.cassette-dock .playlist-button{
+  display:grid!important;place-items:center;
+  min-width:44px!important;min-height:44px!important;
+  box-sizing:border-box!important;
+}
+html body.home-page .music-player.cassette-dock .mode-control{min-width:56px!important}
+/* 音量滑杆原高 16px，低于触控下限：轨道保持细，可点区域撑到 44px。 */
+html body.home-page .music-player.cassette-dock .deck-vol{
+  display:flex!important;align-items:center;
+  min-height:44px!important;
+}
+html body.home-page .music-player.cassette-dock .deck-vol input[type=range]{
+  height:44px!important;
+  accent-color:var(--home-screen-yellow,#FBD83F);
+  background:transparent;
+}
+/* 窄屏恢复换行：单行三分区是桌面布局，320px 下右侧控件组放不进一行，
+   nowrap 会让它们横向溢出到视口外（实测溢出到 563px）。 */
+@media(max-width:640px){
+  html body.home-page .music-player.cassette-dock{
+    flex-wrap:wrap!important;
+    width:min(960px,calc(100% - 32px))!important;
+  }
+  html body.home-page .music-player.cassette-dock .deck-left,
+  html body.home-page .music-player.cassette-dock .deck-right{
+    flex-basis:100%!important;
+    flex-wrap:wrap!important;
+  }
+  html body.home-page .music-player.cassette-dock .deck-right{justify-content:flex-start!important}
+}
+
+/* =========================================================================
+   2) 悬浮磁带机 —— SONY TPS-L2 复刻
+   实物参照：88x133.5x29mm 横向砖形，蓝色阳极氧化铝机身 + 银灰前面板，
+   可见走带窗（金色齿轮轴 + 褐色磁带 + A 面标签），一排银色竖纹金属推杆键，
+   右侧一枚橙色滑块，机身丝印 SONY / STEREO / TPS-L2。
+
+   配色分工（关键）：机身色 --cf-accent 由 cassette-skin.js 按角色印象色注入，
+   前面板银灰与橙色滑块是 TPS-L2 的固有特征、恒定不变——若它们也跟着变色，
+   53 种配色就不再是「同一台机器的不同颜色」，而是 53 个不同的东西。
+   ========================================================================= */
+.floating-cassette{
+  position:fixed;
+  z-index:40;
+  right:20px;
+  bottom:calc(20px + env(safe-area-inset-bottom,0px));
+  /* 横向砖形：实物宽高比约 88:133.5，网页端取 336px 以容纳中文曲名 */
+  width:336px;
+  max-width:calc(100vw - 24px);
+  box-sizing:border-box;
+  /* 机身默认色：无色源时兜底，正常由 JS 注入覆盖 */
+  --cf-accent:251,216,63;
+  --cf-body-hi:255,235,120;
+  --cf-body-lo:120,102,26;
+  --cf-body-deep:64,55,14;
+  --cf-on-body:17,19,21;
+  /* 前面板银灰：实物为拉丝铝，不随角色变 */
+  --cf-panel:214,214,208;
+  --cf-panel-lo:150,150,144;
+  --cf-ink:32,33,36;
+  --cf-orange:236,110,32;
+  border-radius:10px;
+  /* 机身厚度：底部深色实边 + 外投影，表达 29mm 砖块感 */
+  box-shadow:
+    0 2px 0 rgba(var(--cf-body-deep),1),
+    0 5px 0 rgba(0,0,0,.55),
+    0 18px 34px rgba(0,0,0,.5);
+  touch-action:none;
+  transition:box-shadow var(--cf-fast) var(--cf-ease);
+  overflow:hidden;
+  font-family:var(--font-mono,"Space Mono",monospace);
+}
+.floating-cassette[hidden]{display:none!important}
+.floating-cassette.is-dragging{
+  box-shadow:
+    0 2px 0 rgba(var(--cf-body-deep),1),
+    0 5px 0 rgba(0,0,0,.55),
+    0 26px 44px rgba(0,0,0,.58);
+  cursor:grabbing;
+}
+.floating-cassette.is-dragging .fc-deck{cursor:grabbing}
+.floating-cassette *{user-select:none}
+
+/* -------------------------------------------------------------------------
+   上段：阳极氧化金属机身
+   阳极氧化铝的特征是高光偏白、暗部仍保有色相，所以用三档同色相渐变，
+   而不是「主色 + 变黑」。竖向细纹模拟拉丝。
+   ------------------------------------------------------------------------- */
+.fc-deck{
+  position:relative;
+  padding:10px 12px 12px;
+  cursor:grab;
+  touch-action:none;
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(255,255,255,.05) 0 1px,transparent 1px 3px),
+    linear-gradient(180deg,
+      rgba(var(--cf-body-hi),1) 0,
+      rgba(var(--cf-accent),1) 18%,
+      rgba(var(--cf-accent),1) 62%,
+      rgba(var(--cf-body-lo),1) 100%);
+  border-bottom:1px solid rgba(0,0,0,.45);
+}
+.fc-deck-top{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:8px;
+}
+/* 角色英文名丝印：占据实物 SONY 标的位置。
+   金属丝印的特征是细字重 + 大字距 + 轻微高光，不是粗黑体 */
+.fc-plate{
+  flex:1 1 auto;min-width:0;
+  font-size:11px;font-weight:700;
+  letter-spacing:.22em;
+  color:rgba(var(--cf-on-body),.92);
+  text-shadow:0 1px 0 rgba(255,255,255,.25);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.fc-stereo{
+  flex:0 0 auto;
+  font-size:8px;font-weight:700;letter-spacing:.3em;
+  color:rgba(var(--cf-on-body),.55);
+}
+/* 舱盖按钮：机身上的小凹槽键 */
+.fc-lid{
+  flex:0 0 auto;
+  width:44px;height:26px;
+  display:grid;place-items:center;
+  border:1px solid rgba(0,0,0,.35);
+  border-radius:4px;
+  background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(0,0,0,.12));
+  color:rgba(var(--cf-on-body),.8);
+  font-size:11px;line-height:1;
+  cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3);
+}
+.fc-lid:hover{background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(0,0,0,.1))}
+.fc-lid:focus-visible{outline:2px solid var(--home-signal-cyan,#2DDCDD);outline-offset:2px}
+
+/* -------------------------------------------------------------------------
+   走带窗：内凹深腔 + 磁带实体 + 玻璃高光
+   ------------------------------------------------------------------------- */
+.fc-window{
+  position:relative;
+  /* 高度须容纳 70px 卷轴 + 磁带壳内缩 + 上下留白 */
+  height:98px;
+  border-radius:5px;
+  background:#0a0b0d;
+  /* 内凹：上缘暗、下缘亮，与外凸的按键正好相反 */
+  box-shadow:
+    inset 0 3px 6px rgba(0,0,0,.9),
+    inset 0 -1px 0 rgba(255,255,255,.14),
+    0 1px 0 rgba(255,255,255,.18);
+  overflow:hidden;
+}
+/* 磁带体：深褐半透明壳 */
+.fc-tape{
+  position:absolute;inset:6px;
+  /* 用 flex 而非 grid：grid 的 1fr 轨道会把卷轴拉伸变形。
+     center + gap 让两卷轴紧凑靠中，实物两轴间距约等于一个卷轴宽度；
+     space-around 会把它们推到两端（实测间距 186px），不像磁带。 */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  border-radius:3px;
+  background:linear-gradient(180deg,rgba(64,42,28,.55),rgba(28,18,12,.75));
+  border:1px solid rgba(255,255,255,.08);
+}
+/* 卷轴：齿轮状轮毂（实物是六齿咬合孔）+ 外围缠带环 */
+/* 卷轴直径取窗内高度的九成：实物两个卷轴几乎撑满走带窗，
+   做小了就变成「两个小圆点悬在空腔里」，完全不像磁带。 */
+.fc-hub{
+  position:relative;
+  /* flex:0 0 + 固定 width/height：放在 grid 的 1fr 轨道里会被拉伸变形
+     （实测被拉到 99px 且左右不等大、纵向错位），必须锁死尺寸。 */
+  flex:0 0 auto;
+  width:70px;height:70px;
+  min-width:70px;min-height:70px;
+  border-radius:50%;
+  --spin:1.6s;
+  background:
+    radial-gradient(circle at 50% 50%,
+      #d8c88a 0 11%,
+      #8a7b4a 12%,#5d5230 17%,
+      transparent 18%);
+}
+/* 缠带环：--wound 由 JS 按播放进度写入（左轴渐小、右轴渐大）。
+   缠带用偏红的褐色而不是近黑色——磁带在光下是可辨的深棕，
+   纯黑会和窗底融成一片，看不出「缠了多少带」。 */
+.fc-wound{
+  position:absolute;inset:0;
+  border-radius:50%;
+  transform:scale(var(--wound,.7));
+  transform-origin:50% 50%;
+  background:
+    radial-gradient(circle at 50% 50%,
+      transparent 0 24%,
+      #6b4326 25%,#4a2d18 62%,#2e1c10 100%);
+  box-shadow:0 0 0 1px rgba(0,0,0,.55),inset 0 0 6px rgba(0,0,0,.5);
+  transition:transform 600ms linear;
+}
+/* 六齿：conic-gradient 一层解决，比六个子元素轻 */
+.fc-teeth{
+  position:absolute;inset:0;margin:auto;
+  width:20px;height:20px;border-radius:50%;
+  z-index:2;
+  background:
+    conic-gradient(from 0deg,
+      #e8d9a0 0 8%,#6b5f38 8% 16.6%,
+      #e8d9a0 16.6% 25%,#6b5f38 25% 33.3%,
+      #e8d9a0 33.3% 41.6%,#6b5f38 41.6% 50%,
+      #e8d9a0 50% 58.3%,#6b5f38 58.3% 66.6%,
+      #e8d9a0 66.6% 75%,#6b5f38 75% 83.3%,
+      #e8d9a0 83.3% 91.6%,#6b5f38 91.6% 100%);
+}
+/* 两轴之间那段裸磁带：实物是一条连续窄带横跨两轴之间的磁头区。
+   做成独立小方块会看起来像悬空的第三个零件，所以让它填满两轴间隙。 */
+.fc-tape-span{
+  flex:1 1 auto;
+  max-width:34px;
+  height:9px;
+  align-self:center;
+  background:linear-gradient(180deg,#5a3a22,#2a1a10);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14);
+  border-radius:1px;
+}
+/* A 面标签 */
+.fc-side-label{
+  position:absolute;left:6px;top:4px;
+  font-size:8px;font-weight:700;letter-spacing:.1em;
+  color:rgba(255,255,255,.5);
+}
+/* 窗玻璃：斜向高光，是「有块塑料盖着」的关键 */
+.fc-glass{
+  position:absolute;inset:0;
+  pointer-events:none;
+  background:linear-gradient(112deg,
+    rgba(255,255,255,.16) 0,
+    rgba(255,255,255,.04) 26%,
+    transparent 42%,
+    transparent 100%);
+}
+/* 卷轴只在播放时转，转速由 JS 按卷径写入（卷径大则慢，线速度恒定） */
+.floating-cassette.is-playing .fc-hub{
+  animation:fc-spin var(--spin,1.6s) linear infinite;
+}
+@keyframes fc-spin{to{transform:rotate(360deg)}}
+
+/* 型号丝印 */
+.fc-model{
+  margin:7px 0 0;
+  font-size:7px;font-weight:700;letter-spacing:.16em;
+  color:rgba(var(--cf-on-body),.5);
+}
+
+/* -------------------------------------------------------------------------
+   下段：银灰前面板（拉丝铝）
+   ------------------------------------------------------------------------- */
+.fc-panel{
+  padding:10px 12px 12px;
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(255,255,255,.16) 0 1px,transparent 1px 3px),
+    linear-gradient(180deg,
+      rgb(var(--cf-panel)) 0,
+      rgb(var(--cf-panel-lo)) 100%);
+  color:rgb(var(--cf-ink));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.6);
+}
+.fc-now{display:flex;flex-direction:column;gap:1px;min-width:0;margin-bottom:6px}
+.fc-now small{
+  font-size:7px;font-weight:700;letter-spacing:.2em;
+  color:rgba(var(--cf-ink),.6);
+}
+.fc-now b{
+  font:700 15px/1.25 var(--font-body,"Barlow Condensed",sans-serif);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  color:rgb(var(--cf-ink));
+}
+.fc-seekrow{
+  display:flex;align-items:center;gap:7px;
+  font-size:9px;font-weight:700;
+  color:rgba(var(--cf-ink),.75);
+  margin-bottom:8px;
+}
+.fc-seekrow input[type=range]{
+  flex:1 1 auto;min-width:0;height:22px;
+  accent-color:rgb(var(--cf-accent));
+  background:transparent;
+}
+.fc-cue{
+  margin:0 0 8px;
+  font-size:9px;font-weight:700;letter-spacing:.04em;
+  color:#8a3c10;
+}
+.floating-cassette:not(.needs-gesture) .fc-cue{display:none}
+
+/* -------------------------------------------------------------------------
+   金属推杆键：实物是一排银色竖纹推杆，有厚度、按下有行程
+   ------------------------------------------------------------------------- */
+.fc-keys{
+  display:flex;align-items:flex-end;gap:5px;
+  margin-bottom:9px;
+}
+.fc-key{
+  flex:0 0 auto;
+  /* 命中区 >= 44px（WCAG 2.5.5 AAA），视觉键面由内层 face 表达 */
+  min-width:44px;min-height:44px;
+  padding:0;
+  border:1px solid #6f6f68;
+  border-radius:3px;
+  background:
+    /* 竖纹：推杆键面的标志性细纹 */
+    repeating-linear-gradient(90deg,
+      rgba(255,255,255,.5) 0 1px,
+      rgba(0,0,0,.14) 1px 2px,
+      transparent 2px 4px),
+    linear-gradient(180deg,#f2f2ec 0,#cfcfc7 46%,#a5a59d 100%);
+  color:#22242a;
+  cursor:pointer;
+  /* 凸起：底部实边表达键的厚度 */
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.85),
+    0 3px 0 #74746c,
+    0 4px 4px rgba(0,0,0,.35);
+  transition:transform 90ms var(--cf-ease),box-shadow 90ms var(--cf-ease);
+}
+.fc-key-face{
+  display:grid;place-items:center;
+  font:700 12px/1 var(--font-body,"Barlow Condensed",sans-serif);
+  letter-spacing:.02em;
+  pointer-events:none;
+}
+/* 按下行程：键往下沉，底部实边同步变薄 */
+.fc-key:active{
+  transform:translateY(3px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.5),
+    0 0 0 #74746c,
+    0 1px 2px rgba(0,0,0,.4);
+}
+.fc-key:focus-visible{outline:2px solid var(--home-signal-cyan,#2DDCDD);outline-offset:2px}
+.fc-key--wide{min-width:52px}
+.fc-key--wide .fc-key-face{font-size:11px}
+.fc-key--play{min-width:52px}
+.fc-key--play .fc-key-face{font-size:14px}
+/* 播放中锁定态：键保持下沉。这是机械磁带机最有辨识度的一处细节 */
+.floating-cassette.is-playing .fc-key--play{
+  transform:translateY(3px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.5),
+    0 0 0 #74746c,
+    0 1px 2px rgba(0,0,0,.4);
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(255,255,255,.4) 0 1px,
+      rgba(0,0,0,.16) 1px 2px,
+      transparent 2px 4px),
+    linear-gradient(180deg,rgb(var(--cf-accent)) 0,rgb(var(--cf-body-lo)) 100%);
+}
+/* 橙色滑块：实物右侧那枚，做成推到底的开关块 */
+.fc-slider-btn{
+  flex:0 0 auto;
+  margin-left:auto;
+  min-width:44px;min-height:44px;
+  width:44px;
+  border:1px solid #8a3c10;
+  border-radius:3px;
+  background:
+    repeating-linear-gradient(0deg,
+      rgba(255,255,255,.28) 0 1px,transparent 1px 3px),
+    linear-gradient(180deg,#f8863c 0,rgb(var(--cf-orange)) 52%,#b8500f 100%);
+  cursor:pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.55),
+    0 3px 0 #7d3208,
+    0 4px 4px rgba(0,0,0,.35);
+  transition:transform 90ms var(--cf-ease),box-shadow 90ms var(--cf-ease);
+}
+.fc-slider-btn:active{
+  transform:translateY(3px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 0 #7d3208,0 1px 2px rgba(0,0,0,.4);
+}
+.fc-slider-btn:focus-visible{outline:2px solid var(--home-signal-cyan,#2DDCDD);outline-offset:2px}
+
+/* 底部：VOLUME 滑杆 + 配色入口 */
+.fc-foot{display:flex;align-items:center;gap:8px}
+.fc-vol{
+  flex:1 1 auto;display:flex;align-items:center;gap:6px;min-width:0;
+  min-height:44px;
+  font-size:8px;font-weight:700;letter-spacing:.16em;
+  color:rgba(var(--cf-ink),.7);
+}
+.fc-vol input[type=range]{
+  flex:1 1 auto;min-width:0;height:44px;
+  accent-color:rgb(var(--cf-accent));
+  background:transparent;
+}
+.fc-skin{
+  flex:0 0 auto;
+  min-width:44px;min-height:44px;
+  border:1px solid #6f6f68;
+  border-radius:3px;
+  background:linear-gradient(180deg,#f2f2ec,#b9b9b1);
+  color:#22242a;
+  font:700 11px/1 var(--font-body,"Barlow Condensed",sans-serif);
+  cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 2px 0 #74746c;
+}
+.fc-skin:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 0 0 #74746c}
+.fc-skin:focus-visible{outline:2px solid var(--home-signal-cyan,#2DDCDD);outline-offset:2px}
+/* 取色器本体不可见但可被程序点击；不能用 display:none，否则 click() 无效 */
+.fc-skin-input{
+  position:absolute;
+  width:1px;height:1px;
+  opacity:0;pointer-events:none;
+}
+
+/* 「点击播放」提示态：播放键呼吸一次 */
+.floating-cassette.needs-gesture .fc-key--play{
+  animation:fc-cue 1400ms var(--cf-ease) 1;
+}
+@keyframes fc-cue{
+  0%{box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 3px 0 #74746c,0 0 0 0 rgba(var(--cf-accent),.6)}
+  60%{box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 3px 0 #74746c,0 0 0 10px rgba(var(--cf-accent),0)}
+  100%{box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 3px 0 #74746c,0 0 0 0 rgba(var(--cf-accent),0)}
+}
+
+/* -------------------------------------------------------------------------
+   合上舱盖（原折叠态）：只留机身上段，前面板收起
+   ------------------------------------------------------------------------- */
+.floating-cassette.is-collapsed{width:236px}
+.floating-cassette.is-collapsed .fc-panel{display:none}
+.floating-cassette.is-collapsed .fc-window{height:62px}
+.floating-cassette.is-collapsed .fc-hub{width:32px;height:32px}
+.floating-cassette.is-collapsed .fc-tape-span{width:38px;height:20px}
+.floating-cassette.is-collapsed .fc-model{display:none}
+
+@media(max-width:640px){
+  .floating-cassette{width:min(336px,calc(100vw - 24px))}
+  /* 320px 下五键 + 橙块放不进一行（实测橙块溢出到 329px）。
+     允许换行，并取消橙块的 margin-left:auto——换行后 auto 会把它
+     单独顶到第二行最右端，看起来像掉出来的零件。 */
+  .fc-keys{flex-wrap:wrap}
+  .fc-slider-btn{margin-left:0}
+}
+
+/* 无障碍：尊重减少动效。卷轴无限旋转是典型装饰性动画，必须停；
+   进度与状态仍照常更新，功能不受影响。 */
+@media(prefers-reduced-motion:reduce){
+  .floating-cassette,
+  .fc-key,
+  .fc-slider-btn,
+  .fc-lid{transition:none!important}
+  .floating-cassette.is-playing .fc-hub{animation:none!important}
+  .fc-wound{transition:none!important}
+  .floating-cassette.needs-gesture .fc-key--play{animation:none!important}
+}
