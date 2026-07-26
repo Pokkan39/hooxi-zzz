@@ -9,3 +9,19 @@ artifacts/
 *.opt-test.webp
 tmp/
 /tmp/
+/backup/
+
+# 本机工作产物，不入库：
+# 调试/参考截图散落在仓库根目录，以及一个 107MB 的源码打包。
+# 它们只服务于本机比对，入库会让仓库体积失控。
+/hooxi-zzz-source.zip
+/.narrafork/
+/reference-materials/
+/*.png
+
+# 来源不合规素材，禁止入库。
+# assets/mindscape/ 取自 Steam 创意工坊壁纸包（workshop 431960/3491187965），
+# 不是游戏解包；其第三态（_Full）是去除服装的二次改图，53 个角色全部如此。
+# 站内已无任何代码引用它，保留在工作区仅为等待用户决定是否删除。
+# 此处忽略是为了防止 git add -A 之类的操作把它带进提交历史。
+/assets/mindscape/
