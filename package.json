@@ -26,7 +26,9 @@
     "test:links": "node scripts/check-link-integrity.mjs",
     "test:links:online": "node scripts/check-link-integrity.mjs --online",
     "test:boundary": "node scripts/check-unofficial-boundary.mjs",
-    "test:boundary:runtime": "node scripts/check-boundary-runtime.mjs"
+    "test:boundary:runtime": "node scripts/check-boundary-runtime.mjs",
+    "test:boundary:all": "node scripts/check-boundary-all.mjs",
+    "test:contrast": "node scripts/check-hero-contrast.mjs"
   },
   "repository": {
     "type": "git",
