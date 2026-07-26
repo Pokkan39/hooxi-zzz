@@ -107,6 +107,21 @@
 10. 确认无误后点击“导出当前文件”，用下载的 `data.js` 覆盖仓库根目录同名文件，并同步覆盖拖动导出的 `layout-data.js`。
 11. 执行 `git add`、`git commit`、`git push origin main`，等待 GitHub Pages 或绑定域名的托管服务更新。
 
+**部署机制与唯一的质量兜底（务必先读）**
+
+`.github/workflows/pages.yml` 是仓库唯一的工作流，触发条件只有 `push` 到 `main` 与手动 `workflow_dispatch`，步骤为 `upload-pages-artifact` 配 `path: .`，即把整个仓库全量上传并部署到 GitHub Pages。
+
+由此有两个后果，任何人推 `main` 或合并 PR 前都必须清楚：
+
+- **合并即上线。** 推到 `main` 的内容会直接成为线上站点，中间没有预发布环节。
+- **没有任何 CI 测试把关。** 该工作流不执行 `npm test`、不执行 `npm run test:ui`、不执行 `npm run test:formal`。在 Pull Request 上不会触发任何检查，PR 页面的 checks 列表是空的——这是「没有配置检查」，不是「检查通过」。
+
+所以质量兜底完全依赖本地。合并或直推 `main` 之前，至少跑完这三项并确认结果：
+
+- `npm test`：档案媒体校验、链接诚信、非官方边界
+- `npm run test:ui`：截图矩阵、深链、交互、首页发布与放映检查，须 `blockingFailures: 0`
+- `npm run test:formal`：正式站基线比对。它的作用是拦截未经授权的正式站改动，报 `GATE_FAIL` 时先分辨是「本次改动确实获得批准」还是「出现了不该有的偏离」；确属已批准的施工，才在用户明确同意后用 `--write` 推进基线，不可顺手重建。
+
 编辑页使用后端账号会话认证，账号密码由服务端环境变量 `EDITOR_ACCOUNTS_JSON` 配置，仓库和公开页面不保存账号密码。没有仓库写权限的人即使登录，也只能改自己浏览器里的草稿，不能改线上网站。公开页不会默认显示任何编辑模板或施工工具，只有点右上角 `✦` 才会进入编辑页。
 
 ## 内容来源标注
