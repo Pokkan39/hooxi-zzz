@@ -1102,8 +1102,10 @@ try {
           && home.pathCount === 3
           && !home.hasTimeline
           && !home.hasExpandControls
-          && home.imageSrc === `${serverHandle.origin}/assets/hero/zzz-random-play-keyart.png`
-          && home.imageResolvedSrc === `${serverHandle.origin}/assets/hero/zzz-random-play-keyart.png`
+          && (home.imageSrc === `${serverHandle.origin}/assets/hero/zzz-random-play-keyart.png`
+            || home.imageSrc === `${serverHandle.origin}/assets/hero/zzz-random-play-keyart.webp`)
+          && (home.imageResolvedSrc === `${serverHandle.origin}/assets/hero/zzz-random-play-keyart.png`
+            || home.imageResolvedSrc === `${serverHandle.origin}/assets/hero/zzz-random-play-keyart.webp`)
           && home.imageNaturalWidth > 0
           && home.primaryFontSize > home.playFontSize
           && home.primaryArea > home.playArea
