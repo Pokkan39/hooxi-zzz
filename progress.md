@@ -5298,3 +5298,32 @@ min-height min-content 得舞台高 612、可见 0/9，排除。
 
 回滚方式：git checkout -- design.css zzz-ui.js character.html 可再次回到 HEAD（会一并撤销 NO_PORTRAIT 修复，若只想保留该修复需手工重加）。坏版本在 artifacts/_myver-* 内。
 本轮未做 git 提交。上一稳定点 e48144f。
+
+## 2026-07-27 - Task: 提交并推送本轮成果到新分支
+### What was done
+按用户指示提交并推送。新建分支 fix/home-screening-cassette-and-gates，未直推 main。按功能拆成 5 个提交，便于后续单独回退或挑拣：
+
+一是门禁修复（消除名录立绘 404、补齐 8 张活动封面、.gitignore 增补禁入库项、docs 记录白名单约定）；二是首页修复（首屏整块不绘制的层叠根因、七幕恢复、片尾幕列宽）；三是磁带机 TPS-L2 复刻与角色印象色配色；四是影画配对数据与边界门禁增强，含撤除来源不合规的三态字段；五是纳入 src/stories.jsx 构建源与素材处理脚本。
+
+推送前先做了入库范围清理。工作区原有 120 项待处理，其中混着一个 107MB 的源码打包、十余张本机调试截图和参考图。这些只服务于本机比对，入库会让仓库体积失控，已写入 .gitignore 排除，并用 git check-ignore 验证规则精确生效（根目录 png 与 zip 命中，assets 下素材不受影响）。全程按文件名分组 add，未使用 git add -A。
+
+探索用的样例页与原型（active-theory-sample、cinematic-slice、film-archive-directions、scroll-world-prototype、tech-direction-demos、prototype/）共 17 项未入库：它们是设计探索产物，不属于站点交付内容。src/stories.jsx 则必须入库——它是 stories.js 的 esbuild 构建源，此前缺失会导致代理人工作台无法从仓库重建。
+
+### Testing
+- 提交后再次跑两套门禁确认推送的是绿状态：npm run test:ui 的 blockingFailures 为 0、passed 为 true，8 项放映检查全过；npm test 的档案媒体、链接诚信、非官方边界全部 PASS
+- 推送结果核实：git ls-remote 确认远端分支存在且指向 bd029f4
+- 禁入库项核实：git ls-files 检索 assets/mindscape 与 hooxi-zzz-source.zip 均为 0 条，确认改图素材与 107MB 打包都没有进入历史
+- 敏感文件预检：按 .env / credential / secret / token / key / password 关键字扫描待提交清单，无命中
+
+### Notes
+本轮不改代码，仅做入库操作。改动文件清单：
+- .gitignore — 增补两类禁入库项：本机调试截图与源码打包（/hooxi-zzz-source.zip、/.narrafork/、/reference-materials/、/*.png），以及来源不合规的 /assets/mindscape/
+- progress.md — 追加本轮记录
+
+分支与提交：fix/home-screening-cassette-and-gates，5 个提交 7e6dbde / 8352623 / b20864e / 849e052 / bd029f4，已推送到 origin 并建立跟踪。
+
+未合并到 main：按仓库规则只推分支，是否合并由用户决定。GitHub 已给出 PR 创建地址。
+
+需要提醒的一处背景：纯 HEAD（e48144f）状态跑 test:ui 是 85 项失败、首页放映检查 0 通过，即线上这版首页本身是坏的。本分支把它修到 0 失败，因此合并方向是改善。
+
+回滚方式：本分支可整体删除（git push origin --delete fix/home-screening-cassette-and-gates 加本地 git branch -D），main 未受影响；也可按上方 5 个提交单独 revert。
