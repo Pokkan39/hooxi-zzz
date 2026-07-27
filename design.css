@@ -861,3 +861,18 @@
   .zzz-wm-out{font-size:clamp(48px,15vw,86px)}
   .zzz-wm-arc{display:none}
 }
+
+/* ---------- 角色主题色改为跟随角色印象色 ---------- */
+/* multi-page.css 把 --character-theme 固定为 #ff9c52（橙），它驱动角色页
+   13 个元素：左侧轨道编号与菱形标记、立绘边框、身份牌圆环、档案编号、
+   面板左边框等。固定橙与当前角色无关，同一页的强调色因此不统一。
+
+   改为跟随 --art-letter-ui。用它而不是原始 --art-letter 是必须的：
+   实测 53 个印象色里有 22 个原色在深底上对比度不足 4.5（billy-kid 2.52、
+   zhu-yuan 2.28、miyabi 3.26 等），直接用会读不清；--art-letter-ui 是
+   archive-tools.js 按目标相对亮度 0.48 提亮后的值，实测 53/53 全部达标。
+
+   回退值保留原橙：无影画素材的 3 个角色取不到印象色时表现不变。 */
+.subpage.archive-character{
+  --character-theme:rgb(var(--art-letter-ui,255 156 82));
+}
