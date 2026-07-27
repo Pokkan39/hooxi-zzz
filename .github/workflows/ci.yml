@@ -52,12 +52,21 @@ jobs:
       - name: UI gates
         run: npm run test:ui
 
-      # 失败时保留报告与截图，便于在 PR 上直接查原因而不必本地复现
+      # 失败时保留报告与截图，便于在 PR 上直接查原因而不必本地复现。
+      # 先把报告拷到 ci-report/：仓库的 .gitignore 用 artifacts/* 排除该目录内容，
+      # upload-artifact 会遵循忽略规则，直接传 artifacts/ 下的路径会得到空包。
+      - name: Collect UI report
+        if: always()
+        run: |
+          mkdir -p ci-report
+          cp -r artifacts/r1-baseline-*/ ci-report/ 2>/dev/null || true
+          ls -R ci-report | head -40
+
       - name: Upload UI report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ui-baseline-report
-          path: artifacts/r1-baseline-*/
+          path: ci-report/
           retention-days: 7
-          if-no-files-found: ignore
+          if-no-files-found: warn

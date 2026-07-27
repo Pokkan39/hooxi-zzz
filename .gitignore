@@ -17,6 +17,8 @@ artifacts/*
 # 之前被整目录忽略，导致本地有文件所以 PASS、CI 检出后缺文件而 FAIL。
 !artifacts/archive-contract.json
 !artifacts/bilibili-official-*.json
+# CI 里把报告从 artifacts/ 拷出来上传用的中转目录，不入库
+/ci-report/
 *.opt-test.webp
 tmp/
 /tmp/
