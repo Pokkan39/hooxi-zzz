@@ -74,6 +74,7 @@
 - 角色视觉资源已按本次用户确认的口径保存到 `assets/portraits/<characterId>-card.webp`：56 名角色均有 374×512 的本地 WebP 卡面，来源标注为 Prydwen 第三方角色资料；安比详情页继续优先使用已有透明全身立绘。第三方图片仅作为当前站点资料展示资源，后续发布前仍应复核转载许可。
 - **2026-07-19 美术增强**：17 个阵营均已配置本地 logo（`assets/icons/<factionId>.png`，由 `agent-catalog.js` 注入）；列表头像优先本地卡面，不再因错误的 `/zzz/wiki/...` 相对路径回退首字母。仅当 logo/头像字段仍为空时，目录才显示名称首字占位。
 - **批次A 官方 B 站媒体**：`media-catalog.js` 统一收录公测 PV 与世界观 PV；`data.js` 只保存对应 `mediaIds` / `sourceIds`，来源链接指向各自 B 站官方详情页。`mainline.html`、`events.html`、`behind-scenes.html` 会在 `data.js` 后、`page.js` 前加载媒体目录；`page.js` 用首个有效 `mediaIds` 派生缺失的视频、封面和官方详情来源，同时保留条目显式字段及本地编辑器覆盖，派生的目录对象不会写入导出数据。公开档案页不再运行时请求 B 站 API，已有媒体目录的正式条目只使用同源本地封面，图片和“资料来源”分别链接对应官方视频详情。维护时可执行 `python scripts/collect-official-bilibili.py`，脚本串行调用本机 yt-dlp、只采元数据、不下载视频，并把可恢复进度写入 `artifacts/bilibili-official-1636034895.json`；仅在 stderr 错误行或非零退出内容明确出现 HTTP 412、错误码/code=-352、风控文本时立即停止，正常 JSON stdout 中偶然出现数字 412/352 不视为风控；重试仍为 0，重新枚举不会清空已有 BVID 与 pending。2026-07-23 空间枚举仍停于 HTTP 412；当前两条 checked 明确标为 `manualVerifiedApiEvidence`，来自已人工核验的官方详情 API 证据，并非本次脚本在线成功。两张官方原缩略图已按原图 1920×1080 转为本地 WebP 且不去水印；证据记录本地 `coverSha256`，并对各自原 JPEG 仅做一次精确下载且成功记录 `sourceImageSha256`。`npm run test:content` 会读取该证据文件，逐条交叉核对身份、标题、日期、时长、转载状态、原图 URL、详情页，并用 Node 标准库解析本地 WebP 实际尺寸及校验 SHA-256，替换 fallback 或证据缺失均会失败。目录分别记录 `isReprint`（copyright）与 `noReprint`（rights.no_reprint），中文 P1 时长为 133/247 秒，总时长为 517/973 秒。世界观 PV 官方 pubdate 为 2024-07-06。
+- **代理人名录卡的立绘白名单（维护时必看）**：`zzz-ui.js` 的 `cardArt()` 会把目录里的 `-card.webp` 自动替换为透明底的 `-portrait.webp`，因为白底卡面铺进深色卡片会变成一片白。但 `aria` 与 `sunna` 目前没有 `-portrait.webp`，这两个 id 登记在同文件的 `NO_PORTRAIT` 常量里、跳过替换。若之后补齐了它们的立绘，必须同步把对应 id 从 `NO_PORTRAIT` 移除，否则新素材不会生效。反之新增角色若缺立绘，需要加入该清单——只靠 `img onerror` 回退虽然不会破图，但会真的发出 404 请求，`npm run test:ui` 的 `console-error` 与 `local-http-error` 两项会逐视口计为阻塞失败。
 - 图片未提供时会显示站内占位，阵营、成员和角色页面仍可正常打开。添加资源后，提交图片与更新后的 `agent-catalog.js` 一并发布。
 
 阵营成员区采用游戏内角色选择风格的错位立绘卡阵列：默认展示 `headshot`（未填写时回退到 `avatar`），桌面端悬停或键盘聚焦时显示 `portrait` 全身立绘。指针移动会使前景立绘、头部近景与背景高光以不同速度偏移，形成无需 3D 模型的 2.5D 景深效果；触摸设备仍是单击直接进入角色详情，避免要求二次点击。系统开启“减少动态效果”时会停用位移和缩放，仅保留全身立绘显示、颜色与焦点反馈。
@@ -105,6 +106,21 @@
 9. 点击“保存到本机”可把草稿写入当前浏览器；这一步不会影响线上访客。
 10. 确认无误后点击“导出当前文件”，用下载的 `data.js` 覆盖仓库根目录同名文件，并同步覆盖拖动导出的 `layout-data.js`。
 11. 执行 `git add`、`git commit`、`git push origin main`，等待 GitHub Pages 或绑定域名的托管服务更新。
+
+**部署机制与唯一的质量兜底（务必先读）**
+
+`.github/workflows/pages.yml` 是仓库唯一的工作流，触发条件只有 `push` 到 `main` 与手动 `workflow_dispatch`，步骤为 `upload-pages-artifact` 配 `path: .`，即把整个仓库全量上传并部署到 GitHub Pages。
+
+由此有两个后果，任何人推 `main` 或合并 PR 前都必须清楚：
+
+- **合并即上线。** 推到 `main` 的内容会直接成为线上站点，中间没有预发布环节。
+- **没有任何 CI 测试把关。** 该工作流不执行 `npm test`、不执行 `npm run test:ui`、不执行 `npm run test:formal`。在 Pull Request 上不会触发任何检查，PR 页面的 checks 列表是空的——这是「没有配置检查」，不是「检查通过」。
+
+所以质量兜底完全依赖本地。合并或直推 `main` 之前，至少跑完这三项并确认结果：
+
+- `npm test`：档案媒体校验、链接诚信、非官方边界
+- `npm run test:ui`：截图矩阵、深链、交互、首页发布与放映检查，须 `blockingFailures: 0`
+- `npm run test:formal`：正式站基线比对。它的作用是拦截未经授权的正式站改动，报 `GATE_FAIL` 时先分辨是「本次改动确实获得批准」还是「出现了不该有的偏离」；确属已批准的施工，才在用户明确同意后用 `--write` 推进基线，不可顺手重建。
 
 编辑页使用后端账号会话认证，账号密码由服务端环境变量 `EDITOR_ACCOUNTS_JSON` 配置，仓库和公开页面不保存账号密码。没有仓库写权限的人即使登录，也只能改自己浏览器里的草稿，不能改线上网站。公开页不会默认显示任何编辑模板或施工工具，只有点右上角 `✦` 才会进入编辑页。
 

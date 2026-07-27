@@ -33,14 +33,18 @@ const PAGES = [
    数据来自浏览器实测统计（DESIGN.md 6b 节有素材量对照表）。
    新增其他类型官方素材时要同步更新这里。 */
 const ASSET_EXPECT = {
-  'index.html': ['立绘', '影画'],
+  /* 首页只用 portraits 目录一张立绘，不引用 gallery，所以不含「影画」。
+     运行时门禁的反向检查已证实此前声明「立绘与影画」属过期陈述。 */
+  'index.html': ['立绘'],
   'character.html': ['立绘', '影画', '徽记'],
   'faction.html': ['立绘', '徽记'],
   'mainline.html': ['截图', '封面'],
   'events.html': ['活动图'],
   'behind-scenes.html': ['截图'],
   'stories.html': ['立绘'],
-  'cultivate.html': ['材料']
+  /* 培养页 45 个素材全在 wiki/cultivate/，未用 materials 目录，
+     所以声明写「养成图」而不是「材料」。 */
+  'cultivate.html': ['养成图']
 };
 
 /* 曾经踩过的坑：装饰文案照抄了官方界面上的世界观标语，

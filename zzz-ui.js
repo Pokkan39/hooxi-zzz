@@ -45,11 +45,18 @@
   }
 
   /* 目录里 avatar/headshot/portrait 三个字段都指向 -card.webp，
-     那是白底半身图，铺进深色卡片会变成一片白。改用透明底的
-     -portrait.webp；只有 55 个角色有该版本，缺失的靠 img onerror
-     回退到原 -card。不改 agent-catalog.js 数据本身。 */
+     那是白底半身图，铺进深色卡片会变成一片白。改用透明底的 -portrait.webp。
+
+     NO_PORTRAIT 是缺 -portrait.webp 的角色清单：只有这 2 个没有该版本。
+     此前对全部角色无条件替换，靠 img onerror 回退——视觉上没问题，
+     但每次都会真的发出一个 404 请求，门禁的 console-error 与
+     local-http-error 两项各记一次，三个视口共 6 项失败。
+     改为先查清单再决定是否替换，从源头不发这个请求。
+     新增角色的 portrait 后需同步从此清单移除。 */
+  var NO_PORTRAIT = { aria: 1, sunna: 1 };
   function cardArt(a) {
     var src = a.avatar || a.headshot || a.portrait || '';
+    if (NO_PORTRAIT[a.id]) return src;
     return src.replace(/-card\.webp$/, '-portrait.webp');
   }
 

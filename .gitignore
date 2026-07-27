@@ -5,7 +5,36 @@ backend/.env
 # 临时测试与备份
 __*
 *.bak*
-artifacts/
+# artifacts 默认全忽略，但要放两个门禁基线证据进来。
+# 注意写法：不能写成 `artifacts/`，带斜杠会整目录排除，目录内的文件再用 `!`
+# 也无法重新包含（git 不会进入被排除的目录）。所以改为忽略目录内容 `artifacts/*`，
+# 再对需要入库的文件开例外。
+artifacts/*
+# 例外：这两个不是临时产物，而是门禁的基线证据，必须入库。
+# archive-contract.json 是正式数据契约快照，bilibili-official-*.json 是官方
+# B 站投稿的人工核验证据。npm test 的「正式数据契约快照严格匹配」与
+# 「官方 B 站证据逐字段交叉核验」两项直接读它们。
+# 之前被整目录忽略，导致本地有文件所以 PASS、CI 检出后缺文件而 FAIL。
+!artifacts/archive-contract.json
+!artifacts/bilibili-official-*.json
+# CI 里把报告从 artifacts/ 拷出来上传用的中转目录，不入库
+/ci-report/
 *.opt-test.webp
 tmp/
 /tmp/
+/backup/
+
+# 本机工作产物，不入库：
+# 调试/参考截图散落在仓库根目录，以及一个 107MB 的源码打包。
+# 它们只服务于本机比对，入库会让仓库体积失控。
+/hooxi-zzz-source.zip
+/.narrafork/
+/reference-materials/
+/*.png
+
+# 来源不合规素材，禁止入库。
+# assets/mindscape/ 取自 Steam 创意工坊壁纸包（workshop 431960/3491187965），
+# 不是游戏解包；其第三态（_Full）是去除服装的二次改图，53 个角色全部如此。
+# 站内已无任何代码引用它，保留在工作区仅为等待用户决定是否删除。
+# 此处忽略是为了防止 git add -A 之类的操作把它带进提交历史。
+/assets/mindscape/

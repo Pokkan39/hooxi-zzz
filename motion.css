@@ -526,6 +526,21 @@ html body :is(.cassette-playlist:not([hidden]),.playlist-popover:not(.hidden)) .
 html body :is(.cassette-playlist:not([hidden]),.playlist-popover:not(.hidden)) .playlist-item:nth-child(5){animation-delay:128ms}
 html body :is(.cassette-playlist:not([hidden]),.playlist-popover:not(.hidden)) .playlist-item:nth-child(n+6){animation-delay:160ms}
 
+/* .hooxi-signal-field 靠 z-index:-1 退到内容之下，但 site-motion.js 会给它写
+   transform（视差位移）。transform 使它自成层叠上下文，z-index:-1 随即失效，
+   于是它最后那层不透明的 linear-gradient(#0e1014...) 会盖住整个首屏——
+   实测首页序幕整块被涂成均匀的 rgb(13,11,9)，标题、导语、按钮一个像素都不绘制。
+
+   修法是抬升内容层而不是删掉背景层：给页面主容器一个正向 z-index，
+   让它稳定地画在 signal-field 之上，视差动效保持不变。 */
+html body .topbar,
+html body main,
+html body footer{
+  position:relative;
+  /* !important：不加会被后加载样式表里更具体的规则压回 z-index:0（实测），
+     那样 signal-field 仍旧盖住首屏。 */
+  z-index:1!important;
+}
 /* Static scan texture plus one-shot loader sweep; no new idle loop. */
 html body .hooxi-signal-field{
   background:

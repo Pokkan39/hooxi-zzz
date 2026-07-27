@@ -3042,12 +3042,11 @@ footer{
   left:38%;
   background:linear-gradient(112deg,transparent 0 18%,rgba(251,216,63,.035) 18% 48%,rgba(45,220,221,.045) 48% 70%,transparent 70%);
 }
+/* 幕布竖纹带按用户要求撤除：它贴在首屏左侧、贯穿整屏高度，遮挡视野，
+   且不承载任何信息。DOM 节点保留（验收脚本检查三个装饰层的存在性），
+   仅隐藏视觉。投影光与扫描纹保留，它们不挡内容。 */
 .home-page .hero__curtain{
-  right:auto;
-  width:35%;
-  border-right:1px solid rgba(251,216,63,.16);
-  background:repeating-linear-gradient(90deg,#111013 0 18px,#1d1b20 18px 34px,#151317 34px 48px);
-  opacity:.34;
+  display:none;
 }
 .home-page .hero__screen-grain{
   background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.014) 3px 4px);
@@ -3194,6 +3193,17 @@ footer{
   align-items:center;
   gap:12px;
 }
+/* 首页银幕固定单张，轮播控件不承担任何操作，整组隐藏。
+   design.md 第 8 节禁止仅 hover 可达的信息，这里连信息也没有，
+   保留 DOM 只为满足既有契约 ID，不作为可交互目标。 */
+.home-page .hero-carousel-ui,
+.home-page #heroCarouselPrev,
+.home-page #heroCarouselNext,
+.home-page #heroCarouselDots{
+  display:none;
+  visibility:hidden;
+  pointer-events:none;
+}
 .home-page .hero-carousel-nav{
   display:flex;
   align-items:center;
@@ -3284,6 +3294,9 @@ footer{
   font-size:clamp(38px,4.6vw,64px);
   line-height:.98;
   letter-spacing:-.03em;
+  /* 标题装不进一行时按标点均分两行，避免在「可/选。」这种词中间断开。
+     不支持 balance 的浏览器退回默认换行，不影响可读性。 */
+  text-wrap:balance;
 }
 .home-page .home-act-side{display:grid;justify-items:end;gap:12px;max-width:38ch}
 .home-page .section-note{
@@ -3539,7 +3552,12 @@ footer{
 .home-page #homeLaneBehind>.home-lane-card:nth-child(n+2){grid-column:9 / -1}
 .home-page #homeLaneBehind>.home-lane-card:nth-child(n+2) .home-lane-cover{display:none}
 .home-page #homeLaneBehind>.home-lane-card:nth-child(n+2) .home-lane-copy{padding:12px 0}
-.home-page .about{padding-bottom:168px}
+/* styles.css 的 .about{grid-template-columns:1fr 2fr 1.4fr} 是旧版浅色布局遗留：
+   它把标题与三列正文并排塞进 250/500/350 三栏，1440px 下正文每列仅剩 145px、
+   每行 6-9 个汉字，一句话被切成 6 行、句末标点单独掉行，而第三栏是空的。
+   改为单列纵向：标题在上、.about-credits 的三列在下各占约 372px。
+   不写成两栏是因为定宽左栏在窄屏会把正文挤成 0 宽。 */
+.home-page .about{padding-bottom:168px;grid-template-columns:minmax(0,1fr)}
 .home-page .about-heading{max-width:760px;margin-bottom:42px}
 .home-page .about .home-act-label{margin-bottom:16px}
 .home-page .about-intro{max-width:48ch;margin:18px 0 0;color:var(--color-text-2);line-height:1.6}
@@ -3692,75 +3710,13 @@ footer{
   border-top-color:var(--color-line-strong);
   color:var(--home-screen-yellow)!important;
 }
-/* Home tape entry: document flow only, never a first-fold overlay or primary CTA. */
+/* 磁带机布局已迁至 cassette-float.css（悬浮 + 可拖拽）。
+   此处原有一段把播放器从 fixed 强改为 relative、塞进文档流末尾的
+   !important 规则，导致它变成页面最底部一个大黑框。用户要求恢复为
+   悬浮磁带机，故移除该段，改由后加载的 cassette-float.css 负责定位。
+   body/main 的 padding-bottom 归零保留：悬浮态不需要为文档流让位。 */
 html body.home-page{padding-bottom:0!important}
 html body.home-page main{padding-bottom:0!important}
-html body.home-page .music-player.cassette-dock,
-html body.home-page .music-player.cassette-dock:hover,
-html body.home-page .music-player.cassette-dock:focus-within{
-  position:relative!important;
-  left:auto!important;
-  right:auto!important;
-  top:auto!important;
-  bottom:auto!important;
-  box-sizing:border-box!important;
-  width:min(960px,calc(100% - 32px))!important;
-  max-width:min(960px,calc(100% - 32px))!important;
-  height:auto!important;
-  min-height:72px!important;
-  max-height:none!important;
-  margin:24px auto calc(32px + env(safe-area-inset-bottom,0px))!important;
-  padding:16px!important;
-  align-items:center!important;
-  gap:16px!important;
-  flex-wrap:wrap!important;
-  transform:none!important;
-  z-index:1!important;
-}
-html body.home-page .music-player.cassette-dock .deck-left,
-html body.home-page .music-player.cassette-dock .deck-right{
-  display:flex!important;
-  align-items:center!important;
-  min-width:0;
-}
-html body.home-page .music-player.cassette-dock .deck-left{
-  width:auto!important;
-  height:auto!important;
-  flex:1 1 420px!important;
-  justify-content:flex-start!important;
-  gap:12px!important;
-}
-html body.home-page .music-player.cassette-dock .deck-right{
-  flex:0 1 auto!important;
-  justify-content:flex-end!important;
-  flex-wrap:wrap!important;
-  gap:8px!important;
-}
-html body.home-page .music-player.cassette-dock .cassette-mini{
-  width:70px!important;
-  height:48px!important;
-  min-width:70px!important;
-  min-height:48px!important;
-  flex:0 0 70px!important;
-}
-html body.home-page .music-player.cassette-dock .play-button{
-  display:grid!important;
-  place-items:center;
-  width:44px;
-  height:44px;
-  min-width:44px;
-  min-height:44px;
-}
-html body.home-page .music-player.cassette-dock .track-info{
-  display:flex!important;
-  min-width:160px;
-}
-@media(max-width:640px){
-  html body.home-page .music-player.cassette-dock .deck-left,
-  html body.home-page .music-player.cassette-dock .deck-right{flex-basis:100%!important}
-  html body.home-page .music-player.cassette-dock .deck-right{justify-content:flex-start!important}
-  html body.home-page .music-player.cassette-dock .track-info{min-width:0;flex:1 1 auto}
-}
 
 @media(max-width:880px){
   html body.home-page{
@@ -3875,4 +3831,61 @@ html body.home-page .music-player.cassette-dock .track-info{
 @media(max-width:640px){
   .banner-track{aspect-ratio:16/9;max-height:200px}
   .banner-title{font-size:15px;padding:32px 16px 12px}
+}
+
+/* 影画全幅工作台：移除右侧名录，影画铺满，光栅显性化 */
+.archive-stories{
+  --roster-width:0px;
+  --roster-skew:0%;
+}
+.archive-stories .agent-roster-panel,
+.archive-stories .agent-roster-panel:before,
+.archive-stories .agent-roster-tickers{
+  display:none;
+}
+.archive-stories .agent-stage-visual,
+.archive-stories .agent-stage-grid{
+  inset:0;
+}
+.archive-stories .agent-stage-portrait{
+  inset:0;
+  place-items:stretch;
+}
+.archive-stories .agent-stage-portrait img,
+.archive-stories .agent-stage-portrait[data-stage-agent-id] img{
+  height:100%;
+  width:100%;
+  max-width:none;
+  object-fit:cover;
+  object-position:50% 20%;
+}
+.archive-stories .agent-stage-visual:before{
+  inset:0;
+  z-index:2;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.38) 0 1px,transparent 1px 3px);
+  opacity:1;
+  mask-image:none;
+  mix-blend-mode:multiply;
+}
+.archive-stories .agent-stage-visual:after{
+  right:6%;
+}
+.archive-stories .agent-stage-info{
+  position:absolute;
+  z-index:6;
+  left:0;
+  right:0;
+  bottom:0;
+  background:linear-gradient(180deg,transparent,rgba(6,8,12,.82) 42%,rgba(6,8,12,.95));
+}
+.archive-stories .agent-category-menu{
+  z-index:6;
+}
+.archive-stories .agent-stage-backdrop-name{
+  padding-right:0;
+}
+.archive-stories .agent-name-lockup h2{
+  font-size:clamp(26px,2.4vw,36px);
+  max-width:none;
+  white-space:nowrap;
 }

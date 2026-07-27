@@ -84,11 +84,23 @@ try {
       const declEl = document.querySelector('.footer-disclaimer')
         || document.querySelector('.d-foot');
       const decl = declEl ? declEl.innerText : '';
+      /* 同时统计 img 与 CSS 背景图：角色页的影画是背景层而不是 img，
+         只扫 img 会漏掉它。 */
+      const bgUrls = [];
+      document.querySelectorAll('*').forEach(el => {
+        const b = getComputedStyle(el).backgroundImage;
+        if (b && b !== 'none' && b.includes('assets/')) {
+          const m = b.match(/assets\/[^"')]+/g);
+          if (m) bgUrls.push(...m);
+        }
+      });
+      const imgUrls = [...document.querySelectorAll('img')]
+        .map(i => i.getAttribute('src') || '');
+      const allUrls = imgUrls.concat(bgUrls);
+
       const usedKinds = [];
       for (const [re, kw] of DIR_KEYWORD) {
-        const hit = [...document.querySelectorAll('img')]
-          .some(i => re.test(i.getAttribute('src') || ''));
-        if (hit) usedKinds.push(kw);
+        if (allUrls.some(u => re.test('/' + u.replace(/^\/+/, '')))) usedKinds.push(kw);
       }
       /* 活动页的 wiki 图在声明里写作「活动图」，培养页写「养成图」，
          都属于截图类的合法别名。 */
@@ -98,6 +110,17 @@ try {
         return !accept.some(a => decl.includes(a));
       });
 
+      /* 反向检查：声明里提到但页面上实际没有的素材类型。
+         版权声明写着页面上不存在的官方素材，属于不准确陈述，也说明
+         改版后忘了更新声明。两个门禁此前都只查「缺少」查不出「多余」。
+         别名词只在其父类型缺席时才算过期，避免把「活动图」误判。 */
+      const KIND_WORDS = DIR_KEYWORD.map(([, kw]) => kw);
+      const stale = KIND_WORDS.filter(k => {
+        if (usedKinds.includes(k)) return false;
+        const words = ALIAS[k] || [k];
+        return words.some(w => decl.includes(w));
+      });
+
       return {
         unofficial: /非官方/.test(t),
         noAffiliation: /无隶属/.test(t),
@@ -105,6 +128,7 @@ try {
         selfOfficial,
         usedKinds,
         uncovered,
+        stale,
         declText: decl.slice(0, 90),
         ogTitle: meta('og:title'),
         twTitle: meta('twitter:title'),
@@ -122,6 +146,9 @@ try {
     if (r.uncovered.length)
       problems.push(`${name} 页面实际使用了 ${r.uncovered.join('、')} 类官方素材，`
         + `但页脚声明未覆盖（现声明：${r.declText.slice(0, 46)}…）`);
+    if (r.stale.length)
+      problems.push(`${name} 页脚声明提到 ${r.stale.join('、')}，但页面上已无此类素材，`
+        + `声明过期需更新（实际使用：${r.usedKinds.join('、') || '无'}）`);
     if (!/非官方/.test(r.ogTitle)) problems.push(`${name} og:title 不含「非官方」：「${r.ogTitle}」`);
     if (!/非官方/.test(r.twTitle)) problems.push(`${name} twitter:title 不含「非官方」`);
     if (r.remoteImgCount) problems.push(`${name} 图片非本地托管 ${r.remoteImgCount} 张：${r.remoteImgs.join('、')}`);

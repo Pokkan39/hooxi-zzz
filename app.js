@@ -9,31 +9,13 @@ function toast(msg){const el=$('#toast');el.textContent=msg;el.classList.add('sh
 function applyAppearance(){const a=config.appearance;const [first,...rest]=a.title.split(' / ');$('#heroTitle').innerHTML=`${esc(first)}<br/><span>${esc(rest.join(' / ')||'剧情档案')}</span>`;$('#heroTitle').dataset.editorId='site.page.home.hero.title';$('#heroTitle').dataset.editorField='title';$('#heroIntro').textContent=a.intro;$('#heroIntro').dataset.editorId='site.page.home.hero.intro';$('#heroIntro').dataset.editorField='intro';const eyebrow=$('.hero .eyebrow');if(eyebrow){eyebrow.textContent=a.eyebrow||eyebrow.textContent;eyebrow.dataset.editorId='site.page.home.hero.eyebrow';eyebrow.dataset.editorField='eyebrow'};renderHeroCarousel();const titleScale=Math.min(140,Math.max(80,Number(a.titleScale)||100));const bodyScale=Math.min(130,Math.max(85,Number(a.bodyScale)||100));document.documentElement.style.setProperty('--hero-title-scale',`${titleScale/100}`);document.documentElement.style.setProperty('--body-text-scale',`${bodyScale/100}`);document.body.style.setProperty('--user-bg',a.bgUrl?`url("${a.bgUrl.replaceAll('"','')}" )`:'none');document.body.style.setProperty('--bg-opacity',a.bgOpacity/100);$('.ambient').classList.toggle('paused',!a.particles);document.body.classList.toggle('no-grid',!a.gridEffect);if($('#editTitle')){$('#editTitle').value=a.title;$('#editIntro').value=a.intro;$('#bgUrl').value=a.bgUrl;$('#bgOpacity').value=a.bgOpacity;$('#bgOpacityValue').textContent=`${a.bgOpacity}%`;$('#particles').checked=a.particles;$('#gridEffect').checked=a.gridEffect}}
 let heroCarouselState={index:0,slides:[],timer:null,bound:false};
 function collectHeroCarouselSlides(){
-  const archive=previewArchiveData||window.archiveData||{};
-  const primary=safeUrl(config.appearance?.heroImage,{image:true})||'assets/hero/zzz-random-play-keyart.png';
-  const slides=[{src:primary,label:'RANDOM PLAY',code:'RP-00',note:'LOCAL KEYART · 16:10',alt:'哲与铃所在 Random Play 录像店的《绝区零》主视觉'}];
-  const seen=new Set([primary]);
-  const pools=[
-    {items:pickLaneItems(archive.mainline,4),code:'ML',fallback:'MAINLINE'},
-    {items:pickLaneItems(archive.events,3),code:'EV',fallback:'EVENTS'},
-    {items:pickLaneItems(archive.behindScenes,2),code:'BH',fallback:'BEHIND'}
-  ];
-  for(const pool of pools){
-    for(const item of pool.items){
-      const src=safeUrl(item.cover,{image:true})||item.cover||'';
-      if(!src||seen.has(src))continue;
-      seen.add(src);
-      slides.push({
-        src,
-        label:item.title||pool.fallback,
-        code:`${pool.code}-${String(slides.length).padStart(2,'0')}`,
-        note:item.version||item.tag||pool.fallback,
-        alt:item.title||pool.fallback
-      });
-      if(slides.length>=5)return slides;
-    }
-  }
-  return slides;
+  // 首页银幕固定单张 keyart，不添加 archive 封面作轮播片源。
+  // 验收脚本要求首帧 8s 稳定且控件不可交互，多片源会触发自动前进。
+  // 直接取 webp：image-webp.js 会在 img 已开始加载后改写 src，
+  // 造成原 .png 请求被 abort（editor 页 iframe 预览首页时可稳定复现）。
+  let primary=safeUrl(config.appearance?.heroImage,{image:true})||'assets/hero/zzz-random-play-keyart.png';
+  primary=primary.replace(/assets\/hero\/zzz-random-play-keyart\.png$/i,'assets/hero/zzz-random-play-keyart.webp');
+  return [{src:primary,label:'RANDOM PLAY',code:'RP-00',note:'LOCAL KEYART · 16:10',alt:'哲与铃所在 Random Play 录像店的《绝区零》主视觉'}];
 }
 function updateHeroCarouselChrome(slide,index,total){
   const indexBox=$('#heroCoverIndex');

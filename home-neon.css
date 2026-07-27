@@ -114,12 +114,18 @@ body.home-page .hero h1{
 }
 body.home-page .hero h1::before,
 body.home-page .hero h1::after{
-  content:attr(data-glitch);
+  /* content:none 保证静止态 ::after content 为 'none'（验收断言要求）。
+     动效只在 .is-glitching 时生效，通过下方 .is-glitching 规则写入 content。 */
+  content:none;
   position:absolute;
   left:0;top:0;
   width:100%;
   pointer-events:none;
   opacity:0;
+}
+body.home-page .hero h1.is-glitching::before,
+body.home-page .hero h1.is-glitching::after{
+  content:attr(data-glitch);
 }
 body.home-page .hero h1::before{color:var(--neon-cyan);clip-path:inset(0 0 58% 0)}
 body.home-page .hero h1::after{color:var(--neon-magenta);clip-path:inset(58% 0 0 0)}
@@ -169,9 +175,12 @@ body.home-page .topbar{
   box-shadow:0 1px 0 rgba(251,216,63,.22),0 8px 20px -12px rgba(0,0,0,.9)!important;
 }
 body.home-page .topbar>*{position:relative;z-index:1}
-/* hero 内容层级降到顶栏之下，避免滚动时穿透压住导航 */
-body.home-page .hero-copy,
-body.home-page .hero-art{z-index:0!important}
+/* hero 自身降到顶栏之下即可，避免滚动时穿透压住导航。
+   注意不能再把 .hero-copy / .hero-art 也压成 z-index:0：
+   .hero::after 是 z-index:1 的扫描纹装饰层，内容层若低于它会被整片盖住，
+   表现为首屏文案与主视觉完全不可见（实测标题、导语、按钮、图全部消失）。
+   .hero 已是 isolation:isolate 且自身 z-index:0，子元素层级再高也不会
+   穿透到顶栏，所以内容层保持 theme-zzz.css 定义的 z-index:2/3 即可。 */
 body.home-page .hero{
   isolation:isolate;
   z-index:0!important;
@@ -446,19 +455,16 @@ body.home-page .hero__curtain{
   opacity:.26!important;
 }
 
-/* 轮播控件叠在主视觉右下角，紧凑且不占额外高度 */
-body.home-page .hero-carousel-ui{
-  left:auto!important;
-  right:12px!important;
-  bottom:12px!important;
-  transform:none!important;
-  z-index:4;
-  padding:6px 8px;
-  background:rgba(8,8,10,.6);
-  backdrop-filter:none;
+/* 银幕固定单张，轮播控件不再出现（theme-zzz.css 已整组隐藏）。
+   此处同步隐藏，避免本文件后加载时把它显示回来。 */
+body.home-page .hero-carousel-ui,
+body.home-page #heroCarouselPrev,
+body.home-page #heroCarouselNext,
+body.home-page #heroCarouselDots{
+  display:none!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
 }
-body.home-page .hero-carousel-nav{width:30px;height:30px;font-size:15px}
-body.home-page .hero-carousel-dot{width:9px;height:9px}
 /* 坐标标注移到主视觉底部贴边，不再横压画面中部 */
 body.home-page .coordinates{
   z-index:3;
