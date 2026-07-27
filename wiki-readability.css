@@ -425,7 +425,7 @@ html{scroll-padding-top:88px}
   color:var(--text)!important;
   border:1px solid var(--line-strong)!important;
   box-shadow:none!important;
-  min-height:84px;
+  min-height:52px;
 }
 .subpage .archive-group-head:before{
   background:repeating-linear-gradient(135deg,rgba(255,255,255,.04) 0 8px,transparent 8px 16px)!important;
@@ -452,15 +452,15 @@ html{scroll-padding-top:88px}
 }
 .subpage .page-card:before{background:#0b0e13!important;color:var(--archive-accent)!important}
 .subpage .page-card:after{border-color:var(--line)!important}
-.subpage .page-card h2{color:#fff!important;font-size:clamp(24px,2.8vw,34px)!important;line-height:1.15!important}
+.subpage .page-card h2{color:#fff!important;font-size:clamp(19px,1.7vw,23px)!important;line-height:1.2!important}
 .subpage .page-card p,
 .subpage .page-meta,
 .subpage .page-links,
 .subpage .spoiler-copy,
 .subpage .spoiler-placeholder{
   color:var(--text-2)!important;
-  font-size:16px!important;
-  line-height:1.6!important;
+  font-size:14px!important;
+  line-height:1.45!important;
 }
 .subpage .page-meta span{
   background:var(--bg-0)!important;

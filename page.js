@@ -40,9 +40,9 @@ function imageMarkup(item,context='card'){const image=item.cover||item.portrait;
 function setImageOrientation(img){const forced=img.dataset.orientation;if(forced&&forced!=='auto'){img.dataset.resolvedOrientation=forced}else{const ratio=img.naturalWidth/img.naturalHeight;img.dataset.resolvedOrientation=ratio>1.15?'landscape':ratio<.87?'portrait':'square'}const card=img.closest('.page-card');if(card){card.dataset.orientation=img.dataset.resolvedOrientation}const preview=img.closest('.editor-cover-preview');if(preview){preview.dataset.orientation=img.dataset.resolvedOrientation}}
 function applyImageOrientations(){document.querySelectorAll('.video-cover').forEach(img=>{if(img.complete&&img.naturalWidth)setImageOrientation(img);else img.addEventListener('load',()=>setImageOrientation(img),{once:true})})}
 function coverMarkup(item){return imageMarkup(item)}
-function metaMarkup(item){const fields=[['版本',item.version],['章节',item.chapter],['阵营',item.faction],['角色',Array.isArray(item.characters)?item.characters.join('、'):item.characters],['地点',item.location],['档案状态',item.status]];return fields.filter(([,value])=>value).map(([label,value])=>`<span><b>${label}</b>${escPage(value)}</span>`).join('')}
+function metaMarkup(item){const title=(item.title||'').trim();const chapter=(item.chapter||'').trim();const fields=[['版本',item.version],['章节',chapter&&chapter!==title?chapter:''],['阵营',item.faction],['角色',Array.isArray(item.characters)?item.characters.join('、'):item.characters],['地点',item.location]];return fields.filter(([,value])=>value).map(([label,value])=>`<span><b>${label}</b>${escPage(value)}</span>`).join('')}
 function relatedMarkup(item){const related=item.relatedIds.map(id=>items.find(row=>row.id===id)).filter(Boolean);if(!related.length)return '';return `<div class="route-related"><b>关联档案</b>${related.map(row=>`<button type="button" data-related-id="${escPage(row.id)}">${escPage(row.title)}</button>`).join('')}</div>`}
-function itemMarkup(x,i){const route=slug(x.routeType||x.type||'主线记录');const spoilerHidden=pageKey==='mainline'&&!routeUi.showSpoilers;const editorBase=`${dataKey}.item.${x.id}`;const itemAnchor=` id="${escPage(x.id)}"`;return `<article class="page-timeline-item route-${route}"${itemAnchor} data-id="${escPage(x.id)}" data-route="${escPage(route)}" data-editor-id="${escPage(editorBase)}" data-editor-type="record" data-editor-bind="${escPage(dataKey)}.${escPage(x.id)}"><div class="page-node">${String(i+1).padStart(2,'0')}</div><div class="page-card" data-orientation="pending" data-editor-id="${escPage(editorBase)}.card" data-editor-type="card"><div class="video-cover-wrap" data-editor-id="${escPage(editorBase)}.image" data-editor-type="image" data-editor-field="cover">${coverMarkup(x)}</div><div class="page-copy"><div class="route-kicker"><span class="episode-tag" data-editor-id="${escPage(editorBase)}.tag" data-editor-field="tag">${escPage(x.routeType||x.tag)}</span>${x.spoilerLevel?`<span class="spoiler-level">剧透 · ${escPage(x.spoilerLevel)}</span>`:''}</div><h2 data-editor-id="${escPage(editorBase)}.title" data-editor-field="title">${x.factionId?`<a class="faction-title-link" href="faction.html?id=${encodeURIComponent(x.factionId)}">${escPage(x.title)}</a>`:escPage(x.title)}</h2><div class="spoiler-copy ${spoilerHidden?'is-hidden':''}"><p data-editor-id="${escPage(editorBase)}.summary" data-editor-field="summary">${escPage(x.summary)}</p></div>${spoilerHidden?'<p class="spoiler-placeholder">剧情概要已隐藏，开启剧透后查看。</p>':''}${metaMarkup(x)?`<div class="page-meta">${metaMarkup(x)}</div>`:''}${relatedMarkup(x)}<div class="page-links">${primaryOutbound(x)?`<a class="video-link" href="${escPage(primaryOutbound(x))}" target="_blank" rel="noreferrer">${outboundLabel(x)}</a>`:'<span class="video-link disabled">◌ 资料待接入</span>'}${(!x.video&&/PV|演示|预告/.test(x.title||''))?'<span class="no-direct-video" title="本站不猜测 BV 号，仅提供已核验的官方直连">未收录 B 站直连</span>':''}${x.factionId?`<a class="faction-link" href="faction.html?id=${encodeURIComponent(x.factionId)}">进入${escPage(x.faction||'阵营')}档案 →</a>`:''}${x.wikiUrl&&x.wikiUrl!==primaryOutbound(x)?`<a class="wiki-link" href="${escPage(x.wikiUrl)}" target="_blank" rel="noreferrer">百科词条 ↗</a>`:(x.sourceUrl&&x.sourceUrl!==primaryOutbound(x)?`<a class="wiki-link" href="${escPage(x.sourceUrl)}" target="_blank" rel="noreferrer">资料来源 ↗</a>`:'')}</div></div></div></article>`}
+function itemMarkup(x,i){const route=slug(x.routeType||x.type||'主线记录');const spoilerHidden=pageKey==='mainline'&&!routeUi.showSpoilers;const editorBase=`${dataKey}.item.${x.id}`;const itemAnchor=` id="${escPage(x.id)}"`;return `<article class="page-timeline-item route-${route}"${itemAnchor} data-id="${escPage(x.id)}" data-route="${escPage(route)}" data-editor-id="${escPage(editorBase)}" data-editor-type="record" data-editor-bind="${escPage(dataKey)}.${escPage(x.id)}"><div class="page-node">${String(i+1).padStart(2,'0')}</div><div class="page-card" data-orientation="pending" data-editor-id="${escPage(editorBase)}.card" data-editor-type="card"><div class="video-cover-wrap" data-editor-id="${escPage(editorBase)}.image" data-editor-type="image" data-editor-field="cover">${coverMarkup(x)}</div><div class="page-copy"><div class="route-kicker"><span class="episode-tag" data-editor-id="${escPage(editorBase)}.tag" data-editor-field="tag">${escPage(x.routeType||x.tag)}</span>${x.spoilerLevel&&String(x.spoilerLevel).trim()!=='无'?`<span class="spoiler-level">剧透 · ${escPage(x.spoilerLevel)}</span>`:''}</div><h2 data-editor-id="${escPage(editorBase)}.title" data-editor-field="title">${x.factionId?`<a class="faction-title-link" href="faction.html?id=${encodeURIComponent(x.factionId)}">${escPage(x.title)}</a>`:escPage(x.title)}</h2>${(x.summary||'').trim()&&(x.summary||'').trim()!==(x.title||'').trim()?`<div class="spoiler-copy ${spoilerHidden?'is-hidden':''}"><p data-editor-id="${escPage(editorBase)}.summary" data-editor-field="summary">${escPage(x.summary)}</p></div>`:''}${spoilerHidden?'<p class="spoiler-placeholder">剧情概要已隐藏，开启剧透后查看。</p>':''}${metaMarkup(x)?`<div class="page-meta">${metaMarkup(x)}</div>`:''}${relatedMarkup(x)}<div class="page-links">${primaryOutbound(x)?`<a class="video-link" href="${escPage(primaryOutbound(x))}" target="_blank" rel="noreferrer">${outboundLabel(x)}</a>`:'<span class="video-link disabled">◌ 资料待接入</span>'}${(!x.video&&/PV|演示|预告/.test(x.title||''))?'<span class="no-direct-video" title="本站不猜测 BV 号，仅提供已核验的官方直连">未收录 B 站直连</span>':''}${x.factionId?`<a class="faction-link" href="faction.html?id=${encodeURIComponent(x.factionId)}">进入${escPage(x.faction||'阵营')}档案 →</a>`:''}${x.wikiUrl&&x.wikiUrl!==primaryOutbound(x)?`<a class="wiki-link" href="${escPage(x.wikiUrl)}" target="_blank" rel="noreferrer">百科词条 ↗</a>`:(x.sourceUrl&&x.sourceUrl!==primaryOutbound(x)?`<a class="wiki-link" href="${escPage(x.sourceUrl)}" target="_blank" rel="noreferrer">资料来源 ↗</a>`:'')}</div></div></div></article>`}
 function decorationMarkup(){if(!decorations.length)return '';return `<div class="archive-decor-layer" aria-label="页面装饰图片">${decorations.filter(x=>x.src).map((x,i)=>`<figure class="archive-decor decor-${escPage(x.tone)}" data-decor-id="${escPage(x.id)}" data-layout-id="decor-${escPage(x.id)}" style="--decor-width:${x.width}px;--decor-opacity:${x.opacity/100};--decor-rotation:${x.rotation}deg"><img src="${escPage(x.src)}" alt="${escPage(x.alt)}" loading="lazy"/>${x.showCaption?`<figcaption>${escPage(x.caption||x.alt||`VISUAL ${i+1}`)}</figcaption>`:''}</figure>`).join('')}</div>`}
 function filteredItems(){if(pageKey!=='mainline')return items;const query=routeUi.query.trim().toLowerCase();return items.filter(item=>{const versionOk=routeUi.version==='all'||(item.version||'未标注')===routeUi.version;const typeOk=routeUi.type==='all'||(item.routeType||item.type||'主线记录')===routeUi.type;const haystack=[item.title,item.summary,item.chapter,item.faction,item.location,...item.characters].join(' ').toLowerCase();return versionOk&&typeOk&&(!query||haystack.includes(query))})}
 function laneSwitcherMarkup(){
@@ -199,38 +199,50 @@ function renderPageBanner(){
   // 按图片自身比例标记：宽幅图基本不裁，标准 16:9 取画面上部保留主体
   const track=wrap.querySelector('.banner-track');
   const imgs=[...wrap.querySelectorAll('.banner-slide img')];
-  let ranked=false;
+  const dots=wrap.querySelectorAll('.banner-dot');
+  // 动态读取当前 DOM 顺序，兼容宽幅前置后的重排
+  const getSlides=()=>track.querySelectorAll('.banner-slide');
+  let cur=0,ranked=false;
+  function show(n){const slides=getSlides();cur=(n+slides.length)%slides.length;slides.forEach((s,i)=>s.classList.toggle('is-active',i===cur));dots.forEach((d,i)=>d.classList.toggle('is-active',i===cur))}
   function mark(img){
     if(!img.naturalWidth)return;
     const r=img.naturalWidth/img.naturalHeight;
     img.dataset.wide=r>=2.1?'ultra':(r>=1.9?'wide':'standard');
   }
-  // 全部就绪后把宽幅素材前置，首屏第一张优先呈现完整构图
+  // 全部就绪后把宽幅素材前置，同时保留当前正在展示的图片身份
   function rank(){
     if(ranked||imgs.some(i=>!i.dataset.wide))return;
     ranked=true;
+    const activeSlide=[...getSlides()].find(s=>s.classList.contains('is-active'))||getSlides()[cur];
     const order={ultra:0,wide:1,standard:2};
     [...track.children]
       .sort((a,b)=>order[a.querySelector('img').dataset.wide]-order[b.querySelector('img').dataset.wide])
       .forEach(el=>track.appendChild(el));
-    track.querySelectorAll('.banner-slide').forEach((s,i)=>{
-      s.dataset.bannerI=i;
-      s.classList.toggle('is-active',i===0);
-    });
+    const slides=[...getSlides()];
+    slides.forEach((s,i)=>{s.dataset.bannerI=i});
+    show(Math.max(0,slides.indexOf(activeSlide)));
   }
   imgs.forEach(img=>{
     if(img.complete){mark(img);}
     else img.addEventListener('load',()=>{mark(img);rank();},{once:true});
   });
   rank();
-  let cur=0;const dots=wrap.querySelectorAll('.banner-dot');
-  // 动态读取当前 DOM 顺序，兼容宽幅前置后的重排
-  const getSlides=()=>track.querySelectorAll('.banner-slide');
-  function show(n){const slides=getSlides();cur=(n+slides.length)%slides.length;slides.forEach((s,i)=>s.classList.toggle('is-active',i===cur));dots.forEach((d,i)=>d.classList.toggle('is-active',i===cur))}
   dots.forEach(d=>d.onclick=()=>show(+d.dataset.dot));
-  let timer=setInterval(()=>show(cur+1),5000);
-  wrap.addEventListener('pointerenter',()=>clearInterval(timer));
-  wrap.addEventListener('pointerleave',()=>{timer=setInterval(()=>show(cur+1),5000)});
+  const interval=pageKey==='behind-scenes'?3000:5000;
+  const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
+  let timer=0,hovered=false,focused=wrap.contains(document.activeElement);
+  function syncTimer(){
+    const paused=reducedMotion.matches||hovered||focused||document.hidden;
+    if(paused){clearInterval(timer);timer=0}
+    else if(!timer)timer=setInterval(()=>show(cur+1),interval);
+  }
+  wrap.addEventListener('pointerenter',()=>{hovered=true;syncTimer()});
+  wrap.addEventListener('pointerleave',()=>{hovered=false;syncTimer()});
+  wrap.addEventListener('focusin',()=>{focused=true;syncTimer()});
+  wrap.addEventListener('focusout',event=>{if(!wrap.contains(event.relatedTarget)){focused=false;syncTimer()}});
+  document.addEventListener('visibilitychange',syncTimer);
+  reducedMotion.addEventListener('change',syncTimer);
+  syncTimer();
 }
 /* 入场兜底：动态生成的记录带 data-motion-reveal，若共享动效未及时接管会停在 opacity:0，
    这里对已进入或已滚过视口的元素补上 .is-revealed，避免正文整片空白。 */

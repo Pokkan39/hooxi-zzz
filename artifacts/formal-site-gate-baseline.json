@@ -1,0 +1,355 @@
+{
+  "purpose": "Formal site construction gate fingerprint. Analysis/docs must not change these files unless user explicitly orders construction.",
+  "policy": "docs/VISUAL-TECH-REFERENCE-COMPARE.md section 6",
+  "note": "Baseline is a point-in-time fingerprint for gate checks. Authorized construction should re-run with --write after explicit user approval.",
+  "files": [
+    {
+      "path": "index.html",
+      "sha256": "72b80d084b92eec6383c4923d7e4cdf3df852d47a4fddeb5ad47a98aca466f93",
+      "sha256_16": "72b80d084b92eec6",
+      "bytes": 17153
+    },
+    {
+      "path": "app.js",
+      "sha256": "caa59b52aefb03dd90260a6a3214157800ac510df748b90b52401f92e46dbe9a",
+      "sha256_16": "caa59b52aefb03dd",
+      "bytes": 41946
+    },
+    {
+      "path": "styles.css",
+      "sha256": "e0a0f0e109b95387385945241c5d558bfe42edafa1cd5d872b9ea8f295d069d5",
+      "sha256_16": "e0a0f0e109b95387",
+      "bytes": 23647
+    },
+    {
+      "path": "theme-zzz.css",
+      "sha256": "7c4fbc4776ac75744ff83e86c0cf3951dde897057e19c0027f75cdc7e0a2ad02",
+      "sha256_16": "7c4fbc4776ac7574",
+      "bytes": 130475
+    },
+    {
+      "path": "wiki-readability.css",
+      "sha256": "645649772b554db7dcc5949e11ed878f05050e91c5ee898fe89da939a5a40b25",
+      "sha256_16": "645649772b554db7",
+      "bytes": 80903
+    },
+    {
+      "path": "tokens.css",
+      "sha256": "0eed9de083dc4f003e09078eaa29b50c29a21aed1ed012cd9ddb4b99958ac6b8",
+      "sha256_16": "0eed9de083dc4f00",
+      "bytes": 3022
+    },
+    {
+      "path": "assets/fonts/barlow-condensed-400-latin.woff2",
+      "sha256": "7fff1bb22e5773f0d1a55d3093068b6dac4539e8bb3ac23fb9f0a729df2c7bb4",
+      "sha256_16": "7fff1bb22e5773f0",
+      "bytes": 21164
+    },
+    {
+      "path": "assets/fonts/barlow-condensed-500-latin.woff2",
+      "sha256": "460f141ec8f6c9a1516bfd2bd9fe71656246d7a9d04a0955faf53158d8970c4c",
+      "sha256_16": "460f141ec8f6c9a1",
+      "bytes": 21424
+    },
+    {
+      "path": "assets/fonts/barlow-condensed-600-latin.woff2",
+      "sha256": "215a93c696f442034a46fbb382958f753fda60e30490683aeea6b235fcbb2b66",
+      "sha256_16": "215a93c696f44203",
+      "bytes": 22308
+    },
+    {
+      "path": "assets/fonts/barlow-condensed-700-latin.woff2",
+      "sha256": "3787a5a419171630e6890cfa47c4da067474d005cd0ff8dc11ec090fdc3ee2b8",
+      "sha256_16": "3787a5a419171630",
+      "bytes": 22444
+    },
+    {
+      "path": "assets/fonts/barlow-condensed-800-latin.woff2",
+      "sha256": "2515494e8cc2ca07c86ea78766cfa104b796aa6ed5d66821c01d51dbb0b52bce",
+      "sha256_16": "2515494e8cc2ca07",
+      "bytes": 22464
+    },
+    {
+      "path": "assets/fonts/space-mono-400-latin.woff2",
+      "sha256": "fb4a81a2d0a893e5c38c394a7e716a1cef0b24610a0af49c96f6d529bd66bf2b",
+      "sha256_16": "fb4a81a2d0a893e5",
+      "bytes": 16520
+    },
+    {
+      "path": "assets/fonts/space-mono-700-latin.woff2",
+      "sha256": "2d46bd159b53f55c41167a4f1540a074649464194fd1e416f5b4694a6c0f282c",
+      "sha256_16": "2d46bd159b53f55c",
+      "bytes": 16724
+    },
+    {
+      "path": "assets/fonts/OFL-Barlow-Condensed.txt",
+      "sha256": "b4cc842153e834885f3f9385ce26de4e1213d3ffbe473a6c0519e5522a8e3608",
+      "sha256_16": "b4cc842153e83488",
+      "bytes": 4470
+    },
+    {
+      "path": "assets/fonts/OFL-Space-Mono.txt",
+      "sha256": "a73c20d6b38329c23a89570c7e16373a9100976fef58deb5a8f2a867ee332496",
+      "sha256_16": "a73c20d6b38329c2",
+      "bytes": 4485
+    },
+    {
+      "path": "data.js",
+      "sha256": "4e81f114c9c956600e0007a1697a018bcc23432ce25755c344a9d1acb1eef5f9",
+      "sha256_16": "4e81f114c9c95660",
+      "bytes": 479945
+    },
+    {
+      "path": "multi-page.css",
+      "sha256": "90d032d6efb1f4f9a8f67176bab4bd2a28bf2e51877c93102b5e71185ba47b28",
+      "sha256_16": "90d032d6efb1f4f9",
+      "bytes": 50878
+    },
+    {
+      "path": "mainline.html",
+      "sha256": "995021305fa9b22cffa7fa8e11d196b2e0dc5b4864187fed5dd2e9c199b1c77a",
+      "sha256_16": "995021305fa9b22c",
+      "bytes": 4501
+    },
+    {
+      "path": "events.html",
+      "sha256": "a5219b736168cb28ca55a27e34ab6f8145e011f8751cea830cef8a0319f667ea",
+      "sha256_16": "a5219b736168cb28",
+      "bytes": 4462
+    },
+    {
+      "path": "behind-scenes.html",
+      "sha256": "692436c7d81569386b0399ad25c1acf427c757c65b383ea3f1340b14e2b6dd39",
+      "sha256_16": "692436c7d8156938",
+      "bytes": 4478
+    },
+    {
+      "path": "media-catalog.js",
+      "sha256": "ba7b959bf786f1d4fcf18fb351cf76267d3e2bc5d9b933e5e9cadbfc09fdd438",
+      "sha256_16": "ba7b959bf786f1d4",
+      "bytes": 3778
+    },
+    {
+      "path": "assets/covers/official/zzz-worldview-pv.webp",
+      "sha256": "a8797cf06a18f1055bdad1faafe0e17d130ff3c7f3da0932f08f472ff5efeff6",
+      "sha256_16": "a8797cf06a18f105",
+      "bytes": 39548
+    },
+    {
+      "path": "assets/covers/official/zzz-launch-pv.webp",
+      "sha256": "f2aa56a5aadc40969ce3e88cc1fd972ecb479c769f698ea9199899cd65a2761e",
+      "sha256_16": "f2aa56a5aadc4096",
+      "bytes": 33058
+    },
+    {
+      "path": "assets/covers/official/bilibili/zzz-launch-pv.webp",
+      "sha256": "239bcf0519c79fc0a00d126ea0d751bbfb37d61335affe977fcc2e7de7444097",
+      "sha256_16": "239bcf0519c79fc0",
+      "bytes": 398730
+    },
+    {
+      "path": "assets/covers/official/bilibili/zzz-worldview-pv.webp",
+      "sha256": "4965a46578c851e2f1669a986f777e6f61688983f5dc613e617f226ba025bd1f",
+      "sha256_16": "4965a46578c851e2",
+      "bytes": 210652
+    },
+    {
+      "path": "stories.html",
+      "sha256": "9fb6722d876bdc31f8b9ad2cdc2f0313b189fe89cf8b91ca7aac501fe4accc50",
+      "sha256_16": "9fb6722d876bdc31",
+      "bytes": 2814
+    },
+    {
+      "path": "stories.js",
+      "sha256": "f51886779a022d23989a4d824f5e83affea64222435476d6c5bc76e7076004cc",
+      "sha256_16": "f51886779a022d23",
+      "bytes": 215560
+    },
+    {
+      "path": "character.html",
+      "sha256": "06dd6082c360561fce8b7c9250c0151825d8a2e13408f27bfa20294dcad9bf92",
+      "sha256_16": "06dd6082c360561f",
+      "bytes": 5801
+    },
+    {
+      "path": "character.js",
+      "sha256": "eb2646b7de937b95a70fe002df897f6ab0d4a39609b9cfedaab3658f76099d64",
+      "sha256_16": "eb2646b7de937b95",
+      "bytes": 24816
+    },
+    {
+      "path": "faction.html",
+      "sha256": "29be8949fb87d54c11753a900e9012e38fbf39bbe76e8712eddfb04b55f66a8b",
+      "sha256_16": "29be8949fb87d54c",
+      "bytes": 3952
+    },
+    {
+      "path": "faction.js",
+      "sha256": "92f66808163859ad6be6086abc1d30899ac43401c1686d2058c6d24b08df1839",
+      "sha256_16": "92f66808163859ad",
+      "bytes": 8333
+    },
+    {
+      "path": "editor.html",
+      "sha256": "cce9e7d523977817120ed2b058c8827df4e5327a7ca90a6b7926af12f3547487",
+      "sha256_16": "cce9e7d523977817",
+      "bytes": 7278
+    },
+    {
+      "path": "editor.js",
+      "sha256": "12f00e991b9d2700d0b8e764d441f7393b933aa6e7833f1ba16e3ec227d6d21f",
+      "sha256_16": "12f00e991b9d2700",
+      "bytes": 51931
+    },
+    {
+      "path": "agent-catalog.js",
+      "sha256": "e1924bf5df5208cdbc3c3e6977ab284b222877b4e65a2cfc2e19ca3f438d5fd9",
+      "sha256_16": "e1924bf5df5208cd",
+      "bytes": 19642
+    },
+    {
+      "path": "agent-enrichment.js",
+      "sha256": "57fec7b14dda8fe02ea64dd66b0d8c1388518831f49849a8db5854b4e264d325",
+      "sha256_16": "57fec7b14dda8fe0",
+      "bytes": 575025
+    },
+    {
+      "path": "agent-xray.js",
+      "sha256": "10acdbd26612bf33bcb3f11361276888d550dac3ca899aa30f5c9a0693aaf53c",
+      "sha256_16": "10acdbd26612bf33",
+      "bytes": 15571
+    },
+    {
+      "path": "archive-tools.css",
+      "sha256": "5389c3ee21648e225e1d529085c09406036890f2c87677f384e0e769bed206cf",
+      "sha256_16": "5389c3ee21648e22",
+      "bytes": 13191
+    },
+    {
+      "path": "archive-tools.js",
+      "sha256": "aa3c7af30cb56015a8cba0d76a6789bbe3ea3bb799a0067d77be7ae15fab8fdd",
+      "sha256_16": "aa3c7af30cb56015",
+      "bytes": 26676
+    },
+    {
+      "path": "assets/favicon.svg",
+      "sha256": "88080fcf376f709ba3aec8e4a7c73116c2be7aa165890055767bb55751ad1148",
+      "sha256_16": "88080fcf376f709b",
+      "bytes": 223
+    },
+    {
+      "path": "assets/hero/zzz-random-play-keyart.webp",
+      "sha256": "fd34c9857afd15efd11d8054df916d309cf5338398c17df361c5eedb67158bf2",
+      "sha256_16": "fd34c9857afd15ef",
+      "bytes": 137906
+    },
+    {
+      "path": "cassette-float.css",
+      "sha256": "9ef473dac0365372e1604d0bafe855d72fa2f20338394c9556e6bd17193bdaf4",
+      "sha256_16": "9ef473dac0365372",
+      "bytes": 22467
+    },
+    {
+      "path": "cassette-float.js",
+      "sha256": "e038a84b34fdb13e70ac29bd68d39d3ab645340a15cb0540d269aae946538302",
+      "sha256_16": "e038a84b34fdb13e",
+      "bytes": 19348
+    },
+    {
+      "path": "cassette-skin.js",
+      "sha256": "97437bda53dcea4192670335aad05e273172165a2f42a08e2a5ae8213be06fb2",
+      "sha256_16": "97437bda53dcea41",
+      "bytes": 6293
+    },
+    {
+      "path": "design.css",
+      "sha256": "0690911b6053d96ea44a40f2ca7887dd64103f1f4d6da1244cbd7b596e82e34d",
+      "sha256_16": "0690911b6053d96e",
+      "bytes": 29576
+    },
+    {
+      "path": "editor.css",
+      "sha256": "f36d992f3a5784064d09ec1e03fa0cbbebe7726c8ceb30d889eb37f842ab2775",
+      "sha256_16": "f36d992f3a578406",
+      "bytes": 13202
+    },
+    {
+      "path": "home-neon.css",
+      "sha256": "9a78f27610473c77cb43e65cc2f0d319481cf03bfaca333271ce0e64d949f743",
+      "sha256_16": "9a78f27610473c77",
+      "bytes": 20537
+    },
+    {
+      "path": "home-neon.js",
+      "sha256": "e24d45548fe417de601d61406c22e27270cbfad18bd122bf045299f0e9fbab95",
+      "sha256_16": "e24d45548fe417de",
+      "bytes": 7736
+    },
+    {
+      "path": "image-webp.js",
+      "sha256": "a4be365d7cf81aecb1a12754ef966757aa5427c444f1f240e46f37b9e2545f1d",
+      "sha256_16": "a4be365d7cf81aec",
+      "bytes": 4139
+    },
+    {
+      "path": "layout-data.js",
+      "sha256": "5371436bd3abe598f1c4304725ef8d0310cd5aa06e278a91ce071b9b94a1f803",
+      "sha256_16": "5371436bd3abe598",
+      "bytes": 32
+    },
+    {
+      "path": "layout-editor.js",
+      "sha256": "9df87889a8a5d4dda6980e81cec9e1f9556bbdc85ea9a72a73b23fc8b2f24801",
+      "sha256_16": "9df87889a8a5d4dd",
+      "bytes": 10092
+    },
+    {
+      "path": "live-hud.css",
+      "sha256": "a439df18edf249fa135b42e41d6cca87b95bcd7e92c6eb5eef0ff538031c31a4",
+      "sha256_16": "a439df18edf249fa",
+      "bytes": 13251
+    },
+    {
+      "path": "live-hud.js",
+      "sha256": "b79520cafb1d28adf0dd0b1d92fd21bbe3af525d275883b9f9aa7f0ab58dd239",
+      "sha256_16": "b79520cafb1d28ad",
+      "bytes": 5399
+    },
+    {
+      "path": "motion.css",
+      "sha256": "7ec3f77653e1f4664c21adcf9ee6ce32c4d058cddbd02e14f2c6b7141042b5c7",
+      "sha256_16": "7ec3f77653e1f466",
+      "bytes": 31528
+    },
+    {
+      "path": "page.js",
+      "sha256": "8ac485d97fe0c1a0894fd2c0f278becf7f5c5f002b84ad55ec6c4edfdfa91e10",
+      "sha256_16": "8ac485d97fe0c1a0",
+      "bytes": 45159
+    },
+    {
+      "path": "site-motion.js",
+      "sha256": "008b0cbed79bc9c07accd55a13097a9ebb9945fe37e4fe310bec90fca673fa09",
+      "sha256_16": "008b0cbed79bc9c0",
+      "bytes": 14968
+    },
+    {
+      "path": "site-sidebar.css",
+      "sha256": "5ff12a2725a17e9eb2b423a47c0513f4e34c7c706d8bf614d04815c4249d256b",
+      "sha256_16": "5ff12a2725a17e9e",
+      "bytes": 5713
+    },
+    {
+      "path": "site-sidebar.js",
+      "sha256": "295bfaac745423fca125686d8788c090e0ee3c1575a89170ba71a692ad40020e",
+      "sha256_16": "295bfaac745423fc",
+      "bytes": 11966
+    },
+    {
+      "path": "zzz-ui.js",
+      "sha256": "ccaacac92580964bce39acc9455c1811e6338c18572e7ad42a51423483dc45c4",
+      "sha256_16": "ccaacac92580964b",
+      "bytes": 9457
+    }
+  ]
+}

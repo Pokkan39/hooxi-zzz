@@ -537,8 +537,8 @@ footer{
 }
 .story-lane-switch{
   display:flex;flex-wrap:wrap;align-items:center;gap:10px;
-  margin:0 0 22px;
-  padding:14px 16px;
+  margin:0 0 12px;
+  padding:8px 16px;
   border:1px solid var(--amber-line);
   background:linear-gradient(110deg,rgba(255,193,7,.08),rgba(0,0,0,.22));
   box-shadow:4px 4px 0 #000;
@@ -3770,8 +3770,8 @@ html body.home-page main{padding-bottom:0!important}
   position:relative;
   width:100%;
   /* 全宽横幅：贴近宽幅素材 2.37，标准 16:9 由 object-position 兜住主体 */
-  aspect-ratio:16/6;
-  max-height:290px;
+  aspect-ratio:16/7;
+  max-height:190px;
   overflow:hidden;
 }
 .banner-slide{
@@ -3791,7 +3791,8 @@ html body.home-page main{padding-bottom:0!important}
   width:100%;
   height:100%;
   object-fit:cover;
-  object-position:center;
+  /* 16:9 素材裁进扁横幅时，居中会把人物主体切掉，偏上取景保住头肩 */
+  object-position:center 28%;
 }
 /* 超宽素材（2.1+）几乎不需裁切，居中即可 */
 .banner-slide img[data-wide="ultra"]{object-position:center}
@@ -3833,40 +3834,10 @@ html body.home-page main{padding-bottom:0!important}
   .banner-title{font-size:15px;padding:32px 16px 12px}
 }
 
-/* 影画全幅工作台：移除右侧名录，影画铺满，光栅显性化 */
-.archive-stories{
-  --roster-width:0px;
-  --roster-skew:0%;
-}
-.archive-stories .agent-roster-panel,
-.archive-stories .agent-roster-panel:before,
-.archive-stories .agent-roster-tickers{
-  display:none;
-}
-.archive-stories .agent-stage-visual,
-.archive-stories .agent-stage-grid{
-  inset:0;
-}
-.archive-stories .agent-stage-portrait{
-  inset:0;
-  place-items:stretch;
-}
-.archive-stories .agent-stage-portrait img,
-.archive-stories .agent-stage-portrait[data-stage-agent-id] img{
-  height:100%;
-  width:100%;
-  max-width:none;
-  object-fit:cover;
-  object-position:50% 20%;
-}
-.archive-stories .agent-stage-visual:before{
-  inset:0;
-  z-index:2;
-  background:repeating-linear-gradient(0deg,rgba(0,0,0,.38) 0 1px,transparent 1px 3px);
-  opacity:1;
-  mask-image:none;
-  mix-blend-mode:multiply;
-}
+/* 影画工作台：右侧角色名录为本页主要导航，不得整块隐藏。
+   原「全幅工作台」段把 --roster-width 归零并 display:none 名录，
+   同时把立绘改为 inset:0 + object-fit:cover 铺满，已随本次恢复移除。
+   --roster-width 的响应式阶梯由前文 651/1328/1567/1989/1997 提供。 */
 .archive-stories .agent-stage-visual:after{
   right:6%;
 }
@@ -3889,3 +3860,4 @@ html body.home-page main{padding-bottom:0!important}
   max-width:none;
   white-space:nowrap;
 }
+@media(max-width:880px){.archive-stories .agent-stage-info{position:relative}}

@@ -5400,3 +5400,112 @@ min-height min-content 得舞台高 612、可见 0/9，排除。
 需要如实记录的判断失误：加 CI 本身不是坏主意，仓库确实没有任何自动检查；但用户当时的指示是「弄完之后自己推送到 git」，加 CI 属于我擅自扩大范围，且在没有把握 CI 环境差异的情况下反复推送试错，消耗了大量时间。正确做法是先完成推送、再单独征询是否需要 CI。
 
 回滚方式：git revert a234977 可恢复该工作流文件。
+
+## 2026-07-27 - Task: 将正式站门禁基线纳入 Git 跟踪
+### What was done
+- 修正 `artifacts/*` 的例外说明，明确三个门禁基线证据必须入库，并将正式站基线缺失时的行为精简为准确的 `MISSING_BASELINE` / 退出 2 表述。
+- 在发布门禁说明中明确 `artifacts/formal-site-gate-baseline.json` 必须随仓库跟踪，不能再被 `artifacts/*` 忽略。
+- 将正式站门禁基线连同本轮三个文本文件精确加入暂存区，不提交、不推送，也不暂存其他未跟踪原型文件。
+
+### Testing
+- `git check-ignore -v -- artifacts/formal-site-gate-baseline.json` 命中 `.gitignore` 的否定规则；该命令因显示否定规则返回 0。`git check-ignore -q -- artifacts/formal-site-gate-baseline.json` 返回 1，确认文件实际未被忽略。
+- 只读执行 `python scripts/check-formal-site-gate.py`，结果为 `GATE_FAIL` / 退出 1，原因是当前正式文件与旧基线存在偏离；未出现 `MISSING_BASELINE`，也未执行 `--write`。
+- `git diff --check -- .gitignore docs/README.md progress.md` 通过，无空白错误。
+- 首次普通 `git add` 在 `core.autocrlf=true` 下将 CRLF 规范化为 LF；已改用不经过滤的原始 blob 写入索引规避规范化。最终 `git show :artifacts/formal-site-gate-baseline.json` 的原始输出与工作树均为 SHA-256 `d01de5f0cb5084e9d52e3c93af3c996ae11d2cf73372a93de45becc4ff60aa7f`、9117 字节，证明暂存内容与工作树逐字节一致。
+
+### Notes
+- `.gitignore`：最小修正三个门禁例外的注释，并准确说明正式站基线缺失时返回 2。
+- `docs/README.md`：在发布门禁说明处补充正式站基线必须随仓库跟踪。
+- `progress.md`：追加本轮施工、验证与回滚记录。
+- `artifacts/formal-site-gate-baseline.json`：仅加入 Git 索引，文件字节未修改。
+- 回滚：执行 `git restore --staged -- .gitignore docs/README.md progress.md artifacts/formal-site-gate-baseline.json` 取消本轮暂存；随后仅删除本节、删除 `docs/README.md` 新增句，并将 `.gitignore` 本轮注释定点恢复，保留基线工作树文件及其他未跟踪原型文件。
+
+## 2026-07-27 - Task: 重建正式站门禁基线，将当前 43 项偏离纳入新基线
+### What was done
+- 先校验回滚点：备份文件 `artifacts/formal-site-gate-baseline.pre-2026-07-27.json` 与旧基线逐字节一致，确认可安全重建。
+- 执行基线重写，把上一轮遗留的 43 项偏离（CHANGED 26 / UNTRACKED 16 / MISSING 0 / BASELINE_EXTRA 1）全部纳入新基线，正式站受管文件数从 42 项提升到 58 项，门禁从长期 `GATE_FAIL` 恢复为可用状态。
+- 本轮只改写基线证据与进度记录，未触碰任何正式站 HTML/CSS/JS/字体/素材，也未改动 `.gitignore` 与 `docs/`。
+- 重新精确暂存基线文件，保持索引字节与工作树完全一致，不提交、不推送。
+
+### Testing
+- `python scripts/check-formal-site-gate.py --write` 输出 `WROTE artifacts\formal-site-gate-baseline.json (58 files)`，退出码 0。
+- 只读复验 `python scripts/check-formal-site-gate.py` 输出 58 行 `OK` 后给出 `GATE_OK ALL_FORMAL_UNCHANGED`，退出码 0，确认新基线与工作树完全吻合。
+- Python `json.loads` 解析新基线成功，顶层键为 `purpose` / `policy` / `note` / `files`，`files` 数组长度 58。
+- 旧基线 SHA-256 `d01de5f0cb5084e9d52e3c93af3c996ae11d2cf73372a93de45becc4ff60aa7f`、9117 字节；新基线 SHA-256 `56896833ec46e358240296f2482558a8e4b0b0525cb4609143456ad292d7799f`、12036 字节。备份文件与旧基线同为 `d01de5f0...`、9117 字节，回滚点有效。
+- `core.autocrlf=true` 下改用 `git hash-object -w --no-filters` 加 `git update-index --cacheinfo` 写入索引，规避 CRLF 规范化；`git show :artifacts/formal-site-gate-baseline.json` 的原始输出与工作树均为 SHA-256 `56896833...`、12036 字节，证明暂存内容与工作树逐字节一致。
+
+### Notes
+- `artifacts/formal-site-gate-baseline.json`：由脚本 `--write` 重建，受管文件由 42 项扩为 58 项，纳入本轮全部偏离项并移除 1 项失效条目。
+- `progress.md`：追加本轮重建、验证与回滚记录。
+- 回滚：执行 `cp artifacts/formal-site-gate-baseline.pre-2026-07-27.json artifacts/formal-site-gate-baseline.json` 即可恢复旧基线，随后按上一轮方式重新写入索引；本节记录可定点删除。禁止使用整仓 `git reset` / `git checkout` / `git restore`，以免影响其他未跟踪原型文件与既有暂存内容。
+
+## 2026-07-27 - Task: 角色页大标题高亮字跟随角色印象色
+### What was done
+- 角色页大标题此前恒为纯白，与同页的档案编号、左侧轨道标记、立绘边框等 13 个已跟随印象色的元素脱节。本轮让大标题也跟随当前角色的印象色，整页强调色统一。
+- 只在 `design.css` 末尾追加一条限定在 `.subpage.archive-character` 的规则，样式表加载顺序中 `design.css` 在 `live-hud.css` 之后，配合 `!important` 才能压过 `live-hud.css` 的 `color:inherit!important`（后者把标题拉回白色）。规则内附注释说明该 `!important` 的必要性与回退行为。
+- 未修改 `live-hud.css`、`wiki-readability.css`、`multi-page.css`、`character.js` 或其他任何文件，其他子页标题配色完全不变。
+- 取不到印象色的角色（爱芮、千夏、南宫羽，无影画素材）回退到原橙 `255 156 82`，表现与改动前一致。
+
+### Testing
+- 起本地只读静态服务 `python -m http.server 8099 --bind 127.0.0.1`，用 Playwright（Chromium，1600x1000）实测 6 个角色，`getComputedStyle` 读 `.character-profile-panel h1 span` 的 color，并与同页 `.character-profile-index b` 逐一比对，6/6 完全一致：安比 `rgb(189,213,45)`、朱鸢 `rgb(9,133,255)`、星见雅 `rgb(54,140,146)`、比利·奇德 `rgb(255,61,61)`、爱芮与千夏均为回退橙 `rgb(255,156,82)`。改动前该元素为 `rgb(255,255,255)`。
+- 大标题背景不靠推断：把 h1 及其 span 临时置为 transparent 后对 h1 元素截图并按像素求均值，6 个角色实测均为 `rgb(17,23,34)`（即 #111722），与假定背景一致。对该底色的 WCAG 对比度：安比 10.88、朱鸢 4.97、星见雅 4.55、比利·奇德 5.12、爱芮 8.66、千夏 8.66。大号文本 AA 阈值 3.0 全部通过，且 6/6 同时达到 4.5，最低为星见雅 4.55。
+- 其他子页 h1 与 h1 span 均仍为 `rgb(255,255,255)`：`mainline.html`、`events.html`、`behind-scenes.html`、`faction.html` 四页实测未受影响。`stories.html` 是角色目录页，本身不含 `.page-hero h1`，无可比对元素。
+- 实测发现一处与原判断不同、但属既有结构的行为：角色页 h1 的正文全部包在两个 `<span>` 里（`<span>角色名</span><br><span>角色档案</span>`），因此本轮生效后大标题两行都跟随印象色，而非只有第二行。这正是 `multi-page.css` 原本就写着的 `.character-profile-panel h1 span{color:var(--character-theme)}` 的意图，之前被 `live-hud.css` 覆盖，本轮只是让它恢复生效，未新增任何选择器范围。
+- `npm test`（即 `test:content`：档案校验 + 链接诚信 + 非官方边界）全部 PASS，退出码 0。
+- 只读执行 `python scripts/check-formal-site-gate.py`（未加 `--write`）：58 项受管文件中仅 `design.css` 报 `CHANGED baseline=0690911b6053d96e current=6dfcb333cfa8e85e`，其余全部 `OK`，结果 `GATE_FAIL`、退出码 1。`design.css` 在上一轮已纳入 58 文件基线，本轮修改它必然触发该项，属预期。刷新基线需用户另行授权，本轮未执行 `--write`。
+- 截图与探针脚本存放于 `artifacts/hero-title-theme-20260727-170038/`，共 6 张角色页与 5 张其他子页截图。
+- 未提交、未推送，未执行 reset/checkout/restore/clean，未改动门禁基线文件与其他未跟踪原型文件。
+
+### Notes
+- `design.css`：末尾追加 10 行（1 段注释 + `.subpage.archive-character .page-hero h1 span{color:var(--character-theme)!important}`），使角色页大标题高亮字跟随印象色；文件其余部分与原有 LF 行尾均未改动。
+- `progress.md`：追加本轮施工、实测与回滚记录。
+- `artifacts/hero-title-theme-20260727-170038/`：本轮实测证据（截图与 Playwright 探针脚本），不属正式站文件。
+- 回滚：删除 `design.css` 末尾本轮追加的那一段（注释 + `.subpage.archive-character .page-hero h1 span` 规则）即可恢复大标题为纯白，无需改动任何其他文件；本节记录可定点删除。禁止使用整仓 `git reset` / `git checkout` / `git restore`，以免影响既有暂存内容与未跟踪原型文件。
+
+## 2026-07-27 - Task: 幕后精选封面轮播改为 3 秒并补齐暂停策略
+### What was done
+- 将幕后页精选封面轮播的自动推进间隔由 5 秒调整为 3 秒；共享组件在主线、活动等其他子页继续保持 5 秒，未扩大节奏变更范围。
+- 用单一定时器状态同步悬停、轮播内键盘焦点、系统“减少动态效果”和页面隐藏四类暂停条件；只有全部条件解除后才恢复，避免重复 interval。
+- 修复慢速图片加载时的排序竞态：宽幅素材重排后保留当前正在展示的图片身份，并同步活动画面、圆点和内部索引，避免圆点错位与下一拍跳片。
+- 将 3/5 秒节奏、暂停叠加、减动效切换和慢图重排纳入现有 UI 门禁；文档同步记录正式行为。
+
+### Testing
+- `node --check page.js`、`node --check scripts/capture-r1-baseline.mjs` 与 `git diff --check -- page.js scripts/capture-r1-baseline.mjs docs/README.md` 均通过；仅有 Git 的 LF/CRLF 工作区提示。
+- 完整执行 `npm run test:ui`，证据位于 `artifacts/r1-baseline-20260727-163436/report.json`：59/59 截图、9/9 深链、11/11 交互、9/9 首页发布检查、8/8 首页放映检查；新增 `subpage-banner-carousel-timing-and-pauses` 为 `passed=true`。
+- 慢图门禁实际延迟并控制 7 张幕后封面：排序前活动图片位于 slide/dot `1/1`，排序后同一图片移动到 `2/2` 且仍各只有一个活动项，恢复后只推进到 `3/3`。幕后页 3 秒推进、悬停暂停、焦点暂停、减动效与悬停叠加暂停、全部解除后恢复，以及活动页 3 秒不动/5 秒推进均通过。
+- 当前 Chromium 自动化环境无法原生令 `document.hidden` 变为 true，报告明确标记 `visibility.mode=degraded-static-contract`、`nativeVerified=false`；已验证生产代码同时使用 `visibilitychange` 与 `document.hidden`，未篡改只读属性伪造结果。
+- 本次完整 UI 门禁总状态仍有 2 个与阶段 3 无关的阻断：编辑器在 mobile 与 reduced-motion-desktop 视口请求未启动的 `localhost:3001/api/auth/session`，产生 `ERR_CONNECTION_REFUSED` console-error；轮播交互自身全部通过，后端按本轮范围保持关闭。
+
+### Notes
+- `page.js`：调整幕后页轮播节奏，新增统一暂停状态同步，并在图片重排后保留活动图片与圆点一致性。
+- `scripts/capture-r1-baseline.mjs`：新增子页轮播永久交互门禁，覆盖慢图排序、3/5 秒节奏、暂停与恢复；visibility 无法原生触发时明确记录静态降级证据。
+- `docs/README.md`：补充幕后页 3 秒、其他子页 5 秒及四类暂停条件说明。
+- `progress.md`：追加本轮施工、验证、已知测试环境限制与回滚记录。
+- `artifacts/r1-baseline-20260727-163436/`：本轮完整 UI 回归生成的时间戳截图与报告证据，不覆盖旧证据。
+- 回滚：在 `page.js` 定点恢复 `renderPageBanner()` 原 5000ms 三行定时器并移除本轮排序保活逻辑；在 `scripts/capture-r1-baseline.mjs` 删除 `subpage-banner-carousel-timing-and-pauses` 交互块并将 `interactionsExpected` 减 1；删除 `docs/README.md` 本轮轮播说明和本节日志。不要整文件执行 `git restore`，以免覆盖这些文件中的前序未提交改动；不再需要证据时可单独删除本轮时间戳目录。
+
+## 2026-07-27 - Task: 完成阶段 6 全量门禁与编辑器离线噪声收敛
+### What was done
+- 正式 UI 门禁只对 editor 路由中精确匹配 `http://localhost:3001/api/auth/session` 的 `ERR_CONNECTION_REFUSED` 控制台消息降级为预期离线证据，并写入独立的 `expectedOfflineConsoleErrors` 字段；其他路由、URL 或错误文本仍进入阻断列表。
+- 在全量回归中发现并修复一项新增的移动端角色舞台回归：后置全局规则把信息层重新设为绝对定位，使其上移覆盖仍按舞台底边裁切的立绘。最终只在 `<=880px` 恢复信息层参与网格流，未调整立绘近景参数，也未放宽回归断言。
+- 四套阶段门禁均按要求执行。正式站门禁仅只读报告当前工作树相对旧基线的 15 项已知偏离，未运行 `--write`、未刷新或覆盖正式基线。
+
+### Testing
+- `npm test`：退出码 0；档案媒体 10 组检查、链接诚信和 8 页非官方边界全部通过。
+- `npm run test:stories`：共 98 项；本轮新增的 `mobile-representative-alpha-is-head-to-waist-closeup` 已通过，最终仅剩 `desktop-primary-controls-complete-in-viewport-and-workbench` 与 `mobile-compact-stage-is-head-to-waist-without-profile-frame` 两项此前已确认的验收口径问题，故命令退出码仍为 1，无新增失败。
+- 移动端定向几何复核（390x844）：安比、艾莲、星见雅的立绘可见底边均为 628.5，信息层顶部由修复前的 513 恢复到 628.5；头到腰取景比例保持不变，320/375/390 三档无横向溢出。
+- `npm run test:ui`：最终证据 `artifacts/r1-baseline-20260727-170741/report.json`；59/59 截图、9/9 深链、11/11 交互、9/9 首页发布检查、21/21 分幕截图、5/5 全页截图、8/8 放映检查，`blockingFailures=0`、`passed=true`、`failures=[]`。editor 三视口的 `consoleErrors` 与 `expectedOfflineConsoleErrors` 均为空，后端请求按预期标记为离线。
+- `python scripts/check-formal-site-gate.py`：只读退出码 1；58 个受管文件中 43 个 `OK`、15 个 `CHANGED`，`MISSING/UNTRACKED/BASELINE_EXTRA` 均为 0。偏离文件为 `index.html`、`app.js`、`theme-zzz.css`、`wiki-readability.css`、`multi-page.css`、`agent-xray.js`、`archive-tools.css/js`、`cassette-float.css/js`、`cassette-skin.js`、`design.css`、`home-neon.css`、`live-hud.css`、`page.js`；未写基线。
+- `node --check scripts/capture-r1-baseline.mjs` 与定点 `git diff --check` 均通过，无 whitespace error，仅有既有 LF/CRLF 提示。
+- 本地状态：`http://127.0.0.1:8099/index.html` 返回 200；`localhost:3001/api/auth/session` 返回 connection refused，后端按约定保持关闭。
+
+### Notes
+改动文件清单：
+- `scripts/capture-r1-baseline.mjs` — 增加 editor 会话端点离线控制台错误的精确分类及独立报告字段，保留其他错误的阻断行为。
+- `docs/README.md` — 记录后端有意关闭时只豁免 editor 会话端点精确离线错误的门禁约定。
+- `theme-zzz.css` — 在最终级联位置为 `<=880px` 恢复 `.agent-stage-info{position:relative}`，消除信息层与立绘重叠。
+- `progress.md` — 追加本轮实现、验证、正式基线只读结果与回滚说明。
+- `artifacts/r1-baseline-20260727-165117/`、`artifacts/r1-baseline-20260727-170741/` — 本轮前后两次 UI 门禁生成的时间戳证据；旧证据未删除或覆盖。
+- `artifacts/agent-select-roster.png` — `test:stories` 按现有脚本固定路径刷新截图；Git 状态未出现内容差异。
+
+回滚方式：在 `scripts/capture-r1-baseline.mjs` 定点删除 `isExpectedOfflineConsoleError`、`expectedOfflineConsoleErrors` 的采集/输出及对应 console 分流，恢复为所有 error 进入 `consoleErrors`；删除 `docs/README.md` 的 editor 离线门禁说明；删除 `theme-zzz.css` 末尾 `@media(max-width:880px)` 信息层规则；再删除本节日志。不要整文件 `git restore`，以免覆盖同文件中的前序未提交改动。正式基线本轮未改，无需回滚；本轮未提交、未推送。

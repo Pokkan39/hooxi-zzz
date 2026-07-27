@@ -491,11 +491,29 @@ async function collectHomeHeroState(page) {
       const visible = style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity) > .99;
       return visible ? [index] : [];
     });
+    /* 轮播控件改为可交互后需要复验触达与可访问名，
+       所以把 prev/next 与每个圆点的实测尺寸一并带出。 */
+    const controlTargets = [
+      ...['heroCarouselPrev', 'heroCarouselNext'].map((id) => document.getElementById(id)),
+      ...document.querySelectorAll('#heroCarouselDots [data-hero-dot]'),
+    ].filter(Boolean).map((node) => {
+      const box = node.getBoundingClientRect();
+      return {
+        id: node.id || `dot-${node.dataset.heroDot}`,
+        width: Math.round(box.width),
+        height: Math.round(box.height),
+        accessibleName: (node.getAttribute('aria-label') || node.textContent || '').trim(),
+        focusable: node.tagName === 'BUTTON' && !node.disabled && node.tabIndex >= 0,
+      };
+    });
     return {
       firstSrc: slides[0]?.querySelector('img')?.currentSrc ?? slides[0]?.querySelector('img')?.getAttribute('src') ?? '',
       visibleIndexes,
+      slideCount: slides.length,
+      dotCount: document.querySelectorAll('#heroCarouselDots [data-hero-dot]').length,
       domActiveIndexes: slides.flatMap((slide, index) => slide.classList.contains('is-active') ? [index] : []),
       controls,
+      controlTargets,
     };
   });
 }
@@ -852,6 +870,23 @@ function isExpectedBackendRequest(url, routeName) {
   }
 }
 
+function isExpectedOfflineConsoleError(text, locationUrl, routeName) {
+  if (routeName !== 'editor' || text !== 'Failed to load resource: net::ERR_CONNECTION_REFUSED') return false;
+  try {
+    const parsed = new URL(locationUrl);
+    return parsed.protocol === 'http:'
+      && parsed.username === ''
+      && parsed.password === ''
+      && parsed.hostname === 'localhost'
+      && parsed.port === '3001'
+      && parsed.pathname === '/api/auth/session'
+      && parsed.search === ''
+      && parsed.hash === '';
+  } catch {
+    return false;
+  }
+}
+
 await mkdir(outputDir, { recursive: true });
 
 const report = {
@@ -873,7 +908,7 @@ const report = {
     screenshotsCaptured: 0,
     deepLinksExpected: deepLinkChecks.length,
     deepLinksPassed: 0,
-    interactionsExpected: 1 + homeReleaseVariants.length,
+    interactionsExpected: 2 + homeReleaseVariants.length,
     interactionsPassed: 0,
     homeReleaseChecksExpected: homeReleaseVariants.length,
     homeReleaseChecksPassed: 0,
@@ -920,6 +955,7 @@ try {
       const page = await context.newPage();
       const pageErrors = [];
       const consoleErrors = [];
+      const expectedOfflineConsoleErrors = [];
       const failedRequests = [];
       const externalRequests = [];
       const localHttpErrors = [];
@@ -930,7 +966,12 @@ try {
       });
       page.on('console', (message) => {
         if (message.type() === 'error') {
-          consoleErrors.push({ text: message.text(), location: message.location() });
+          const entry = { text: message.text(), location: message.location() };
+          if (isExpectedOfflineConsoleError(entry.text, entry.location.url, route.name)) {
+            expectedOfflineConsoleErrors.push(entry);
+          } else {
+            consoleErrors.push(entry);
+          }
         }
       });
       page.on('request', (request) => {
@@ -1164,6 +1205,7 @@ try {
         horizontalOverflow: pageState.horizontalOverflow,
         pageErrors,
         consoleErrors,
+        expectedOfflineConsoleErrors,
         failedRequests,
         externalRequests,
         localHttpErrors,
@@ -1363,20 +1405,45 @@ try {
           && contract.decorationLayers === 3;
         recordHomeScreeningCheck('home-seven-act-contract', contractPassed, contract);
 
+        /* 契约变更：首页银幕改为多片源轮换（用户明确要求），
+           原「8 秒内不许推进」已不成立。保留真正有价值的部分：
+           首帧必须是本地 keyart 且只有一张可见，之后允许自动推进，
+           并要求 8 秒后确实换了片（否则轮换等于没接上）。 */
+        /* 断言不依赖采样时刻：轮播定时器 6500ms，
+           走到这一步时可能已经推进过，不能再要求当前可见片就是第 0 张。
+           改为查结构上的第 0 片永远是本地 keyart，加上「任意时刻只亮一张」
+           与「8 秒内确实换了片」。 */
         const before = await collectHomeHeroState(page);
         await page.waitForTimeout(8_000);
         const after = await collectHomeHeroState(page);
-        const stable = before.firstSrc === after.firstSrc
-          && before.visibleIndexes.join(',') === '0'
-          && after.visibleIndexes.join(',') === '0';
-        recordHomeScreeningCheck('home-first-frame-stable-8s', stable, { before, after });
+        const firstFramePassed = /assets\/hero\/zzz-random-play-keyart\.(png|webp)$/.test(before.firstSrc)
+          && before.firstSrc === after.firstSrc
+          && before.slideCount >= 2
+          && before.visibleIndexes.length === 1
+          && after.visibleIndexes.length === 1
+          && before.visibleIndexes.join(',') !== after.visibleIndexes.join(',');
+        recordHomeScreeningCheck('home-keyart-first-slide-and-advance', firstFramePassed, { before, after });
 
-        const controlsStatic = after.controls.length === 3
+        /* 契约变更：控件从「整组隐藏」改为「可见可交互」。
+           不放宽成只查存在：仍要求三个控件都渲染、可点、有可访问名，
+           且圆点数量与片源一致、触达尺寸达到 44px。 */
+        const controlsInteractive = after.controls.length === 3
           && after.controls.every((control) => !control.missing
-            && control.display === 'none'
-            && control.visibility === 'hidden'
-            && control.pointerEvents === 'none');
-        recordHomeScreeningCheck('home-carousel-controls-noninteractive', controlsStatic, after.controls);
+            && control.display !== 'none'
+            && control.visibility === 'visible'
+            && control.pointerEvents !== 'none')
+          && after.dotCount === after.slideCount
+          && after.controlTargets.length === 2 + after.slideCount
+          && after.controlTargets.every((target) => target.width >= 44
+            && target.height >= 44
+            && target.accessibleName.length > 0
+            && target.focusable);
+        recordHomeScreeningCheck('home-carousel-controls-interactive', controlsInteractive, {
+          controls: after.controls,
+          dotCount: after.dotCount,
+          slideCount: after.slideCount,
+          controlTargets: after.controlTargets,
+        });
       }
 
       const geometry = await collectHomeHeroGeometry(page);
@@ -1581,6 +1648,231 @@ try {
       report.summary.blockingFailures += 1;
     }
     await context.close();
+  }
+
+  {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'no-preference' });
+    const page = await context.newPage();
+    let entry;
+    const bannerState = (targetPage) => targetPage.evaluate(() => {
+      const slides = [...document.querySelectorAll('.banner-slide')];
+      const dots = [...document.querySelectorAll('.banner-dot')];
+      const activeSlideIndexes = slides.flatMap((slide, index) => slide.classList.contains('is-active') ? [index] : []);
+      const activeDotIndexes = dots.flatMap((dot, index) => dot.classList.contains('is-active') ? [index] : []);
+      const index = activeSlideIndexes[0] ?? -1;
+      const wideOrder = slides.map((slide) => slide.querySelector('img')?.dataset.wide ?? '');
+      const rankValue = { ultra: 0, wide: 1, standard: 2 };
+      return {
+        index,
+        dotIndex: activeDotIndexes[0] ?? -1,
+        count: slides.length,
+        dotCount: dots.length,
+        activeSlideCount: activeSlideIndexes.length,
+        activeDotCount: activeDotIndexes.length,
+        activeSrc: slides[index]?.querySelector('img')?.getAttribute('src') ?? '',
+        srcOrder: slides.map((slide) => slide.querySelector('img')?.getAttribute('src') ?? ''),
+        wideOrder,
+        ranked: wideOrder.every(Boolean)
+          && wideOrder.every((value, itemIndex) => itemIndex === 0 || rankValue[wideOrder[itemIndex - 1]] <= rankValue[value]),
+      };
+    });
+    const validBannerState = (state) => state.count >= 2
+      && state.dotCount === state.count
+      && state.activeSlideCount === 1
+      && state.activeDotCount === 1
+      && state.index === state.dotIndex;
+    const stayedOnSameSlide = (before, after) => validBannerState(before)
+      && validBannerState(after)
+      && before.count === after.count
+      && before.activeSrc === after.activeSrc;
+    const advancedOnce = (before, after) => validBannerState(before)
+      && validBannerState(after)
+      && before.count === after.count
+      && (after.index - before.index + before.count) % before.count === 1;
+    try {
+      let slowImage;
+      const archiveScript = await readFile(resolve(rootDir, 'data.js'), 'utf8');
+      const packagedArchive = JSON.parse(archiveScript.replace(/^\s*window\.archiveData\s*=\s*/, '').replace(/;\s*$/, ''));
+      const slowBannerCovers = (packagedArchive.behindScenes ?? []).filter((item) => item.cover).slice(0, 8).map((item) => item.cover);
+      const coverStem = (pathname) => pathname.replace(/^\/+/, '').replace(/\.(?:png|jpe?g|webp)$/i, '');
+      const slowBannerCoverStems = slowBannerCovers.map(coverStem);
+      const expectedBannerCovers = new Set(slowBannerCoverStems);
+      const slowContext = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'no-preference' });
+      try {
+        const imageDelayMs = 4_200;
+        const controlledBannerCovers = new Set();
+        await slowContext.route('**/*', async (route) => {
+          const pathnameStem = coverStem(new URL(route.request().url()).pathname);
+          const coverIndex = slowBannerCoverStems.indexOf(pathnameStem);
+          if (coverIndex < 0) {
+            await route.continue();
+            return;
+          }
+          controlledBannerCovers.add(pathnameStem);
+          const size = coverIndex === 2 ? { width: 2400, height: 800 } : { width: 1600, height: 900 };
+          await new Promise((resolveDelay) => setTimeout(resolveDelay, imageDelayMs));
+          await route.fulfill({
+            status: 200,
+            contentType: 'image/svg+xml',
+            body: `<svg xmlns="http://www.w3.org/2000/svg" width="${size.width}" height="${size.height}" viewBox="0 0 ${size.width} ${size.height}"></svg>`,
+          });
+        });
+        const slowPage = await slowContext.newPage();
+        await slowPage.goto(`${serverHandle.origin}/behind-scenes.html`, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+        await slowPage.waitForFunction(() => document.querySelectorAll('.banner-slide').length >= 2);
+        await slowPage.waitForTimeout(3_300);
+        const slowCarousel = slowPage.locator('.page-banner-carousel');
+        await slowCarousel.hover();
+        const beforeSort = await bannerState(slowPage);
+        await slowPage.waitForFunction(() => [...document.querySelectorAll('.banner-slide img')].every((img) => img.dataset.wide), null, { timeout: 15_000 });
+        const afterSort = await bannerState(slowPage);
+        await slowPage.locator('.page-hero').hover();
+        const resumeBefore = await bannerState(slowPage);
+        await slowPage.waitForTimeout(3_400);
+        const resumeAfter = await bannerState(slowPage);
+        const controlledRequests = controlledBannerCovers.size;
+        slowImage = {
+          mode: 'delayed-image-ranking',
+          imageDelayMs,
+          controlledRequests,
+          passed: controlledRequests === expectedBannerCovers.size
+            && !beforeSort.ranked
+            && afterSort.ranked
+            && beforeSort.index !== afterSort.index
+            && beforeSort.srcOrder.join('|') !== afterSort.srcOrder.join('|')
+            && stayedOnSameSlide(beforeSort, afterSort)
+            && advancedOnce(resumeBefore, resumeAfter),
+          beforeSort,
+          afterSort,
+          resume: { before: resumeBefore, after: resumeAfter },
+        };
+      } finally {
+        await slowContext.close();
+      }
+
+      await page.goto(`${serverHandle.origin}/behind-scenes.html`, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+      await page.waitForFunction(() => document.querySelectorAll('.banner-slide').length >= 2
+        && [...document.querySelectorAll('.banner-slide img')].every((img) => img.dataset.wide));
+
+      const carousel = page.locator('.page-banner-carousel');
+      await carousel.hover();
+      const hoverBefore = await bannerState(page);
+      await page.waitForTimeout(3_400);
+      const hoverAfter = await bannerState(page);
+
+      await page.locator('.page-hero').hover();
+      const advanceBefore = await bannerState(page);
+      await page.waitForTimeout(3_400);
+      const advanceAfter = await bannerState(page);
+
+      await page.locator('.banner-dot').first().focus();
+      const focusBefore = await bannerState(page);
+      await page.waitForTimeout(3_400);
+      const focusAfter = await bannerState(page);
+      await page.locator('#musicToggle').focus();
+      const focusResumeBefore = await bannerState(page);
+      await page.waitForTimeout(3_400);
+      const focusResumeAfter = await bannerState(page);
+
+      let visibility;
+      const coverPage = await context.newPage();
+      await coverPage.goto(`${serverHandle.origin}/events.html`, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+      await coverPage.bringToFront();
+      await page.waitForTimeout(150);
+      const nativeHidden = await page.evaluate(() => document.hidden);
+      if (nativeHidden) {
+        const hiddenBefore = await bannerState(page);
+        await page.waitForTimeout(3_400);
+        const hiddenAfter = await bannerState(page);
+        await page.bringToFront();
+        await page.waitForFunction(() => !document.hidden);
+        const visibleBefore = await bannerState(page);
+        await page.waitForTimeout(3_400);
+        const visibleAfter = await bannerState(page);
+        visibility = {
+          mode: 'native-background-tab',
+          nativeVerified: true,
+          passed: stayedOnSameSlide(hiddenBefore, hiddenAfter) && advancedOnce(visibleBefore, visibleAfter),
+          hiddenBefore,
+          hiddenAfter,
+          visibleBefore,
+          visibleAfter,
+        };
+      } else {
+        const pageScript = await readFile(resolve(rootDir, 'page.js'), 'utf8');
+        visibility = {
+          mode: 'degraded-static-contract',
+          nativeVerified: false,
+          passed: pageScript.includes("document.addEventListener('visibilitychange',syncTimer)")
+            && pageScript.includes('reducedMotion.matches||hovered||focused||document.hidden'),
+        };
+      }
+      await coverPage.close();
+      await page.bringToFront();
+
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await carousel.hover();
+      const stackedPauseBefore = await bannerState(page);
+      await page.waitForTimeout(3_400);
+      const stackedPauseAfter = await bannerState(page);
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+      const hoverOnlyBefore = await bannerState(page);
+      await page.waitForTimeout(3_400);
+      const hoverOnlyAfter = await bannerState(page);
+      await page.locator('.page-hero').hover();
+      const stackedResumeBefore = await bannerState(page);
+      await page.waitForTimeout(3_400);
+      const stackedResumeAfter = await bannerState(page);
+
+      await page.goto(`${serverHandle.origin}/events.html`, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+      await page.waitForFunction(() => document.querySelectorAll('.banner-slide').length >= 2
+        && [...document.querySelectorAll('.banner-slide img')].every((img) => img.dataset.wide));
+      await page.locator('.page-banner-carousel').hover();
+      await page.locator('.page-hero').hover();
+      const eventsBefore = await bannerState(page);
+      await page.waitForTimeout(3_300);
+      const eventsAfterThree = await bannerState(page);
+      await page.waitForTimeout(2_300);
+      const eventsAfterFive = await bannerState(page);
+
+      entry = {
+        name: 'subpage-banner-carousel-timing-and-pauses',
+        passed: slowImage.passed
+          && stayedOnSameSlide(hoverBefore, hoverAfter)
+          && advancedOnce(advanceBefore, advanceAfter)
+          && stayedOnSameSlide(focusBefore, focusAfter)
+          && advancedOnce(focusResumeBefore, focusResumeAfter)
+          && visibility.passed
+          && stayedOnSameSlide(stackedPauseBefore, stackedPauseAfter)
+          && stayedOnSameSlide(hoverOnlyBefore, hoverOnlyAfter)
+          && advancedOnce(stackedResumeBefore, stackedResumeAfter)
+          && stayedOnSameSlide(eventsBefore, eventsAfterThree)
+          && advancedOnce(eventsBefore, eventsAfterFive),
+        detail: {
+          slowImage,
+          hover: { before: hoverBefore, after: hoverAfter },
+          behindAdvance: { before: advanceBefore, after: advanceAfter },
+          focus: { before: focusBefore, after: focusAfter },
+          focusResume: { before: focusResumeBefore, after: focusResumeAfter },
+          visibility,
+          stackedPause: { before: stackedPauseBefore, after: stackedPauseAfter },
+          hoverAfterReducedMotionRelease: { before: hoverOnlyBefore, after: hoverOnlyAfter },
+          stackedPauseResume: { before: stackedResumeBefore, after: stackedResumeAfter },
+          eventsTiming: { before: eventsBefore, afterThreeSeconds: eventsAfterThree, afterFiveSeconds: eventsAfterFive },
+        },
+      };
+    } catch (error) {
+      entry = { name: 'subpage-banner-carousel-timing-and-pauses', passed: false, detail: serializeError(error) };
+    } finally {
+      await context.close();
+    }
+    report.interactions.push(entry);
+    if (entry.passed) {
+      report.summary.interactionsPassed += 1;
+    } else {
+      report.failures.push({ route: entry.name, variant: 'interaction', type: 'interaction-failed', detail: entry });
+      report.summary.blockingFailures += 1;
+    }
   }
 
   {

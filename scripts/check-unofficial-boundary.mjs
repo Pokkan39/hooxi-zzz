@@ -33,9 +33,9 @@ const PAGES = [
    数据来自浏览器实测统计（DESIGN.md 6b 节有素材量对照表）。
    新增其他类型官方素材时要同步更新这里。 */
 const ASSET_EXPECT = {
-  /* 首页只用 portraits 目录一张立绘，不引用 gallery，所以不含「影画」。
-     运行时门禁的反向检查已证实此前声明「立绘与影画」属过期陈述。 */
-  'index.html': ['立绘'],
+  /* 首页除 portraits 立绘、银幕轮播的 gallery 影画外，
+     其他档案区块还会渲染 wiki 截图，因此三类声明都必须覆盖。 */
+  'index.html': ['立绘', '影画', '截图'],
   'character.html': ['立绘', '影画', '徽记'],
   'faction.html': ['立绘', '徽记'],
   'mainline.html': ['截图', '封面'],

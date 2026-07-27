@@ -5,18 +5,21 @@ backend/.env
 # 临时测试与备份
 __*
 *.bak*
-# artifacts 默认全忽略，但要放两个门禁基线证据进来。
+# artifacts 默认全忽略，但要放三个门禁基线证据进来。
 # 注意写法：不能写成 `artifacts/`，带斜杠会整目录排除，目录内的文件再用 `!`
 # 也无法重新包含（git 不会进入被排除的目录）。所以改为忽略目录内容 `artifacts/*`，
 # 再对需要入库的文件开例外。
 artifacts/*
-# 例外：这两个不是临时产物，而是门禁的基线证据，必须入库。
+# 例外：这些文件不是临时产物，而是门禁的基线证据，必须入库。
 # archive-contract.json 是正式数据契约快照，bilibili-official-*.json 是官方
 # B 站投稿的人工核验证据。npm test 的「正式数据契约快照严格匹配」与
 # 「官方 B 站证据逐字段交叉核验」两项直接读它们。
 # 之前被整目录忽略，导致本地有文件所以 PASS、CI 检出后缺文件而 FAIL。
 !artifacts/archive-contract.json
 !artifacts/bilibili-official-*.json
+# formal-site-gate-baseline.json 是正式站施工门禁的指纹基线；缺失时
+# check-formal-site-gate.py 返回 2（MISSING_BASELINE），因此必须随仓库跟踪。
+!artifacts/formal-site-gate-baseline.json
 # CI 里把报告从 artifacts/ 拷出来上传用的中转目录，不入库
 /ci-report/
 *.opt-test.webp

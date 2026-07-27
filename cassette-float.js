@@ -1,13 +1,19 @@
 /* =========================================================================
-   cassette-float.js  —  悬浮可拖拽磁带机 控制器
+   cassette-float.js  —  悬浮磁带机 控制器（SONY TPS-L2 复刻）
    加载顺序：置于 app.js 之后。
 
    设计原则（关键）：本文件不重写任何播放逻辑。悬浮磁带机上的每个控件都
    “代理转发”到 app.js 已经绑定好的既有控件（#musicToggle / #prevTrack /
-   #nextTrack / #playMode / #volume / #playlistOpen / #cassetteOpen），
+   #nextTrack / #volume / #playlistOpen / #cassetteOpen），
    并通过监听 #audio 的原生事件把状态镜像回悬浮 UI。这样：
-     - 播放/暂停/上一首/下一首/模式/音量/歌单/展开全屏磁带机  全部复用
-     - A/B 面、进度条逻辑仍由 app.js + 全屏磁带机负责，这里提供快捷进度条
+     - 播放/暂停/上一首/下一首/音量/歌单/展开全屏磁带机  全部复用
+     - A/B 面、进度与播放模式仍由 app.js + 全屏磁带机负责
+
+   本轮还原真机后删掉的控件（真机不存在，留着反而不像实物）：
+     - 走带进度条：磁带不可寻址，TPS-L2 没有任何进度指示
+     - 播放模式键：1979 年的机械机没有随机/循环模式
+     - 双时间码：没有数字显示
+   进度信息并未丢失，改由卷轴缠带量表达（左轴渐少、右轴渐多）。
    ========================================================================= */
 (function () {
   'use strict';
@@ -27,60 +33,54 @@
   el.id = 'floatingCassette';
   el.setAttribute('role', 'region');
   el.setAttribute('aria-label', '悬浮磁带机播放器');
-  /* 结构照 SONY TPS-L2 实物分两段：
-     上段 __deck 是阳极氧化金属机身，含走带窗（可见磁带实体）与铭牌丝印；
-     下段 __panel 是银灰前面板，承载曲目、进度、金属推杆键与音量。
-     机身色随角色印象色变，前面板银灰与橙色开关是实物固有特征、恒定不变。 */
+  /* 结构照 SONY TPS-L2 实物的横向砖形：
+       右缘一条竖向铝质饰条；顶缘横贯丝印带（含实物的双耳机孔）；
+       主体左侧是翻盖透明走带窗，右侧是 2x2 金属推杆键（含橙色 HOT LINE）；
+       底缘丝印区放音量与次要入口。
+     机身固定 TPS-L2 蓝（实物是注塑蓝塑料），角色印象色只落在磁带 A 面标签上。 */
   var skin = (window.cassetteSkin && window.cassetteSkin.pick()) || null;
-  var plate = (skin && window.cassetteSkin.plateName(skin.englishName)) || 'STEREO';
+  var plate = (skin && window.cassetteSkin.plateName(skin.englishName)) || 'RANDOM PLAY';
 
   el.innerHTML = [
-    /* ---- 上段：金属机身 ---- */
-    '<div class="fc-deck" data-drag-handle>',
-    '  <div class="fc-deck-top">',
-    '    <span class="fc-plate" data-cf="plate">' + plate + '</span>',
-    '    <span class="fc-stereo" aria-hidden="true">STEREO</span>',
-    '    <button type="button" class="fc-lid" data-cf="collapse" aria-label="合上或打开磁带舱">▾</button>',
-    '  </div>',
-    /* 走带窗：内凹深色 + 磁带实体 + 玻璃高光 */
-    '  <div class="fc-window" aria-hidden="true">',
-    '    <div class="fc-tape">',
-    '      <div class="fc-hub fc-hub--l"><i class="fc-teeth"></i><em class="fc-wound"></em></div>',
-    '      <div class="fc-tape-span"></div>',
-    '      <div class="fc-hub fc-hub--r"><i class="fc-teeth"></i><em class="fc-wound"></em></div>',
-    '      <span class="fc-side-label">A</span>',
-    '    </div>',
-    '    <span class="fc-glass"></span>',
-    '  </div>',
-    '  <p class="fc-model" aria-hidden="true">STEREO CASSETTE PLAYER TPS-L2</p>',
+    /* 右缘铝条 */
+    '<span class="fc-rail" aria-hidden="true"></span>',
+    /* 顶缘横贯丝印带（兼拖拽把手）。不使用 SONY 标：本站为非官方粉丝站。 */
+    '<div class="fc-brow" data-drag-handle>',
+    '  <span class="fc-wordmark" aria-hidden="true">HOOXI</span>',
+    '  <p class="fc-model" aria-hidden="true">STEREO CASSETTE PLAYER</p>',
+    /* 双耳机孔：实物顶部并排两个插孔，供两人同听 */
+    '  <span class="fc-jacks" aria-hidden="true"><i></i><i></i></span>',
     '</div>',
-    /* ---- 下段：银灰前面板 ---- */
-    '<div class="fc-panel">',
-    '  <div class="fc-now">',
-    '    <small>NOW ON TAPE</small>',
-    '    <b data-cf="track">未选择音乐</b>',
+    '<div class="fc-main">',
+    /* 走带窗：内凹深腔 + 磁带实体 + 纸标 + 玻璃高光 */
+    '  <div class="fc-window">',
+    '    <div class="fc-tape">',
+    '      <div class="fc-tapelabel">',
+    '        <small><span class="fc-side">A</span><span data-cf="plate">' + plate + '</span></small>',
+    '        <b data-cf="track">未选择音乐</b>',
+    '      </div>',
+    '      <div class="fc-reels" aria-hidden="true">',
+    '        <div class="fc-hub fc-hub--l"><em class="fc-wound"></em><i class="fc-teeth"></i></div>',
+    '        <div class="fc-tape-span"></div>',
+    '        <div class="fc-hub fc-hub--r"><em class="fc-wound"></em><i class="fc-teeth"></i></div>',
+    '      </div>',
+    '    </div>',
+    '    <span class="fc-glass" aria-hidden="true"></span>',
     '  </div>',
-    '  <div class="fc-seekrow">',
-    '    <span data-cf="now">0:00</span>',
-    '    <input type="range" min="0" max="1000" value="0" step="1" data-cf="seek" aria-label="悬浮磁带机走带进度"/>',
-    '    <span data-cf="end">0:00</span>',
-    '  </div>',
-    '  <p class="fc-cue" data-cf="cue">点击 ▶ 开始播放</p>',
-    /* 金属推杆键：实物是一排银色竖纹推杆，不是圆钮 */
+    /* 金属推杆键：实物是银色竖纹推杆，不是圆钮 */
     '  <div class="fc-keys">',
     '    <button type="button" class="fc-key" data-cf="prev" aria-label="上一首"><span class="fc-key-face">◀◀</span></button>',
     '    <button type="button" class="fc-key fc-key--play" data-cf="toggle" aria-label="播放音乐"><span class="fc-key-face">▶</span></button>',
     '    <button type="button" class="fc-key" data-cf="next" aria-label="下一首"><span class="fc-key-face">▶▶</span></button>',
-    '    <button type="button" class="fc-key fc-key--wide" data-cf="mode" aria-label="播放模式"><span class="fc-key-face">顺序</span></button>',
-    '    <button type="button" class="fc-key fc-key--wide" data-cf="list" aria-label="打开歌单"><span class="fc-key-face">歌单</span></button>',
-    /* 橙色滑块：实物右侧那个醒目橙块，这里承担「全屏」入口 */
-    '    <button type="button" class="fc-slider-btn" data-cf="open" aria-label="打开全屏磁带机"></button>',
+    /* HOT LINE：实物那枚橙键，按下压低音乐音量以便两人说话 */
+    '    <button type="button" class="fc-hotline" data-cf="hotline" aria-pressed="false" aria-label="HOT LINE：压低音乐音量">HOT<br/>LINE</button>',
     '  </div>',
-    '  <div class="fc-foot">',
-    '    <label class="fc-vol">VOLUME<input type="range" min="0" max="1" step=".05" value=".25" data-cf="vol" aria-label="悬浮磁带机音量"/></label>',
-    '    <button type="button" class="fc-skin" data-cf="skin" aria-label="自定义磁带机配色">配色</button>',
-    '    <input type="color" class="fc-skin-input" data-cf="skinInput" aria-label="选择磁带机机身颜色" tabindex="-1"/>',
-    '  </div>',
+    '</div>',
+    '<div class="fc-foot">',
+    '  <label class="fc-vol">VOL<input type="range" min="0" max="1" step=".05" value=".25" data-cf="vol" aria-label="悬浮磁带机音量"/></label>',
+    '  <button type="button" class="fc-mini" data-cf="list" aria-label="打开歌单">歌单</button>',
+    '  <button type="button" class="fc-mini" data-cf="open" aria-label="打开全屏磁带机">全屏</button>',
+    '  <button type="button" class="fc-mini" data-cf="collapse" aria-label="合上磁带舱">▾</button>',
     '</div>'
   ].join('');
   document.body.appendChild(el);
@@ -91,23 +91,17 @@
   var handle = $('[data-drag-handle]');
   var elToggle = $('[data-cf="toggle"]');
   var elTrack = $('[data-cf="track"]');
-  var elSeek = $('[data-cf="seek"]');
-  var elNow = $('[data-cf="now"]');
-  var elEnd = $('[data-cf="end"]');
-  var elMode = $('[data-cf="mode"]');
   var elVol = $('[data-cf="vol"]');
+  var elHotline = $('[data-cf="hotline"]');
   var elCollapse = $('[data-cf="collapse"]');
   /* 推杆键的可见文字在内层 .fc-key-face 上（外层要保留金属层结构），
      写文本必须写内层，否则会把键面结构冲掉。 */
-  var face = function (btn) { return btn.querySelector('.fc-key-face') || btn; };
-  var faceToggle = face(elToggle);
-  var faceMode = face(elMode);
+  var faceToggle = elToggle.querySelector('.fc-key-face') || elToggle;
 
   // 既有控件（转发目标）
   var srcToggle = document.getElementById('musicToggle');
   var srcPrev = document.getElementById('prevTrack');
   var srcNext = document.getElementById('nextTrack');
-  var srcMode = document.getElementById('playMode');
   var srcVol = document.getElementById('volume');
   var srcList = document.getElementById('playlistOpen');
   var srcOpen = document.getElementById('cassetteOpen');
@@ -117,13 +111,14 @@
   // ---- 控件转发 -----------------------------------------------------------
   $('[data-cf="prev"]').addEventListener('click', function () { markGestured(); click(srcPrev); });
   $('[data-cf="next"]').addEventListener('click', function () { markGestured(); click(srcNext); });
-  $('[data-cf="mode"]').addEventListener('click', function () { markGestured(); click(srcMode); });
   $('[data-cf="list"]').addEventListener('click', function () { markGestured(); click(srcList); });
   $('[data-cf="open"]').addEventListener('click', function () { markGestured(); click(srcOpen); });
   elToggle.addEventListener('click', function () { markGestured(); click(srcToggle); });
 
   // 音量：写入既有 input 并派发 input 事件，让 app.js 的 handler 生效
   elVol.addEventListener('input', function () {
+    /* 用户亲手拨音量即视为接管：退出 HOT LINE 压音状态但不回弹到旧值 */
+    if (hotline) releaseHotline(false);
     setVolText(elVol.value);
     if (srcVol) {
       srcVol.value = elVol.value;
@@ -133,43 +128,37 @@
     }
   });
 
-  // 进度条：直接控制 audio.currentTime（不依赖 app.js 内部函数）
-  elSeek.addEventListener('input', function () {
-    markGestured();
-    if (audio.duration && isFinite(audio.duration)) {
-      audio.currentTime = (Number(elSeek.value) / 1000) * audio.duration;
-    }
-  });
-
-  /* 配色：点「配色」开原生取色器，选定后写 localStorage 并立即换肤；
-     长按（或右键）恢复随机。用原生 input[type=color] 而不自造色板，
-     取色器的可访问性与各平台习惯由浏览器负责。 */
-  var elSkinBtn = $('[data-cf="skin"]');
-  var elSkinInput = $('[data-cf="skinInput"]');
-  if (elSkinBtn && elSkinInput && window.cassetteSkin) {
-    elSkinBtn.addEventListener('click', function () { elSkinInput.click(); });
-    elSkinInput.addEventListener('input', function () {
-      if (window.cassetteSkin.setCustom(elSkinInput.value)) {
-        window.cassetteSkin.apply(el, {
-          id: '', englishName: 'CUSTOM', mode: 'custom',
-          color: [
-            parseInt(elSkinInput.value.slice(1, 3), 16),
-            parseInt(elSkinInput.value.slice(3, 5), 16),
-            parseInt(elSkinInput.value.slice(5, 7), 16),
-          ],
-        });
-        var pl = $('[data-cf="plate"]');
-        if (pl) pl.textContent = 'CUSTOM';
-      }
-    });
-    /* 右键恢复随机：下次刷新重新抽角色 */
-    elSkinBtn.addEventListener('contextmenu', function (e) {
-      e.preventDefault();
-      window.cassetteSkin.clearCustom();
-      elSkinBtn.textContent = '随机';
-      setTimeout(function () { elSkinBtn.textContent = '配色'; }, 1200);
-    });
+  /* HOT LINE：实物按下后压低音乐、开启机内话筒让两人对话。
+     网页端没有话筒，只保留可验证的那一半——把音量压到两成便于说话，
+     再按一次恢复原音量。不做纯装饰的假按钮。 */
+  var hotline = false;
+  var hotlinePrev = 0;
+  function releaseHotline(restore) {
+    hotline = false;
+    elHotline.setAttribute('aria-pressed', 'false');
+    el.classList.remove('is-hotline');
+    if (restore) applyVolume(hotlinePrev);
   }
+  function applyVolume(v) {
+    var val = Math.min(1, Math.max(0, Number(v) || 0));
+    if (srcVol) {
+      srcVol.value = String(val);
+      srcVol.dispatchEvent(new Event('input', { bubbles: true }));
+    } else {
+      audio.volume = val;
+    }
+    elVol.value = String(val);
+    setVolText(val);
+  }
+  elHotline.addEventListener('click', function () {
+    markGestured();
+    if (hotline) { releaseHotline(true); return; }
+    hotlinePrev = Number(audio.volume);
+    hotline = true;
+    elHotline.setAttribute('aria-pressed', 'true');
+    el.classList.add('is-hotline');
+    applyVolume(hotlinePrev * 0.2);
+  });
 
   // 折叠/展开
   elCollapse.addEventListener('click', function () {
@@ -182,11 +171,6 @@
   });
 
   // ---- 状态镜像（监听既有控件与 audio）------------------------------------
-  function fmt(sec) {
-    var n = Math.max(0, Math.floor(Number(sec) || 0));
-    var m = Math.floor(n / 60), s = n % 60;
-    return m + ':' + (s < 10 ? '0' : '') + s;
-  }
   function syncPlaying() {
     var playing = !audio.paused && !audio.ended && audio.currentTime >= 0 && !!audio.currentSrc;
     el.classList.toggle('is-playing', playing);
@@ -198,41 +182,26 @@
     var srcName = document.getElementById('trackName');
     if (srcName) elTrack.textContent = srcName.textContent || '未选择音乐';
   }
-  function syncMode() {
-    if (srcMode) faceMode.textContent = (srcMode.textContent || '顺序').trim();
-  }
   function syncVol() {
     var v = (srcVol && srcVol.value) || localStorage.getItem('hooxiVolume') || '0.25';
     elVol.value = v;
     setVolText(v);
   }
-  /* 音量的 0-1 小数同样不适合朗读，换成百分比。 */
+  /* 音量的 0-1 小数不适合朗读，换成百分比。 */
   function setVolText(v) {
     elVol.setAttribute('aria-valuetext', Math.round(Number(v) * 100) + '%');
-  }
-  function syncTime() {
-    var d = audio.duration;
-    elEnd.textContent = (d && isFinite(d)) ? fmt(d) : '0:00';
-    elNow.textContent = fmt(audio.currentTime);
-    if (d && isFinite(d) && d > 0) {
-      elSeek.value = String(Math.round((audio.currentTime / d) * 1000));
-    } else {
-      elSeek.value = '0';
-    }
-    /* 进度条的 value 是 0-1000 的抽象刻度，屏幕阅读器直接念这个数字没有意义。
-       aria-valuetext 优先于 aria-valuenow 被朗读，改为播报可听懂的时间。 */
-    elSeek.setAttribute('aria-valuetext',
-      (d && isFinite(d) && d > 0) ? (fmt(audio.currentTime) + ' / ' + fmt(d)) : '尚未载入音频');
-    syncReels(d && isFinite(d) && d > 0 ? audio.currentTime / d : 0);
   }
 
   /* 卷轴物理：真实磁带走带时左轴（供带轴）缠带渐少、右轴（收带轴）渐多，
      多数网页复刻忽略这点做成两个等大匀速圆。这里按进度插值缠带半径，
-     并让转速反比于卷径——卷径大则转速慢，线速度恒定。 */
+     并让转速反比于卷径——卷径大则转速慢，线速度恒定。
+     删掉进度条后，这就是唯一的进度指示，和实物一致。 */
   var hubL = $('.fc-hub--l .fc-wound');
   var hubR = $('.fc-hub--r .fc-wound');
-  function syncReels(p) {
-    var t = Math.min(1, Math.max(0, Number(p) || 0));
+  function syncReels() {
+    var d = audio.duration;
+    var t = (d && isFinite(d) && d > 0) ? audio.currentTime / d : 0;
+    t = Math.min(1, Math.max(0, t));
     /* 缠带外径在近轮毂(0.34)与满卷(1.0)之间插值。
        下限不取更小值：缠带缩进轮毂内就看不出「带快放完了」。 */
     var rl = 1 - 0.66 * t;
@@ -249,21 +218,18 @@
 
   audio.addEventListener('play', syncPlaying);
   audio.addEventListener('pause', syncPlaying);
-  audio.addEventListener('ended', function () { syncPlaying(); syncTime(); });
-  audio.addEventListener('timeupdate', syncTime);
-  audio.addEventListener('loadedmetadata', function () { syncTime(); syncTrack(); });
+  audio.addEventListener('ended', function () { syncPlaying(); syncReels(); });
+  audio.addEventListener('timeupdate', syncReels);
+  audio.addEventListener('loadedmetadata', function () { syncReels(); syncTrack(); });
   audio.addEventListener('volumechange', function () {
     elVol.value = String(audio.volume);
     setVolText(audio.volume);
   });
 
-  // trackName / playMode 由 app.js 用文本更新，用 MutationObserver 镜像
+  // trackName 由 app.js 用文本更新，用 MutationObserver 镜像
   var srcName = document.getElementById('trackName');
   if (srcName && window.MutationObserver) {
     new MutationObserver(function () { syncTrack(); }).observe(srcName, { childList: true, characterData: true, subtree: true });
-  }
-  if (srcMode && window.MutationObserver) {
-    new MutationObserver(function () { syncMode(); }).observe(srcMode, { childList: true, characterData: true, subtree: true });
   }
 
   // ---- 拖拽（pointer 事件，含边界钳制 + 持久化）---------------------------
@@ -301,8 +267,6 @@
   }
 
   function onDown(e) {
-    // 只从把手起拖；忽略把手内的按钮（折叠键）
-    if (e.target.closest('[data-cf="collapse"]')) return;
     dragging = true; moved = false;
     var r = currentRect();
     // 若还没转成 left/top 定位，先固定当前位置
@@ -400,7 +364,7 @@
 
   // ---- 初始化 -------------------------------------------------------------
   function init() {
-    syncTrack(); syncMode(); syncVol(); syncPlaying(); syncTime();
+    syncTrack(); syncVol(); syncPlaying(); syncReels();
     // 首帧尝试自动播放（多半会被拦，之后走首次交互）
     tryAutoplay();
     // app.js 的 updatePlayer 在 load 时才写入 audio.src，稍后补一次

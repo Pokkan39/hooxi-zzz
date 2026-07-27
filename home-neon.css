@@ -455,15 +455,45 @@ body.home-page .hero__curtain{
   opacity:.26!important;
 }
 
-/* 银幕固定单张，轮播控件不再出现（theme-zzz.css 已整组隐藏）。
-   此处同步隐藏，避免本文件后加载时把它显示回来。 */
-body.home-page .hero-carousel-ui,
+/* 银幕改为多片源轮换，控件重新露出并承担真实操作。
+   theme-zzz.css 仍保留旧的整组隐藏规则（该文件本轮不改动），
+   这里靠后加载 + !important 覆盖回可见可交互。
+   触达尺寸按 design.md 无障碍要求给到 44px，圆点用透明外扩而不是放大视觉直径。 */
+body.home-page .hero-carousel-ui{
+  display:flex!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
 body.home-page #heroCarouselPrev,
-body.home-page #heroCarouselNext,
+body.home-page #heroCarouselNext{
+  display:flex!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  width:44px!important;
+  height:44px!important;
+}
 body.home-page #heroCarouselDots{
-  display:none!important;
-  visibility:hidden!important;
-  pointer-events:none!important;
+  display:flex!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  gap:4px;
+}
+body.home-page .hero-carousel-dot{
+  width:44px!important;
+  height:44px!important;
+  padding:0;
+  border:0!important;
+  background:transparent!important;
+  /* 视觉方块用内嵌阴影绘制，命中区仍是整个 44px 方形 */
+  box-shadow:inset 0 0 0 18px transparent,inset 0 0 0 19px rgba(255,255,255,.55);
+}
+body.home-page .hero-carousel-dot.is-active{
+  box-shadow:inset 0 0 0 18px var(--neon-yellow),inset 0 0 0 19px var(--neon-yellow);
+}
+body.home-page .hero-carousel-dot:focus-visible,
+body.home-page .hero-carousel-nav:focus-visible{
+  outline:2px solid var(--neon-yellow);
+  outline-offset:-2px;
 }
 /* 坐标标注移到主视觉底部贴边，不再横压画面中部 */
 body.home-page .coordinates{

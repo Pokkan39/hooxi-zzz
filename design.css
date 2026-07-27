@@ -324,32 +324,45 @@
   --acc:200,60,80;
 }
 .d-keyart.is-live{--ar:300px}
-/* 底：黑白压暗，作常态背景，不与正文抢注意力 */
-.d-keyart-bw,
-.d-keyart-hot{
+/* 双层显形：底层铺官方单色版影画常驻，上层铺官方彩色版并按跟随光标的
+   径向遮罩挖洞，于是鼠标周围透出真实彩色版。两张官方素材构图逐像素对齐，
+   叠加不会错位。两层同 size/position 保证对齐。 */
+.d-keyart-base,
+.d-keyart-shift{
   position:absolute;
   inset:0;
-  background-image:var(--art);
   /* 作氛围层时铺满更自然；顶部偏移避开影画上部的大字排版。 */
   background-size:cover;
   background-repeat:no-repeat;
   background-position:50% 22%;
 }
-/* 影画原图本身偏暗（铺满后裸亮度约 38），不再额外压暗，
-   否则会糊成一团。正文可读性由内容面板自己的底色负责。 */
-/* 静止态不做纯灰：留 12% 原色，避免整屏脏灰、认不出画面。
-   鼠标周围仍会透出完整彩色，对比依然明显。 */
-.d-keyart-bw{
-  filter:grayscale(.88) contrast(1.06) saturate(1.1);
+/* 底：官方单色版素材本身即是单色，不再做 CSS 去色——素材已是单色，
+   再叠 grayscale 会把它压成脏灰、丢掉官方配色（如安比的绿）。
+   仅轻微对比/饱和让它更耐看。 */
+.d-keyart-base{
+  background-image:var(--art-mono);
+  filter:contrast(1.06) saturate(1.1);
 }
-/* 上：彩色原图，只在指针周围显形 */
-.d-keyart-hot{
+/* 上：官方彩色版素材，只在指针周围显形。遮罩逻辑保持原样。 */
+.d-keyart-shift{
+  background-image:var(--art-color);
   filter:saturate(1.25) brightness(1.02);
   -webkit-mask-image:radial-gradient(circle var(--ar) at var(--ax) var(--ay),
                 #000 0,#000 42%,transparent 100%);
           mask-image:radial-gradient(circle var(--ar) at var(--ax) var(--ay),
                 #000 0,#000 42%,transparent 100%);
   transition:-webkit-mask-image var(--t-fast) linear,mask-image var(--t-fast) linear;
+}
+/* 回退态：某些角色（如 pyrois）没有可配对的彩色版，archive-tools.js
+   不加 .has-art-pair、也不写 --art-mono/--art-color，只写单图 --art。
+   此时用同一张 --art：底层 CSS 去色作单色态，上层原图按遮罩显形。 */
+.d-keyart:not(.has-art-pair) .d-keyart-base{
+  background-image:var(--art);
+  filter:grayscale(.88) contrast(1.06) saturate(1.1);
+}
+.d-keyart:not(.has-art-pair) .d-keyart-shift{
+  background-image:var(--art);
+  filter:saturate(1.25) brightness(1.02);
 }
 /* 角色主色微光，跟随指针，面积小、透明度低，避免变成 AI 发光 */
 .d-keyart-glow{
@@ -416,9 +429,9 @@
 .character-screen:has(.d-keyart) .character-profile-panel{
   background:linear-gradient(90deg,rgba(9,11,14,.95),rgba(9,11,14,.78));
 }
-/* 触屏或减动效：静态黑白背景，不做指针交互 */
+/* 触屏或减动效：静态官方单色版背景，不做指针交互 */
 @media (hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){
-  .d-keyart-hot,.d-keyart-glow{display:none}
+  .d-keyart-shift,.d-keyart-glow{display:none}
 }
 
 /* ---------- 9. 页脚 ---------- */
@@ -875,4 +888,14 @@
    回退值保留原橙：无影画素材的 3 个角色取不到印象色时表现不变。 */
 .subpage.archive-character{
   --character-theme:rgb(var(--art-letter-ui,255 156 82));
+}
+
+/* 大标题高亮字同样跟随印象色。multi-page.css 已经写了
+   `.character-profile-panel h1 span{color:var(--character-theme)}`，但
+   live-hud.css 的 `.subpage .page-hero h1 span{color:inherit!important}`
+   胜出，把它拉回标题的白色，所以这里必须同样用 !important 才压得过。
+   限定 .archive-character，其它子页标题配色不变；
+   取不到印象色时回退原橙 255 156 82。 */
+.subpage.archive-character .page-hero h1 span{
+  color:var(--character-theme)!important;
 }

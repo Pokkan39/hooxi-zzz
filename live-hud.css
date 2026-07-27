@@ -8,13 +8,13 @@
 
 /* ---------- 1. 真 HUD：版本覆盖率环 ---------- */
 .subpage .hero-hud.hud-live{
-  width:min(250px,24vw)!important;
+  width:min(190px,18vw)!important;
   aspect-ratio:auto!important;
   display:grid!important;
   grid-template-rows:auto 1fr auto auto;
   place-items:center;
   gap:2px;
-  padding:12px;
+  padding:8px;
   /* 去掉重复conic纹理与虚线圆环，只留实体框 */
   background:linear-gradient(180deg,rgba(0,0,0,.34),rgba(0,0,0,.62))!important;
   border:1px solid color-mix(in srgb,var(--archive-accent) 52%,transparent)!important;
@@ -131,13 +131,13 @@
 /* ---------- 3. 压缩首屏：让第一条记录露出 ---------- */
 .subpage .page-hero{
   min-height:0!important;
-  padding-top:40px!important;
-  padding-bottom:34px!important;
+  padding-top:18px!important;
+  padding-bottom:16px!important;
   align-items:start!important;
 }
 .subpage .page-hero h1{
-  margin-bottom:14px!important;
-  font-size:clamp(38px,4.6vw,66px)!important;
+  margin-bottom:8px!important;
+  font-size:clamp(28px,3vw,40px)!important;
   text-shadow:4px 4px 0 #000!important;
 }
 /* 标题不再黄白分层，统一为主色，副行降级为小标 */

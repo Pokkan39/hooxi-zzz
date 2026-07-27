@@ -215,8 +215,8 @@ window.agentXray = {
    160,
    10
   ],
-  "am": "assets/gallery/piper/01.png",
-  "ac": "assets/gallery/piper/02.png"
+  "am": "assets/gallery/piper/02.png",
+  "ac": "assets/gallery/piper/03.png"
  },
  "lucy": {
   "a": "assets/gallery/lucy/03.png",
@@ -282,7 +282,9 @@ window.agentXray = {
    227,
    176,
    63
-  ]
+  ],
+  "am": "assets/gallery/pan-yinhu/06.jpg",
+  "ac": "assets/gallery/pan-yinhu/07.jpg"
  },
  "velina": {
   "a": "assets/gallery/velina/06.png",
@@ -552,7 +554,9 @@ window.agentXray = {
    214,
    128,
    14
-  ]
+  ],
+  "am": "assets/gallery/ju-fufu/04.jpg",
+  "ac": "assets/gallery/ju-fufu/05.jpg"
  },
  "orphie-and-magus": {
   "a": "assets/gallery/orphie-and-magus/05.png",
@@ -820,7 +824,9 @@ window.agentXray = {
    226,
    172,
    56
-  ]
+  ],
+  "am": "assets/gallery/soldier-0-anby/00.jpg",
+  "ac": "assets/gallery/soldier-0-anby/01.jpg"
  },
  "seth": {
   "a": "assets/gallery/seth/01.png",
@@ -903,7 +909,9 @@ window.agentXray = {
    209,
    163,
    61
-  ]
+  ],
+  "am": "assets/gallery/yixuan/07.jpg",
+  "ac": "assets/gallery/yixuan/08.jpg"
  },
  "ukinami-yuzuha": {
   "a": "assets/gallery/ukinami-yuzuha/06.png",

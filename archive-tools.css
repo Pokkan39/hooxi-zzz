@@ -11,8 +11,8 @@
 .char-related{
   --tool-line:color-mix(in srgb,var(--archive-accent,#e0b41c) 42%,transparent);
   position:relative;
-  margin:0 0 20px;
-  padding:16px 18px;
+  margin:0 0 12px;
+  padding:10px 18px;
   border-left:4px solid var(--archive-accent,#e0b41c);
   background:linear-gradient(90deg,rgba(0,0,0,.5),rgba(0,0,0,.22));
   color:#fff;
@@ -360,7 +360,7 @@
 .page-banner-carousel .banner-slide{aspect-ratio:auto}
 
 /* banner 容器在图片解码前即占位，避免整页下移 */
-.page-banner-carousel{min-height:calc(287px + 24px)}
+.page-banner-carousel{min-height:calc(190px + 24px)}
 .page-banner-carousel .banner-dots{min-height:20px}
 /* 指示点是 button 且无左右翻页按钮可替代，须自行满足 WCAG 2.2 SC 2.5.8。
    实测原中心距 22px，差 2px 既不达 24x24 也用不上间距例外。这里只补水平
