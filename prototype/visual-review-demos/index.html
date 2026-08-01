@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HOOXI 视觉讨论 Demo（抛砖）</title>
+  <link rel="stylesheet" href="./demos.css?v=2" />
+</head>
+<body>
+  <div class="proto-banner" role="note">
+    抛砖 Demo · 非正式站 · 对照审核稿 §3 · 底栏切换版本
+  </div>
+
+  <div id="stage" aria-live="polite"></div>
+
+  <nav class="switcher" aria-label="Demo 版本切换">
+    <button type="button" id="prev" aria-label="上一版">‹</button>
+    <div class="switcher-meta">
+      <span id="switcher-key">—</span>
+      <span id="switcher-name">加载中</span>
+    </div>
+    <button type="button" id="next" aria-label="下一版">›</button>
+  </nav>
+
+  <script src="./demos.js?v=2"></script>
+</body>
+</html>

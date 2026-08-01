@@ -1,0 +1,38 @@
+/* C3 播放中状态心跳 —— 可直接落地（纯 CSS，零 JS 改动）
+   落地位置建议：追加到 home-neon.css 现有 #musicPlayer 规则之后。
+
+   关键前提（实测确认）：app.js 的 syncCassettePlaying() 已经在
+   .music-player 上维护 .is-playing class，播放/暂停都会同步。
+   因此本条不需要任何 JS 改动，只挂 CSS 即可。
+
+   为什么不直接对按钮做 animation：
+   既有规则 home-neon.css:648/649 已用 transform 做 hover 上移与
+   active 下压。animation 与 transition 争同一个 transform 属性时，
+   animation 优先级更高，会把 hover/active 反馈整个吃掉。
+   故心跳做在 ::before 光环伪元素上，按钮自身 transform 不动。 */
+
+body.home-page #musicPlayer .play-button{position:relative}
+
+body.home-page #musicPlayer.is-playing .play-button::before{
+  content:"";
+  position:absolute;
+  inset:-4px;
+  border:1px solid var(--home-lime,#d8fa00);
+  opacity:.55;
+  pointer-events:none;
+  animation:zzz-deck-pulse .8s ease-in-out infinite;
+}
+
+@keyframes zzz-deck-pulse{
+  0%,100%{transform:scale(1);opacity:.55}
+  50%{transform:scale(1.06);opacity:.18}
+}
+
+/* reduced-motion：光环静止但保留，仍然指示「正在播放」；
+   播放功能不受影响（规范 9.1 要求磁带机律动静止而功能可用）。 */
+@media(prefers-reduced-motion:reduce){
+  html:not(.zzz-motion-forced) body.home-page #musicPlayer.is-playing .play-button::before{
+    animation:none;
+    opacity:.42;
+  }
+}

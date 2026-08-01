@@ -7,17 +7,12 @@ function renderFreeComponents(pageKey){const components=(previewArchiveData||win
 function save(){localStorage.setItem('hooxiZZZConfig',JSON.stringify(config));toast('配置已保存到本机浏览器')}
 function toast(msg){const el=$('#toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200)}
 function applyAppearance(){const a=config.appearance;const [first,...rest]=a.title.split(' / ');$('#heroTitle').innerHTML=`${esc(first)}<br/><span>${esc(rest.join(' / ')||'剧情档案')}</span>`;$('#heroTitle').dataset.editorId='site.page.home.hero.title';$('#heroTitle').dataset.editorField='title';$('#heroIntro').textContent=a.intro;$('#heroIntro').dataset.editorId='site.page.home.hero.intro';$('#heroIntro').dataset.editorField='intro';const eyebrow=$('.hero .eyebrow');if(eyebrow){eyebrow.textContent=a.eyebrow||eyebrow.textContent;eyebrow.dataset.editorId='site.page.home.hero.eyebrow';eyebrow.dataset.editorField='eyebrow'};const titleScale=Math.min(140,Math.max(80,Number(a.titleScale)||100));const bodyScale=Math.min(130,Math.max(85,Number(a.bodyScale)||100));document.documentElement.style.setProperty('--hero-title-scale',`${titleScale/100}`);document.documentElement.style.setProperty('--body-text-scale',`${bodyScale/100}`);document.body.style.setProperty('--user-bg',a.bgUrl?`url("${a.bgUrl.replaceAll('"','')}" )`:'none');document.body.style.setProperty('--bg-opacity',a.bgOpacity/100);$('.ambient').classList.toggle('paused',!a.particles);document.body.classList.toggle('no-grid',!a.gridEffect);if($('#editTitle')){$('#editTitle').value=a.title;$('#editIntro').value=a.intro;$('#bgUrl').value=a.bgUrl;$('#bgOpacity').value=a.bgOpacity;$('#bgOpacityValue').textContent=`${a.bgOpacity}%`;$('#particles').checked=a.particles;$('#gridEffect').checked=a.gridEffect}}
-const MINDSCAPE_IDS=['alice','anby','anton','aria','astra-yao','banyue','ben','billy-kid','burnice','caesar','cissia','corin','dialyn','ellen','evelyn','grace-howard','harumasa','hugo','jane-doe','ju-fufu','koleda','lighter','lucia','lucy','lycaon','manato','miyabi','nangong-yu','nekomata','nicole-demara','orphie-and-magus','pan-yinhu','piper','promeia','pulchra','qingyi','remielle','rina','seed','seth','soldier-0-anby','soldier-11','soukaku','starlight-billy','sunna','trigger','ukinami-yuzuha','vivian','yanagi','ye-shunguang','yidhari','yixuan','zhao','zhu-yuan'];
-function pickHeroSlides(n){
-  const catalog=(window.agentCatalog?.characters)||[];
-  const shuffled=[...MINDSCAPE_IDS].sort(()=>Math.random()-.5);
-  return shuffled.slice(0,n).map(id=>{
-    const agent=catalog.find(c=>c.id===id);
-    const name=agent?.name||id;
-    return {src:`assets/mindscape/default/${id}.webp`,alt:`${name} · 影画`};
-  });
-}
-const HERO_SLIDES=pickHeroSlides(4);
+const HERO_SLIDES=[
+  {src:'assets/hero/zzz-random-play-keyart.webp',alt:'Random Play 主视觉'},
+  {src:'assets/gallery/miyabi/05.webp',alt:'星见雅官方 gallery 影画展示2'},
+  {src:'assets/gallery/harumasa/04.webp',alt:'浅羽悠真官方 gallery 影画展示1'},
+  {src:'assets/gallery/aria/01.webp',alt:'爱芮官方 gallery 入场特写2'}
+];
 const heroCarouselState={index:0,slides:[],timer:null,timerToken:0,pauses:new Set(),bound:false,media:null};
 function updateHeroCarouselChrome(){
   const indexBox=$('#heroCarouselIndex');

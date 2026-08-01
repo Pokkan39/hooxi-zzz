@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="description" content="HOOXI 绝区零剧情档案 — 氛围首屏切片"/>
+<title>HOOXI // 首屏切片</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="cinematic-slice.css?v=1"/>
+<style>.play-experiment-banner{position:sticky;top:0;z-index:40;padding:10px 16px;background:#17191b;color:#f3d33b;border-bottom:3px solid #f3d33b;font:700 13px/1.4 monospace}.play-experiment-banner a{color:#fff}</style>
+</head>
+<body>
+<div data-play-experiment-banner class="play-experiment-banner" role="note"><strong>实验切片 · 非正式进店</strong> 正式进店请走 <a href="tape-wall-sample.html">HOOXI PLAY · 凌晨录像店</a>；浏览档案请回 <a href="index.html">正式首页</a>。</div>
+
+<div id="stage" class="stage">
+
+  <!-- 视差场景层：店外夜景 -->
+  <div class="scene" aria-hidden="true">
+    <div class="scene-layer scene-far" data-depth="0.02"></div>
+    <div class="scene-layer scene-mid" data-depth="0.05"></div>
+    <div class="scene-layer scene-near" data-depth="0.09"></div>
+    <div class="scene-vignette"></div>
+  </div>
+
+  <!-- 进店预渲染视频转场层（点击后加载） -->
+  <div class="entry" id="entry" hidden>
+    <video id="entryVideo" class="entry-video" playsinline muted preload="none"
+           poster="assets/hooxi-rebuild/interior-poster.jpg"></video>
+    <div class="entry-fade"></div>
+  </div>
+
+  <!-- 颗粒后期层 -->
+  <canvas id="grain" class="grain" aria-hidden="true"></canvas>
+  <div class="scanline" aria-hidden="true"></div>
+
+  <!-- HUD 前景 -->
+  <div class="hud">
+    <header class="hud-top">
+      <div class="brand">
+        <span class="brand-mark">H</span>
+        <span class="brand-text">
+          <b>HOOXI</b>
+          <small>ZENLESS ARCHIVE</small>
+        </span>
+      </div>
+      <div class="hud-status">
+        <span class="dot"></span>
+        <span id="statusText">SIGNAL — NEW ERIDU / 02:14</span>
+      </div>
+    </header>
+
+    <div class="hud-center">
+      <p class="eyebrow">// VIDEO STORY ARCHIVE · 绝区零</p>
+      <h1 class="title">
+        <span class="line" data-i="1">新艾利都</span>
+        <span class="line accent" data-i="2">剧情档案</span>
+      </h1>
+      <p class="lede">凌晨仍在营业的录像店。沿着 Hooxi 的记录，重新进入每一段被以太侵蚀的故事。</p>
+      <div class="actions">
+        <button id="enterBtn" class="cta">
+          <span class="cta-label">进入录像店</span>
+          <span class="cta-arrow">↘</span>
+        </button>
+        <a href="#archive" class="ghost">直接浏览档案</a>
+      </div>
+    </div>
+
+    <footer class="hud-bottom">
+      <div class="coords">N 39°54' · E 116°23'<br/><span>NEW ERIDU / SIGNAL FOUND</span></div>
+      <div class="index" id="index" aria-label="档案索引"></div>
+      <div class="scroll-hint"><span>SCROLL</span><i></i></div>
+    </footer>
+  </div>
+
+</div>
+<script src="cinematic-slice.js?v=1"></script>
+</body>
+</html>

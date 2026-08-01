@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>游戏 UI 美术手法样本页 · HOOXI 原型</title>
+<!-- Swiper 样式（本地化，assets/vendor） -->
+<link rel="stylesheet" href="../../assets/vendor/swiper/swiper-bundle.min.css">
+<link rel="stylesheet" href="samples.css">
+</head>
+<body>
+
+<!-- 自定义光标（第 12 条），减弱动效时隐藏 -->
+<div class="cursor-dot" id="cursor-dot" aria-hidden="true"></div>
+<!-- 全站噪点层（第 14 条），默认关，按钮可开 -->
+<div id="grain-overlay" aria-hidden="true"></div>
+
+<header class="topnav">
+  <span class="topnav__brand">HOOXI <b>美术手法样本</b></span>
+  <nav aria-label="手法目录">
+    <ul class="topnav__list">
+      <li><a class="topnav__link" href="#pick">招牌候选</a></li>
+      <li><a class="topnav__link" href="#s01">01 斜切几何</a></li>
+      <li><a class="topnav__link" href="#s02">02 大数字</a></li>
+      <li><a class="topnav__link" href="#s03">03 颜色克制</a></li>
+      <li><a class="topnav__link" href="#s04">04 大图气势</a></li>
+      <li><a class="topnav__link" href="#s05">05 依次入场</a></li>
+      <li><a class="topnav__link" href="#s17">17 琴键缩放</a></li>
+      <li><a class="topnav__link" href="#s06">06 HUD 边框</a></li>
+      <li><a class="topnav__link" href="#s07">07 逐字浮现</a></li>
+      <li><a class="topnav__link" href="#s08">08 鼠标视差 · 裸眼 3D</a></li>
+      <li><a class="topnav__link" href="#s09">09 丝滑滚动</a></li>
+      <li><a class="topnav__link" href="#s10">10 磁吸鼠标</a></li>
+      <li><a class="topnav__link" href="#s11">11 层叠推进</a></li>
+      <li><a class="topnav__link" href="#s12">12 自定义光标</a></li>
+      <li><a class="topnav__link" href="#s13">13 底色渐变</a></li>
+      <li><a class="topnav__link" href="#s14">14 噪点扫描线</a></li>
+      <li><a class="topnav__link" href="#s15">15 换页转场</a></li>
+      <li><a class="topnav__link" href="#s16">16 图片飞行</a></li>
+      <li><a class="topnav__link" href="#s18">18 鼠标响应</a></li>
+      <li><a class="topnav__link" href="#s19">19 斜切轮播</a></li>
+      <li><a class="topnav__link" href="#s20">20 页面转场</a></li>
+      <li><a class="topnav__link" href="#s21">21 常驻磁带机</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="shell">
+
+  <section class="masthead">
+    <p class="masthead__kicker">原型样本 / 仅供挑选 / 不影响正式页面</p>
+    <h1>十六种<em>游戏感</em>美术手法<br>逐个看真实效果</h1>
+    <p class="masthead__lead">
+      这一页把每种美术手法都做成了能看能玩的实物。往下滚，每一块都有一句大白话解释、一个真实演示，以及做这件事大概要花多少功夫。
+      能对比的地方都摆成左右两栏：左边是「加了这个效果」，右边是「没加」，差别一眼就能看出来。看完在心里挑几条，告诉我就行。
+    </p>
+  </section>
+
+  <!-- 动效状态提示条：由 JS 判断系统设置后填充 -->
+  <aside class="motion-notice" id="motion-notice" role="status" aria-live="polite" hidden>
+    <span class="motion-notice__icon" aria-hidden="true"></span>
+    <div class="motion-notice__body">
+      <b class="motion-notice__title" id="motion-notice-title"></b>
+      <p class="motion-notice__text" id="motion-notice-text"></p>
+    </div>
+    <button class="btn btn--neon motion-notice__btn" type="button" id="force-motion-btn" aria-pressed="false" hidden>
+      强制预览动效
+    </button>
+  </aside>
+
+  <!-- 招牌效果候选 -->
+  <section class="headline-pick" id="pick" aria-labelledby="pick-title">
+    <h2 id="pick-title">先看这里：招牌效果候选</h2>
+    <p>
+      那些拿设计奖的网站有个共同点：<strong>它们靠的是一个招牌瞬间，而不是二十个特效堆在一起</strong>。
+      用户记住的永远是那一下「哇」，剩下的都只是让页面不显廉价的底子。特效越多，反而越像模板。
+    </p>
+    <p>
+      所以下面十六条不是让你全选。建议的做法是：<strong>挑一条当招牌，重点打磨；其余的只做到不出错</strong>。
+    </p>
+    <p>
+      我推荐的招牌方案是这个组合：
+    </p>
+    <div class="pick-combo">
+      <div class="pick-card">
+        <b>第 08 条 · 鼠标视差 · 裸眼 3D</b>
+        <span>画面分成背景、光效、角色、文字四层，鼠标一动，每层跟着走的距离不一样，看着像有真实景深。滚动完全不受影响。</span>
+      </div>
+      <div class="pick-plus" aria-hidden="true">+</div>
+      <div class="pick-card">
+        <b>第 04 条 · 大图气势</b>
+        <span>角色立绘直接铺满整屏，不缩在小框里。这是最省事也最能立刻拉开档次的一步。</span>
+      </div>
+    </div>
+    <p style="margin-top:24px">
+      这两条合起来，就是「进站第一屏，一张满屏立绘立在那里，鼠标一动整个画面就有了纵深」。
+      成本可控，效果集中，只做首页一处，而且<strong>不抢用户的滚动权：想往下看随时能走</strong>。
+    </p>
+  </section>
+
+  <!-- ============ 01 斜切几何 ============ -->
+  <section class="sample" id="s01" aria-labelledby="s01-title">
+    <div class="sample__head">
+      <span class="sample__no">01</span>
+      <h2 class="sample__title" id="s01-title">斜切几何</h2>
+    </div>
+    <p class="sample__plain">把方方正正的块和标签都斜着切一刀，变成平行四边形。整个页面立刻从「文档」变成「游戏界面」，这是绝区零官网最核心的一招。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-low">成本：低</span>
+      <span class="tag tag--scope">建议范围：首页专属</span>
+    </div>
+    <div class="compare">
+      <div class="pane pane--yes">
+        <span class="pane__label">有此效果 · 斜切</span>
+        <div class="stage">
+          <ul class="skew-thumbs"><li><span>01</span></li><li><span>02</span></li><li><span>03</span></li><li><span>04</span></li></ul>
+          <div class="skew-block"></div>
+          <span class="skew-pill"><span>ARCHIVE / 档案</span></span>
+        </div>
+      </div>
+      <div class="pane pane--no">
+        <span class="pane__label">无此效果 · 正方块</span>
+        <div class="stage">
+          <ul class="flat-thumbs"><li>01</li><li>02</li><li>03</li><li>04</li></ul>
+          <div class="flat-block"></div>
+          <span class="flat-pill">ARCHIVE / 档案</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 大号半透明编号 ============ -->
+  <section class="sample" id="s02" aria-labelledby="s02-title">
+    <div class="sample__head">
+      <span class="sample__no">02</span>
+      <h2 class="sample__title" id="s02-title">大号半透明编号</h2>
+    </div>
+    <p class="sample__plain">在每个板块的角上压一个超大的数字，做得很淡，像背景纹样。它不抢戏，但会让人下意识觉得「这一页是精心排过的」。搭配「中文名 + 英文名 + 两位编号」三行结构。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-low">成本：低</span>
+      <span class="tag tag--scope">建议范围：首页专属</span>
+    </div>
+    <div class="compare">
+      <div class="pane pane--yes">
+        <span class="pane__label">有此效果 · 大编号压角</span>
+        <div class="numbered numbered--neon">
+          <span class="numbered__num" aria-hidden="true">02</span>
+          <div class="numbered__floor">
+            <div class="numbered__cn">角色档案</div>
+            <div class="numbered__en">CHARACTER</div>
+            <p class="numbered__body">收录每位代理人的属性、阵营、技能与故事线索。</p>
+          </div>
+        </div>
+      </div>
+      <div class="pane pane--no">
+        <span class="pane__label">无此效果 · 只有标题</span>
+        <div class="plainbox">
+          <h4>角色档案</h4>
+          <p>收录每位代理人的属性、阵营、技能与故事线索。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 颜色克制 ============ -->
+  <section class="sample" id="s03" aria-labelledby="s03-title">
+    <div class="sample__head">
+      <span class="sample__no">03</span>
+      <h2 class="sample__title" id="s03-title">颜色克制</h2>
+    </div>
+    <p class="sample__plain">整页几乎不用彩色，只在最关键的一处点一笔荧光绿。颜色越少，那一笔就越亮眼。反过来，到处都是亮色的时候，等于哪里都不亮。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-low">成本：低</span>
+      <span class="tag tag--scope">建议范围：全站底层</span>
+    </div>
+    <div class="compare">
+      <div class="pane pane--yes">
+        <span class="pane__label">有此效果 · 只点一笔荧光绿</span>
+        <div class="stage">
+          <div class="restraint-row">
+            <span class="chip">档案</span>
+            <span class="chip">阵营</span>
+            <span class="chip">剧情</span>
+            <span class="chip">影像</span>
+            <span class="chip chip--accent">当前页</span>
+          </div>
+          <p class="hint">只有「当前页」用了 rgb(216,250,0)，视线自动落在它上面。</p>
+        </div>
+      </div>
+      <div class="pane pane--no">
+        <span class="pane__label">无此效果 · 到处用亮色</span>
+        <div class="stage">
+          <div class="restraint-row loud">
+            <span class="chip">档案</span>
+            <span class="chip">阵营</span>
+            <span class="chip">剧情</span>
+            <span class="chip">影像</span>
+            <span class="chip">当前页</span>
+          </div>
+          <p class="hint">五个都在喊，反而不知道该看哪个。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 04 大图气势 ============ -->
+  <section class="sample" id="s04" aria-labelledby="s04-title">
+    <div class="sample__head">
+      <span class="sample__no">04</span>
+      <h2 class="sample__title" id="s04-title">大图气势</h2>
+    </div>
+    <p class="sample__plain">同一张立绘，铺满整屏和缩在小框里，感觉完全不是一个档次。这条几乎不花什么功夫，却是提升观感最直接的一步。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-low">成本：低</span>
+      <span class="tag tag--scope">建议范围：首页专属</span>
+    </div>
+    <div class="compare">
+      <div class="pane pane--yes">
+        <span class="pane__label">有此效果 · 满屏立绘</span>
+        <div class="keyart-full">
+          <img id="hero-check" src="../../assets/hero/zzz-random-play-keyart.webp" alt="绝区零主视觉立绘，满屏铺开示例">
+          <div class="keyart-full__cap">
+            <span>RANDOM PLAY / 随机播放</span>
+            <b>空洞之下</b>
+          </div>
+        </div>
+      </div>
+      <div class="pane pane--no">
+        <span class="pane__label">无此效果 · 缩在小框里</span>
+        <div class="keyart-small">
+          <figure>
+            <img src="../../assets/hero/zzz-random-play-keyart.webp" alt="同一张立绘，缩小放在小卡片里的对照示例">
+            <figcaption>空洞之下 · 主视觉</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 05 依次入场 ============ -->
+  <section class="sample" id="s05" aria-labelledby="s05-title">
+    <div class="sample__head">
+      <span class="sample__no">05</span>
+      <h2 class="sample__title" id="s05-title">依次入场</h2>
+    </div>
+    <p class="sample__plain">做成<strong>电视换台锁信号</strong>的样子：滚到这一块时，每个栏目先是一片抖动的花屏雪花、文字被横向拉宽看不清，接着一道亮带扫过，信号锁住，文字才从噪点里浮出来变清晰。四个栏目一台一台依次锁定，不是整块一起「啪」地出现。和第 20 条的信号缓冲是同一套语言。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-low">成本：低</span>
+      <span class="tag tag--scope">建议范围：全站底层</span>
+    </div>
+    <div class="compare">
+      <div class="pane pane--yes">
+        <span class="pane__label">有此效果 · 一个接一个</span>
+        <div class="stage">
+          <div class="stagger" data-reveal>
+            <div class="stagger__item">01 · 代理人档案</div>
+            <div class="stagger__item">02 · 阵营关系</div>
+            <div class="stagger__item">03 · 主线剧情</div>
+            <div class="stagger__item">04 · 影像资料</div>
+          </div>
+        </div>
+      </div>
+      <div class="pane pane--no">
+        <span class="pane__label">无此效果 · 全部一起跳出</span>
+        <div class="stage">
+          <div class="stagger stagger--none" data-reveal>
+            <div class="stagger__item">01 · 代理人档案</div>
+            <div class="stagger__item">02 · 阵营关系</div>
+            <div class="stagger__item">03 · 主线剧情</div>
+            <div class="stagger__item">04 · 影像资料</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="btn" type="button" data-replay="s05">重播这段动画</button>
+      <span class="hint">滚动经过时自动触发，也可以手动重播。</span>
+    </div>
+  </section>
+
+  <!-- ============ 17 琴键式邻近缩放（05 的升级版） ============ -->
+  <section class="sample" id="s17" aria-labelledby="s17-title">
+    <div class="sample__head">
+      <span class="sample__no">17</span>
+      <h2 class="sample__title" id="s17-title">琴键式邻近缩放</h2>
+    </div>
+    <p class="sample__plain">上一条「依次入场」的升级版。一排栏目横着摆开，鼠标划过去的时候，离鼠标最近的那一格最大，两边依次变小，像手指划过钢琴键一样推出一道波浪。手不动的时候整排是平的，手一动它就活了。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-low">成本：低</span>
+      <span class="tag tag--scope">建议范围：首页专属</span>
+    </div>
+    <div class="compare">
+      <div class="pane pane--yes">
+        <span class="pane__label">有此效果 · 跟着鼠标起波浪</span>
+        <div class="stage stage--keys">
+          <div class="keys" data-keys>
+            <button class="keys__key" type="button"><span class="keys__cn">主线</span><span class="keys__en">MAIN</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">角色</span><span class="keys__en">AGENT</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">阵营</span><span class="keys__en">FACTION</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">活动</span><span class="keys__en">EVENT</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">幕后</span><span class="keys__en">BEHIND</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">养成</span><span class="keys__en">BUILD</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">影像</span><span class="keys__en">MEDIA</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">资料</span><span class="keys__en">DATA</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">来源</span><span class="keys__en">SOURCE</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">搜索</span><span class="keys__en">SEARCH</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">收藏</span><span class="keys__en">SAVED</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">关于</span><span class="keys__en">ABOUT</span></button>
+          </div>
+          <p class="hint">把鼠标在这一排上左右慢慢移动，注意最大的那一格会跟着走。用键盘 Tab 也能逐格点亮。</p>
+        </div>
+      </div>
+      <div class="pane pane--no">
+        <span class="pane__label">无此效果 · 十二格一样大</span>
+        <div class="stage stage--keys">
+          <div class="keys keys--flat">
+            <button class="keys__key" type="button"><span class="keys__cn">主线</span><span class="keys__en">MAIN</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">角色</span><span class="keys__en">AGENT</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">阵营</span><span class="keys__en">FACTION</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">活动</span><span class="keys__en">EVENT</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">幕后</span><span class="keys__en">BEHIND</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">养成</span><span class="keys__en">BUILD</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">影像</span><span class="keys__en">MEDIA</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">资料</span><span class="keys__en">DATA</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">来源</span><span class="keys__en">SOURCE</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">搜索</span><span class="keys__en">SEARCH</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">收藏</span><span class="keys__en">SAVED</span></button>
+            <button class="keys__key" type="button"><span class="keys__cn">关于</span><span class="keys__en">ABOUT</span></button>
+          </div>
+          <p class="hint">同样十二格，鼠标经过没有任何反应，只能靠点进去才知道选中了哪个。</p>
+        </div>
+      </div>
+    </div>
+    <p class="sample__note">这个思路可以搬到这些地方：<strong>首页的栏目入口条</strong>（一排大字栏目，鼠标划过像琴键起伏）、<strong>角色名录的横向滚动条</strong>（几十个代理人头像，靠近的那几个自动放大好认）、<strong>影像页的缩略图轮播</strong>（不用点就能预览到哪一张）。同一套算法换个外壳就能复用，不用重做。</p>
+  </section>
+
+  <!-- ============ 06 HUD 边框角标 ============ -->
+  <section class="sample" id="s06" aria-labelledby="s06-title">
+    <div class="sample__head">
+      <span class="sample__no">06</span>
+      <h2 class="sample__title" id="s06-title">HUD 边框角标</h2>
+    </div>
+    <p class="sample__plain">细细的边框、四个角上的小装饰、圆头胶囊标签，看起来像游戏里的信息面板而不是网页表格。特别适合角色页的属性区。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-low">成本：低</span>
+      <span class="tag tag--scope">建议范围：角色页专属</span>
+    </div>
+    <div class="compare">
+      <div class="pane pane--yes">
+        <span class="pane__label">有此效果 · 游戏面板感</span>
+        <div class="hud">
+          <span class="hud__corner hud__corner--tl" aria-hidden="true"></span>
+          <span class="hud__corner hud__corner--tr" aria-hidden="true"></span>
+          <span class="hud__corner hud__corner--bl" aria-hidden="true"></span>
+          <span class="hud__corner hud__corner--br" aria-hidden="true"></span>
+          <span class="hud__badge">AGENT DATA</span>
+          <div class="hud__rows">
+            <div class="hud__row"><span class="hud__key">攻击</span><span class="hud__bar"><i style="width:78%"></i></span></div>
+            <div class="hud__row"><span class="hud__key">生命</span><span class="hud__bar"><i style="width:54%"></i></span></div>
+            <div class="hud__row"><span class="hud__key">防御</span><span class="hud__bar"><i style="width:36%"></i></span></div>
+            <div class="hud__row"><span class="hud__key">异常掌控</span><span class="hud__bar"><i style="width:66%"></i></span></div>
+          </div>
+          <div class="hud__pills">
+            <span class="hud__pill hud__pill--on">强攻</span>
+            <span class="hud__pill">物理</span>
+            <span class="hud__pill">S 级</span>
+            <span class="hud__pill">白祇重工</span>
+          </div>
+        </div>
+      </div>
+      <div class="pane pane--no">
+        <span class="pane__label">无此效果 · 普通信息块</span>
+        <div class="plainbox">
+          <h4>代理人数据</h4>
+          <p>攻击 78 / 生命 54 / 防御 36 / 异常掌控 66</p>
+          <p style="margin-top:12px">类型：强攻 · 属性：物理 · 等级：S 级 · 阵营：白祇重工</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 07 文字逐字浮现 ============ -->
+  <section class="sample" id="s07" aria-labelledby="s07-title">
+    <div class="sample__head">
+      <span class="sample__no">07</span>
+      <h2 class="sample__title" id="s07-title">文字逐字浮现</h2>
+    </div>
+    <p class="sample__plain">标题不是整句一起出现，而是一个字一个字错开着浮上来，像有人正在把它写出来。用在首屏大标题上最有效，别处用会显得啰嗦。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-mid">成本：中</span>
+      <span class="tag tag--scope">建议范围：首页专属</span>
+    </div>
+    <div class="compare">
+      <div class="pane pane--yes">
+        <span class="pane__label">有此效果 · 逐字浮现</span>
+        <div class="stage">
+          <h3 class="split-title" data-split>空洞之下，无人知晓</h3>
+          <p class="split-sub">HOLLOW ZERO / 零号空洞</p>
+        </div>
+      </div>
+      <div class="pane pane--no">
+        <span class="pane__label">无此效果 · 整句直接显示</span>
+        <div class="stage">
+          <h3 class="split-plain">空洞之下，无人知晓</h3>
+          <p class="hint">HOLLOW ZERO / 零号空洞</p>
+        </div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="btn" type="button" data-replay="s07">重播这段动画</button>
+      <span class="hint">每个字被拆成独立元素后错开时间淡入。</span>
+    </div>
+  </section>
+
+  <!-- ============ 08 鼠标视差 · 裸眼 3D ============ -->
+  <section class="sample" id="s08" aria-labelledby="s08-title">
+    <div class="sample__head">
+      <span class="sample__no">08</span>
+      <h2 class="sample__title" id="s08-title">鼠标视差 · 裸眼 3D</h2>
+    </div>
+    <p class="sample__plain">画面被拆成四层叠在一起：最后面是影画背景，中间是一层光，前面是角色立绘，最前面是文字。鼠标在上面移动时，四层跟着走的距离不一样，越靠前走得越多，最前面的文字还往反方向轻轻挪，看起来就像画面真的有厚度。角色立绘还会跟着鼠标做很小幅度的倾斜。<strong>页面滚动完全不受干扰，想往下看随时能走。</strong></p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-mid">成本：中</span>
+      <span class="tag tag--scope">建议范围：首页专属</span>
+    </div>
+
+    <div class="px3d" id="px3d" data-parallax>
+      <div class="px3d__stage" id="px3d-stage">
+        <!-- 最远层：2880×1080 宽幅影画，位移倍率 0.25 -->
+        <div class="px3d__layer px3d__layer--bg" data-depth="0.25">
+          <img id="px3d-bg" src="../../assets/mindscape/default/anby.webp" alt="安比的影画背景，作为视差最远层">
+        </div>
+        <!-- 中层：氛围光效，位移倍率 0.5 -->
+        <div class="px3d__layer px3d__layer--glow" data-depth="0.5" aria-hidden="true"></div>
+        <!-- 主体层：1600×1800 透明底立绘，位移倍率 1.0，另带小幅倾斜 -->
+        <div class="px3d__layer px3d__layer--hero" data-depth="1" data-tilt>
+          <img id="px3d-hero" src="../../assets/portraits/anby-portrait.webp" alt="安比·德玛拉的透明底立绘，作为视差主体层">
+        </div>
+        <!-- 最前层：文字与 UI 标签，位移倍率 -0.3（反向） -->
+        <div class="px3d__layer px3d__layer--front" data-depth="-0.3">
+          <div class="px3d__caption">
+            <span class="px3d__kicker">AGENT FILE / 代理人档案</span>
+            <b class="px3d__name" id="px3d-name">安比·德玛拉</b>
+            <p class="px3d__desc" id="px3d-desc">白祇重工 · 电属性 · 击破</p>
+          </div>
+          <div class="px3d__chips">
+            <span class="px3d__chip">LAYER 04 / 文字层</span>
+            <span class="px3d__chip">反向 ×0.3</span>
+          </div>
+        </div>
+      </div>
+      <div class="px3d__hud" id="px3d-hud" aria-hidden="true">
+        <span>背景 ×0.25</span><span>光效 ×0.5</span><span>立绘 ×1.0</span><span>文字 ×-0.3</span>
+      </div>
+    </div>
+
+    <div class="controls" role="group" aria-label="切换视差演示的角色">
+      <button class="btn px3d__pick is-on" type="button" data-cast="anby" aria-pressed="true">安比</button>
+      <button class="btn px3d__pick" type="button" data-cast="ellen" aria-pressed="false">艾莲</button>
+      <button class="btn px3d__pick" type="button" data-cast="miyabi" aria-pressed="false">雅</button>
+      <button class="btn px3d__pick" type="button" data-cast="alice" aria-pressed="false">爱丽丝</button>
+      <span class="hint">立绘 1600×1800 原比例显示，背景影画 2880×1080，都不拉伸。</span>
+    </div>
+    <p class="sample__note">和旧版的区别：旧版靠「把页面钉住」来讲故事，用户想往下看走不了，是在抢用户的操作权。这一版改成<strong>鼠标驱动</strong>，不接管滚动，不锁位置，鼠标不动画面就静止，效果只在用户主动动鼠标时出现。</p>
+  </section>
+
+  <!-- ============ 09 丝滑滚动惯性 ============ -->
+  <section class="sample" id="s09" aria-labelledby="s09-title">
+    <div class="sample__head">
+      <span class="sample__no">09</span>
+      <h2 class="sample__title" id="s09-title">丝滑滚动惯性</h2>
+    </div>
+    <p class="sample__plain">默认滚动是一格一格跳的，带惯性的滚动会滑过去再缓缓停下。这是那种说不出哪里好但一用就上瘾的细节。下面两个框都可以用鼠标滚轮试。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-mid">成本：中</span>
+      <span class="tag tag--scope">建议范围：全站底层</span>
+    </div>
+    <div class="compare">
+      <div class="pane pane--yes">
+        <span class="pane__label">有此效果 · 带惯性平滑</span>
+        <div class="scrollbox" id="smooth-box" data-inertia>
+          <h5>惯性滚动</h5>
+          <p>把鼠标放到这个框里滚一下，内容会滑过去再缓缓停住，不是硬邦邦地跳一格。</p>
+          <p>这种减速曲线让整站显得更贵，也更容易让人一直往下看。</p>
+          <p>代价是要接管浏览器默认滚动，做得不好会和触摸板、无障碍工具打架，所以要留开关。</p>
+          <p>惯性滚动最适合内容型长页面：档案列表、剧情时间线、角色图鉴。</p>
+          <p>如果用户系统开了「减少动态效果」，这一条要自动关掉。</p>
+          <p>滚到底了。往回滚也是同样的减速手感。</p>
+        </div>
+      </div>
+      <div class="pane pane--no">
+        <span class="pane__label">无此效果 · 默认跳格</span>
+        <div class="scrollbox" id="plain-box">
+          <h5>默认滚动</h5>
+          <p>同样滚一下，这个框是浏览器默认行为，一格一格地跳。</p>
+          <p>没什么错，只是显得普通。</p>
+          <p>好处是零成本、零风险，什么设备什么辅助工具都不会出问题。</p>
+          <p>如果不做惯性，页面观感的重点就要放在别处，比如大图和排版。</p>
+          <p>这里也是同样长度的内容，方便你直接对比手感。</p>
+          <p>滚到底了。</p>
+        </div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="btn" type="button" id="toggle-page-smooth" aria-pressed="false">整页平滑滚动：关</button>
+      <button class="btn" type="button" id="jump-top">点我跳回页首（试试差别）</button>
+      <span class="hint">开关会影响上面导航跳转与这个按钮的滚动手感。</span>
+    </div>
+  </section>
+
+  <!-- ============ 10 磁吸鼠标 ============ -->
+  <section class="sample" id="s10" aria-labelledby="s10-title">
+    <div class="sample__head">
+      <span class="sample__no">10</span>
+      <h2 class="sample__title" id="s10-title">磁吸鼠标</h2>
+    </div>
+    <p class="sample__plain">鼠标还没碰到按钮，按钮就已经轻轻朝你的鼠标偏过来一点，像被磁铁吸住。点击变得特别有反馈感。把鼠标在下面两个框里慢慢移动感受一下。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-low">成本：低</span>
+      <span class="tag tag--scope">建议范围：后期再说</span>
+    </div>
+    <div class="compare">
+      <div class="pane pane--yes">
+        <span class="pane__label">有此效果 · 按钮被吸过来</span>
+        <div class="magnet-field" data-magnet-field>
+          <button class="btn btn--neon magnet" type="button" data-magnet>进入档案</button>
+        </div>
+      </div>
+      <div class="pane pane--no">
+        <span class="pane__label">无此效果 · 按钮不动</span>
+        <div class="magnet-field">
+          <button class="btn btn--neon" type="button">进入档案</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 11 元素层叠推进 ============ -->
+  <section class="sample" id="s11" aria-labelledby="s11-title">
+    <div class="sample__head">
+      <span class="sample__no">11</span>
+      <h2 class="sample__title" id="s11-title">元素层叠推进</h2>
+    </div>
+    <p class="sample__plain">往下滚的时候卡片不是滑走，而是一张压着一张往上堆起来，后面的略微缩小往后退。适合几步流程或几条卖点的场合。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-mid">成本：中</span>
+      <span class="tag tag--scope">建议范围：后期再说</span>
+    </div>
+    <div class="stackwrap" id="stackwrap">
+      <article class="stack-card" data-stack>
+        <span class="stack-card__no" aria-hidden="true">01</span>
+        <h4>先收录</h4>
+        <p>把公开资料整理成结构化档案，每条都能追到出处。</p>
+      </article>
+      <article class="stack-card" data-stack>
+        <span class="stack-card__no" aria-hidden="true">02</span>
+        <h4>再交叉</h4>
+        <p>把代理人、阵营、任务互相关联，形成可以顺着走的线。</p>
+      </article>
+      <article class="stack-card" data-stack>
+        <span class="stack-card__no" aria-hidden="true">03</span>
+        <h4>然后呈现</h4>
+        <p>用游戏感的界面把这些资料摆出来，好看也要好查。</p>
+      </article>
+      <article class="stack-card" data-stack>
+        <span class="stack-card__no" aria-hidden="true">04</span>
+        <h4>最后更新</h4>
+        <p>版本一更新就补进来，档案是活的，不是快照。</p>
+      </article>
+    </div>
+    <p class="hint" style="margin-top:16px">上面四张卡片在滚动时会依次钉住并堆叠，被压住的那张会略微缩小变暗。</p>
+  </section>
+
+  <!-- ============ 12 自定义光标 ============ -->
+  <section class="sample" id="s12" aria-labelledby="s12-title">
+    <div class="sample__head">
+      <span class="sample__no">12</span>
+      <h2 class="sample__title" id="s12-title">自定义光标</h2>
+    </div>
+    <p class="sample__plain">把系统的小箭头换成自己设计的图形，靠近可以点的东西时它会放大变形。这是最能让人觉得「这站不一般」的小动作之一。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-mid">成本：中</span>
+      <span class="tag tag--scope">建议范围：全站底层</span>
+    </div>
+    <div class="controls" style="margin-bottom:24px">
+      <button class="btn btn--neon" type="button" id="toggle-cursor" aria-pressed="false">开启自定义光标</button>
+      <span class="hint">开启后把鼠标移到下面任意按钮上，光标会放大成圆环。</span>
+    </div>
+    <div class="cursor-zone">
+      <button class="btn" type="button">代理人</button>
+      <button class="btn" type="button">阵营</button>
+      <button class="btn btn--neon" type="button">进入档案</button>
+      <a class="btn" href="#s12">一个链接</a>
+    </div>
+  </section>
+
+  <!-- ============ 13 背景色随滚动渐变 ============ -->
+  <section class="sample" id="s13" aria-labelledby="s13-title">
+    <div class="sample__head">
+      <span class="sample__no">13</span>
+      <h2 class="sample__title" id="s13-title">背景色随滚动渐变</h2>
+    </div>
+    <p class="sample__plain">整页底色会随着你滚到不同区块而慢慢变化。深色站里幅度很小，你不会注意到它在变，但会觉得页面「有层次」。这一整页正在演示这个效果。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-low">成本：低</span>
+      <span class="tag tag--scope">建议范围：后期再说</span>
+    </div>
+    <div class="controls" style="margin-bottom:24px">
+      <button class="btn" type="button" id="toggle-bgshift" aria-pressed="true">整页底色渐变：开</button>
+      <span class="hint">当前底色：<code id="bg-readout" style="color:var(--neon);font-family:var(--font-mono)">—</code></span>
+    </div>
+    <div class="compare">
+      <div class="pane pane--yes">
+        <span class="pane__label">有此效果 · 深色内小幅变化</span>
+        <div class="stage" style="gap:8px">
+          <div style="height:44px;background:#0b0e13;display:grid;place-items:center;font-family:var(--font-mono);font-size:11px;color:var(--text-3)">区块 A · #0b0e13</div>
+          <div style="height:44px;background:#0d1219;display:grid;place-items:center;font-family:var(--font-mono);font-size:11px;color:var(--text-3)">区块 B · #0d1219</div>
+          <div style="height:44px;background:#101620;display:grid;place-items:center;font-family:var(--font-mono);font-size:11px;color:var(--text-3)">区块 C · #101620</div>
+          <div style="height:44px;background:#0c1116;display:grid;place-items:center;font-family:var(--font-mono);font-size:11px;color:var(--text-3)">区块 D · #0c1116</div>
+        </div>
+      </div>
+      <div class="pane pane--no">
+        <span class="pane__label">无此效果 · 全程同一个底色</span>
+        <div class="stage" style="gap:8px">
+          <div style="height:44px;background:#0b0e13;display:grid;place-items:center;font-family:var(--font-mono);font-size:11px;color:var(--text-3)">区块 A · #0b0e13</div>
+          <div style="height:44px;background:#0b0e13;display:grid;place-items:center;font-family:var(--font-mono);font-size:11px;color:var(--text-3)">区块 B · #0b0e13</div>
+          <div style="height:44px;background:#0b0e13;display:grid;place-items:center;font-family:var(--font-mono);font-size:11px;color:var(--text-3)">区块 C · #0b0e13</div>
+          <div style="height:44px;background:#0b0e13;display:grid;place-items:center;font-family:var(--font-mono);font-size:11px;color:var(--text-3)">区块 D · #0b0e13</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 14 噪点与扫描线 ============ -->
+  <section class="sample" id="s14" aria-labelledby="s14-title">
+    <div class="sample__head">
+      <span class="sample__no">14</span>
+      <h2 class="sample__title" id="s14-title">噪点与扫描线质感</h2>
+    </div>
+    <p class="sample__plain">在整页上铺一层极淡的颗粒和横线，像老录像带或 CRT 屏幕的画面。它让纯色块不那么「平」，画面看着更有材质。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-low">成本：低</span>
+      <span class="tag tag--scope">建议范围：全站底层</span>
+    </div>
+    <div class="controls" style="margin-bottom:24px">
+      <button class="btn" type="button" id="toggle-grain" aria-pressed="false">整页铺噪点扫描线：关</button>
+      <span class="hint">开启后整个页面会盖一层颗粒，注意深色区域的变化。</span>
+    </div>
+    <div class="compare">
+      <div class="pane pane--yes">
+        <span class="pane__label">有此效果 · 有颗粒与扫描线</span>
+        <div class="grain-demo grain-demo--on">
+          <h4>录像带质感</h4>
+          <p>颗粒和横线都压得很淡，凑近才看得出来，但整块画面不再是死板的纯色。</p>
+        </div>
+      </div>
+      <div class="pane pane--no">
+        <span class="pane__label">无此效果 · 干净纯色</span>
+        <div class="grain-demo">
+          <h4>纯色底</h4>
+          <p>同一块区域不加任何质感，干净但略显廉价，尤其在大面积深色上。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 15 换页转场（模拟） ============ -->
+  <section class="sample" id="s15" aria-labelledby="s15-title">
+    <div class="sample__head">
+      <span class="sample__no">15</span>
+      <h2 class="sample__title" id="s15-title">换页转场（模拟）</h2>
+    </div>
+    <p class="sample__plain">点了链接以后不是白屏一下再刷出新页，而是旧内容退场、一道光扫过、新内容接上，全程不断。下面用两块假页面演示，不会真的跳转。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-high">成本：高</span>
+      <span class="tag tag--scope">建议范围：后期再说</span>
+    </div>
+    <div class="compare">
+      <div class="pane pane--yes">
+        <span class="pane__label">有此效果 · 转场衔接</span>
+        <div class="fakepages" id="fakepages">
+          <div class="fakepage" data-state="in" data-page="a">
+            <span class="kicker">PAGE A / 首页</span>
+            <h4>档案总览</h4>
+            <p>这是「首页」。点下面的按钮切到角色页，注意画面是连着走的，没有白屏。</p>
+            <div><button class="btn btn--neon" type="button" id="go-b">前往角色页 →</button></div>
+          </div>
+          <div class="fakepage" data-state="wait" data-page="b">
+            <span class="kicker">PAGE B / 角色页</span>
+            <h4>代理人 · 空洞调查员</h4>
+            <p>这是「角色页」。刚才那一下就是转场：旧内容上移淡出，一道荧光扫过，新内容托上来。</p>
+            <div><button class="btn" type="button" id="go-a">← 返回首页</button></div>
+          </div>
+          <span class="wipe" id="wipe" aria-hidden="true"></span>
+        </div>
+      </div>
+      <div class="pane pane--no">
+        <span class="pane__label">无此效果 · 白屏硬切</span>
+        <div class="fakepages" id="fakepages-plain">
+          <div class="fakepage" data-state="in" data-page="a">
+            <span class="kicker">PAGE A / 首页</span>
+            <h4>档案总览</h4>
+            <p>同样两块内容，但切换时中间会闪一下空白，像每次都重新加载。</p>
+            <div><button class="btn" type="button" id="go-b-plain">前往角色页 →</button></div>
+          </div>
+          <div class="fakepage" data-state="wait" data-page="b" style="transition:none">
+            <span class="kicker">PAGE B / 角色页</span>
+            <h4>代理人 · 空洞调查员</h4>
+            <p>刚才那一下白闪，就是现在多数站点的默认体验。</p>
+            <div><button class="btn" type="button" id="go-a-plain">← 返回首页</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 16 图片跨位飞行（模拟） ============ -->
+  <section class="sample" id="s16" aria-labelledby="s16-title">
+    <div class="sample__head">
+      <span class="sample__no">16</span>
+      <h2 class="sample__title" id="s16-title">图片跨位飞行（模拟）</h2>
+    </div>
+    <p class="sample__plain">点左边的小图，这张图会自己放大、飞到右边的大图位置上，而不是「小图消失、大图出现」。用户的视线一路被带着走，不会丢。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-high">成本：高</span>
+      <span class="tag tag--scope">建议范围：后期再说</span>
+    </div>
+    <div class="flip-lab">
+      <ul class="flip-thumbs" id="flip-thumbs">
+        <li><button class="flip-thumb" type="button" data-flip data-title="主视觉 · 满屏版"><img src="../../assets/hero/zzz-random-play-keyart.webp" alt="缩略图一，点击后会飞到右侧详情位"><span>01 主视觉</span></button></li>
+        <li><button class="flip-thumb" type="button" data-flip data-title="主视觉 · 中景裁切"><img src="../../assets/hero/zzz-random-play-keyart.webp" alt="缩略图二，点击后会飞到右侧详情位"><span>02 中景</span></button></li>
+        <li><button class="flip-thumb" type="button" data-flip data-title="主视觉 · 局部特写"><img src="../../assets/hero/zzz-random-play-keyart.webp" alt="缩略图三，点击后会飞到右侧详情位"><span>03 特写</span></button></li>
+      </ul>
+      <div class="flip-detail">
+        <div class="flip-slot" id="flip-slot">
+          <span class="flip-slot__empty" id="flip-empty">点左边任意缩略图<br>看它飞过来</span>
+        </div>
+        <div class="flip-detail__cap" id="flip-cap">详情位 · 等待选择</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 18 鼠标响应合集 ============ -->
+  <section class="sample" id="s18" aria-labelledby="s18-title">
+    <div class="sample__head">
+      <span class="sample__no">18</span>
+      <h2 class="sample__title" id="s18-title">鼠标响应合集</h2>
+    </div>
+    <p class="sample__plain">把「网站是活的」这件事拆成四个具体动作：卡片朝鼠标歪过去并有一道光扫过、按钮被吸过来还发亮、图片经过时边缘出现极淡的红蓝错位、链接下划线从鼠标进来的那一侧展开。统一原则是<strong>鼠标不动时页面完全静止，鼠标一动处处有回应</strong>，不做自动播放的动画去干扰阅读。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-mid">成本：中</span>
+      <span class="tag tag--scope">建议范围：全站底层</span>
+    </div>
+
+    <!-- 18-1 卡片倾斜 + 高光 -->
+    <h3 class="sub__title">① 卡片朝鼠标倾斜，高光跟着走</h3>
+    <div class="compare">
+      <div class="pane pane--yes">
+        <span class="pane__label">有此效果 · 倾斜 + 跟随高光</span>
+        <div class="stage">
+          <article class="tiltcard" data-tilt-card tabindex="0">
+            <span class="tiltcard__sheen" aria-hidden="true"></span>
+            <span class="tiltcard__no" aria-hidden="true">18</span>
+            <h4>代理人档案</h4>
+            <p>把鼠标放到这张卡片上慢慢画圈，卡片会朝鼠标那侧歪过去，同时有一道亮斑跟着鼠标位置移动。</p>
+            <span class="tiltcard__tag">HOVER ME</span>
+          </article>
+        </div>
+      </div>
+      <div class="pane pane--no">
+        <span class="pane__label">无此效果 · 卡片不动</span>
+        <div class="stage">
+          <article class="tiltcard tiltcard--flat" tabindex="0">
+            <span class="tiltcard__no" aria-hidden="true">18</span>
+            <h4>代理人档案</h4>
+            <p>同一张卡片，鼠标经过没有任何回应，只能靠边框颜色变化知道自己指到了它。</p>
+            <span class="tiltcard__tag">HOVER ME</span>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <!-- 18-2 按钮磁吸增强 -->
+    <h3 class="sub__title">② 按钮磁吸增强版：吸附 + 边框发光 + 文字位移</h3>
+    <div class="compare">
+      <div class="pane pane--yes">
+        <span class="pane__label">有此效果 · 吸过来还会发光</span>
+        <div class="magnet-field" data-magnet-plus>
+          <button class="btn btn--neon magnet magnet--plus" type="button" data-magnet-btn>
+            <span class="magnet__text">进入档案</span>
+          </button>
+        </div>
+      </div>
+      <div class="pane pane--no">
+        <span class="pane__label">无此效果 · 只有默认 hover</span>
+        <div class="magnet-field">
+          <button class="btn btn--neon" type="button"><span>进入档案</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 18-3 图片色散 -->
+    <h3 class="sub__title">③ 图片经过时轻微色散</h3>
+    <div class="compare">
+      <div class="pane pane--yes">
+        <span class="pane__label">有此效果 · 极淡红蓝错位</span>
+        <div class="stage">
+          <figure class="disp" data-disperse tabindex="0">
+            <img class="disp__img disp__img--r" src="../../assets/portraits/ellen-card.webp" alt="" aria-hidden="true">
+            <img class="disp__img disp__img--b" src="../../assets/portraits/ellen-card.webp" alt="" aria-hidden="true">
+            <img class="disp__img disp__img--base" src="../../assets/portraits/ellen-card.webp" alt="艾莲的角色卡图，鼠标经过时会出现轻微色散">
+            <figcaption>鼠标经过时红蓝两层往两边错开 2 到 3 像素</figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="pane pane--no">
+        <span class="pane__label">无此效果 · 图片纹丝不动</span>
+        <div class="stage">
+          <figure class="disp disp--flat">
+            <img class="disp__img disp__img--base" src="../../assets/portraits/ellen-card.webp" alt="同一张艾莲角色卡图，作为无色散效果的对照">
+            <figcaption>同一张图，鼠标经过没有任何变化</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+
+    <!-- 18-4 链接下划线方向 -->
+    <h3 class="sub__title">④ 下划线从鼠标进来的那一侧展开</h3>
+    <div class="compare">
+      <div class="pane pane--yes">
+        <span class="pane__label">有此效果 · 认方向</span>
+        <div class="stage">
+          <ul class="dirlinks">
+            <li><a class="dirlink" href="#s18" data-dir-link>代理人名录 / AGENT INDEX</a></li>
+            <li><a class="dirlink" href="#s18" data-dir-link>阵营关系 / FACTION</a></li>
+            <li><a class="dirlink" href="#s18" data-dir-link>主线剧情 / STORY</a></li>
+          </ul>
+          <p class="hint">从左边划进去，线从左往右长；从右边划进去，线从右往左长。</p>
+        </div>
+      </div>
+      <div class="pane pane--no">
+        <span class="pane__label">无此效果 · 固定从左往右</span>
+        <div class="stage">
+          <ul class="dirlinks">
+            <li><a class="dirlink dirlink--flat" href="#s18">代理人名录 / AGENT INDEX</a></li>
+            <li><a class="dirlink dirlink--flat" href="#s18">阵营关系 / FACTION</a></li>
+            <li><a class="dirlink dirlink--flat" href="#s18">主线剧情 / STORY</a></li>
+          </ul>
+          <p class="hint">不管从哪边进来都从左边长起，手感和视线方向对不上。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 19 Swiper 斜切轮播 ============ -->
+  <section class="sample" id="s19" aria-labelledby="s19-title">
+    <div class="sample__head">
+      <span class="sample__no">19</span>
+      <h2 class="sample__title" id="s19-title">斜切轮播（Swiper 实装）</h2>
+    </div>
+    <p class="sample__plain">大图配一条斜着切开的缩略图条，点缩略图主图跟着换，主图划动缩略图也跟着走。缩略图条整体往左斜 25.3 度，每张图自己再斜回来，所以图片本身不歪、只有边框是平行四边形，这就是绝区零官网那条缩略图带的做法。<strong>方向键左右可以直接切换</strong>，不用鼠标也能操作。这一块是规范<strong>第 4.2 节「斜切几何 + 轮播」</strong>的实装样本，用的是真实 Swiper 库的 thumbs 联动模式。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-mid">成本：中</span>
+      <span class="tag tag--scope">建议范围：首页专属</span>
+    </div>
+
+    <div class="skewsw" id="skewsw">
+      <!-- 主轮播：影画宽幅 + 立绘 -->
+      <div class="swiper skewsw__main" id="skewsw-main">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide skewsw__slide">
+            <img src="../../assets/mindscape/default/anby.webp" alt="安比的影画宽幅图，斜切轮播第 1 张">
+            <div class="skewsw__cap"><span class="skewsw__ix">01</span><b>安比·德玛拉</b><i>MINDSCAPE / 影画 2880×1080</i></div>
+          </div>
+          <div class="swiper-slide skewsw__slide">
+            <img src="../../assets/mindscape/default/ellen.webp" alt="艾莲的影画宽幅图，斜切轮播第 2 张">
+            <div class="skewsw__cap"><span class="skewsw__ix">02</span><b>艾莲·乔</b><i>MINDSCAPE / 影画 2880×1080</i></div>
+          </div>
+          <div class="swiper-slide skewsw__slide">
+            <img src="../../assets/mindscape/default/miyabi.webp" alt="星见雅的影画宽幅图，斜切轮播第 3 张">
+            <div class="skewsw__cap"><span class="skewsw__ix">03</span><b>星见雅</b><i>MINDSCAPE / 影画 2880×1080</i></div>
+          </div>
+          <div class="swiper-slide skewsw__slide">
+            <img src="../../assets/mindscape/default/alice.webp" alt="爱丽丝的影画宽幅图，斜切轮播第 4 张">
+            <div class="skewsw__cap"><span class="skewsw__ix">04</span><b>爱丽丝</b><i>MINDSCAPE / 影画 2880×1080</i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 缩略图条：外层 skewX(-25.3deg)，子项 skewX(25.3deg) 回正 -->
+      <div class="swiper skewsw__thumbs" id="skewsw-thumbs">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide skewsw__thumb"><span class="skewsw__thumbInner"><img src="../../assets/portraits/anby-portrait.webp" alt="安比立绘缩略图"><em>01</em></span></div>
+          <div class="swiper-slide skewsw__thumb"><span class="skewsw__thumbInner"><img src="../../assets/portraits/ellen-portrait.webp" alt="艾莲立绘缩略图"><em>02</em></span></div>
+          <div class="swiper-slide skewsw__thumb"><span class="skewsw__thumbInner"><img src="../../assets/portraits/miyabi-portrait.webp" alt="星见雅立绘缩略图"><em>03</em></span></div>
+          <div class="swiper-slide skewsw__thumb"><span class="skewsw__thumbInner"><img src="../../assets/portraits/alice-portrait.webp" alt="爱丽丝立绘缩略图"><em>04</em></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls" role="group" aria-label="斜切轮播控制">
+      <button class="btn" type="button" id="skewsw-prev">← 上一张</button>
+      <button class="btn" type="button" id="skewsw-next">下一张 →</button>
+      <span class="hint">当前第 <code id="skewsw-readout" style="color:var(--neon);font-family:var(--font-mono)">1</code> / 4 张，也可以用键盘左右方向键。</span>
+    </div>
+    <p class="sample__note">缩略图条的斜切用的是<strong>两层反向 skew</strong>：外壳斜过去决定形状，里面的图斜回来保证不变形。这一招同样适用于按钮、标签、进度条，是规范第 4.2 节里成本最低、辨识度最高的一条。</p>
+  </section>
+
+  <!-- ============ 20 页面切换转场 ============ -->
+  <section class="sample" id="s20" aria-labelledby="s20-title">
+    <div class="sample__head">
+      <span class="sample__no">20</span>
+      <h2 class="sample__title" id="s20-title">页面切换转场（电视信号缓冲）</h2>
+    </div>
+    <p class="sample__plain">换页的那一下不留白屏，做成<strong>老电视失去信号又重新接上</strong>的样子：先闪一道彩条，画面立刻被雪花盖住，中间有横向撕裂错位、还有一条亮带从上往下滚过（就是电视场同步没锁住的那种感觉），雪花最浓的时候悄悄把新页面换好，最后雪花退去、扫描线收掉，画面重新锁定。全程 <strong>760 毫秒</strong>，再长就烦了。雪花、彩条、扫描线、撕裂全是纯 CSS 画的，没有用图片，整段由 <strong>GSAP timeline</strong> 编排。下面是两块假页面在原地互相切换，不会真的跳转。</p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-high">成本：高</span>
+      <span class="tag tag--scope">建议范围：后期再说</span>
+    </div>
+    <div class="reel" id="reel">
+      <div class="reel__pages" id="reel-pages">
+        <div class="reel__page" data-state="in" data-page="a">
+          <span class="kicker">PAGE A / 首页</span>
+          <h4>档案总览</h4>
+          <p>这是「首页」。点下面的按钮切到角色页，注意那一下的雪花、彩条和滚过的亮带。</p>
+          <div><button class="btn btn--neon" type="button" id="reel-go-b">前往角色页 →</button></div>
+        </div>
+        <div class="reel__page" data-state="wait" data-page="b">
+          <span class="kicker">PAGE B / 角色页</span>
+          <h4>代理人 · 空洞调查员</h4>
+          <p>这是「角色页」。刚才那一下就是信号缓冲：彩条闪断、雪花盖住、亮带滚过、重新锁定。</p>
+          <div><button class="btn" type="button" id="reel-go-a">← 返回首页</button></div>
+        </div>
+      </div>
+      <!-- 胶片带：上下齿孔 + 中间噪点帧，全部纯 CSS -->
+      <div class="filmstrip" id="filmstrip" aria-hidden="true">
+        <span class="filmstrip__perf"></span>
+        <span class="filmstrip__frame">
+          <span class="filmstrip__noise"></span>
+          <span class="filmstrip__scan"></span>
+          <span class="filmstrip__roll"></span>
+          <span class="filmstrip__tear"></span>
+          <span class="filmstrip__mark">NO SIGNAL · 信号重连</span>
+        </span>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="btn" type="button" id="reel-replay">再放一次</button>
+      <span class="hint">当前状态：<code id="reel-readout" style="color:var(--neon);font-family:var(--font-mono)">PAGE A</code></span>
+    </div>
+    <p class="sample__note">正式接入时的做法：点击站内链接后先<strong>拦住跳转播「信号中断」</strong>（彩条闪断加雪花盖住），新页面加载完成再<strong>播「重新锁定」</strong>（雪花退去），中间雪花最浓的那段正好盖住真实的加载空档——网速慢就多缓冲一会儿，这一点比胶片过带更合理，因为「信号在缓冲」本身就是等待的合理解释。这条在规范里属于「<strong>后期再说</strong>」的第 15 条，本样本只用来确认视觉方向，不代表现在就要做。</p>
+  </section>
+
+  <!-- ============ 21 常驻磁带机播放器（TPS-L2 致敬） ============ -->
+  <section class="sample" id="s21" aria-labelledby="s21-title">
+    <div class="sample__head">
+      <span class="sample__no">21</span>
+      <h2 class="sample__title" id="s21-title">常驻磁带机播放器（TPS-L2 致敬）</h2>
+    </div>
+    <p class="sample__plain">
+      把音乐播放器做成一台<strong>真实存在过的随身听</strong>：1979 年索尼 TPS-L2，也就是第一代 Walkman。
+      它的辨识点全部还原了——<strong>正面半透明窗能看见里面的磁带在转</strong>、<strong>顶部两个耳机孔</strong>（当年设计成两人可以一起听）、
+      <strong>机身右侧一条竖向铝合金饰条</strong>、以及那颗<strong>橙色 HOT LINE 按钮</strong>（按住会压低音乐、让两个人不用摘耳机就能说话）。
+      机身塑料的颜色<strong>跟着你选的角色变</strong>，用的是角色影画上那个大号招牌字母的颜色，所以每个角色的机器颜色都明显不一样。
+      机器就停在<strong>屏幕右下角</strong>，往下滚也一直在那，不挡内容。
+    </p>
+    <p class="sample__plain">
+      这一版刻意<strong>把中文标签几乎全删了</strong>。原来那个播放器有五处中文字（「音乐播放器（可选）」「NOW ON TAPE」「未选择音乐」「顺序」「歌单」），
+      字一多就显得像后台工具、没有质感。现在改成<strong>只留曲名一行文字</strong>，其余全靠图形表达：三角是播放、两竖是暂停、双三角是切歌、循环箭头是播放模式。
+      语义没丢——每个按钮都带 <code>aria-label</code>，读屏软件照样念得出来，键盘也能逐个 Tab 过去操作。
+    </p>
+    <div class="sample__meta">
+      <span class="tag tag--cost-mid">成本：中</span>
+      <span class="tag tag--scope">建议范围：全站底层</span>
+    </div>
+
+    <p class="sample__note" style="margin-top:0">
+      <strong>商标合规</strong>：本站是粉丝非官方站，所以机身上原本印 <em>SONY</em> 的位置改印了 <strong>HOOXI</strong>，
+      原本印 <em>WALKMAN</em> 型号条的位置改印 <strong>ZZZ ARCHIVE</strong>，排版位置与字重保持一致。
+      这是<strong>向 TPS-L2 工业设计致敬，商标字样已全部替换</strong>，不是仿冒商品。
+    </p>
+
+    <div class="tpsdemo">
+      <div class="tpsdemo__panel">
+        <span class="kicker">机身配色 / 换个角色试试</span>
+        <div class="tpsdemo__agents" id="s21-agents" role="group" aria-label="切换磁带机机身配色所用的角色">
+          <!-- 由 JS 按 window.agentXray 的 l 色生成，保证颜色不是手写的 -->
+        </div>
+        <p class="tpsdemo__readout">
+          当前机身取色：<code id="s21-agent-readout">照</code>
+        </p>
+        <p class="hint" style="margin:0">
+          机身塑料跟角色色走，但<strong>铝条永远是银灰的</strong>（金属就该是金属），
+          <strong>HOT LINE 钮永远是橙的</strong>（这是 TPS-L2 的标志，跟着变色就认不出来了）。
+          磁带卷芯用的是角色色压暗后的版本。
+        </p>
+      </div>
+      <div class="tpsdemo__panel">
+        <span class="kicker">数据来源 / 为什么颜色不一样</span>
+        <p class="hint" style="margin:0 0 10px">
+          取色直接读现成的 <code>window.agentXray</code>，共 <code id="s21-agent-count">57</code> 个角色，用的是
+          <code>l</code> 字段（影画上大号彩色英文字母的颜色），不是 <code>c</code> 字段。
+        </p>
+        <p class="hint" style="margin:0">
+          原因是实测过：<code>c</code> 被统一抬亮过，57 个角色的第一位几乎都是 210，做出来的机器会长得差不多；
+          <code>l</code> 的差异一眼就能看出来。<code>l</code> 有 56/57 的覆盖率，缺的那一个（<code>remielle</code>）
+          <strong>会自动回落到 TPS-L2 原型的那个蓝色</strong>，不会崩——最后一颗按钮就是用来看这个降级效果的。
+        </p>
+      </div>
+    </div>
+
+    <p class="sample__note">
+      <strong>关于「全站每一页都能看到它在播」</strong>：现在的实际情况是，正式站的播放器<strong>只存在于首页 index.html</strong>，
+      其余七个页面（stories / character / faction / mainline / events / behind-scenes / cultivate）根本没有播放器。这是一个真实缺口。
+      三种补法：
+    </p>
+    <ul class="tpsdemo__ways">
+      <li>
+        <b>做法 A（推荐）</b>：把播放器抽成一个 JS 模块（例如 <code>zzz-player.js</code>），八个页面底部各引一行，DOM 由 JS 注入，
+        不用维护八份重复 HTML。播放位置与曲目索引存 <code>sessionStorage</code>，跳到新页面后从上次的位置接着放。
+        <strong>必须说清的局限：传统多页站每次跳转都是整页重新加载，音频一定会中断重播，做不到真正的连续播放。</strong>
+        记住进度只是让体验<em>接近</em>连续，严格讲那是「断掉之后重连」，中间会有一下停顿。
+      </li>
+      <li>
+        <b>做法 B</b>：改成单页应用，或用 View Transition 只换局部内容，播放器 DOM 从不销毁，音频真的不断。
+        代价是要重构整站路由，工作量大得多。
+      </li>
+      <li>
+        <b>做法 C</b>：用 <code>BroadcastChannel</code> 在多个标签页之间同步播放状态。这能解决「开两个标签」的场景，
+        但<strong>同一个标签内部跳转照样会中断</strong>，不解决主要问题。
+      </li>
+    </ul>
+    <p class="sample__note">
+      结论：先上做法 A，成本最低、八页立刻都有播放器；想要真正无缝续播必须走做法 B，那是另一个量级的改造，建议单独立项再谈。
+    </p>
+  </section>
+
+</main>
+
+<!-- ===== 21 常驻磁带机播放器：TPS-L2 致敬机身（固定在右下角，全站常驻的形态演示） ===== -->
+<!-- 商标合规：SONY / WALKMAN 字样一律不出现，改为 HOOXI / ZZZ ARCHIVE，排版位置与字重保持原机一致 -->
+<div class="tps" id="musicPlayer" data-state="open" role="region" aria-label="磁带机音乐播放器">
+
+  <!-- 顶面：两个耳机孔（原机 GUYS / DOLLS，供两人同时听） -->
+  <div class="tps__top" aria-hidden="true">
+    <span class="tps__jack"><i></i><em>GUYS</em></span>
+    <span class="tps__jack"><i></i><em>DOLLS</em></span>
+  </div>
+
+  <div class="tps__body">
+    <!-- 右侧竖向铝合金饰条：不跟随角色色，永远银灰 -->
+    <span class="tps__rail" aria-hidden="true"></span>
+
+    <!-- 原机 SONY 标志位 → HOOXI；型号条位 → ZZZ ARCHIVE -->
+    <div class="tps__brand" aria-hidden="true">
+      <b class="tps__brandMark">HOOXI</b>
+      <span class="tps__brandModel">ZZZ ARCHIVE</span>
+    </div>
+
+    <!-- 正面半透明窗：TPS-L2 最重要的辨识点，能看见里面的磁带 -->
+    <div class="tps__window">
+      <div class="tps__tape" aria-hidden="true">
+        <span class="tps__reel tps__reel--l" id="s21-reel-l"><i></i><b></b></span>
+        <span class="tps__reel tps__reel--r" id="s21-reel-r"><i></i><b></b></span>
+        <span class="tps__tapeBand"></span>
+        <span class="tps__tapeLabel">TYPE&nbsp;I&nbsp;·&nbsp;NORMAL</span>
+      </div>
+      <span class="tps__windowGloss" aria-hidden="true"></span>
+    </div>
+
+    <!-- 唯一保留的文字：曲名跑马灯。容器带完整 aria-label，滚动内容 aria-hidden 防止重复朗读 -->
+    <div class="tps__marquee" id="trackName" aria-live="off" aria-label="当前未选择曲目">
+      <span class="tps__marqueeTrack" aria-hidden="true"></span>
+    </div>
+
+    <!-- 声波律动：纯 CSS animation，错开 delay，不接真实音频分析 -->
+    <div class="tps__viz" id="s21-viz" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+
+    <!-- 进度：细横条 + 荧光绿填充，真实 range 保证键盘可达 -->
+    <input class="tps__seek" id="s21-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="播放进度，可拖动跳转">
+
+    <!-- 按钮区：只有图形，没有文字 -->
+    <div class="tps__deck">
+      <button class="tps__key tps__key--prev" type="button" id="prevTrack" aria-label="上一首"><span aria-hidden="true"></span></button>
+      <button class="tps__key tps__key--play" type="button" id="musicToggle" aria-label="播放" aria-pressed="false"><span aria-hidden="true"></span></button>
+      <button class="tps__key tps__key--next" type="button" id="nextTrack" aria-label="下一首"><span aria-hidden="true"></span></button>
+      <button class="tps__key tps__key--mode" type="button" id="playMode" data-mode="order" aria-label="播放模式：顺序播放"><span aria-hidden="true"></span></button>
+      <button class="tps__key tps__key--list" type="button" id="playlistOpen" aria-label="打开歌单" aria-expanded="false"><span aria-hidden="true"></span></button>
+    </div>
+
+    <!-- 底排：音量推杆 + 橙色 HOT LINE 钮，与实机把两者并置在下缘一致 -->
+    <div class="tps__bottom">
+      <!-- 音量推杆：真实 input range，视觉重绘为推杆 -->
+      <div class="tps__volWrap">
+        <span class="tps__volIcon" aria-hidden="true"></span>
+        <input class="tps__vol" id="volume" type="range" min="0" max="1" step="0.01" value="0.7" aria-label="音量">
+      </div>
+
+      <!-- 橙色 HOT LINE：还原原机功能，按住压低音量到 20%，松开恢复 -->
+      <button class="tps__hot" type="button" id="s21-hotline" aria-label="HOT LINE：按住临时压低音量">
+        <span class="tps__hotDot" aria-hidden="true"></span>
+        <b aria-hidden="true">HOT LINE</b>
+      </button>
+    </div>
+
+    <!-- 右上角：收起 / 关闭 -->
+    <div class="tps__chrome">
+      <button class="tps__chromeBtn tps__chromeBtn--min" type="button" id="s21-collapse" aria-label="收起播放器"><span aria-hidden="true"></span></button>
+      <button class="tps__chromeBtn tps__chromeBtn--close" type="button" id="s21-close" aria-label="关闭播放器"><span aria-hidden="true"></span></button>
+    </div>
+  </div>
+
+  <!-- 收起后的紧凑胶囊：仍显示旋转轮盘表示还在播 -->
+  <button class="tps__mini" type="button" id="s21-expand" aria-label="展开播放器">
+    <span class="tps__miniTape" aria-hidden="true">
+      <i id="s21-reel-mini-l"></i><i id="s21-reel-mini-r"></i>
+    </span>
+    <span class="tps__miniViz" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <!-- 歌单：曲名是内容不是标签 -->
+  <div class="tps__list" id="playlist" hidden>
+    <ul id="playlistItems"></ul>
+  </div>
+
+  <audio id="audio" preload="metadata"></audio>
+</div>
+
+<!-- 关闭后的唤回入口：极小，贴在角落，避免关了就打不开 -->
+<button class="tps-recall" type="button" id="s21-recall" aria-label="唤回磁带机播放器" hidden>
+  <span aria-hidden="true"></span>
+</button>
+
+<footer class="pagefoot">
+  粉丝非官方档案站 · 与米哈游无隶属
+</footer>
+
+<!-- 动效库（本地化，assets/vendor）：仅 GSAP 核心 + ScrollTrigger（免费许可覆盖范围）+ Swiper -->
+<script src="../../assets/vendor/gsap/gsap.min.js"></script>
+<script src="../../assets/vendor/gsap/ScrollTrigger.min.js"></script>
+<script src="../../assets/vendor/swiper/swiper-bundle.min.js"></script>
+<!-- 21 磁带机机身取色数据：现成的角色影画采样表，只读不改 -->
+<script src="../../agent-xray.js"></script>
+<script src="samples.js"></script>
+</body>
+</html>

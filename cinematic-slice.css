@@ -1,0 +1,157 @@
+/* HOOXI 氛围首屏切片 — Active Theory 气质，纯前端复现 */
+:root{
+  --black:#000000;
+  --panel:#0a0b0d;
+  --ink-1:#f4f4f2;   /* 主白 */
+  --ink-2:#b9bbbe;   /* 次白 */
+  --ink-3:#6c6f74;   /* 弱灰 */
+  --line:rgba(244,244,242,.16);
+  --line-soft:rgba(244,244,242,.08);
+  --yellow:#f3d33b;  /* hoooxi 品牌黄，克制点缀 */
+  --orange:#ef6e3a;
+  --cyan:#8fe9ff;
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --gutter:clamp(20px,4vw,64px);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--black);color:var(--ink-1);overflow:hidden}
+body{font-family:"Space Grotesk",system-ui,"PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+.mono{font-family:"Space Mono",ui-monospace,monospace}
+
+.stage{position:fixed;inset:0;overflow:hidden;background:var(--black)}
+
+/* ---------- 视差场景层 ---------- */
+.scene{position:absolute;inset:0;z-index:1}
+.scene-layer{
+  position:absolute;inset:-6% -6% -6% -6%;
+  background-repeat:no-repeat;background-position:center;background-size:cover;
+  will-change:transform;transition:transform .18s var(--ease-out);
+}
+.scene-far{
+  background-image:url("assets/hooxi-rebuild/store-poster.png");
+  filter:brightness(.5) saturate(.85) blur(2px);transform:scale(1.12);
+}
+.scene-mid{
+  background-image:url("assets/hooxi-rebuild/store-poster.png");
+  filter:brightness(.82) saturate(1.02) contrast(1.05);
+  -webkit-mask-image:radial-gradient(120% 90% at 50% 62%,#000 40%,transparent 78%);
+          mask-image:radial-gradient(120% 90% at 50% 62%,#000 40%,transparent 78%);
+  transform:scale(1.04);
+}
+.scene-near{
+  background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.55) 100%);
+}
+.scene-vignette{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(130% 100% at 50% 44%,transparent 46%,rgba(0,0,0,.72) 100%),
+    linear-gradient(180deg,rgba(0,0,0,.55) 0%,transparent 22%,transparent 62%,rgba(0,0,0,.85) 100%);
+}
+/* ---------- 进店转场层 ---------- */
+.entry{position:absolute;inset:0;z-index:10;background:var(--black);opacity:0;transition:opacity .6s var(--ease)}
+.entry:not([hidden]){opacity:1}
+.entry-video{width:100%;height:100%;object-fit:cover}
+.entry-fade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,var(--black) 100%)}
+
+/* ---------- 颗粒/扫描线后期 ---------- */
+.grain{position:absolute;inset:0;z-index:8;pointer-events:none;mix-blend-mode:screen;opacity:.042}
+.scanline{
+  position:absolute;inset:0;z-index:8;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px);
+  opacity:.5;
+}
+
+/* ---------- HUD ---------- */
+.hud{
+  position:relative;z-index:5;
+  display:grid;grid-template-rows:auto 1fr auto;
+  height:100dvh;padding:var(--gutter);
+  pointer-events:none;
+}
+.hud *{pointer-events:auto}
+.hud-top{display:flex;align-items:center;justify-content:space-between}
+
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand-mark{
+  display:grid;place-items:center;
+  width:34px;height:34px;
+  border:1.5px solid var(--ink-2);color:var(--yellow);
+  font:700 18px/1 "Space Grotesk";transform:skew(-6deg);
+}
+.brand-text b{display:block;font:600 14px/1 "Space Mono";letter-spacing:3px;color:var(--ink-1)}
+.brand-text small{font:400 9px/1 "Space Mono";letter-spacing:1.8px;color:var(--ink-3)}
+
+.hud-status{font:400 10px/1 "Space Mono";letter-spacing:1.5px;color:var(--ink-3)}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cyan);margin-right:6px;animation:pulse 2.8s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ---------- 中央内容 ---------- */
+.hud-center{
+  align-self:center;justify-self:start;
+  max-width:680px;padding-left:calc(var(--gutter) * .5);
+}
+.eyebrow{font:400 10px/1 "Space Mono";letter-spacing:2.5px;color:var(--ink-3);margin:0 0 20px;text-transform:uppercase}
+.title{margin:0 0 22px;font-size:clamp(52px,9vw,110px);font-weight:700;line-height:.88;letter-spacing:-2px}
+.title .line{display:block;opacity:0;transform:translateY(24px);animation:rise .9s var(--ease) forwards}
+.title .line[data-i="2"]{animation-delay:.12s}
+.title .accent{color:var(--yellow)}
+.lede{font-size:clamp(14px,1.4vw,18px);line-height:1.6;color:var(--ink-2);max-width:440px;margin:0 0 36px;opacity:0;animation:rise .9s var(--ease) .22s forwards}
+@keyframes rise{to{opacity:1;transform:translateY(0)}}
+
+/* ---------- 按钮 ---------- */
+.actions{display:flex;align-items:center;gap:24px;opacity:0;animation:rise .9s var(--ease) .34s forwards}
+.cta{
+  position:relative;display:inline-flex;align-items:center;gap:12px;
+  padding:14px 28px;border:1.5px solid var(--yellow);background:transparent;
+  color:var(--yellow);font:600 13px/1 "Space Mono";letter-spacing:1.5px;
+  cursor:pointer;overflow:hidden;transition:background .35s var(--ease),color .35s var(--ease);
+}
+.cta:hover{background:var(--yellow);color:var(--black)}
+.cta-arrow{font-size:17px;transition:transform .3s var(--ease)}
+.cta:hover .cta-arrow{transform:translate(3px,3px)}
+.ghost{
+  font:400 12px/1 "Space Mono";letter-spacing:1px;color:var(--ink-3);
+  text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:2px;
+  transition:color .3s,border-color .3s;
+}
+.ghost:hover{color:var(--ink-1);border-color:var(--ink-1)}
+
+/* ---------- 底部 ---------- */
+.hud-bottom{display:flex;align-items:flex-end;justify-content:space-between}
+.coords{font:400 9px/1.5 "Space Mono";letter-spacing:1.5px;color:var(--ink-3)}
+.coords span{color:var(--ink-2)}
+.index{display:flex;gap:4px}
+.index i{display:block;width:18px;height:2px;background:var(--line);transition:background .4s}
+.index i.active{background:var(--yellow)}
+.scroll-hint{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  font:400 9px/1 "Space Mono";letter-spacing:2px;color:var(--ink-3);
+}
+.scroll-hint i{
+  display:block;width:1px;height:28px;background:var(--ink-3);
+  animation:scroll-bob 2s ease infinite;
+}
+@keyframes scroll-bob{0%,100%{opacity:1;transform:scaleY(1)}50%{opacity:.4;transform:scaleY(.6)}}
+
+/* ---------- 色散光晕(CTA hover) ---------- */
+.cta::before{
+  content:'';position:absolute;inset:-2px;
+  background:conic-gradient(from 180deg,var(--cyan),var(--yellow),var(--orange),var(--cyan));
+  opacity:0;filter:blur(12px);z-index:-1;transition:opacity .4s;
+}
+.cta:hover::before{opacity:.22}
+
+/* ---------- 响应式 ---------- */
+@media(max-width:768px){
+  .hud-center{padding-left:0}
+  .title{font-size:clamp(42px,12vw,64px)}
+  .hud-bottom{flex-direction:column;align-items:flex-start;gap:16px}
+  .scroll-hint{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .title .line,.lede,.actions{animation:none;opacity:1;transform:none}
+  .dot{animation:none}
+  .scroll-hint i{animation:none}
+}
+

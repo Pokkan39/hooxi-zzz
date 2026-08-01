@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>绳网情报站 · 视觉复刻 Demo（HOOXI prototype）</title>
+  <meta name="description" content="基于官方 wiki 视觉 token 的高保真对照原型，非正式站。">
+  <link rel="stylesheet" href="css/wiki.css?v=20260322v1d">
+</head>
+<body>
+  <div class="page" id="wikiPage" style="--px:0px; --py:0px">
+    <div class="page-fx" aria-hidden="true">
+      <div class="page-fx__deep"></div>
+      <div class="page-fx__wash"></div>
+      <div class="page-fx__side"></div>
+      <div class="page-fx__grain"></div>
+    </div>
+    <header class="topbar">
+      <div class="topbar__left">
+        <div class="brand">
+          <img class="brand__mihoyo" src="assets/mihoyo-game.png" alt="miHoYo">
+          <span class="brand__divider"></span>
+          <nav class="brand__links" aria-label="主导航">
+            <a class="keep" href="#">米游社·绝区零</a>
+            <a class="is-active" href="index.html">绳网情报站</a>
+          </nav>
+        </div>
+      </div>
+      <div class="topbar__right">
+        <div class="search" title="搜索仅作视觉占位">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+          <span>搜索</span>
+        </div>
+        <div class="avatar" title="账号占位">绳</div>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div class="home-grid">
+        <section>
+          <article class="hero" id="homeHero">
+            <div class="hero__art">
+              <span class="hero__art-glow"></span>
+              <span class="hero__art-scan"></span>
+            </div>
+            <img class="hero__photo" src="assets/hero-norma.png" alt="诺姆">
+            <div class="hero__content">
+              <div class="hero__badge"><b>绝·区·零</b> WIKI STYLE</div>
+              <h1 class="hero__title">绳网<em>情报站</em></h1>
+              <div class="hero__sub">
+                <span><i></i>技能展示</span>
+                <span><i></i>基础数据</span>
+                <span><i></i>推荐攻略</span>
+              </div>
+              <div class="hero__meta">
+                <span class="cn">诺姆</span>
+                <span class="en">NORMA</span>
+              </div>
+            </div>
+            <div class="hero__dots" aria-hidden="true"><b class="is-on"></b><b></b><b></b></div>
+          </article>
+
+          <section class="card quick">
+            <div class="card__hd">
+              <div class="card__title"><span class="mark"></span>快捷导航</div>
+              <a class="card__more" href="agents.html">代理人图鉴 ›</a>
+            </div>
+            <div class="kingkong" id="kingkong">
+              <!-- filled by js labels; icons are inline geometric marks -->
+            </div>
+          </section>
+
+          <section class="card block">
+            <div class="card__hd">
+              <div class="card__title"><span class="mark"></span>代理人精选</div>
+              <a class="card__more" href="agents.html">全部 ›</a>
+            </div>
+            <div class="chips" id="homeChips">
+              <button type="button" class="chip is-on" data-home-rank="all">全部</button>
+              <button type="button" class="chip" data-home-rank="S">S级</button>
+              <button type="button" class="chip" data-home-rank="A">A级</button>
+            </div>
+            <div class="agent-grid" id="homeAgents"></div>
+          </section>
+
+          <div class="note">
+            <b>说明：</b>本页是 HOOXI 仓库内的<strong>视觉复刻原型</strong>，对照官方「绳网情报站」信息架构与视觉 token（深底、黄强调、圆角卡片、S/A 角标代理人卡）。  
+            已接入本地素材动态底 / 侧栏氛围 / Banner 视差。金刚区仅「代理人」可进；其余入口为原型未开，避免假可点。不是整站复制，也不改正式站代码。
+          </div>
+        </section>
+
+        <aside class="rail">
+          <section class="card side-card about">
+            <div class="card__hd">
+              <div class="card__title"><span class="mark"></span>关于 Wiki</div>
+            </div>
+            <p>《绝区零》WIKI——「绳网情报站」视觉对照稿（原型）。</p>
+            <p>「绳网情报站」在官方侧是资料、攻略一体的玩家内容平台。本 Demo 只抽取<strong>首页骨架 + 代理人墙</strong>做高保真讨论，便于 HOOXI 档案站取舍气质，而不是仿站上线。</p>
+          </section>
+
+          <section class="card side-card">
+            <div class="card__hd">
+              <div class="card__title"><span class="mark"></span>更新日志</div>
+              <a class="card__more" href="#">全部 ›</a>
+            </div>
+            <div class="updates">视觉原型 · 无实时日志源</div>
+          </section>
+
+          <section class="card side-card">
+            <div class="card__hd">
+              <div class="card__title"><span class="mark"></span>热点活动</div>
+            </div>
+            <button type="button" class="btn-calendar">活动日历</button>
+            <div class="act-list">
+              <article class="act">
+                <img class="act__img" src="assets/act-1.png" alt="">
+                <div class="act__body">
+                  <div class="act__title">「锋芒契影协战」</div>
+                  <div class="act__sub">活动说明 · 对照占位</div>
+                  <span class="act__tag is-end">● 已结束</span>
+                </div>
+              </article>
+              <article class="act">
+                <img class="act__img" src="assets/act-2.png" alt="">
+                <div class="act__body">
+                  <div class="act__title">「跛脚乌鸦奇闻录」</div>
+                  <div class="act__sub">活动说明 · 对照占位</div>
+                  <span class="act__tag is-live">● 还剩 1 天 1 小时</span>
+                </div>
+              </article>
+              <article class="act">
+                <img class="act__img" src="assets/act-3.png" alt="">
+                <div class="act__body">
+                  <div class="act__title">「艺术就是邦布！」</div>
+                  <div class="act__sub">活动说明 · 对照占位</div>
+                  <span class="act__tag is-live">● 还剩 3 天 1 小时</span>
+                </div>
+              </article>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="foot">
+      <div>HOOXI prototype · wiki-visual-replica · 非正式站</div>
+      <div>
+        <a href="agents.html">代理人页</a>
+        ·
+        <a href="../visual-review-demos/">返回五版讨论 Demo</a>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/wiki.js?v=20260322v1c"></script>
+  <script>
+    // [label, href|null, active] — href 为空表示原型未开，禁止假跳转
+    const NAV = [
+      ["代理人", "agents.html", true],
+      ["音擎", null, false],
+      ["邦布", null, false],
+      ["驱动盘", null, false],
+      ["攻略合集", null, false],
+      ["地图收集", null, false],
+      ["壁纸收录", null, false],
+      ["空洞见闻", null, false],
+      ["敌人", null, false],
+      ["材料", null, false],
+      ["活动攻略", null, false],
+      ["萌新指南", null, false],
+    ];
+
+    function iconSvg(i) {
+      const paths = [
+        '<circle cx="12" cy="8" r="3.2"/><path d="M5 19c1.5-3.2 3.8-4.8 7-4.8s5.5 1.6 7 4.8"/>',
+        '<path d="M8 6h8l2 4-6 9-6-9 2-4z"/><path d="M8 10h8"/>',
+        '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4"/>',
+        '<rect x="5" y="6" width="14" height="12" rx="2"/><path d="M5 10h14M9 6v12"/>',
+        '<path d="M7 7h10v10H7z"/><path d="M7 11h10M11 7v10"/>',
+        '<path d="M4 18l8-14 8 14H4z"/><circle cx="12" cy="13" r="1.4"/>',
+        '<rect x="5" y="7" width="14" height="10" rx="1.5"/><path d="M9 7V5h6v2"/>',
+        '<circle cx="12" cy="12" r="7"/><path d="M5 12h14M12 5a11 11 0 0 1 0 14M12 5a11 11 0 0 0 0 14"/>',
+        '<path d="M8 16c0-3 1.8-5 4-5s4 2 4 5"/><path d="M9 9h6l1 3H8l1-3z"/>',
+        '<rect x="7" y="4" width="10" height="16" rx="2"/><path d="M10 8h4M10 12h4M10 16h3"/>',
+        '<path d="M6 8h12v10H6z"/><path d="M9 8V6h6v2M9 12h6"/>',
+        '<path d="M6 18V7l6-3 6 3v11"/><path d="M10 18v-5h4v5"/>',
+      ];
+      return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[i % paths.length]}</svg>`;
+    }
+
+    function mountKingkong() {
+      const root = document.getElementById("kingkong");
+      root.innerHTML = NAV.map(([label, href, active], i) => {
+        const open = Boolean(href);
+        const cls = `king${active ? " is-active" : ""}${open ? "" : " is-disabled"}`;
+        const ico = label === "代理人" ? '<img src="assets/nav-agents.png" alt="">' : iconSvg(i);
+        if (!open) {
+          return `<span class="${cls}" title="原型未开 · 仅视觉占位" aria-disabled="true">
+            <span class="king__ico">${ico}</span>
+            <span class="king__label">${label}</span>
+            <span class="king__hint">未开</span>
+          </span>`;
+        }
+        return `<a class="${cls}" href="${href}">
+          <span class="king__ico">${ico}</span>
+          <span class="king__label">${label}</span>
+        </a>`;
+      }).join("");
+    }
+
+    function bindHomeParallax() {
+      const page = document.getElementById("wikiPage");
+      const hero = document.getElementById("homeHero");
+      if (!page) return;
+      const forceFx = (() => {
+        try {
+          const q = new URLSearchParams(location.search);
+          return q.get("motion") === "1" || q.get("fx") === "full";
+        } catch (_) { return false; }
+      })();
+      const reduce = !forceFx && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const fine = window.matchMedia && window.matchMedia("(pointer:fine)").matches;
+      if (reduce || !fine) return;
+
+      let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
+      const max = 14;
+      const tick = () => {
+        cx += (tx - cx) * 0.07;
+        cy += (ty - cy) * 0.07;
+        page.style.setProperty("--px", cx.toFixed(2) + "px");
+        page.style.setProperty("--py", cy.toFixed(2) + "px");
+        if (hero) {
+          hero.style.setProperty("--hpx", (cx * 1.2).toFixed(2) + "px");
+          hero.style.setProperty("--hpy", (cy * 0.9).toFixed(2) + "px");
+        }
+        raf = requestAnimationFrame(tick);
+      };
+      window.addEventListener("pointermove", (e) => {
+        const nx = (e.clientX / window.innerWidth) * 2 - 1;
+        const ny = (e.clientY / window.innerHeight) * 2 - 1;
+        tx = Math.max(-1, Math.min(1, nx)) * max;
+        ty = Math.max(-1, Math.min(1, ny)) * max;
+      }, { passive: true });
+      requestAnimationFrame(tick);
+      window.addEventListener("beforeunload", () => cancelAnimationFrame(raf), { once: true });
+    }
+
+    async function main() {
+      try {
+        const q = new URLSearchParams(location.search);
+        if (q.get("motion") === "1" || q.get("fx") === "full") {
+          document.documentElement.classList.add("force-fx");
+          document.body.classList.add("force-fx");
+        }
+      } catch (_) {}
+      WikiReplica.mountDetailShell();
+      mountKingkong();
+      bindHomeParallax();
+      const agents = await WikiReplica.loadAgents();
+      const home = document.getElementById("homeAgents");
+      if (!agents.length) {
+        home.innerHTML = `<div class="empty">暂无代理人数据。请用本地静态服务打开本页（勿依赖 file 协议）。</div>`;
+        return;
+      }
+
+      const render = () => {
+        const rank = document.querySelector("[data-home-rank].is-on")?.dataset.homeRank || "all";
+        let list = agents.slice();
+        if (rank !== "all") list = list.filter((a) => a.rank === rank);
+        // 优先展示 S，再 A，特殊档 I 靠后，保证精选墙观感
+        const weight = (r) => (r === "S" ? 0 : r === "A" ? 1 : 2);
+        list.sort((a, b) => weight(a.rank) - weight(b.rank) || String(a.display || a.name).localeCompare(String(b.display || b.name), "zh"));
+        list = list.slice(0, 16);
+        home.innerHTML = list.length
+          ? list.map((a) => WikiReplica.agentCard(a)).join("")
+          : `<div class="empty">当前筛选下没有代理人</div>`;
+      };
+
+      document.getElementById("homeChips").addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-home-rank]");
+        if (!btn) return;
+        document.querySelectorAll("[data-home-rank]").forEach((b) => b.classList.remove("is-on"));
+        btn.classList.add("is-on");
+        render();
+      });
+
+      render();
+      WikiReplica.bindAgentClicks(home, agents);
+    }
+
+    main().catch((err) => {
+      document.getElementById("homeAgents").innerHTML =
+        `<div class="empty">数据加载失败：${err.message}<br><span style="opacity:.7">请在仓库根目录执行 npx serve prototype/wiki-visual-replica -p 5180</span></div>`;
+    });
+  </script>
+</body>
+</html>

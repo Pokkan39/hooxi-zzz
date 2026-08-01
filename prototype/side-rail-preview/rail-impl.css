@@ -1,0 +1,56 @@
+/* C1 侧栏页码样式原型 —— 可直接落地
+   落地位置建议：追加到 zzz-motion.css，作用域挂 body.home-page。 */
+
+.zzz-rail{
+  position:fixed;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:70;                    /* 高于动效提示 60 与 toast 30，低于光标 120 与转场 1000 */
+  display:grid;
+  width:41px;
+  background:rgba(10,10,10,.82);
+  border-left:1px solid var(--zzz-lime-line,rgba(216,250,0,.42));
+  backdrop-filter:blur(2px);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .28s ease;
+}
+.zzz-rail.is-on{opacity:1;pointer-events:auto}
+
+.zzz-rail__item{
+  display:grid;
+  place-items:center;
+  width:41px;
+  min-height:44px;               /* 规范 9.5 点击目标 */
+  padding:0;
+  border:0;
+  background:transparent;
+  color:rgba(232,236,241,.42);
+  font:800 13px/1 var(--font-display,sans-serif);
+  letter-spacing:.02em;
+  cursor:pointer;
+}
+.zzz-rail__item.is-current{
+  color:var(--zzz-lime,#d8fa00);
+  background:rgba(216,250,0,.10);
+}
+.zzz-rail__item:hover{color:var(--text,#e8ecf1)}
+/* 焦点环：实测站内存在 outline-color:currentColor 类全局规则，
+   会把这里的 --signal 覆盖成 .42 灰（对比度不足）。
+   故显式提高特异性并同时锁定 color，确保 3:1 以上。 */
+.zzz-rail .zzz-rail__item:focus-visible{
+  outline:2px solid var(--signal,#3ec7d6)!important;
+  outline-offset:-2px;           /* 内缩，避免被视口右边缘裁掉 */
+  color:var(--text,#e8ecf1);
+}
+
+/* 小屏隐藏：实测会压住主按钮与楼层标题 */
+@media(max-width:640px){
+  .zzz-rail{display:none}
+}
+
+/* reduced-motion：不做淡入过渡，直接按状态显隐 */
+@media(prefers-reduced-motion:reduce){
+  html:not(.zzz-motion-forced) .zzz-rail{transition:none}
+}

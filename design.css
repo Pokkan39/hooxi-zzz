@@ -1334,21 +1334,7 @@ body.archive-character{
   .archive-character .wiki-gallery-track{transition:none}
 }
 
-/* 角色页 Hero 多层视差（s18b）*/
-.archive-character .character-screen{
-  perspective:1400px;
-  transform-style:preserve-3d;
-}
-.archive-character #characterHeroPortrait{
-  transform-origin:center 65%;
-  will-change:transform;
-}
-.archive-character .d-keyart-image{
-  will-change:transform;
-}
-.archive-character .character-hero-copy{
-  will-change:transform;
-} */
+/* ===== 技能模块（talent-*）游戏 HUD 风格 ===== */
 .archive-character .talent-module{
   border:1px solid var(--zzz-lime-line,rgba(216,250,0,.42));
   background:var(--bg-2,#1a222d);

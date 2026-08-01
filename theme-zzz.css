@@ -3146,7 +3146,7 @@ footer{
 :is(.archive-mainline,.archive-events,.archive-behind) .archive-record{display:grid;grid-template-columns:144px minmax(0,1fr);gap:16px;min-width:0;padding:14px;border:1px solid var(--line,#30343e);background:#171b24;scroll-margin-top:18px}
 :is(.archive-mainline,.archive-events,.archive-behind) .archive-record[hidden]{display:none}
 :is(.archive-mainline,.archive-events,.archive-behind) .archive-record-cover{min-height:108px;background:#11141a}
-:is(.archive-mainline,.archive-events,.archive-behind) .archive-record-cover img{display:block;width:100%;height:100%;object-fit:contain;object-position:center}
+:is(.archive-mainline,.archive-events,.archive-behind) .archive-record-cover img{display:block;width:100%;height:100%;object-fit:cover}
 :is(.archive-mainline,.archive-events,.archive-behind) .archive-record-meta{margin:0;color:var(--amber,#f3d33b);font:700 12px/1.4 var(--font-mono)}
 :is(.archive-mainline,.archive-events,.archive-behind) .archive-record h3{margin:5px 0 0;color:#fff;font-size:19px;line-height:1.35}
 :is(.archive-mainline,.archive-events,.archive-behind) .archive-record-summary{display:-webkit-box;max-width:72ch;margin:8px 0 0;overflow:hidden;color:var(--text-2,#c8c5bc);line-height:1.55;-webkit-box-orient:vertical;-webkit-line-clamp:2}
@@ -3160,12 +3160,6 @@ footer{
 :is(.archive-mainline,.archive-events,.archive-behind) .archive-record-details dt{color:var(--text-3,#979a9f)}
 :is(.archive-mainline,.archive-events,.archive-behind) .archive-record-details dd{margin:0}
 :is(.archive-mainline,.archive-events,.archive-behind) .archive-record-details a{color:var(--amber,#f3d33b)}
-/* HUD card visual — left accent bar, chamfered corner, transitions */
-:is(.archive-mainline,.archive-events,.archive-behind) .archive-record{border-left:3px solid var(--amber,#e0b41c);clip-path:polygon(10px 0,100% 0,100% 100%,0 100%,0 10px);transition:background .15s,box-shadow .15s}
-:is(.archive-mainline,.archive-events,.archive-behind) .archive-record h3{color:var(--zzz-lime,#d8fa00)}
-:is(.archive-mainline,.archive-events,.archive-behind) .archive-record-meta{letter-spacing:.1em;text-transform:uppercase}
-:is(.archive-mainline,.archive-events,.archive-behind) .archive-record-cover{background:#0d1018}
-:is(.archive-mainline,.archive-events,.archive-behind) .archive-record:hover{border-color:var(--amber,#e0b41c);background:#1e2430;box-shadow:inset 3px 0 0 var(--zzz-lime,#d8fa00)}
 :is(.archive-mainline,.archive-events,.archive-behind) .archive-record-focus{outline:2px solid var(--amber,#f3d33b);outline-offset:3px}
 :is(.archive-mainline,.archive-events,.archive-behind) .archive-sources{margin-top:42px;padding:22px 0;border-top:1px solid var(--line-strong,#4a4d55)}
 :is(.archive-mainline,.archive-events,.archive-behind) .archive-sources ul{display:grid;gap:8px;margin:16px 0 0;padding:0;list-style:none}
@@ -4760,7 +4754,7 @@ body.archive-stories.has-site-sidebar:not(.is-sidebar-expanded) .site-sidebar-to
   filter:none;
   box-shadow:none;
   transform:none;
-  transition:border-color 150ms var(--ease-out),transform 150ms var(--ease-out),background-color 150ms var(--ease-out),box-shadow 150ms var(--ease-out);
+  transition:border-color 150ms var(--ease-out),transform 150ms var(--ease-out),background-color 150ms var(--ease-out);
 }
 .archive-stories .agent-roster-card:before{content:none}
 .archive-stories .agent-card-image{position:absolute;inset:0;display:block;overflow:hidden;background:#0b0f15;clip-path:none}
@@ -4782,7 +4776,7 @@ body.archive-stories.has-site-sidebar:not(.is-sidebar-expanded) .site-sidebar-to
 .archive-stories .agent-roster-card.is-selected .agent-card-selected-mark{opacity:1}
 .archive-stories .agent-roster-card.is-selected .agent-card-image img{filter:saturate(1) contrast(1.05)}
 .archive-stories .agent-roster-card:hover,
-.archive-stories .agent-roster-card:focus-visible{border-color:#7f8794;transform:translateY(-2px);box-shadow:0 0 0 2px var(--zzz-lime,#d8fa00)}
+.archive-stories .agent-roster-card:focus-visible{border-color:#7f8794;transform:translateY(-2px)}
 .archive-stories .agent-roster-card.is-selected:hover,
 .archive-stories .agent-roster-card.is-selected:focus-visible{border-color:var(--hooxi-confirm)}
 .archive-stories .agent-roster-empty{display:grid;min-height:220px;margin:0;padding:24px;place-items:center;border:1px dashed var(--line-strong,#4a4d55);color:var(--text-2,#c8c5bc);line-height:1.6;text-align:center}

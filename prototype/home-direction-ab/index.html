@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="zh-CN" data-direction="live">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>HOOXI 首页视觉方向 A/B 对照（原型）</title>
+<link rel="stylesheet" href="ab.css"/>
+</head>
+<body>
+<a class="ab-skip" href="#stage">跳到预览区</a>
+
+<header class="ab-bar">
+  <div class="ab-bar__title">
+    <strong>HOOXI 首页视觉方向 A/B 对照</strong>
+    <small>原型页 · 不影响正式站</small>
+  </div>
+  <div class="ab-switch" role="group" aria-label="视觉方向切换">
+    <button type="button" class="ab-switch__btn is-on" data-direction-btn="live" aria-pressed="true">当前线上</button>
+    <button type="button" class="ab-switch__btn" data-direction-btn="a" aria-pressed="false">方向 A</button>
+    <button type="button" class="ab-switch__btn" data-direction-btn="b" aria-pressed="false">方向 B</button>
+  </div>
+  <p class="ab-bar__now" id="abNow">当前显示：现状基线（暗底 / FangSong / 黄青双色 / 无编号轴）</p>
+</header>
+
+<section class="ab-notes" aria-labelledby="abNotesTitle">
+  <h2 id="abNotesTitle">三者差异要点与改动成本</h2>
+  <div class="ab-notes__grid">
+    <article class="ab-note">
+      <h3>当前线上</h3>
+      <ul>
+        <li>底色 #18171a 暗场，标题 FangSong 宋体</li>
+        <li>强调色只有 #fbd83f 黄 + #2ddcdd 青</li>
+        <li>五个区块无编号、无斜切几何</li>
+      </ul>
+      <p class="ab-note__cost">成本：0，这是现状基线。</p>
+    </article>
+    <article class="ab-note">
+      <h3>方向 A：HOOXI 风格 + ZZZ 节奏</h3>
+      <ul>
+        <li>保留暗底、FangSong 标题、黄青双色，观感仍是 HOOXI 自己的站</li>
+        <li>新增「中文名 + 英文名 + 两位编号」三行编号轴，编号用 Impact/Barlow</li>
+        <li>加少量 CSS skewX(-25.3deg) 装饰线，引入 #d8fa00 作第三点睛色</li>
+      </ul>
+      <p class="ab-note__cost">成本：中低。只加编号轴与装饰层，配色和字体不动，正式站改一份 CSS 加少量结构即可，回滚容易。</p>
+    </article>
+    <article class="ab-note">
+      <h3>方向 B：ZZZ 视觉高仿 + HOOXI 内容</h3>
+      <ul>
+        <li>换 rgb(239,239,239) 浅灰底、rgb(34,33,34) 近黑字，#d8fa00 主导强调</li>
+        <li>大面积斜切色块 + 斜切缩略图条，编号轴放大到装饰级</li>
+        <li>标题换无衬线，宋体气质让位给官网排版气质</li>
+      </ul>
+      <p class="ab-note__cost">成本：高。全站配色令牌、字体、卡片几何都要重做，暗色下的图片压暗/veil 处理全部失效，多页联动改动大，回滚代价高。</p>
+    </article>
+  </div>
+  <p class="ab-notes__foot">三个方向渲染同一套真实内容骨架（影像首屏 / 直接查档 / 精选代理人 / 档案卷轴 / 来源与边界），文案取自现有 index.html 与本地档案数据，仅视觉层不同。</p>
+</section>
+
+<main class="stage" id="stage">
+  <header class="stage-top">
+    <a class="stage-brand" href="#stage"><span class="stage-brand__mark">H</span><span><strong>HOOXI //</strong><small>ZENLESS ARCHIVE</small></span></a>
+    <p class="stage-top__meta">ARCHIVE INDEX / S01</p>
+    <nav class="stage-nav" aria-label="预览导航（原型不跳转）">
+      <span>主线</span><span>角色与阵营</span><span>活动</span><span>养成</span><span>幕后</span><span>关于</span>
+    </nav>
+  </header>
+
+  <section class="sec sec--hero" aria-labelledby="pHeroTitle">
+    <div class="sec-nav" aria-hidden="true">
+      <b class="sec-nav__cn">影像首屏</b><i class="sec-nav__en">Index</i><u class="sec-nav__num">01</u>
+    </div>
+    <div class="sec-skew" aria-hidden="true"><span></span><span></span></div>
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">HOOXI / ZENLESS STORY VIDEO ARCHIVE</p>
+        <h1 id="pHeroTitle">绝区零剧情影像档案</h1>
+        <p class="intro">按版本补剧情，按代理人追关联。先定位片段，再前往来源观看。</p>
+        <div class="hero-actions">
+          <span class="btn btn--primary">开始查档 <i aria-hidden="true">→</i></span>
+          <span class="btn btn--ghost">PLAY · 可选进入录像店</span>
+        </div>
+        <div class="hero-index">
+          <b>18 阵营 · 57 代理人 · 57 主线 · 246 活动 · 7 幕后</b>
+          <small>计数来自本地档案，PLAY 可跳过。</small>
+        </div>
+      </div>
+      <figure class="hero-art">
+        <img src="../../assets/hero/zzz-random-play-keyart.webp" alt="Random Play 主视觉" width="1146" height="717" id="heroImg"/>
+        <figcaption class="hero-art__veil" aria-hidden="true"></figcaption>
+        <span class="hero-art__badge">01 / 04</span>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sec sec--finder" aria-labelledby="pFinderTitle">
+    <div class="sec-nav" aria-hidden="true">
+      <b class="sec-nav__cn">直接查档</b><i class="sec-nav__en">Finder</i><u class="sec-nav__num">02</u>
+    </div>
+    <div class="sec-head">
+      <h2 id="pFinderTitle">直接查档</h2>
+      <p class="sec-note">按剧情、代理人或名字进入正式档案。</p>
+    </div>
+    <div class="path-grid">
+      <article class="path-card is-primary"><span class="path-kicker">剧情</span><b>主线补课</b><p>按版本与章节找空洞行动与世界观媒体。</p><span class="path-meta">57 条主线</span></article>
+      <article class="path-card"><span class="path-kicker">代理人</span><b>角色与阵营</b><p>57 名代理人、18 个阵营，可搜可筛。</p><span class="path-meta">进入单人档案</span></article>
+      <article class="path-card is-soft"><span class="path-kicker">搜索</span><b>按名字找人</b><p>直接定位代理人，再看相关影像与阵营关系。</p><span class="path-meta">打开目录搜索</span></article>
+    </div>
+  </section>
+
+  <section class="sec sec--agents" aria-labelledby="pAgentsTitle">
+    <div class="sec-nav" aria-hidden="true">
+      <b class="sec-nav__cn">精选代理人</b><i class="sec-nav__en">Character</i><u class="sec-nav__num">03</u>
+    </div>
+    <div class="sec-head">
+      <h2 id="pAgentsTitle">精选代理人</h2>
+      <p class="sec-note">从角色进入相关剧情、阵营和影像；浏览全部代理人。</p>
+    </div>
+    <div class="agent-rail">
+      <article class="agent-card" style="--agent-theme:#bfc9dc"><span class="agent-avatar"><img src="../../assets/portraits/rina-card.webp" alt="亚历山德丽娜·莎芭丝缇安" loading="lazy"/></span><span class="agent-copy"><b>亚历山德丽娜·莎芭丝缇安</b><small>维多利亚家政 · 电 · 支援</small><em>「仲夏夜之梦舞曲」</em></span></article>
+      <article class="agent-card" style="--agent-theme:#6bb68d"><span class="agent-avatar"><img src="../../assets/portraits/alice-card.webp" alt="爱丽丝·泰姆菲尔德" loading="lazy"/></span><span class="agent-copy"><b>爱丽丝·泰姆菲尔德</b><small>怪啖屋 · 物理 · 异常</small><em>「我还以为贵族的善良都是源于丁尼太多的天真，…</em></span></article>
+      <article class="agent-card" style="--agent-theme:#f3d33b"><span class="agent-avatar"><img src="../../assets/portraits/anby-card.webp" alt="安比·德玛拉" loading="lazy"/></span><span class="agent-copy"><b>安比·德玛拉</b><small>狡兔屋 · 电 · 击破</small><em>从不谈起自己的故事，仿佛没有过去，是个谜一般…</em></span></article>
+      <article class="agent-card" style="--agent-theme:#ef6e3a"><span class="agent-avatar"><img src="../../assets/portraits/anton-card.webp" alt="安东·伊万诺夫" loading="lazy"/></span><span class="agent-copy"><b>安东·伊万诺夫</b><small>白祇重工 · 电 · 强攻</small><em>热心工作，带队大哥</em></span></article>
+      <article class="agent-card" style="--agent-theme:#ef8fc0"><span class="agent-avatar"><img src="../../assets/portraits/aria-card.webp" alt="爱芮" loading="lazy"/></span><span class="agent-copy"><b>爱芮</b><small>「妄想天使」 · 以太 · 异常</small><em>「熬夜写歌不辛苦！光是想到…我写的谱子能被爱…</em></span></article>
+      <article class="agent-card" style="--agent-theme:#65bce8"><span class="agent-avatar"><img src="../../assets/portraits/harumasa-card.webp" alt="浅羽悠真" loading="lazy"/></span><span class="agent-copy"><b>浅羽悠真</b><small>对空洞特别行动部第六课 · 电 · 强攻</small><em>「他远比表现得更强大，像是红椒鸡汤伪装成一杯…</em></span></article>
+      <article class="agent-card" style="--agent-theme:#f6a3cc"><span class="agent-avatar"><img src="../../assets/portraits/astra-yao-card.webp" alt="耀嘉音" loading="lazy"/></span><span class="agent-copy"><b>耀嘉音</b><small>天琴座 · 以太 · 支援</small><em>[小姐，你该起床了，我们马上就要迟到——好，…</em></span></article>
+      <article class="agent-card" style="--agent-theme:#a55555"><span class="agent-avatar"><img src="../../assets/portraits/banyue-card.webp" alt="般岳" loading="lazy"/></span><span class="agent-copy"><b>般岳</b><small>「坎卜斯黑枝」 · 火 · 命破</small><em>「我们的心跳、呼吸、饥饿感，不也是写在血肉中…</em></span></article>
+    </div>
+  </section>
+
+  <section class="sec sec--reels" aria-labelledby="pReelsTitle">
+    <div class="sec-nav" aria-hidden="true">
+      <b class="sec-nav__cn">档案卷轴</b><i class="sec-nav__en">Archive</i><u class="sec-nav__num">04</u>
+    </div>
+    <div class="sec-head">
+      <h2 id="pReelsTitle">档案卷轴</h2>
+      <p class="sec-note">主线、活动与幕后各取近期记录，完整筛选仍在正式页。</p>
+    </div>
+    <p class="reel-links"><span>主线正式页</span><span>活动正式页</span><span>幕后正式页</span></p>
+    <div class="reel-grid">
+      <article class="reel-card"><span class="reel-cover"><img src="../../assets/wiki/media/media-d6927d02468a36a7f1e3a3602409bc55_7904183-b79bf65678f2.jpg" alt="" loading="lazy"/></span><span class="reel-copy"><small>官方媒体</small><b>维琳娜角色PV | 拟剧论</b><em>维琳娜 的角色宣传影像 · 副题「拟剧论」</em></span></article>
+      <article class="reel-card"><span class="reel-cover"><img src="../../assets/wiki/media/media-ee6c4214951d145772e19906a5227cd5_3396317-2afae6b7ac4a.png" alt="" loading="lazy"/></span><span class="reel-copy"><small>官方媒体</small><b>普罗米娅角色PV | 雨夜独白</b><em>普罗米娅 的角色宣传影像 · 副题「雨夜独白」</em></span></article>
+      <article class="reel-card"><span class="reel-cover"><img src="../../assets/wiki/events/event-d77105d8e94384d0dae209e89c5e8ebe_4164286-ac7dc141acfa.jpg" alt="" loading="lazy"/></span><span class="reel-copy"><small>2.8 · 活动索引</small><b>游乐岛速撤流</b><em>发布日期：2026.5.7 · 作者：冰好欧</em></span></article>
+      <article class="reel-card"><span class="reel-cover"><img src="../../assets/wiki/events/event-8f7b902f71bdad36dd36a2e1225cb46d_9287359-6c6e0e2b8c55.jpeg" alt="" loading="lazy"/></span><span class="reel-copy"><small>2.8 · 活动索引</small><b>【2.8攻略征集】玛瑟尔游乐岛海岛物资宝箱位置（持续更新中）</b><em>发布日期：2026.5.7 · 作者：黑箭狂龍</em></span></article>
+      <article class="reel-card"><span class="reel-cover"><img src="../../assets/wiki/behind/behind-7d3b44df1e6d061e8194e2ccbfc912d8_9080245-0de13a7e18d8.png" alt="" loading="lazy"/></span><span class="reel-copy"><small>幕后记录</small><b>ZTALK| 第三季爆料特别篇</b><em>ZTALK| 第三季爆料特别篇</em></span></article>
+      <article class="reel-card"><span class="reel-cover"><img src="../../assets/wiki/behind/behind-4e2d002fe0d9898ab2cc55536c4f6e86_8590227-8a32c7acfb31.jpg" alt="" loading="lazy"/></span><span class="reel-copy"><small>幕后记录</small><b>ZTALK | 三Z音乐制作幕后 Vol. 2</b><em>ZTALK | 三Z音乐制作幕后 Vol. 2</em></span></article>
+    </div>
+  </section>
+
+  <section class="sec sec--sources" aria-labelledby="pSourcesTitle">
+    <div class="sec-nav" aria-hidden="true">
+      <b class="sec-nav__cn">来源与边界</b><i class="sec-nav__en">Sources</i><u class="sec-nav__num">05</u>
+    </div>
+    <div class="sec-head sec-head--stack">
+      <h2 id="pSourcesTitle">来源与边界</h2>
+      <p class="sec-note">正式档案可搜索、可分享；录像店只是可跳过的观看入口。</p>
+    </div>
+    <div class="source-grid">
+      <div class="source-col">
+        <h3>非官方剧情影像档案</h3>
+        <p>这是 Hooxi 个人品牌下的《绝区零》剧情视频档案与角色关系导航站，与米哈游、HoYoverse 无隶属。</p>
+      </div>
+      <div class="source-col">
+        <h3>首页登记片源</h3>
+        <p>银幕使用本地登记的 Random Play 主视觉，以及星见雅、浅羽悠真、爱芮的本地官方 gallery 影画；不虚构 Keyart 外部来源。</p>
+      </div>
+      <div class="source-col">
+        <h3>权利与来源出口</h3>
+        <p>页面所用立绘、影画与截图版权归米哈游所有；各正式档案页继续提供对应来源与核验状态。</p>
+        <p class="source-link"><span>Hooxi B站主页 ↗</span></p>
+      </div>
+    </div>
+    <footer class="stage-foot">
+      <span class="footer-disclaimer" data-disclaimer>粉丝非官方档案站 · 与米哈游无隶属 · 立绘、影画与截图版权归米哈游所有</span>
+      <span>HOOXI // ZZZ STORY ARCHIVE</span>
+      <span>NEW ERIDU, 2025</span>
+    </footer>
+  </section>
+</main>
+
+<script src="ab.js"></script>
+</body>
+</html>

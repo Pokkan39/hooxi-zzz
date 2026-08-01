@@ -1,0 +1,103 @@
+<!doctype html>
+<!-- Throwaway UI prototype: 3 variants share one route and switch with ?variant=glass|orbit|editorial. -->
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="原生 WebGL 驱动的沉浸式作品集界面原型。">
+  <title>Active Theory 风格 WebGL 作品集原型</title>
+  <link rel="stylesheet" href="active-theory-sample.css">
+<style>.play-experiment-banner{position:sticky;top:0;z-index:40;padding:10px 16px;background:#17191b;color:#f3d33b;border-bottom:3px solid #f3d33b;font:700 13px/1.4 monospace}.play-experiment-banner a{color:#fff}</style>
+</head>
+<body data-variant="glass">
+<div data-play-experiment-banner class="play-experiment-banner" role="note"><strong>理论样板 · 非正式进店</strong> 正式进店请走 <a href="tape-wall-sample.html">HOOXI PLAY · 凌晨录像店</a>；浏览档案请回 <a href="index.html">正式首页</a>。</div>
+
+  <a class="skip-link" href="#work">跳到作品</a>
+
+  <canvas id="gl-canvas" aria-hidden="true"></canvas>
+  <div class="gl-fallback" id="gl-fallback" role="status" hidden>
+    WebGL 不可用，已切换为静态虹彩背景。
+  </div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <main id="work" class="scroll-world">
+    <div class="stage">
+      <header class="site-header">
+        <a class="brand" href="#work" aria-label="返回作品集顶部">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span id="brand-name">VANTA / STUDIO</span>
+        </a>
+        <nav class="site-nav" id="site-nav" aria-label="主导航"></nav>
+        <p class="section-count" aria-live="polite"><span id="active-number">01</span> / 03</p>
+      </header>
+
+      <section class="variant-panel glass-panel" data-panel="glass" aria-labelledby="glass-title">
+        <div class="glass-copy">
+          <p class="eyebrow" id="glass-kicker"></p>
+          <h1 id="glass-title"><span>Digital</span><span>Artifacts</span></h1>
+          <p class="lede" id="glass-lede"></p>
+        </div>
+        <div class="glass-sculpture-label" aria-hidden="true">
+          <span>Scroll to refract</span>
+          <i></i>
+        </div>
+        <div class="glass-projects" id="glass-projects" aria-label="项目列表"></div>
+      </section>
+
+      <section class="variant-panel orbit-panel" data-panel="orbit" aria-labelledby="orbit-title" hidden>
+        <div class="orbit-info">
+          <p class="eyebrow" id="orbit-kicker"></p>
+          <h1 id="orbit-title">Ideas in<br>perpetual<br>motion.</h1>
+          <p class="lede" id="orbit-lede"></p>
+          <div class="orbit-index" id="orbit-index" aria-live="polite"></div>
+        </div>
+        <div class="orbit-system" id="orbit-projects" aria-label="环形项目列表">
+          <span class="orbit-line orbit-line-a" aria-hidden="true"></span>
+          <span class="orbit-line orbit-line-b" aria-hidden="true"></span>
+        </div>
+        <p class="orbit-caption" aria-hidden="true">Move pointer / rotate field</p>
+      </section>
+
+      <section class="variant-panel editorial-panel" data-panel="editorial" aria-labelledby="editorial-title" hidden>
+        <div class="editorial-heading">
+          <p class="eyebrow" id="editorial-kicker"></p>
+          <h1 id="editorial-title"><span>Selected</span><span>Signals</span></h1>
+          <p class="lede" id="editorial-lede"></p>
+        </div>
+        <div class="editorial-projects" id="editorial-projects" aria-label="堆叠项目列表"></div>
+        <p class="editorial-folio" aria-hidden="true">Portfolio — 2026</p>
+      </section>
+
+      <div class="scroll-meter" aria-hidden="true"><span id="scroll-meter-fill"></span></div>
+    </div>
+  </main>
+
+  <div class="prototype-switcher" aria-label="原型变体切换">
+    <button type="button" id="variant-prev" aria-label="上一个变体">←</button>
+    <div class="variant-readout" aria-live="polite">
+      <span id="variant-key">A</span>
+      <strong id="variant-name">Glass Monolith</strong>
+    </div>
+    <button type="button" id="variant-next" aria-label="下一个变体">→</button>
+  </div>
+
+  <div class="project-overlay" id="project-overlay" hidden>
+    <section class="project-dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title" aria-describedby="dialog-description">
+      <button class="dialog-close" id="dialog-close" type="button" aria-label="关闭项目详情">×</button>
+      <div class="dialog-image-wrap">
+        <img id="dialog-image" alt="">
+        <span class="dialog-shine" aria-hidden="true"></span>
+      </div>
+      <div class="dialog-copy">
+        <p class="eyebrow"><span id="dialog-index">01</span> / Selected work</p>
+        <h2 id="dialog-title"></h2>
+        <p class="dialog-year" id="dialog-year"></p>
+        <p id="dialog-description"></p>
+      </div>
+    </section>
+  </div>
+
+  <script src="active-theory-sample.js"></script>
+</body>
+</html>

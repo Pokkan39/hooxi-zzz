@@ -37,23 +37,37 @@
   let filter = 'all';
   let selected = null;
   let pointerFrame = 0;
+  let openingTimer = 0;
+  let selectionToken = 0;
+  let activeFlyer = null;
 
-  function enterStore(skipAnimation = false) {
-    if (!storefront || body.classList.contains('is-opening')) return;
+  function finishEntry(focusInterior = true) {
+    clearTimeout(openingTimer);
+    openingTimer = 0;
+    storefront.hidden = true;
+    nav.hidden = false;
+    interior.hidden = false;
+    footer.hidden = false;
+    body.classList.remove('is-outside', 'is-opening');
+    body.classList.add('is-inside');
+    if (focusInterior) interior.focus({ preventScroll: true });
+    live.textContent = '大门已打开，欢迎光临 HOOXI PLAY。';
+    try { sessionStorage.setItem('hooxi:store-entered', '1'); } catch {}
+  }
+
+  function enterStore(skipAnimation = false, focusInterior = true) {
+    if (!storefront) return;
+    if (body.classList.contains('is-inside')) {
+      if (focusInterior) interior.focus({ preventScroll: true });
+      return;
+    }
+    if (skipAnimation || reduced.matches) {
+      finishEntry(focusInterior);
+      return;
+    }
+    if (body.classList.contains('is-opening')) return;
     body.classList.add('is-opening');
-    const finish = () => {
-      storefront.hidden = true;
-      nav.hidden = false;
-      interior.hidden = false;
-      footer.hidden = false;
-      body.classList.remove('is-outside', 'is-opening');
-      body.classList.add('is-inside');
-      interior.focus({ preventScroll: true });
-      live.textContent = '大门已打开，欢迎光临 HOOXI PLAY。';
-      try { sessionStorage.setItem('hooxi:store-entered', '1'); } catch {}
-    };
-    if (skipAnimation || reduced.matches) finish();
-    else setTimeout(finish, 2380);
+    openingTimer = setTimeout(() => finishEntry(focusInterior), 2380);
   }
 
   document.querySelectorAll('[data-enter-store]').forEach(button => button.addEventListener('click', () => enterStore()));
@@ -71,6 +85,22 @@
     enterStore(true);
   });
 
+  const hashTargets = new Set(['store-interior', 'catalog', 'bangboo-desk', 'sources']);
+  function revealHashTarget() {
+    const id = location.hash.slice(1);
+    if (!hashTargets.has(id)) return;
+    const target = document.getElementById(id);
+    if (!target) return;
+    enterStore(true, false);
+    requestAnimationFrame(() => {
+      target.focus({ preventScroll: true });
+      target.scrollIntoView({ block: 'start', behavior: 'auto' });
+      const destination = target === interior ? '店内' : target.id === 'catalog' ? '书目区' : target.id === 'bangboo-desk' ? '站内导航台' : '来源与边界区';
+      live.textContent = `已进入${destination}。`;
+    });
+  }
+  addEventListener('hashchange', revealHashTarget);
+
   function makeTape(tape, index) {
     const button = document.createElement('button');
     button.type = 'button';
@@ -81,10 +111,18 @@
     button.setAttribute('aria-label', `${tape.kind === 'story' ? '剧情录像' : '角色档案'}：${tape.title}，${tape.label}`);
     button.setAttribute('aria-pressed', 'false');
     button.style.setProperty('--tape-accent', tape.color);
+    const cover = document.createElement('img');
+    cover.className = 'tape-wall-tape__cover';
+    cover.src = tape.image;
+    cover.alt = '';
+    cover.setAttribute('aria-hidden', 'true');
+    cover.loading = 'lazy';
+    cover.decoding = 'async';
+    cover.setAttribute('fetchpriority', 'low');
     const label = document.createElement('span');
     label.className = 'tape-wall-tape__label';
     label.textContent = `${String(index + 1).padStart(2, '0')} · ${tape.label}`;
-    button.append(label);
+    button.append(cover, label);
     return button;
   }
 
@@ -108,7 +146,7 @@
     image.hidden = false;
     image.src = tape.image;
     image.alt = `${tape.label}录像封套`;
-    kind.textContent = `// ${tape.kind === 'story' ? 'STORY TAPE' : 'AGENT FILE'} · NOW SCREENING`;
+    kind.textContent = `// ${tape.kind === 'story' ? '剧情录像' : '角色档案'} · 已送达看片台`;
     title.textContent = tape.title;
     description.textContent = tape.summary;
     code.textContent = `TAPE ${tape.id.toUpperCase()} · 00:${String(tapes.indexOf(tape) + 1).padStart(2, '0')}:47`;
@@ -118,9 +156,18 @@
     live.textContent = `已把《${tape.title}》送到看片台。`;
   }
 
+  function cancelSelectionFlight() {
+    selectionToken += 1;
+    activeFlyer?.remove();
+    activeFlyer = null;
+    document.querySelectorAll('.tape-wall-flyer').forEach(flyer => flyer.remove());
+  }
+
   function selectTape(button) {
     const tape = tapeFor(button);
     if (!tape) return;
+    cancelSelectionFlight();
+    const token = selectionToken;
     if (reduced.matches || !button.animate) return finishSelection(button, tape);
     const start = button.getBoundingClientRect();
     const target = viewer.querySelector('.tape-wall-viewer__screen').getBoundingClientRect();
@@ -129,11 +176,18 @@
     flyer.src = tape.image;
     flyer.alt = '';
     Object.assign(flyer.style, {left:`${start.left}px`,top:`${start.top}px`,width:`${start.width}px`,height:`${start.height}px`});
+    activeFlyer = flyer;
     document.body.append(flyer);
-    flyer.animate([{transform:'rotate(-4deg) scale(.92)'},{left:`${target.left}px`,top:`${target.top}px`,width:`${target.width}px`,height:`${target.height}px`,transform:'none'}], {duration:520,easing:'cubic-bezier(.22,1,.36,1)',fill:'forwards'}).finished.catch(() => {}).then(() => { flyer.remove(); finishSelection(button, tape); });
+    flyer.animate([{transform:'rotate(-4deg) scale(.92)'},{left:`${target.left}px`,top:`${target.top}px`,width:`${target.width}px`,height:`${target.height}px`,transform:'none'}], {duration:520,easing:'cubic-bezier(.22,1,.36,1)',fill:'forwards'}).finished.catch(() => {}).then(() => {
+      if (token !== selectionToken || activeFlyer !== flyer) return;
+      flyer.remove();
+      activeFlyer = null;
+      finishSelection(button, tape);
+    });
   }
 
   function clearViewer() {
+    cancelSelectionFlight();
     selected?.classList.remove('is-active');
     selected?.setAttribute('aria-pressed', 'false');
     selected?.focus();
@@ -141,9 +195,9 @@
     image.hidden = true;
     image.removeAttribute('src');
     empty.hidden = false;
-    kind.textContent = '// WAITING SIGNAL';
-    title.textContent = '看片台待机中';
-    description.textContent = '选择一盘录像，封套与档案说明会在 CRT 屏幕中显影。';
+    kind.textContent = '// 等待磁带';
+    title.textContent = '尚未选片';
+    description.textContent = '从货架选择一盘录像，封套与档案说明会在 CRT 屏幕中显影。';
     code.textContent = 'TIME CODE · --:--:--';
     play.href = '#catalog';
     play.setAttribute('aria-disabled', 'true');
@@ -179,7 +233,7 @@
     }
   });
   close.addEventListener('click', clearViewer);
-  addEventListener('keydown', event => { if (event.key === 'Escape' && selected) clearViewer(); });
+  addEventListener('keydown', event => { if (event.key === 'Escape' && (selected || activeFlyer)) clearViewer(); });
 
   shelves.addEventListener('pointermove', event => {
     if (!matchMedia('(hover:hover) and (pointer:fine)').matches || reduced.matches || pointerFrame) return;
@@ -203,6 +257,7 @@
     { terms:['安比'], text:'找到安比的角色档案。你可以先查看个人资料与角色故事。', href:'character.html?id=anby', label:'打开安比档案' },
     { terms:['角色','代理人','人物'], text:'角色专柜收录阵营、代理人资料和个人故事。', href:'stories.html', label:'进入角色专柜' },
     { terms:['活动','限时'], text:'往期活动区保存限时事件和特别录像。', href:'events.html', label:'查看往期活动' },
+    { terms:['养成','培养','材料'], text:'养成区整理角色培养与养成资料。', href:'cultivate.html', label:'查看养成资料' },
     { terms:['幕后','对谈','访谈','制作'], text:'幕后货架收录制作记录与深夜对谈。', href:'behind-scenes.html', label:'进入幕后货架' },
     { terms:['主线','剧情','章节','版本'], text:'主线书架按版本和章节整理剧情路线。', href:'mainline.html', label:'浏览主线剧情' }
   ];
@@ -214,10 +269,10 @@
       return;
     }
     const route = routes.find(item => item.terms.some(term => query.includes(term)));
-    status.textContent = '导航模式已完成站内匹配 · DeepSeek 待接入';
+    status.textContent = '站内导航已完成本地档案匹配';
     reply.replaceChildren();
     const copy = document.createElement('span');
-    copy.textContent = route?.text || '店内目前分为主线剧情、角色故事、往期活动和幕后对谈四类。你可以从左侧书目区继续翻看。';
+    copy.textContent = route?.text || '店内可前往主线剧情、角色与阵营、往期活动、养成和幕后对谈档案。';
     reply.append(copy);
     const link = document.createElement('a');
     link.href = route?.href || '#catalog';
@@ -253,4 +308,5 @@
   addEventListener('pageshow', () => body.classList.remove('is-ejecting'));
 
   render();
+  revealHashTarget();
 })();

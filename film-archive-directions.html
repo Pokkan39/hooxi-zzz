@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HOOXI 电影放映档案 · 3 套视觉方向板</title>
+<link rel="stylesheet" href="film-archive-directions.css">
+</head>
+<body>
+<div class="fad-page">
+
+<header class="fad-header">
+  <h1>电影放映档案 · 视觉方向板</h1>
+  <p class="fad-disclaimer">方向实验 · 不改正式站 · scope: prototype/film-archive-directions</p>
+  <p class="fad-disclaimer">仓库现有计数：57 主线 / 246 活动 / 54 角色剧情 / 7 幕后</p>
+</header>
+
+<div class="fad-guide">
+  <strong>选择指南与推荐混搭：</strong>A 首页品牌感（午夜放映室）+ C 章节长卷节奏 + B 内页高密度索引。三套可并排对比或单套聚焦查看，使用下方按钮或 URL hash (#a / #b / #c / #all) 切换。
+</div>
+
+<nav class="fad-nav" aria-label="方向切换">
+  <button type="button" data-target="all" aria-pressed="true">全部对比</button>
+  <button type="button" data-target="a" aria-pressed="false">聚焦 A · 午夜放映室</button>
+  <button type="button" data-target="b" aria-pressed="false">聚焦 B · 录像带索引柜</button>
+  <button type="button" data-target="c" aria-pressed="false">聚焦 C · 章节银幕长卷</button>
+</nav>
+
+<div class="fad-boards" id="boards">
+<!-- BOARD A: 午夜放映室 -->
+<article class="fad-board" data-dir="a">
+  <h2>A · 午夜放映室 Midnight Screening Room</h2>
+  <p style="font-size:15px;color:var(--fad-text-2)">银幕焦点、暗冷空间、暖场次标签；品牌感最强。整站像一座永远在凌晨两点营业的单厅放映室，银幕是唯一光源。</p>
+
+  <section>
+    <h3 style="font-family:var(--fad-font-mono);font-size:12px;color:var(--fad-text-3);text-transform:uppercase">1) 首页/入口 微缩构图</h3>
+    <div class="fad-mini">
+      <img src="assets/hero/zzz-random-play-keyart.png" alt="首页主视觉：全幅keyart作为银幕，暗角向中心收光">
+      <span class="fad-mini-label">银幕满幅 keyart → 暗角四周 → 底部暖黄场次信息条</span>
+    </div>
+    <p style="font-size:13px;color:var(--fad-text-3);margin-top:8px">构图：单一银幕居中，四周暗角模拟影厅；底部暖黄字幕条承载 57 主线 / 246 活动 数字；无卡片网格。</p>
+  </section>
+
+  <section>
+    <h3 style="font-family:var(--fad-font-mono);font-size:12px;color:var(--fad-text-3);text-transform:uppercase">2) 路线控制台 微缩构图</h3>
+    <div class="fad-mini">
+      <img src="assets/covers/official/bilibili/zzz-launch-pv.webp" alt="路线页：左侧时间轴、右侧条目列表">
+      <span class="fad-mini-label">竖直时间线 + 暖色版本节点 + 右侧暗底行条目</span>
+    </div>
+    <p style="font-size:13px;color:var(--fad-text-3);margin-top:8px">左侧竖直放映时间轴，节点为暖黄场次圆；右侧每行是一张"放映票"：编号+标题+时长+状态。</p>
+  </section>
+
+  <section>
+    <h3 style="font-family:var(--fad-font-mono);font-size:12px;color:var(--fad-text-3);text-transform:uppercase">3) Record Stack 详情 微缩构图</h3>
+    <div class="fad-mini">
+      <img src="assets/portraits/anby-card.webp" alt="详情页：顶部角色海报、下方模块栈">
+      <span class="fad-mini-label">海报区 → 无剧透字幕 → 影像段落 → 来源标签块</span>
+    </div>
+    <p style="font-size:13px;color:var(--fad-text-3);margin-top:8px">顶部"海报位"大图，下方依次：无剧透字幕式摘要、影像列表、来源核验块。</p>
+  </section>
+
+  <section>
+    <h3 style="font-family:var(--fad-font-mono);font-size:12px;color:var(--fad-text-3);text-transform:uppercase">4) 色板 / 字体 / 节奏 / 场景 / 风险</h3>
+    <div class="fad-swatches">
+      <span class="fad-swatch" style="background:oklch(14% 0.016 255)" title="bg-stage"></span>
+      <span class="fad-swatch" style="background:oklch(20% 0.022 255)" title="bg-base"></span>
+      <span class="fad-swatch" style="background:oklch(72% 0.170 42)" title="warm/场次"></span>
+      <span class="fad-swatch" style="background:oklch(84% 0.165 88)" title="accent"></span>
+      <span class="fad-swatch" style="background:oklch(94% 0.014 85)" title="text-1"></span>
+    </div>
+    <dl class="fad-spec">
+      <dt>字体</dt><dd>Barlow Condensed 700 展示标题 · Space Mono 编号 · 系统中文正文</dd>
+      <dt>节奏</dt><dd>首页只有一个银幕+一条信息条；内页"海报→字幕→段落"三段式</dd>
+      <dt>适合场景</dt><dd>品牌首页、章节扉页、需要仪式感的入口</dd>
+      <dt>风险</dt><dd>信息密度低，纯浏览效率不如 B；暗角过重可能低端屏显示不佳</dd>
+      <dt>明确拒绝</dt><dd>发光球、玻璃卡片网格、重复圆角胶囊、无意义扫描线动效、虚构统计</dd>
+    </dl>
+  </section>
+</article>
+
+<!-- BOARD B: 录像带索引柜 -->
+<article class="fad-board" data-dir="b">
+  <h2>B · 录像带索引柜 VHS Index Cabinet</h2>
+  <p style="font-size:15px;color:var(--fad-text-2)">工具与高密度索引优先；三条查档路径、筛选/记录行清晰。像翻开一整柜 VHS 录像带的索引卡片，信息即交互。</p>
+
+  <section>
+    <h3 style="font-family:var(--fad-font-mono);font-size:12px;color:var(--fad-text-3);text-transform:uppercase">1) 首页/入口 微缩构图</h3>
+    <div class="fad-mini">
+      <img src="assets/wiki/media/media-14d2984a3afa7ba98158cc1d9e91fd66_3702160-527a67e2bed6.jpg" alt="首页：三条查档路径入口+搜索栏">
+      <span class="fad-mini-label">顶栏搜索 → 三条路径卡（主线/活动/角色）→ 最近更新行</span>
+    </div>
+    <p style="font-size:13px;color:var(--fad-text-3);margin-top:8px">首页只做路由：搜索栏最突出，下方三张不等宽路径卡（非等尺寸圆角！），底部最近更新列表行。</p>
+  </section>
+
+  <section>
+    <h3 style="font-family:var(--fad-font-mono);font-size:12px;color:var(--fad-text-3);text-transform:uppercase">2) 路线控制台 微缩构图</h3>
+    <div class="fad-mini">
+      <img src="assets/covers/official/bilibili/zzz-worldview-pv.webp" alt="控制台：顶部筛选条+密集行列表">
+      <span class="fad-mini-label">FilterBar 筛选条 → 结果计数 → RecordRow 密集行列表</span>
+    </div>
+    <p style="font-size:13px;color:var(--fad-text-3);margin-top:8px">FilterBar 全宽，左侧类型/版本/状态，右侧结果计数与清空；下方 RecordRow 单行高密度（编号+标题+版本+时长）。</p>
+  </section>
+
+  <section>
+    <h3 style="font-family:var(--fad-font-mono);font-size:12px;color:var(--fad-text-3);text-transform:uppercase">3) Record Stack 详情 微缩构图</h3>
+    <div class="fad-mini">
+      <img src="assets/portraits/nicole-demara-card.webp" alt="详情页：紧凑元数据+影像堆栈">
+      <span class="fad-mini-label">元数据表 → 影像列表 → 来源核验 → 关联记录行</span>
+    </div>
+    <p style="font-size:13px;color:var(--fad-text-3);margin-top:8px">无大图海报，直接元数据表（编号/类型/版本/状态/时长），影像缩略行，来源核验块，底部关联记录。</p>
+  </section>
+
+  <section>
+    <h3 style="font-family:var(--fad-font-mono);font-size:12px;color:var(--fad-text-3);text-transform:uppercase">4) 色板 / 字体 / 节奏 / 场景 / 风险</h3>
+    <div class="fad-swatches">
+      <span class="fad-swatch" style="background:oklch(16% 0.018 255)" title="bg"></span>
+      <span class="fad-swatch" style="background:oklch(24% 0.028 255)" title="surface"></span>
+      <span class="fad-swatch" style="background:oklch(78% 0.105 177)" title="cool/索引"></span>
+      <span class="fad-swatch" style="background:oklch(84% 0.165 88)" title="accent"></span>
+      <span class="fad-swatch" style="background:oklch(63% 0.020 85)" title="text-3 meta"></span>
+    </div>
+    <dl class="fad-spec">
+      <dt>字体</dt><dd>Space Mono 主导编号与标签 · Barlow Condensed 600 列标题 · 系统中文正文 16px</dd>
+      <dt>节奏</dt><dd>以行为单位：每行=一条记录；筛选-结果-详情三步到达</dd>
+      <dt>适合场景</dt><dd>重度查档用户、反复使用筛选、需要快速扫视大量条目</dd>
+      <dt>风险</dt><dd>首屏品牌感弱，新用户可能不知道"这是什么站"；密度过高移动端需折叠</dd>
+      <dt>明确拒绝</dt><dd>满屏等尺寸卡片、装饰性大图、无意义渐变描边、悬浮动效、虚构在线状态</dd>
+    </dl>
+  </section>
+</article>
+
+<!-- BOARD C: 章节银幕长卷 -->
+<article class="fad-board" data-dir="c">
+  <h2>C · 章节银幕长卷 Chapter Screen Scroll</h2>
+  <p style="font-size:15px;color:var(--fad-text-2)">编辑化分幕、图文长卷；每幕一个任务。像翻阅一本电影分镜脚本，每一幕是一个完整叙事段落。</p>
+
+  <section>
+    <h3 style="font-family:var(--fad-font-mono);font-size:12px;color:var(--fad-text-3);text-transform:uppercase">1) 首页/入口 微缩构图</h3>
+    <div class="fad-mini">
+      <img src="assets/wiki/media/media-1a8de2140d28fa2a99a6d4aea47df0e6_6482469-b6ae36d0ec4f.jpg" alt="首页：分幕式大段落入口">
+      <span class="fad-mini-label">第一幕：品牌定位 → 第二幕：查档入口 → 第三幕：精选路线</span>
+    </div>
+    <p style="font-size:13px;color:var(--fad-text-3);margin-top:8px">首页是竖向分幕长卷：第一幕品牌（大图+一句话），第二幕三条路径，第三幕精选内容，第四幕声明。每幕全宽，幕间有明确视觉分割。</p>
+  </section>
+
+  <section>
+    <h3 style="font-family:var(--fad-font-mono);font-size:12px;color:var(--fad-text-3);text-transform:uppercase">2) 路线控制台 微缩构图</h3>
+    <div class="fad-mini">
+      <img src="assets/wiki/media/media-145721db64286d4b902d60ed10ad10cc_7449183-a8b09ef42ec2.jpg" alt="路线页：章节式图文交替">
+      <span class="fad-mini-label">章节扉页 → 图文交替段落 → 下一章预告</span>
+    </div>
+    <p style="font-size:13px;color:var(--fad-text-3);margin-top:8px">每个版本/章节是一个"幕"：扉页大图+标题，下方图文交替条目，底部"下一幕"预告引导。</p>
+  </section>
+
+  <section>
+    <h3 style="font-family:var(--fad-font-mono);font-size:12px;color:var(--fad-text-3);text-transform:uppercase">3) Record Stack 详情 微缩构图</h3>
+    <div class="fad-mini">
+      <img src="assets/portraits/anby-card.webp" alt="详情页：编辑式图文叙事">
+      <span class="fad-mini-label">扉图 → 摘要段 → 影像嵌入 → 关联章节 → 来源</span>
+    </div>
+    <p style="font-size:13px;color:var(--fad-text-3);margin-top:8px">详情页像一篇编辑文章：扉图→无剧透导语→影像段→故事段→来源。段落有呼吸节奏，非堆叠模块。</p>
+  </section>
+
+  <section>
+    <h3 style="font-family:var(--fad-font-mono);font-size:12px;color:var(--fad-text-3);text-transform:uppercase">4) 色板 / 字体 / 节奏 / 场景 / 风险</h3>
+    <div class="fad-swatches">
+      <span class="fad-swatch" style="background:oklch(14% 0.012 260)" title="bg-deep"></span>
+      <span class="fad-swatch" style="background:oklch(22% 0.024 255)" title="surface"></span>
+      <span class="fad-swatch" style="background:oklch(84% 0.165 88)" title="accent 章节标记"></span>
+      <span class="fad-swatch" style="background:oklch(94% 0.014 85)" title="text"></span>
+      <span class="fad-swatch" style="background:oklch(50% 0.030 255)" title="幕间分割线"></span>
+    </div>
+    <dl class="fad-spec">
+      <dt>字体</dt><dd>Barlow Condensed 700 章节标题 · 系统中文 18px 正文 · Space Mono 章节编号</dd>
+      <dt>节奏</dt><dd>幕间大留白(96px)，幕内紧凑(16-24px)；图文比约 4:6</dd>
+      <dt>适合场景</dt><dd>内容导览、专题、幕后对谈、需要叙事节奏的长内容</dd>
+      <dt>风险</dt><dd>长页面加载与滚动成本高；快速查找效率不如 B；幕式结构不适合频繁筛选</dd>
+      <dt>明确拒绝</dt><dd>满屏同尺寸卡片、parallax 视差滚动、自动播放视频、重复模板节奏、emoji 图标</dd>
+    </dl>
+  </section>
+</article>
+</div>
+
+</div>
+<script src="film-archive-directions.js"></script>
+</body>
+</html>

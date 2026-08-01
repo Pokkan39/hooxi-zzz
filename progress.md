@@ -6856,69 +6856,41 @@ C3 此前只在按钮静止态验过动画可行性，未验播放器真实交�
 - 说明：用户「不轮换」的观感来自立绘是静态背景层、从不随轮播片源切换，删除后该问题消失；轮播本身（Swiper autoplay，7s 换片）未改动，系统减动效下固定首张为既有合规行为。
 - 回滚点：`git checkout zzz-hero-parallax.js zzz-hero-parallax.css` 恢复立绘层，并将 `artifacts/formal-site-gate-baseline.json` 恢复至本条之前的版本。
 
-## 2026-07-31 - Task: 阶段A 视觉精修三件套（动效持久化 + 属性图标 + 技能独立 Tab）
+## 2026-08-01 - Task: 网站恢复至 8 月 1 日 04:59 快照
 
 ### What was done
-1. **A1 动效持久化**：`?motion=force` 首次触发后写入 `localStorage`，后续刷新/跳页无需重点；zzz-motion-notice.js 关闭按钮改为 localStorage 持久化；新增「恢复跟随系统」按钮可清除持久化状态；zzz-tv-transition.js 内链跳转时自动追加 `motion=force` 参数延续预览链路。
-2. **A2 属性/职业图标接入**：zzz-ui.js 末尾暴露 `window.ZZZIcons={attrIcon}`；character.js 的 `#characterMeta`（Hero区域）和 `profileFacts`（数据网格）的作战属性/战斗特性字段前插入 SVG 图标，视觉上属性名旁出现电/火/冰/物理/以太等几何图形。
-3. **A3 技能独立 Tab**：character.html tablist 新增「技能」tab；character.js modules 对象增加 talents section，技能从 `<details>` 折叠升级为与影像/剧情/资料/来源并列的顶级 Tab；design.css 追加约 110 行 `.talent-*` 游戏 HUD 风格 CSS（深色面板/图标 tab 条/荧光绿激活态/成长倍率 grid）；regression.mjs 基线同步更新为5面板（含 talents）。
+- 将全部已跟踪网站文件恢复到本地 WIP 快照 `2b3af0855b015f098eead44fddf3ba3cf995d3fa`（`2026-08-01 04:59:04 +0800`），未使用 `git reset --hard`，未删除无关未跟踪预览文件。
+- 创建恢复分支 `recovery/2026-08-01-0459` 固定目标快照，并在回退前保存完整二进制差异补丁 `F:/hooxi-zzz-before-rollback-20260801-0459.patch`。
+- 补回 04:59 页面已经引用、但因当时尚未跟踪而没有进入 WIP 快照的角色影画、立绘、动画样式、运行脚本、字体及 GSAP/Swiper 本地依赖；页面引用扫描结果为 0 个缺失资源。
 
 ### Testing
-- `node scripts/regression.mjs`：118 checks，0 failures，passed:true（含 stories 重建后对齐）
-- `npm test`：非官方身份、版权归属、分享卡标识、零热链全部 PASS
-- `npm run test:contrast`：57 人 PASS，AA 达标
-- `npm run test:formal`：GATE_OK ALL_FORMAL_UNCHANGED（授权施工后重签）
+- `npm test`：PASS；档案媒体 17 组检查、链接诚信、非官方身份/版权边界与零热链均通过。
+- `node scripts/regression.mjs`：共 118 项，104 项通过、14 项未通过。剩余项来自 04:59 快照内部已有的不一致：`stories.js` 与 `src/stories.jsx` 尚未同步构建，以及当时 `character.js` 已增加 `talents` 第五模块、但同快照的回归脚本仍按四模块断言；补齐依赖后已无此前的页面资源 404 失败。
+- `npm run test:formal`：按预期 `GATE_FAIL`；正式门禁基线属于下午版本，回退后的凌晨页面哈希必然不同，本轮未重签基线以免掩盖回退事实。
+- `git diff --quiet 2b3af085...` 在补依赖前确认全部已跟踪文件精确匹配目标快照；补回文件均为该快照页面明确引用、但未被 WIP 收录的本地运行依赖。
 
 ### Notes
-- 改动文件：`zzz-motion.js`（localStorage 持久化逻辑）；`zzz-motion-notice.js`（重写为持久化版本+恢复按钮）；`zzz-tv-transition.js`（内链 injectForce 函数）；`zzz-ui.js`（暴露 window.ZZZIcons）；`character.js`（icons 接入+talents 提升为独立模块）；`character.html`（tablist 加 talents tab）；`design.css`（追加 talent-* CSS）；`stories.js`（从 src/stories.jsx 重建，消除 55 字节差异）；`scripts/regression.mjs`（characterPanelNames 加 talents，tab 计数从4改5，history steps 从4改6）；`artifacts/formal-site-gate-baseline.json`（重签）；`progress.md`（本条日志）
-- 回滚：`git checkout zzz-motion.js zzz-motion-notice.js zzz-tv-transition.js zzz-ui.js character.js character.html design.css stories.js scripts/regression.mjs artifacts/formal-site-gate-baseline.json`
+- 文件清单：工作区全部已跟踪站点文件（恢复依据为 `2b3af0855b015f098eead44fddf3ba3cf995d3fa`，撤销下午正式提交后的页面与代码状态）；`agent-talents.js`、`official-dna.css`、`zzz-hero-*`、`zzz-motion*`、`zzz-official.js`、`zzz-tv-transition*`（补回凌晨页面引用的未入快照运行文件）；`assets/vendor/fonts/`、`assets/vendor/gsap/`、`assets/vendor/swiper/`（补回本地字体和前端库）；`assets/mindscape/default/`、指定 `assets/portraits/` 与 `assets/icons/covenant-of-dayat.png`（补回凌晨角色档案所需图片）；`progress.md`（追加本条恢复记录）。
+- 未跟踪的方向稿、原型和预览目录保持原样，没有纳入或删除。
+- 回滚保险：若需恢复到本轮操作前状态，先执行 `git restore --source=e610084d74c5e1411331cc263c159e0ed338ba0f --worktree -- .`，再执行 `git apply --binary F:/hooxi-zzz-before-rollback-20260801-0459.patch`；目标凌晨恢复点可随时从分支 `recovery/2026-08-01-0459` 重新取得。
 
-## 2026-07-31 - Task: 首页影画随机轮换 + 视差重设计 + 角色页立绘3D倾斜
+## 2026-08-01 - Task: 打包恢复前端与 24 个特效预览入口
 
 ### What was done
-1. **首页 hero 全换影画随机轮播**：app.js 的 HERO_SLIDES 从4张固定 gallery/keyart 图改为每次从54个角色影画中随机抽4张（`assets/mindscape/default/*.webp`），每次刷新页面都是不同组合。index.html 静态首帧同步换成影画占位。
-2. **视差重设计**：zzz-hero-parallax.js 完全重写——视差现在直接作用于活跃slide的 `.hero-star` img（2880×1080宽幅影画），鼠标左右移动时图片在宽幅余量内平移，配合氛围光层（0.55）与文字反向层（-0.32）形成三层裸眼3D景深感。slide 切换时旧 img 归位，新 img 重新绑定 quickTo。zzz-hero-parallax.css 同步更新，去掉 backdrop 背景图，加`.hero-star` will-change。localStorage force 持久化也同步接入。
-3. **角色页立绘3D倾斜**：zzz-official.js 新增 `initHeroTilt()`，在 `.character-screen` 上监听 pointermove，用 gsap.quickTo 驱动 `#characterHeroPortrait` 的 rotateX/rotateY（±4.5°/±7°），鼠标离开归零。design.css 追加 `.character-screen{perspective:1400px}` 与 `#characterHeroPortrait{transform-origin:center 65%}`。
+- 盘点并整理 9 个正式前端入口与 15 个独立方向稿、原型或内部工具入口，共 24 个 HTML 页面；将现有预览目录与素材纳入待发布版本。
+- 补回角色技能模块实际引用的 182 份本地 GIF 素材，技能素材缺失数由 182 降为 0。
+- 生成可直接发送的验证版 ZIP，包内保留完整正式前端资源、根目录预览、`prototype/` 原型和瞳色工具，并附 `START-HERE.txt` 标明启动方式与缺失脚本边界。
 
 ### Testing
-- `node scripts/regression.mjs`：118 checks，0 failures（含 hero slides 检查从精确路径改为 mindscape 路径校验）
-- `npm test`：PASS
-- `npm run test:formal`：重签后 GATE_OK ALL_FORMAL_UNCHANGED
+- Chromium 本地 HTTP 验证：24/24 个 HTML 入口返回 200；其中 13 个入口无本地 404，11 个历史方向稿因原始交互 JS 未留存而仅保留 HTML/CSS 版式。9 个正式前端入口全部属于无本地 404 的完整入口。
+- 角色技能素材核验：`agent-talents.js` 共引用 182 个 `assets/wiki/` GIF，缺失数为 0。
+- ZIP 完整性：`ZipFile.testzip()` 返回 `None`；共 2524 个归档条目、24 个 HTML 入口、包含 `START-HERE.txt`。
+- 交付包：`F:/deliverables/hooxi-zzz-frontend-previews-2026-08-01-verified.zip`，大小 3,777,217,300 字节，SHA-256 `cf90e659bf7501333b2faf0056c19ee06416510b4dbdad2d4d64a56286d3b795`。
 
 ### Notes
-- 改动文件：`app.js`（HERO_SLIDES 动态化）；`index.html`（静态首帧换影画）；`zzz-hero-parallax.js`（重写为影画视差）；`zzz-hero-parallax.css`（更新为新三层结构）；`zzz-official.js`（新增 initHeroTilt）；`design.css`（追加 perspective/origin）；`scripts/regression.mjs`（hero slide 校验改为 mindscape 模式匹配）；`artifacts/formal-site-gate-baseline.json`（重签）；`progress.md`（本条日志）
-- 回滚：`git checkout app.js index.html zzz-hero-parallax.js zzz-hero-parallax.css zzz-official.js design.css scripts/regression.mjs artifacts/formal-site-gate-baseline.json`
-
-## 2026-07-31 - Task: 全线视觉修复批次（转场双拦截+图片裁切+扫描线+档案页HUD+hero顺序）
-
-### What was done
-1. **转场双拦截修复**：index.html 和 character.html 的 `zzz-tv-transition.js` 移到 `site-motion.js` 之前。TV 转场现在能在首页和角色页正常触发（原来 site-motion.js 先注册 click 拦截，TV 转场检测到 defaultPrevented=true 后退出，永远不触发）。character.html 同步补回误删的 `site-sidebar.js`。
-2. **扫描线增强**：zzz-motion.css `.zzz-scanlines` opacity 从 .028 提升到 .055，扫描线效果更可感知。
-3. **archive图片裁切修复**：theme-zzz.css `.archive-record-cover img` object-fit 从 `cover` 改为 `contain`，mainline/events/behind-scenes 页面的封面图不再被裁切。
-4. **档案页 HUD 视觉改造**：theme-zzz.css 追加 archive-record HUD 样式——左侧琥珀竖条、左上角斜切几何、标题荧光绿、封面背景深化、hover 发光效果；stories 页角色卡片 hover 补荧光绿边框。
-5. **转场双zzz-tv-transition 重复引入清理**：index.html 和 character.html 各移除了一个重复的 zzz-tv-transition.js script 标签。
-
-### Testing
-- `node scripts/regression.mjs`：118 checks，0 failures，passed:true
-- `npm test`：PASS
-- `npm run test:formal`：重签后 GATE_OK ALL_FORMAL_UNCHANGED
-
-### Notes
-- 改动文件：`index.html`（script顺序）；`character.html`（script顺序+修复误删site-sidebar.js）；`zzz-motion.css`（scanline opacity）；`theme-zzz.css`（object-fit+archive HUD+stories hover）；`artifacts/formal-site-gate-baseline.json`（重签）；`progress.md`（本条日志）
-- 回滚：`git checkout index.html character.html zzz-motion.css theme-zzz.css artifacts/formal-site-gate-baseline.json`
-
-## 2026-07-31 - Task: 声纹可视化播放器全站实装 + regression 修复
-
-### What was done
-1. **磁带机替换为声纹播放器**：用户要求去掉 TPS-L2 磁带机，改为两侧声纹可视化 + 顶栏精简播放控件。新建 `zzz-waveform.js`（Web Audio API 实时频谱 + 顶栏 ◀◀/▶/▶▶/曲名注入）与 `zzz-waveform.css`（左右22px竖向频谱画布 + 顶栏strip样式）；新建 `zzz-player.js`（全站音频引导层，在非首页注入 #musicPlayer/#audio/#musicToggle 等隐藏控件，懒加载音频避免触发网络请求）。
-2. **全站8页接入**：7个非首页（stories/character/faction/mainline/events/behind-scenes/cultivate）添加 zzz-player.js + zzz-waveform.js；首页只加 zzz-waveform.js（已有 #audio）。移除7页之前添加的 cassette-float.css/cassette-skin.js/cassette-float.js 引用。
-3. **regression 修复**：两处 bug：(a) zzz-player.js 在页面加载时调用 audio.load() 触发音频网络请求，导致 Playwright waitUntil:'networkidle' 永远不满足 → 改为懒加载，首次用户点击才 load；(b) zzz-waveform.js 将 .zzz-player-strip 作为 topbar 最后一个子元素追加，破坏了 `icon-button:last-child` 选择器（#editorOpen 按钮失去 lastElementChild 地位）→ 改为 insertBefore(strip, iconBtn)；(c) 移动端 CSS 改为隐藏整个 .zzz-player-strip 而非只隐藏曲名。
-
-### Testing
-- `node scripts/regression.mjs`：118 checks，0 failures，passed:true（终端直接确认）
-- `npm test`：PASS
-- `npm run test:formal`：重签后 GATE_OK ALL_FORMAL_UNCHANGED
-
-### Notes
-- 改动文件：`zzz-player.js`（新建，懒加载音频）；`zzz-waveform.js`（新建，声纹+顶栏控件）；`zzz-waveform.css`（新建）；`index.html`（+zzz-waveform）；`stories.html`（cassette→zzz-player+waveform）；`character.html`（同上）；`faction.html`（同上）；`mainline.html`（同上）；`events.html`（同上）；`behind-scenes.html`（同上）；`cultivate.html`（同上）；`zzz-motion.css`（scanline opacity .028→.055）；`theme-zzz.css`（archive object-fit+HUD卡片）；`index.html/character.html`（tv-transition脚本顺序）；`artifacts/formal-site-gate-baseline.json`（重签）；`progress.md`（本条日志）
-- 回滚：`git checkout zzz-player.js zzz-waveform.js zzz-waveform.css index.html stories.html character.html faction.html mainline.html events.html behind-scenes.html cultivate.html zzz-motion.css theme-zzz.css artifacts/formal-site-gate-baseline.json`
+- `active-theory-sample.html/.css`、`cinematic-slice.html/.css`、`film-archive-directions.html/.css`、`scroll-world-prototype.html/.css`、`tech-direction-demos.html/.css`：纳入现有独立方向稿；原始 JS 未留存，交付说明已明确标记。
+- `prototype/`：纳入现有视觉讨论、Wiki 复刻、首页方向、HOOXI rebuild 与侧栏评审原型及其本地素材。
+- 正式站恢复文件与 `artifacts/formal-site-gate-baseline.json`：保持 04:59 恢复版本的页面、脚本、样式与门禁状态。
+- `progress.md`：追加本轮盘点、素材补齐、压缩包和验证证据。
+- 仓库外 `F:/deliverables/hooxi-zzz-frontend-previews-2026-08-01-verified.zip`：最终可发送交付包，不纳入 Git。
+- 回滚：Git 版本可回到本轮提交的父提交 `e610084`；凌晨恢复快照仍由分支 `recovery/2026-08-01-0459` 和补丁 `F:/hooxi-zzz-before-rollback-20260801-0459.patch` 双重保留。若仅撤销交付包，删除上述 verified ZIP 即可，不影响仓库内容。

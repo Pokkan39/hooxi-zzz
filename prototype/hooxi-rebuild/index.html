@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HOOXI PLAY</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css?v=20260717-premium-visual-r2">
+</head>
+<body data-state="publisher">
+  <main id="app">
+    <section id="publisher" class="scene is-active publisher" aria-label="HOOXI publisher">
+      <p class="publisher-logo">HOOXI</p>
+    </section>
+
+    <section id="title" class="scene title" aria-labelledby="title-heading" hidden>
+      <button id="connect-button" class="poster-button" type="button" aria-label="连接 HOOXI PLAY" aria-describedby="title-help">
+        <img src="../../artifacts/hooxi-demo-title-screen.png" alt="" decoding="async">
+        <span class="title-copy">
+          <strong id="title-heading">HOOXI PLAY</strong>
+          <span>CLICK TO CONNECT</span>
+        </span>
+      </button>
+      <p id="title-help" class="sr-only">按回车键或空格键连接。</p>
+    </section>
+
+    <section id="connecting" class="scene transition-scene" aria-labelledby="connecting-heading" hidden>
+      <img class="scene-art" src="../../assets/hooxi-rebuild/store-poster.png" alt="HOOXI 店铺入口连接海报" loading="lazy" decoding="async">
+      <video id="connect-video" class="transition-video" muted playsinline preload="none"
+        poster="../../assets/hooxi-rebuild/store-poster.png"
+        data-src="../../assets/hooxi-rebuild/connect-transition.mp4" hidden></video>
+      <div class="scene-copy">
+        <p class="eyebrow">HOOXI NETWORK</p>
+        <h1 id="connecting-heading">CONNECTING</h1>
+        <p>正在建立本地信号链接…</p>
+      </div>
+      <button class="back-button" type="button" data-back>返回</button>
+    </section>
+
+    <section id="storefront" class="scene location" aria-labelledby="storefront-heading" hidden>
+      <img class="scene-art" src="../../assets/scroll-world/door-entry/choice.jpg" alt="HOOXI 店铺入口，左侧陈列架与中央门廊" loading="lazy" decoding="async">
+      <div class="scene-shade" aria-hidden="true"></div>
+      <button id="window-button" class="hotspot window-hotspot" type="button" aria-pressed="false">
+        <span>查看橱窗</span>
+      </button>
+      <button id="door-button" class="hotspot door-hotspot" type="button" hidden>
+        <span>进入门廊</span>
+      </button>
+      <div class="location-panel">
+        <p class="eyebrow">HOOXI PLAY / SIGNAL FOUND</p>
+        <h1 id="storefront-heading">店铺入口</h1>
+        <p id="storefront-copy">先查看左侧橱窗，确认营业信号。</p>
+      </div>
+      <button class="back-button" type="button" data-back>返回</button>
+    </section>
+
+    <section id="door-entry" class="scene location" aria-labelledby="door-heading" hidden>
+      <img class="scene-art" src="../../assets/scroll-world/door-entry/choice.jpg" alt="HOOXI 店内门廊与中央入口门" loading="lazy" decoding="async">
+      <video id="door-video" class="transition-video" muted playsinline preload="none"
+        poster="../../assets/hooxi-rebuild/door-poster.jpg"
+        data-src="../../assets/hooxi-rebuild/door-entry.mp4" hidden></video>
+      <div class="scene-shade" aria-hidden="true"></div>
+      <div class="location-panel door-panel">
+        <p class="eyebrow">DOOR ENTRY</p>
+        <h1 id="door-heading">入口已确认</h1>
+        <p>门内信号稳定，可以进入。</p>
+        <button id="enter-interior" class="action-button" type="button">进入 HOOXI</button>
+      </div>
+      <button class="back-button" type="button" data-back>返回</button>
+    </section>
+
+    <section id="interior" class="scene location" aria-labelledby="interior-heading" hidden>
+      <img class="scene-art" src="../../assets/hooxi-rebuild/interior-poster.jpg" alt="HOOXI 店内陈列、砖墙与楼梯" loading="lazy" decoding="async">
+      <div class="scene-shade" aria-hidden="true"></div>
+      <div class="location-panel interior-panel">
+        <p class="eyebrow">HOOXI PLAY / INTERIOR</p>
+        <h1 id="interior-heading">欢迎进入</h1>
+        <p id="interior-copy">第一阶段场景已加载。</p>
+        <div class="button-row">
+          <button class="action-button secondary" type="button" data-back>返回门口</button>
+          <button id="continue-button" class="action-button" type="button">继续探索</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <p id="state-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true">HOOXI publisher</p>
+  <script src="app.js?v=20260717-premium-visual-r2"></script>
+</body>
+</html>

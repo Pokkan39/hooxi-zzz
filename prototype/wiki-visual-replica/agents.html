@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>代理人选取 · HOOXI prototype</title>
+  <link rel="stylesheet" href="css/select.css?v=20260719gameui1">
+</head>
+<body class="select-body">
+  <div class="select-app" id="selectApp" data-mode="roster" data-panel="basic" data-motion="slash" style="--tone:#5B8CFF; --px:0px; --py:0px; --pxn:0; --pyn:0">
+    <!-- 氛围层：本地 wiki 背景素材 + 视差 / 漂移（仅原型） -->
+    <div class="sel-fx" aria-hidden="true">
+      <div class="sel-fx__deep" data-depth="8"></div>
+      <div class="sel-fx__bloom"></div>
+      <div class="sel-fx__mid" data-depth="16"></div>
+      <div class="sel-fx__mesh" data-depth="10"></div>
+      <div class="sel-fx__ring" data-depth="22"></div>
+      <div class="sel-fx__dust" id="selDust"></div>
+      <div class="sel-fx__grain"></div>
+      <div class="sel-fx__vignette"></div>
+    </div>
+
+    <!-- 切人扫场：参考视频 AGENT SELECT 斜切幕 -->
+    <div class="sel-wipe" id="selectWipe" aria-hidden="true">
+      <div class="sel-wipe__plane"></div>
+      <div class="sel-wipe__bar"><span>A G E N T&nbsp;&nbsp;S E L E C T</span></div>
+    </div>
+
+    <header class="sel-top">
+      <div class="sel-nav">
+        <a class="sel-pill sel-pill--back" href="index.html" title="返回首页">←</a>
+        <div class="sel-pill"><b>代理人</b><span>对照真机花名册</span></div>
+        <div class="sel-tabs" role="tablist" aria-label="视图切换">
+          <button type="button" class="sel-tab" data-mode="detail">档案</button>
+          <button type="button" class="sel-tab is-on" data-mode="roster">花名册</button>
+        </div>
+      </div>
+      <div class="sel-top__right">
+        <span class="sel-badge" id="statusLine">加载中…</span>
+        <span class="sel-badge">参考 BV13zvKzCEex</span>
+      </div>
+    </header>
+
+    <div class="sel-stage">
+      <div class="sel-hero" id="heroStage" aria-hidden="true" data-motion="slash">
+        <div class="sel-hero__watermark" id="heroWatermark" aria-hidden="true">S</div>
+        <div class="sel-hero__backplate" data-depth="12"></div>
+        <div class="sel-hero__glow"></div>
+        <div class="sel-hero__motion" data-depth="28">
+          <img class="sel-hero__img" id="heroImg" src="assets/portraits/anby-card.webp" alt="">
+        </div>
+        <div class="sel-hero__floor"></div>
+        <div class="sel-hero__nameplate" id="heroNameplate" data-depth="18">
+          <span class="sel-hero__nameplate-icon" aria-hidden="true">◆</span>
+          <span id="heroNameShort">—</span>
+        </div>
+      </div>
+
+      <div class="sel-party" id="partyStrip" aria-label="快速切换"></div>
+
+      <!-- detail panel -->
+      <aside class="sel-panel" aria-label="代理人详情">
+        <div class="sel-panel__hd">
+          <div class="sel-faction" id="detailFaction">
+            <span class="sel-faction__dot" id="detailFactionDot"></span>
+            <span id="detailFactionName">—</span>
+          </div>
+          <div class="sel-rankchip" id="detailRank">S</div>
+          <h1 class="sel-name" id="detailName">—</h1>
+          <p class="sel-en" id="detailEn">—</p>
+        </div>
+
+        <div class="sel-tags" id="detailTags"></div>
+
+        <div class="sel-level">
+          <span class="sel-level__label">等级</span>
+          <span class="sel-level__num" id="detailLevel">60</span>
+          <span class="sel-level__max">MAX</span>
+        </div>
+
+        <div class="sel-panel__body" id="panelBody">
+          <div class="sel-pane is-on" data-pane="basic">
+            <div class="sel-stats" id="detailStats"></div>
+            <div class="sel-note" id="detailNote"></div>
+          </div>
+          <div class="sel-pane" data-pane="skill">
+            <div class="sel-skills" id="detailSkills"></div>
+            <div class="sel-note">技能区为动效/布局对照占位，非正式数值或技能名。</div>
+          </div>
+          <div class="sel-pane" data-pane="gear">
+            <div class="sel-gear" id="detailGear"></div>
+            <div class="sel-note">装备区为界面差异对照：列表+槽位节奏与「基础」不同。</div>
+          </div>
+        </div>
+
+        <div class="sel-panel__tabs" role="tablist" aria-label="详情子页">
+          <button type="button" class="sel-panel__tab is-on" data-panel="basic">基础</button>
+          <button type="button" class="sel-panel__tab" data-panel="skill">技能</button>
+          <button type="button" class="sel-panel__tab" data-panel="gear">装备</button>
+        </div>
+      </aside>
+
+      <!-- 斜切花名册：对照真机 — 陡斜边 + 3 列方卡 + 左子页签 + 右缘 SELECT -->
+      <aside class="sel-roster-panel" aria-label="代理人花名册">
+        <div class="sel-roster-panel__skew">
+          <div class="sel-roster-panel__shade" aria-hidden="true"></div>
+
+          <div class="sel-roster-rail" aria-label="档案子页">
+            <button type="button" class="sel-roster-rail__btn is-on" data-panel="basic">基础</button>
+            <button type="button" class="sel-roster-rail__btn" data-panel="skill">技能</button>
+            <button type="button" class="sel-roster-rail__btn" data-panel="gear">装备</button>
+          </div>
+
+          <div class="sel-roster-main">
+            <div class="sel-roster-toolbar">
+              <details class="sel-filters-wrap" id="filterDetails">
+                <summary class="sel-filters-summary" title="筛选">
+                  <span class="sel-filters-summary__ico" aria-hidden="true">▽</span>
+                  <b id="rosterCount">0</b>
+                  <span class="sel-filters-summary__hint" id="rosterFilterLabel">全部</span>
+                </summary>
+                <div class="sel-filters" id="filterPanel">
+                  <div class="sel-filter-row">
+                    <div class="sel-filter-row__label">稀有度</div>
+                    <div class="sel-filter-row__opts" id="rankOpts"></div>
+                  </div>
+                  <div class="sel-filter-row">
+                    <div class="sel-filter-row__label">属性</div>
+                    <div class="sel-filter-row__opts" id="elemOpts"></div>
+                  </div>
+                  <div class="sel-filter-row">
+                    <div class="sel-filter-row__label">特性</div>
+                    <div class="sel-filter-row__opts" id="profOpts"></div>
+                  </div>
+                  <div class="sel-filter-row">
+                    <div class="sel-filter-row__label">阵营</div>
+                    <div class="sel-filter-row__opts" id="factionOpts"></div>
+                  </div>
+                </div>
+              </details>
+            </div>
+
+            <div class="sel-grid" id="rosterGrid"></div>
+          </div>
+
+          <!-- SELECT：真机右缘斜条，底色偏游戏霓虹黄绿，并混入当前 tone -->
+          <div class="sel-select-strip" id="selectStrip" aria-hidden="true">
+            <span class="sel-select-strip__label">SELECT</span>
+            <i class="sel-select-strip__glow"></i>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="sel-dock">
+      <div class="sel-team" id="teamSlots" aria-label="出战编队"></div>
+      <div class="sel-hint">
+        <div>左大角色 · 右真机斜切花名册 · 点选换人 · 背景动效保留</div>
+        <div>
+          <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> 切换
+          <kbd>R</kbd> 花名册/档案
+          <kbd>Enter</kbd> 编入
+          <kbd>Esc</kbd> 回花名册
+        </div>
+      </div>
+      <div class="sel-actions">
+        <button type="button" class="sel-btn sel-btn--ghost" id="btnClearTeam">清空编队</button>
+        <button type="button" class="sel-btn sel-btn--ghost" id="btnRoster">花名册</button>
+        <button type="button" class="sel-btn sel-btn--primary" id="btnDeploy">编入出战</button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/select.js?v=20260719gameui1"></script>
+</body>
+</html>

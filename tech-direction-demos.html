@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="description" content="HOOXI 首页技术方向 Demo：巨物、帧序列、控制台、点击视频、移动降级"/>
+<title>HOOXI // 技术方向 Demo</title>
+<link rel="icon" href="data:,"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="tech-direction-demos.css?v=6"/>
+<style>.play-experiment-banner{position:sticky;top:0;z-index:40;padding:10px 16px;background:#17191b;color:#f3d33b;border-bottom:3px solid #f3d33b;font:700 13px/1.4 monospace}.play-experiment-banner a{color:#fff}</style>
+</head>
+<body data-demo-lab="1">
+<div data-play-experiment-banner class="play-experiment-banner" role="note"><strong>技术方向演示 · 非正式进店</strong> 正式进店请走 <a href="tape-wall-sample.html">HOOXI PLAY · 凌晨录像店</a>；浏览档案请回 <a href="index.html">正式首页</a>。</div>
+<div style="position:sticky;top:0;z-index:9999;background:#111;color:#f3d33b;padding:8px 12px;font:700 12px monospace;border-bottom:2px solid #f3d33b">实验页 / 非默认档案主站 · <a href="index.html" style="color:#fff">返回 HOOXI 档案首页</a> · <a href="stories.html" style="color:#fff">角色目录</a></div>
+<header class="topbar" aria-label="Demo 导航">
+  <a class="logo" href="./">HOOXI</a>
+  <nav>
+    <a href="#giant">01 巨物</a>
+    <a href="#scrub">02 帧序</a>
+    <a href="#console">03 控制台</a>
+    <a href="#clickvid">04 点击视频</a>
+    <a href="#degrade">05 降级</a>
+  </nav>
+</header>
+
+<main>
+  <section class="intro" id="matrix">
+    <p class="kicker">TECH MATRIX // 5 DIRECTIONS</p>
+    <h1>首页技术方向<br/>对照板</h1>
+    <p>学 Active Theory / Nanfu 的技术结构，不抄电池视觉。五条路径都可本地点开讨论；默认不动正式首页。</p>
+    <div class="matrix-grid" role="list">
+      <a class="matrix-card" href="#giant" role="listitem"><span>01</span><strong>巨物首屏</strong><em>低成本 / 高冲击</em></a>
+      <a class="matrix-card" href="#scrub" role="listitem"><span>02</span><strong>帧序列滚动</strong><em>中成本 / 强沉浸</em></a>
+      <a class="matrix-card" href="#console" role="listitem"><span>03</span><strong>信号控制台</strong><em>低成本 / 强导航</em></a>
+      <a class="matrix-card" href="#clickvid" role="listitem"><span>04</span><strong>点击驱动视频</strong><em>中成本 / 可控加载</em></a>
+      <a class="matrix-card" href="#degrade" role="listitem"><span>05</span><strong>性能降级层</strong><em>工程兜底 / 移动优先</em></a>
+    </div>
+  </section>
+
+  <section id="giant" class="demo giant-demo" data-demo="01">
+    <video class="giant-video" muted playsinline loop preload="none" poster="assets/hooxi-rebuild/store-poster.png">
+      <source src="assets/hooxi-rebuild/connect-transition.mp4" type="video/mp4"/>
+    </video>
+    <div class="giant-object" aria-hidden="true">
+      <img src="assets/hooxi-rebuild/store-poster.png" alt=""/>
+    </div>
+    <div class="copy">
+      <p class="kicker">TECH DIRECTION 01</p>
+      <p class="tag">低成本 · 高冲击 · 静图可评审</p>
+      <h1>巨物式<br/>录像店入口</h1>
+      <p>学 Nanfu 的技术结构：全屏视频/海报底、巨大主体压屏、短标题贴边、亮色 CTA。主体改成门牌/海报巨物，不抄产品图。</p>
+      <button class="action" type="button" data-play-video>播放背景视频</button>
+    </div>
+    <p class="footnote">验证：产品巨物构图能否替代 3D 店铺作为默认首屏。</p>
+  </section>
+
+  <section id="scrub" class="demo scrub-demo" data-demo="02">
+    <div class="sticky">
+      <img id="scrubFrame" src="assets/scroll-world/door-entry/frame-0000.jpg" alt="滚动驱动进店帧" width="1920" height="1080"/>
+      <div class="scrub-ui">
+        <p class="kicker">TECH DIRECTION 02</p>
+        <p class="tag">中成本 · 强沉浸 · 需预加载</p>
+        <h2>滚动驱动<br/>进店镜头</h2>
+        <p>不用实时 3D，用 48 张预渲染帧模拟高级转场。滚动就是时间轴。进入本段会后台预热帧，减少闪白。</p>
+        <meter id="scrubMeter" min="0" max="47" value="0"></meter>
+        <span id="scrubLabel">FRAME 00 / 47</span>
+        <span id="scrubWarm" class="warm">帧缓存：待命</span>
+        <div class="scrub-step" hidden>
+          <button type="button" data-scrub-step="-1">上一帧</button>
+          <button type="button" data-scrub-step="1">下一帧</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="console" class="demo console-demo" data-demo="03">
+    <div class="console-shell">
+      <div class="screen">
+        <img id="consolePoster" src="assets/hooxi-rebuild/interior-poster.jpg" alt="当前信号画面"/>
+        <div class="scan" aria-hidden="true"></div>
+      </div>
+      <div class="panel">
+        <p class="kicker">TECH DIRECTION 03</p>
+        <p class="tag">低成本 · 强导航 · 状态机</p>
+        <h2>信号控制台</h2>
+        <p id="consoleText">把首页做成可点选的频道选择：档案、角色、活动、幕后。技术上是轻量状态机，适合内容站默认入口。</p>
+        <div class="choices" role="group" aria-label="选择信号频道">
+          <button class="chip active" type="button" data-channel="archive">档案</button>
+          <button class="chip" type="button" data-channel="agent">角色</button>
+          <button class="chip" type="button" data-channel="event">活动</button>
+          <button class="chip" type="button" data-channel="behind">幕后</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="clickvid" class="demo click-demo" data-demo="04">
+    <div class="click-stage" data-click-stage>
+      <img class="click-poster is-on" data-click-poster src="assets/hooxi-rebuild/door-poster.jpg" alt="门廊待机海报"/>
+      <video class="click-video" data-click-video muted playsinline preload="none" poster="assets/hooxi-rebuild/door-poster.jpg">
+        <source src="assets/hooxi-rebuild/door-entry.mp4" type="video/mp4"/>
+      </video>
+      <img class="click-end" data-click-end src="assets/hooxi-rebuild/interior-poster.jpg" alt="进店后画面"/>
+      <div class="click-copy">
+        <p class="kicker">TECH DIRECTION 04</p>
+        <p class="tag">中成本 · 可控加载 · 点击才播</p>
+        <h2>点击驱动<br/>视频进店</h2>
+        <p id="clickStatus">与滚动帧序列对照：视频只在用户点击后加载。失败或减少动效时直接切海报终帧，作为性能兜底。</p>
+        <button class="action" type="button" data-click-enter>CLICK TO ENTER</button>
+        <button class="action ghost" type="button" data-click-reset>重置</button>
+      </div>
+    </div>
+    <p class="footnote">验证：视频首屏 + 用户手势加载，是否比全量预载更稳。</p>
+  </section>
+
+  <section id="degrade" class="demo degrade-demo" data-demo="05">
+    <div class="degrade-shell" data-mode="high">
+      <div class="degrade-high" aria-hidden="false">
+        <div class="card-fan">
+          <img src="assets/portraits/anby-card.webp" alt=""/>
+          <img src="assets/portraits/nicole-demara-card.webp" alt=""/>
+          <img src="assets/portraits/billy-kid-card.webp" alt=""/>
+          <img src="assets/portraits/nekomata-card.webp" alt=""/>
+        </div>
+        <div class="crt-glow" aria-hidden="true"></div>
+      </div>
+      <div class="degrade-low" hidden>
+        <img src="assets/hooxi-rebuild/store-poster.png" alt="低功耗静态海报"/>
+      </div>
+      <div class="degrade-panel">
+        <p class="kicker">TECH DIRECTION 05</p>
+        <p class="tag">工程兜底 · 移动优先 · 可开关</p>
+        <h2>性能 / 移动<br/>降级层</h2>
+        <p id="degradeText">同一内容两套表现：高配 = 多卡巨物 + 光晕；低配 = 单海报 + 清晰导航。讨论首页时必须先定降级策略，而不是只做桌面高潮。</p>
+        <div class="choices" role="group" aria-label="切换性能档位">
+          <button class="chip active" type="button" data-mode="high">高配视觉</button>
+          <button class="chip" type="button" data-mode="low">移动/弱网降级</button>
+        </div>
+      </div>
+    </div>
+    <p class="footnote">验证：弱网、省电、reduced-motion 时首页是否仍可读、可点、可讲解。</p>
+  </section>
+</main>
+
+<script src="tech-direction-demos.js?v=6"></script>
+</body>
+</html>

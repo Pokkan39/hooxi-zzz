@@ -49,7 +49,7 @@ const record = (name, passed, detail = {}) => {
   if (!passed) failures.push({ name, detail });
 };
 
-const characterPanelNames = ['media','lore','profile','talents','related'];
+const characterPanelNames = ['media','lore','profile','related'];
 const readCharacterArchiveState = page => page.evaluate(panelNames => {
   const visible = element => {
     if (!element) return false;
@@ -1510,24 +1510,24 @@ for (const representative of characterRepresentatives) {
   });
   const clickStates = [];
   const historyStates = [];
-  if (semanticTabCount === 5) {
-    for (const target of ['lore','profile','talents','related']) {
+  if (semanticTabCount === 4) {
+    for (const target of ['lore','profile','related']) {
       await page.locator(`#dossier [role="tablist"] [role="tab"][aria-controls="${target}"]`).click();
       await page.waitForTimeout(50);
       clickStates.push({ target, state:await readCharacterArchiveState(page) });
     }
-    for (const [direction, expected] of [['back','talents'],['back','profile'],['back','lore'],['forward','profile'],['forward','talents'],['forward','related']]) {
+    for (const [direction, expected] of [['back','profile'],['back','lore'],['forward','profile'],['forward','related']]) {
       await page.evaluate(value => history[value](), direction);
       await page.waitForTimeout(80);
       historyStates.push({ direction, expected, state:await readCharacterArchiveState(page) });
     }
   }
   record('character-tabs-default-click-history-focus-and-single-panel-stay-synchronized',
-    semanticTabCount === 5
+    semanticTabCount === 4
       && characterArchiveStatePass(initial, 'media', { hash:'' })
-      && clickStates.length === 4
+      && clickStates.length === 3
       && clickStates.every(({ target, state }) => characterArchiveStatePass(state, target, { focus:true, hash:`#${target}` }))
-      && historyStates.length === 6
+      && historyStates.length === 4
       && historyStates.every(({ expected, state }) => characterArchiveStatePass(state, expected, { focus:true, hash:`#${expected}` })),
     { semanticTabCount, initial, clickStates, historyStates });
 
@@ -1693,8 +1693,12 @@ for (const representative of characterRepresentatives) {
   await context.close();
 }
 
-const approvedHomeHeroSources = null; // 动态影画：接受 assets/mindscape/default/*.webp 中任意4张
-const isMindscapeHeroSource = path => /^assets\/mindscape\/default\/[a-z0-9-]+\.webp$/.test(path);
+const approvedHomeHeroSources = [
+  'assets/hero/zzz-random-play-keyart.webp',
+  'assets/gallery/miyabi/05.webp',
+  'assets/gallery/harumasa/04.webp',
+  'assets/gallery/aria/01.webp',
+];
 {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion:'no-preference' });
   const page = await context.newPage();
@@ -1705,16 +1709,21 @@ const isMindscapeHeroSource = path => /^assets\/mindscape\/default\/[a-z0-9-]+\.
     const pauseBox = pause?.getBoundingClientRect();
     const indexBox = document.querySelector('#heroCarouselIndex');
     const sources = slides.map(slide => slide.querySelector('img')?.getAttribute('src') || '');
-    const sourcePolicies = sources.map((source) => {
-      const isMindscape = /^assets\/mindscape\/default\/[a-z0-9-]+\.webp$/.test(source);
-      return {
-        source,
-        assetPath:source,
-        sameOrigin:true,
-        insideAssets:source.startsWith('assets/'),
-        registeredPath:isMindscape,
-        resolved:source,
-      };
+    const sourcePolicies = sources.map((source, index) => {
+      try {
+        const url = new URL(source, location.href);
+        const assetPath = url.pathname.replace(/^\/+/, '');
+        return {
+          source,
+          assetPath,
+          sameOrigin:url.origin === location.origin,
+          insideAssets:url.pathname.startsWith('/assets/'),
+          registeredPath:assetPath === approvedSources[index],
+          resolved:url.href,
+        };
+      } catch {
+        return { source, assetPath:'', sameOrigin:false, insideAssets:false, registeredPath:false, resolved:'' };
+      }
     });
     return {
       slideCount:slides.length,
@@ -1737,9 +1746,9 @@ const isMindscapeHeroSource = path => /^assets\/mindscape\/default\/[a-z0-9-]+\.
     };
   }, { approvedSources:approvedHomeHeroSources });
   record('home-has-four-local-slides-and-only-index-pause-controls',
-    structure.slideCount === 4
-      && structure.sourcePolicies.length === 4
-      && structure.sourcePolicies.every(policy => policy.source && policy.sameOrigin && policy.insideAssets && isMindscapeHeroSource(policy.assetPath))
+    structure.slideCount === approvedHomeHeroSources.length
+      && structure.sourcePolicies.length === approvedHomeHeroSources.length
+      && structure.sourcePolicies.every(policy => policy.source && policy.sameOrigin && policy.insideAssets && policy.registeredPath)
       && structure.activeCount === 1
       && structure.indexCount === 1
       && structure.pauseCount === 1

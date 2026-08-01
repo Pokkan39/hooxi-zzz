@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="HOOXI PLAY 游戏级多阶段点击交互原型">
+  <title>HOOXI PLAY · After Hours</title>
+  <link rel="stylesheet" href="scroll-world-prototype.css?v=11">
+  <script src="scroll-world-scene-adapter.js?v=7" defer></script>
+  <script src="scroll-world-prototype.js?v=12" defer></script>
+<style>.play-experiment-banner{position:sticky;top:0;z-index:40;padding:10px 16px;background:#17191b;color:#f3d33b;border-bottom:3px solid #f3d33b;font:700 13px/1.4 monospace}.play-experiment-banner a{color:#fff}</style>
+</head>
+<body data-state="boot">
+<div data-play-experiment-banner class="play-experiment-banner" role="note"><strong>实验原型 · 非正式进店</strong> 正式进店请走 <a href="tape-wall-sample.html">HOOXI PLAY · 凌晨录像店</a>；浏览档案请回 <a href="index.html">正式首页</a>。</div>
+
+  <div class="boot-screen" data-boot aria-live="polite">
+    <strong>HOOXI PLAY</strong>
+    <span>SCANNING STOREFRONT // SYSTEM READY</span>
+  </div>
+
+  <div class="scroll-track" data-scroll-track aria-hidden="true">
+    <span data-scroll-marker="gate">GATE</span>
+    <span data-scroll-marker="entry">ENTRY</span>
+    <span data-scroll-marker="reveal">REVEAL</span>
+    <span data-scroll-marker="choice">CHOICE</span>
+    <span data-scroll-marker="explore">EXPLORE</span>
+  </div>
+
+  <main class="prototype-shell" aria-labelledby="prototype-title">
+    <picture class="scene-image scene-image--outside">
+      <img data-poster src="current-prototype-storefront.png" alt="HOOXI PLAY 录像店正门">
+    </picture>
+    <canvas class="entrance-film" data-canvas aria-hidden="true"></canvas>
+    <div class="door-leaves" aria-hidden="true">
+      <span class="door-leaf door-leaf--left"></span>
+      <span class="door-leaf door-leaf--right"></span>
+    </div>
+    <picture class="scene-image scene-image--choice">
+      <img data-choice-image src="current-prototype-choice.png" alt="HOOXI PLAY 店内分流场景">
+    </picture>
+    <div class="scene-shade" aria-hidden="true"></div>
+    <section class="scene-3d-stage" data-3d-stage aria-label="完整录像店真实 3D 场景">
+      <canvas class="hybrid-scene" data-hybrid-scene aria-hidden="true"></canvas>
+      <div class="scene-3d-badge" data-scene-badge>REAL GLB / 完整录像店场景</div>
+    </section>
+
+    <header class="masthead">
+      <div class="brand">
+        <strong id="prototype-title"><span>HOOXI</span> PLAY</strong>
+        <small>VIDEO ARCHIVE // AFTER HOURS</small>
+      </div>
+      <div class="hud-state" aria-hidden="true">
+        <span data-state-code>SYS/BOOT</span>
+        <i></i>
+        <b>H-01 ONLINE</b>
+      </div>
+    </header>
+
+    <section class="stage outside-stage" data-stage="outside" aria-label="正门入口">
+      <button class="door-hotspot" type="button" data-enter aria-describedby="door-instruction">
+        <span class="door-reticle" aria-hidden="true"></span>
+        <small>GATE 01 // OPEN</small>
+        <strong>推门进入</strong>
+        <span id="door-instruction">点击正门定位入场段，或直接向下滚动进入 HOOXI PLAY</span>
+      </button>
+    </section>
+
+    <div class="entrance-progress" data-entrance-progress role="progressbar" aria-label="进店镜头进度" aria-valuemin="0" aria-valuemax="47" aria-valuenow="0" aria-valuetext="第 1 / 48 帧">
+      <span>ENTRY / 页面滚动双向映射</span><b data-entrance-count>01 / 48</b><i aria-hidden="true"><span data-entrance-meter></span></i>
+    </div>
+    <button class="skip-button" type="button" data-skip>SKIP / 跳过</button>
+
+    <section class="stage choice-stage" data-stage="choice" aria-labelledby="choice-title">
+      <header class="stage-heading">
+        <p>WELCOME IN // SELECT MODE</p>
+        <h1 id="choice-title">今晚怎么逛？</h1>
+      </header>
+      <div class="choice-grid" aria-label="店内主菜单">
+        <button class="choice-card choice-card--browse" type="button" data-route="browse">
+          <span class="choice-card__scan" aria-hidden="true"></span>
+          <span class="choice-card__number">01 / BROWSE ARCHIVE</span>
+          <span class="choice-card__copy">
+            <strong>随便看看</strong>
+            <small>四列录像目录已经上架。挑一盘，送去看片台。</small>
+          </span>
+          <b aria-hidden="true">ENTER →</b>
+        </button>
+        <button class="choice-card choice-card--concierge" type="button" data-route="concierge">
+          <span class="choice-card__scan" aria-hidden="true"></span>
+          <span class="choice-card__number">02 / H-01 GUIDE</span>
+          <span class="choice-card__copy">
+            <strong>问问邦布</strong>
+            <small>说出关键词，H-01 会给出一条确定的店内路线。</small>
+          </span>
+          <span class="bangboo bangboo--menu" aria-hidden="true">
+            <i class="bangboo__ear bangboo__ear--left"></i><i class="bangboo__ear bangboo__ear--right"></i>
+            <i class="bangboo__head"><b>H-01</b></i><i class="bangboo__body"></i>
+          </span>
+          <b aria-hidden="true">ASK →</b>
+        </button>
+      </div>
+    </section>
+
+    <section class="stage browse-stage" data-stage="browse" aria-labelledby="browse-title">
+      <header class="stage-heading stage-heading--row">
+        <div><p>ARCHIVE HALL // LEFT + RIGHT CABINETS</p><h1 id="browse-title">左右书柜总览</h1></div>
+        <div class="browse-actions">
+          <span class="scene-mode" data-scene-mode>DOM / CSS FALLBACK</span>
+          <button class="back-button" type="button" data-back="choice">← 返回主菜单</button>
+        </div>
+      </header>
+      <div class="cabinet-room" data-cabinet-room>
+        <button class="cabinet-hotspot cabinet-hotspot--left" type="button" data-cabinet="left" aria-describedby="left-cabinet-copy">
+          <span>01 / LEFT CABINET</span><strong>主线 / 活动</strong><small id="left-cabinet-copy">固定聚焦左柜，挑选剧情与活动录像。</small>
+        </button>
+        <div class="room-aisle" aria-hidden="true"><i></i><span>SELECT CABINET</span></div>
+        <button class="cabinet-hotspot cabinet-hotspot--right" type="button" data-cabinet="right" aria-describedby="right-cabinet-copy">
+          <span>02 / RIGHT CABINET</span><strong>角色 / 幕后</strong><small id="right-cabinet-copy">固定聚焦右柜，挑选角色与幕后录像。</small>
+        </button>
+      </div>
+    </section>
+
+    <section class="stage cabinet-stage" data-stage="cabinet" aria-labelledby="cabinet-title">
+      <header class="stage-heading stage-heading--row">
+        <div><p data-cabinet-code>CABINET / FOCUS</p><h1 id="cabinet-title" data-cabinet-title>书柜聚焦</h1></div>
+        <button class="back-button" type="button" data-back="browse">← 返回总览</button>
+      </header>
+      <div class="catalog-panel catalog-panel--focused">
+        <div class="filters" data-filters aria-label="当前书柜分类"></div>
+        <div class="tape-shelf" data-tape-shelf role="list" aria-label="当前书柜录像带"></div>
+        <p class="shelf-readout" data-shelf-readout></p>
+      </div>
+    </section>
+
+    <section class="stage tape-stage" data-stage="tape" aria-labelledby="tape-title">
+      <button class="back-button tape-back" type="button" data-back="cabinet">← 放回录像带</button>
+      <div class="viewer" data-viewer>
+        <div class="viewer__screen" data-viewer-screen>
+          <img data-tape-image alt="">
+          <span class="viewer__scan" aria-hidden="true"></span>
+        </div>
+        <article class="viewer__details">
+          <p data-tape-code>// TAPE SIGNAL</p>
+          <h1 id="tape-title" data-tape-title>档案载入中</h1>
+          <div class="tape-tags" data-tape-tags></div>
+          <p data-tape-summary></p>
+          <a class="archive-link" data-tape-link href="mainline.html">OPEN ARCHIVE / 打开正式档案</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="stage concierge-stage" data-stage="concierge" aria-labelledby="concierge-title">
+      <header class="stage-heading stage-heading--row">
+        <div><p>H-01 ROUTE DESK // DETERMINISTIC MODE</p><h1 id="concierge-title">店内向导</h1></div>
+        <button class="back-button" type="button" data-back="choice">← 返回主菜单</button>
+      </header>
+      <div class="concierge-grid">
+        <div class="bangboo-bay" aria-hidden="true">
+          <span class="bay-light"></span>
+          <span class="bangboo bangboo--desk" data-bangboo>
+            <i class="bangboo__ear bangboo__ear--left"></i><i class="bangboo__ear bangboo__ear--right"></i>
+            <i class="bangboo__head"><b>H-01</b></i><i class="bangboo__body"></i>
+          </span>
+        </div>
+        <div class="concierge-console">
+          <p class="console-label">ROUTE QUERY / 推荐问题</p>
+          <div class="suggestions" data-suggestions>
+            <button type="button" data-query="主线">主线从哪里开始？</button>
+            <button type="button" data-query="角色">有哪些角色档案？</button>
+            <button type="button" data-query="店内类型">店内有哪些类型？</button>
+          </div>
+          <form data-concierge-form>
+            <label for="concierge-query">输入关键词：安比、角色、主线、活动、幕后</label>
+            <div class="query-row"><input id="concierge-query" name="query" autocomplete="off"><button type="submit">发送 →</button></div>
+          </form>
+          <div class="reply" data-reply aria-live="polite" aria-atomic="true">
+            <span>H-01 已待命。请选择问题或输入关键词。</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="system-status" data-status role="status" aria-live="polite" aria-atomic="true"></p>
+  </main>
+
+  <noscript>
+    <style>.boot-screen,.prototype-shell,.scroll-track{display:none!important}body{min-height:100vh}.noscript-choice{position:relative;z-index:100}</style>
+    <main class="noscript-choice">
+      <p>HOOXI PLAY / JAVASCRIPT OFFLINE</p><h1>店内档案导航</h1>
+      <nav aria-label="正式页面">
+        <a href="mainline.html">主线剧情</a><a href="stories.html">角色故事</a>
+        <a href="events.html">往期活动</a><a href="behind-scenes.html">幕后记录</a>
+      </nav>
+    </main>
+  </noscript>
+</body>
+</html>
