@@ -10,7 +10,7 @@
 
 三方视觉与技术对照（官方 wiki / 南孚 / `F:/web` Active Theory）与「学什么、不学什么、何时才能改正式站」见 [`VISUAL-TECH-REFERENCE-COMPARE.md`](VISUAL-TECH-REFERENCE-COMPARE.md)。该文档是重建参考，**不构成自动施工授权**；未获用户明确要求前，不得把对照结论直接改入正式站主链路代码。
 
-正式 R1 已于 2026-07-19 获得施工授权。全站视觉与交互唯一合同见根目录 [`../design.md`](../design.md)；媒体来源、封面和权利状态规则见 [`media-source-policy.md`](media-source-policy.md)。发布前至少执行 `npm run test:content` 与 `npm run test:formal`；`npm run test:ui` 默认生成带时间戳的 `artifacts/r1-baseline-YYYYMMDD-HHMMSS/`，不会删除既有视觉证据，并同时阻断正式路由外联、无效页面结构和失效深链。代理人工作台由 `src/stories.jsx` 构建为正式 `stories.js`；`npm run test:stories` 直接自启临时静态服务，不会覆盖正式脚本。
+正式 R1 已于 2026-07-19 获得施工授权。全站视觉与交互唯一合同见根目录 [`../design.md`](../design.md)；媒体来源、封面和权利状态规则见 [`media-source-policy.md`](media-source-policy.md)。发布前至少执行 `npm run test:content` 与 `npm run test:formal`；`npm run test:ui` 默认生成带时间戳的 `artifacts/ui-gate-YYYYMMDD-HHMMSS/`，也可通过 `HOOXI_UI_OUTPUT_DIR` 指定固定输出目录，不会删除既有视觉证据，并同时阻断正式路由外联、无效页面结构和失效深链。代理人工作台由 `src/stories.jsx` 构建为正式 `stories.js`；`npm run test:stories` 直接自启临时静态服务，不会覆盖正式脚本。
 
 `site-motion.js` 是 `index.html`、`mainline.html`、`stories.html`、`character.html`、`faction.html`、`events.html`、`behind-scenes.html` 7 个核心公开页共享的动态背景与同源页面转场层。发布时必须与 `motion.css` 一起纳入正式门禁基线；编辑器不挂载该层，内容可用性不得依赖转场动画。
 
@@ -24,7 +24,7 @@
 
 **用户本轮要求 vs 现况对照**（难看/不协调/配色/模块少；先对齐再按 skill 重构）见 [`USER-REQ-VS-STATUS-2026-07-19.md`](USER-REQ-VS-STATUS-2026-07-19.md)。**不等于施工授权。**
 
-**正式站缺口清单**（产品 Spec vs 现况、原型边界、D1–D8 决策板、施工包 C1–C5；skill 复查摘要）见 [`HOOXI-FORMAL-SITE-GAP-CHECKLIST.md`](HOOXI-FORMAL-SITE-GAP-CHECKLIST.md)。**C1–C4 与美术增强（17 阵营 logo + 56 角色卡面）已落地**；**P1 品牌可读（7 页 SEO TDK + favicon + 首页轻量关于）已落地**；正式首页当前采用“午夜放映档案”七幕长卷，不再采用 2026-07-19 的 10 模块（6 LIVE / 4 LOCK）模块墙事实。主线页 `?lane=` 车道切换与正式档案可读性继续保留；C5 本阶段不做。本站不是官方 wiki 整站复刻。
+**正式站缺口清单**（产品 Spec vs 现况、原型边界、D1–D8 决策板、施工包 C1–C5；skill 复查摘要）见 [`HOOXI-FORMAL-SITE-GAP-CHECKLIST.md`](HOOXI-FORMAL-SITE-GAP-CHECKLIST.md)。**C1–C4 与现行美术覆盖（18 阵营 logo + 57 角色卡面）已落地**；**P1 品牌可读（7 页 SEO TDK + favicon + 首页轻量关于）已落地**；正式首页当前采用“午夜放映档案”七幕长卷，不再采用 2026-07-19 的 10 模块（6 LIVE / 4 LOCK）模块墙事实。主线页 `?lane=` 车道切换与正式档案可读性继续保留；C5 本阶段不做。本站不是官方 wiki 整站复刻。
 
 对照审核稿 §3 的**抛砖视觉 Demo**（非正式站）：[`../prototype/visual-review-demos/`](../prototype/visual-review-demos/README.md)。五版可切换：门面档案为主 / 门面进店为主 / 主线终端 / 角色阵营墙 / PLAY 店内 2D。**仅讨论视觉，不替换正式首页。**
 
@@ -56,14 +56,14 @@
 
 1. `data.js`：保留主线 / 支线 / 活动等剧情条目；`factions` 与 `characters` 默认可为空，只放本地覆盖。
 2. `agent-enrichment.js`：从本地归档 `website-archives/zzz-wiki` 抽取的代理人印象、个人故事摘要、图集、来源链接及职级晋升阶段（纯文本属性与有限材料字段，不向浏览器透传 Wiki HTML；结构化摘要，不是整站复制）。
-3. `agent-catalog.js`：维护 56 名可操作代理人与 17 个阵营的稳定 ID、属性、阵营归属，并把 enrichment 合并进 `window.archiveData`。
+3. `agent-catalog.js`：维护 57 名代理人与 18 个阵营的稳定 ID、已确认属性、阵营关系，并把 enrichment 合并进 `window.archiveData`。
 
-当前快照日期为 **2026-07-18**。仅预告、尚未实装角色不纳入。每名代理人记录稳定 ID、中文名/英文名、阵营、稀有度、属性、特性、攻击类型、实装日期、生日、专属音擎、印象摘要、个人剧情摘录、来源和更新时间。
+当前 `snapshotDate` 为 **2026-07-29**。第 57 名角色蕾米埃尔的官方 Wiki 编号为 `2076`，英文名为 `REMIELLE`；她与达识结社的关系由官方角色页佐证，独立阵营资料仍待公布。蕾米埃尔尚未确认的等级、属性、特性、攻击类型、实装日期、生日、专属音擎、CV 等字段统一显示“待公布”，不得用推测值补齐。
 
 - 基础事实优先核对绝区零官方 / 米游社百科归档；攻略建议可参考 Prydwen 等站，但必须标记来源。
 - 不复制官方 wiki 整站或第三方长篇攻略；站内只保留结构化事实、短摘要和来源链接。材料总量、配装、词条和配队未完成核验时显示“待核验”，不得用推测数字填充。
-- `stories.html` 是角色关系导航主入口：可按关键词搜索代理人，可按阵营筛选，并同时浏览阵营卡与代理人列表。
-- `faction.html` 展示阵营摘要与成员；`character.html` 提供角色资料、个人剧情、职级晋升阶段/材料、养成方向、来源/关联等模块。成长阶段使用标准 ARIA tabs，支持点击、方向键、Home/End 与 roving tabindex；`#growth` 继续兼容并落到 `#story`。材料图标从本地 wiki 镜像复制到 `assets/materials/<epId>.<ext>`，页面只加载同源 `icon`；无图标时降级为等级字母。档案图集从镜像按原格式（含 GIF）复制到 `assets/gallery/<agentId>/<nn>.<ext>`，每角色最多 8 张，镜像缺失项跳过；页面只加载同源图集，禁止热链。材料详情若来自 `/zzz/wiki/...`，规范化为 `https://baike.mihoyo.com/...`，仅在用户点击时外跳。
+- `stories.html` 是图四三段式角色目录：左侧固定站点导航，中部显示当前角色的大舞台及基础/技能/装备信息，右侧显示 57 人人物卡网格；搜索与阵营筛选收进原生 `details` disclosure，选择角色时无需刷新即可同步舞台、URL 与详情入口。
+- `faction.html` 展示阵营摘要与成员；角色详情统一使用 `character.html?id=<id>`。详情页的四个 Hash tab 始终只显示一个活动 panel，支持浏览器 history、方向键、Home/End、roving tabindex，并把旧 hash 映射到当前模块；来源、版权归属、粉丝非官方与无隶属边界常显在 tab panel 之外。材料图标从本地 wiki 镜像复制到 `assets/materials/<epId>.<ext>`，页面只加载同源 `icon`；无图标时降级为等级字母。档案图集从镜像按原格式（含 GIF）复制到 `assets/gallery/<agentId>/<nn>.<ext>`，每角色最多 8 张，镜像缺失项跳过；页面只加载同源图集，禁止热链。材料详情若来自 `/zzz/wiki/...`，规范化为 `https://baike.mihoyo.com/...`，仅在用户点击时外跳。
 - `character-sample.html`、`tech-direction-demos.html`、`cinematic-slice.html`、`prototype/` 等仍是隔离实验/样板，不替换正式档案首页。
 - 重新生成 enrichment：`python scripts/build-agent-enrichment.py`（读取 `F:/website-archives/zzz-wiki`，写出 `artifacts/agent-enrichment.json`、`agent-enrichment.js`，并本地化材料图标到 `assets/materials/`、档案图集到 `assets/gallery/`）。
 
@@ -71,16 +71,16 @@
 
 - 阵营图标放入 `assets/icons/`；角色头像和立绘放入 `assets/portraits/`。只保存相对路径，静态页面不会上传本地文件。
 - `pv` 应标注为官方资料并链接到公开视频；`buildGuide` 必须标注“玩家整理”，并注明以游戏内实际版本为准；个人剧情和关联档案可用已有记录 ID 互相连接。
-- 角色视觉资源已按本次用户确认的口径保存到 `assets/portraits/<characterId>-card.webp`：56 名角色均有 374×512 的本地 WebP 卡面，来源标注为 Prydwen 第三方角色资料；安比详情页继续优先使用已有透明全身立绘。第三方图片仅作为当前站点资料展示资源，后续发布前仍应复核转载许可。
-- **2026-07-19 美术增强**：17 个阵营均已配置本地 logo（`assets/icons/<factionId>.png`，由 `agent-catalog.js` 注入）；列表头像优先本地卡面，不再因错误的 `/zzz/wiki/...` 相对路径回退首字母。仅当 logo/头像字段仍为空时，目录才显示名称首字占位。
+- 现行角色视觉覆盖为 57 张本地 card 与 57 张完整透明 portrait：card 使用 `assets/portraits/<characterId>-card.webp`，portrait 使用 `assets/portraits/<characterId>-portrait.webp`。Stories / Character 只使用 portrait；roster / avatar / headshot 只使用 card，不得互相回流。
+- **2026-07-19 美术增强（历史批次）**：该轮当时为 17 个阵营配置本地 logo（`assets/icons/<factionId>.png`，由 `agent-catalog.js` 注入），并以当时的本地卡面替换列表首字母占位。现行覆盖已由 2026-07-29 的 18 阵营 / 57 角色合同接续；仅当 logo/头像字段仍为空时，目录才显示名称首字占位。
 - **批次A 官方 B 站媒体**：`media-catalog.js` 统一收录公测 PV 与世界观 PV；`data.js` 只保存对应 `mediaIds` / `sourceIds`，来源链接指向各自 B 站官方详情页。`mainline.html`、`events.html`、`behind-scenes.html` 会在 `data.js` 后、`page.js` 前加载媒体目录；`page.js` 用首个有效 `mediaIds` 派生缺失的视频、封面和官方详情来源，同时保留条目显式字段及本地编辑器覆盖，派生的目录对象不会写入导出数据。公开档案页不再运行时请求 B 站 API，已有媒体目录的正式条目只使用同源本地封面，图片和“资料来源”分别链接对应官方视频详情。维护时可执行 `python scripts/collect-official-bilibili.py`，脚本串行调用本机 yt-dlp、只采元数据、不下载视频，并把可恢复进度写入 `artifacts/bilibili-official-1636034895.json`；仅在 stderr 错误行或非零退出内容明确出现 HTTP 412、错误码/code=-352、风控文本时立即停止，正常 JSON stdout 中偶然出现数字 412/352 不视为风控；重试仍为 0，重新枚举不会清空已有 BVID 与 pending。2026-07-23 空间枚举仍停于 HTTP 412；当前两条 checked 明确标为 `manualVerifiedApiEvidence`，来自已人工核验的官方详情 API 证据，并非本次脚本在线成功。两张官方原缩略图已按原图 1920×1080 转为本地 WebP 且不去水印；证据记录本地 `coverSha256`，并对各自原 JPEG 仅做一次精确下载且成功记录 `sourceImageSha256`。`npm run test:content` 会读取该证据文件，逐条交叉核对身份、标题、日期、时长、转载状态、原图 URL、详情页，并用 Node 标准库解析本地 WebP 实际尺寸及校验 SHA-256，替换 fallback 或证据缺失均会失败。目录分别记录 `isReprint`（copyright）与 `noReprint`（rights.no_reprint），中文 P1 时长为 133/247 秒，总时长为 517/973 秒。世界观 PV 官方 pubdate 为 2024-07-06。
-- **代理人名录卡的立绘白名单（维护时必看）**：`zzz-ui.js` 的 `cardArt()` 会把目录里的 `-card.webp` 自动替换为透明底的 `-portrait.webp`，因为白底卡面铺进深色卡片会变成一片白。但 `aria` 与 `sunna` 目前没有 `-portrait.webp`，这两个 id 登记在同文件的 `NO_PORTRAIT` 常量里、跳过替换。若之后补齐了它们的立绘，必须同步把对应 id 从 `NO_PORTRAIT` 移除，否则新素材不会生效。反之新增角色若缺立绘，需要加入该清单——只靠 `img onerror` 回退虽然不会破图，但会真的发出 404 请求，`npm run test:ui` 的 `console-error` 与 `local-http-error` 两项会逐视口计为阻塞失败。
+- **立绘解析（维护时必看）**：Stories 的正式解析在 `src/stories.jsx` 的 `resolvePortrait()`，Character 的正式解析在 `character.js` 的 `CHARACTER_HERO_COMPOSITION` 与 portrait source；当前 57/57 均使用普通 `portrait` 分支与 `assets/portraits/<id>-portrait.webp`，并分别通过 `data-portrait-source` / `data-portrait-mode` 与 `data-portrait-source/path` 暴露真实分支，不存在 card fallback。Stories 主舞台与 Character Hero 使用 portrait；右侧 roster/avatar/headshot 仍独立使用 `<id>-card.webp`，不得把舞台立绘链与缩略图链合并。资源必须本地同源且真实存在，禁止依靠 404 回退；否则会触发 `console-error` 与 `local-http-error` 阻塞失败。
 - 图片未提供时会显示站内占位，阵营、成员和角色页面仍可正常打开。添加资源后，提交图片与更新后的 `agent-catalog.js` 一并发布。
 
 阵营成员区采用游戏内角色选择风格的错位立绘卡阵列：默认展示 `headshot`（未填写时回退到 `avatar`），桌面端悬停或键盘聚焦时显示 `portrait` 全身立绘。指针移动会使前景立绘、头部近景与背景高光以不同速度偏移，形成无需 3D 模型的 2.5D 景深效果；触摸设备仍是单击直接进入角色详情，避免要求二次点击。系统开启“减少动态效果”时会停用位移和缩放，仅保留全身立绘显示、颜色与焦点反馈。
 
 
-角色个人档案页现采用 2D/2.5D 游戏式展示：左侧为角色目录与模块快捷入口，中间为角色立绘舞台，右侧为姓名、阵营、属性、特性和定位信息；底部模块可切换角色资料、个人剧情、养成攻略和关联档案。角色舞台会根据鼠标位置产生轻微景深偏移，移动端改为纵向布局，启用“减少动态效果”时自动取消位移动画。`portrait` 仍是中央全身立绘资源，没有资源时显示占位，不影响资料阅读。
+角色个人档案页统一通过 `character.html?id=<id>` 进入：顶部影画舞台负责角色视觉与身份，正文使用四个 Hash tab 承载媒体、故事、资料与关联档案，并严格保持单活动 panel。Character Hero 背景影画在桌面端使用 `cover` 铺满首屏，移动端按自然文档流使用 `16:9` 容器并以 `cover` 铺满，展示层边缘允许裁切；前景 portrait 继续使用 `contain` 完整展示并按角色构图参数细调。源素材转换仍禁止裁切、拉伸或抠图；Stories 舞台不变，roster / avatar / headshot 继续使用独立的 card + `cover` 链。
 
 
 
@@ -241,11 +241,43 @@ python -m http.server 8080
 
 ## 2026-07-23 最终成品收口
 - 首页播放器默认收为左下 136px 磁带小坞，悬停或键盘聚焦时展开完整控制；手机子页播放器收为 220px，避免遮挡主线赛道控件。
-- `npm run test:stories` 当前覆盖 98 项；`npm run test:ui` 覆盖 8 个页面、桌面/手机/减动效 3 个视口、24 张截图、9 个深链接与原生 View Transition / 旧 route-loader 双路径。
-- 正式门禁基线现包含 41 个文件；`wiki-readability.css` 虽由 `theme-zzz.css` 的 `@import` 间接加载，也必须纳入指纹，发布时不得遗漏。
+- `npm run test:stories` 该轮当时覆盖 98 项；`npm run test:ui` 该轮当时覆盖 8 个页面、桌面/手机/减动效 3 个视口、24 张截图、9 个深链接与原生 View Transition / 旧 route-loader 双路径。
+- 正式门禁基线该轮当时包含 41 个文件；`wiki-readability.css` 虽由 `theme-zzz.css` 的 `@import` 间接加载，也必须纳入指纹，发布时不得遗漏。
 - 独立预览位于 `artifacts/final-preview-2026-07-23/`，使用 `node serve-preview.mjs` 启动。该轻量闭包包含正式页面、运行脚本、字体、封面、立绘、图标、材料与音频，不包含约 1.3GB 的可选角色动态图集、后端凭据或无关原型。
 - 内容边界不变：当前只有 2 条已核验官方 PV / 世界观媒体；主线与部分档案缺口属于内容采编欠账，不得用推测材料伪装完成。
 
 ## 2026-07-25 首页首刀
 - 正式首页完成“午夜放映档案”七幕首刀，保留稳定 ID、动态内容宿主和既有链接；“开始查档”为主行动，PLAY 为可跳过次行动。
 - 验证入口：`HOOXI_UI_OUTPUT_DIR="artifacts/home-midnight-screening-r2" npm run test:ui`；最终报告见 `../artifacts/home-midnight-screening-r2/report.json`。内容与 formal 的已知失败及归因见根目录 `progress.md` 的 2026-07-25 记录。
+
+## 2026-07-28 角色影画工作台与正式门禁
+
+- 该轮当时 Stories 采用图四三段式：左侧固定站点导航，中部为当前角色大舞台及基础/技能/装备信息，右侧为 56 人人物卡网格；筛选使用原生 `details` disclosure。桌面保持舞台与名录分区，移动端转为自然纵向流，不制造内部滚动陷阱。
+- Character 统一入口为 `character.html?id=<id>`；媒体、故事、资料、关联四个 Hash tab 始终只显示一个活动 panel，支持 history、键盘导航与旧 hash 映射。来源、版权归属、粉丝非官方与无隶属边界常显，不随 panel 隐藏。
+- 该轮当时的影画素材为 53 个 `assets/mindscape/default/<id>.webp` 加 `norma`、`pyrois`、`velina` 三个本地 gallery 回退；Stories 与 Character 均保持一张完整背景影画加一张前景。当时 56/56 均使用本地 portrait，不再存在 card fallback；名单缩略图仍独立使用 card。背景 `contain` 不裁剪，前景按角色细调且不挡标题、操作区或背景关键主体。Norma 构图是该轮已批准的视觉基线。
+- 最终门禁：`test:stories` 95/95；`test:boundary:runtime` 12/12；`test:boundary:all` 83/83；`test:contrast` 1403 项（672 个真实可见样本 + 728 个语义样本 + 3 个几何样本，最低 4.62:1）；UI gate 1673/1673、65 PNG、0 failure；formal baseline 共 63 个文件，刷新后输出 `GATE_OK ALL_FORMAL_UNCHANGED`。
+- 正式 UI 报告：`artifacts/r1-character-workbench-restored-20260728/formal-ui-gate/report.json`。固定输出目录仍可通过 `HOOXI_UI_OUTPUT_DIR` 指定。
+
+## 2026-07-28 Character 文字动效维护
+
+- 该轮 56 人目录要求每个 `character.englishName` 都是非空且区别于 id/中文名的真实英文名，并只注入 `#characterEnglishName`；编辑预览或异常运行时数据缺失该字段时节点安全保持 `hidden`，不阻断中文角色名与档案。有效角色完成中文名、身份字段与四个档案 Panel 注入后，`.character-screen` 仍写入一次性 `data-character-text-motion="enter"`。
+- 新动效仅在 `.archive-character` 内使用有限次 transform/opacity：Hero 分层入场、英文名两次微呼吸、活动 Tab 确认与 Panel 标题 crossfade；不得改为永久循环、逐字 DOM、发光或官方 UI 复刻。减动效保持静止终态，移动端保持自然流和无横向溢出。
+- 维护后至少执行 `node --check character.js`；当前相关门禁由 `npm run test:ui` 检查桌面重播、点击触发的 Panel 标题 transition run/end 与终态、Hash/焦点/hidden/inert、减动效、390px 最长英文名、编辑预览缺失英文名和无效角色无横溢出，英文名最终态对比度由 `npm run test:contrast -- anby` 或完整 `npm run test:contrast` 检查。
+
+## 2026-07-29 爱芮与千夏完整 portrait 维护合同
+
+- `aria` 与 `sunna` 在 Stories 主舞台与 Character Hero 均必须使用经过来源、转换、alpha 与 SHA 门禁的本地 1600×1800 lossless portrait：普通 `portrait` 分支、非 compact/edge-card、`data-portrait-source="portrait"`。该合同签订时 56/56 均使用 `assets/portraits/<id>-portrait.webp`，不存在 card fallback；现行总数由下节的 57 人合同覆盖。
+- 爱芮原始文件页为 <https://zenless-zone-zero.fandom.com/wiki/File:Agent_Aria_Human_Portrait.png>，原始 PNG 为 1052×2020 RGBA，SHA-256 为 `a84a70f66fb997493684b39d166da4dbecd9e6979dbe251fdbf61b8c574365bc`。当前输出将原图按比例 Lanczos 缩放到 909×1746，水平居中、底部对齐放入 1600×1800 透明 RGBA 画布，并编码为声明 alpha 的 lossless WebP/VP8L；输出 SHA-256 为 `642e6602eafaced7e793bdb1cac00941509875fd28ad90c7d52c798ab0a87aea`，实际 alpha extrema 为 `0..255`、非零 bbox 为 `[345,54,1254,1800]`。禁止 AI 放大、超分、横向拉伸或裁切。
+- 千夏原始文件页为 <https://zenless-zone-zero.fandom.com/wiki/File:Agent_Sunna_Portrait.png>，官方角色 ID 为 `161791`；原始 PNG 为 808×1800 RGBA、990824 bytes，SHA-256 为 `30fbde333f13e20b9bb425c3f303fd39c7316fd2231c8e104431917874ff8049`。
+- 千夏转换不缩放、不裁切、不拉伸：原始像素以 `x=396`、`y=0` 放入 1600×1800 透明 RGBA 画布并编码为 lossless WebP；输出 `assets/portraits/sunna-portrait.webp` 的 SHA-256 为 `484675bf7f5bd91e3d7a5489a8842e69aebe22928e1070cac2e240ffe6efea2e`，alpha extrema 为 `0..255`、非零 bbox 为 `[399,2,1204,1799]`。
+- 右侧 roster/avatar/headshot 是独立缩略图链：爱芮与千夏继续分别使用 374×512 `aria-card.webp`、`sunna-card.webp`，`.agent-card-image img` 继续要求 `object-fit:cover`；不得用完整 portrait 替换 roster card，也不得让 card 回流为主舞台/详情页前景。
+- 两份美术均为 HoYoverse/米哈游受保护的游戏美术，不是开放授权；Fandom 来源按 fair-use 镜像记录，仅用于粉丝非商业资料展示并保留来源、转换与权利边界。爱芮官方角色页为 <https://zenless.hoyoverse.com/en-us/character/?id=161792>，千夏官方角色页为 <https://zenless.hoyoverse.com/en-us/character?id=161791>；爱芮官方 PC 合成图含人形与机器人，不作为单人物前景。
+- 替换维护时必须重新核验来源文件 SHA、尺寸、RGBA/alpha、转换参数和真实 1600×1800 lossless WebP，并更新 `artifacts/aria-portrait-20260729/`、`artifacts/sunna-portrait-20260729/` 的来源/转换证据与对应截图；随后仅通过 `npm run build:stories` 生成 `stories.js`。`stories.html` 必须精确加载 `stories.js?v=sunna-portrait-1`，`character.html` 必须精确加载 `character.js?v=character-sunna-portrait-1`，不得联动修改 CSS cache token；`assets/portraits/aria-portrait.webp` 与 `assets/portraits/sunna-portrait.webp` 必须显式纳入 formal 指纹集合。该轮 `npm run test:stories` 的 108 项覆盖 aria、sunna、anby 普通 portrait、56 人前景与 card-only roster 合同。
+
+## 2026-07-29 蕾米埃尔与现行 57 人维护合同
+
+- 本节覆盖当前正式站状态；上文 2026-07-28 的 56 人、83/83 边界门禁、65 PNG 与测试总数仅是对应日期的历史证据，不代表现行总量。现行统一为 **57 角色、18 阵营、57 card、57 张完整透明 portrait、54 张 Default + 3 张 gallery fallback**。
+- 54 张 Default 的来源必须拆分记录：其中 **53 张**是项目方确认获 Toastertjie 许可的映射资产，另 **1 张蕾米埃尔 Default** 不属于该授权包，来自米哈游官方 Wiki。不得表述为“54 张均获 Toastertjie 许可”。
+- 蕾米埃尔的官方 Wiki 编号为 `2076`，英文名为 `REMIELLE`；她与达识结社的关系由官方角色页佐证，独立阵营资料待公布。尚未确认的等级、属性、特性、攻击类型、实装日期、生日、专属音擎、CV 等字段统一显示“待公布”。
+- 蕾米埃尔的 card 与 portrait 均来自官方 `display-1` 透明站姿，只允许等比缩小；Default 来自官方 `mindscape-1`，只允许等比缩小并居中封装到透明画布。整个转换链禁止裁切、放大、拉伸或抠图。
+- Stories 主舞台与 Character Hero 使用 portrait；roster、avatar、headshot 使用 card。蕾米埃尔的 `display-1` / `mindscape-1` 美术版权归米哈游，HOOXI 仅作粉丝非官方档案展示并保留官方 Wiki 来源与转换边界。Character Hero 仅使用单角色水平构图例外避免宽翼遮挡标题，不改变/裁切源资产；无需专属 CSS。

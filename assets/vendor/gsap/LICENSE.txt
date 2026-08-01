@@ -1,0 +1,22 @@
+GSAP (GreenSock Animation Platform)
+Version: 3.15.0
+Source: npm package `gsap@3.15.0` (npm pack, 本地化引入，无 CDN 外链)
+
+License: Standard "no charge" license
+Full text: https://gsap.com/standard-license
+
+要点摘录（以官方原文为准）：
+- 标准免费许可允许在向最终用户免费开放的站点／应用中使用。
+- 若用于对最终用户收费的产品（如付费订阅、付费下载的软件），需购买
+  Club GSAP 商业授权。
+- 不得转售或再分发 GSAP 本身作为竞品动画库。
+
+HOOXI 使用情形说明：
+本站为粉丝非官方档案站，对访客免费开放、无付费墙、不出售内容，
+符合标准免费许可的适用范围。仅引入 gsap.min.js 与 ScrollTrigger.min.js
+两个文件，未使用需要 Club GSAP 会员的付费插件（如 SplitText、
+ScrollSmoother、MorphSVG 等）。
+
+注意：GSAP 的 npm 包内不含独立 LICENSE 文本文件，其许可声明位于
+package.json 的 license 字段与上述官网链接。本文件为本仓库自建的
+许可记录，用于与 assets/fonts/OFL-*.txt 保持一致的合规留档做法。

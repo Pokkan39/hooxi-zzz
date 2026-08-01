@@ -160,51 +160,6 @@
     }
   }
 
-  /* ---------- 4. 最右荧光黄竖条 ----------
-     竖条本身是 design.md 第 9.1.1 节允许的「局部斜切节奏」。
-     但原先徽章写「SELECT」是模仿游戏内的操作提示，在网页上不可点，
-     等于一个假控件——第 10 节第 5 条禁止用占位内容制造丰富感。
-     改为显示真实档案编号（该角色在名录中的序号 / 总数）。 */
-  function mountEdge(screen, agent, list) {
-    var e = document.createElement('div');
-    e.className = 'zzz-edge';
-    e.setAttribute('aria-hidden', 'true');
-
-    var idx = 0;
-    for (var i = 0; i < list.length; i++) {
-      if (list[i].id === agent.id) { idx = i + 1; break; }
-    }
-    var b = document.createElement('div');
-    b.className = 'zzz-edge-badge';
-    b.textContent = idx
-      ? 'FILE ' + String(idx).padStart(2, '0') + ' / ' + list.length
-      : 'AGENT FILE';
-    screen.appendChild(e);
-    screen.appendChild(b);
-  }
-
-  function boot() {
-    var screen = document.querySelector('.character-screen');
-    var stage = document.querySelector('.character-stage');
-    if (!screen || !stage || screen.dataset.zzzReady) return;
-    var c = catalog();
-    if (!c) return;
-    var id = currentId();
-    var agent = c.characters.filter(function (a) { return a.id === id; })[0];
-    if (!agent) return;
-
-    screen.dataset.zzzReady = '1';
-    screen.classList.add('zzz-screen');
-
-    try { mountWatermark(stage, agent); } catch (e) { }
-    try { mountIdCard(stage, agent, c.factions || []); } catch (e) { }
-    try { mountRoster(screen, c.characters, id); } catch (e) { }
-    try { mountEdge(screen, agent, c.characters); } catch (e) { }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot);
-  } else {
-    boot();
-  }
+  /* 暴露属性图标函数供其他模块使用 */
+  window.ZZZIcons = { attrIcon: attrIcon };
 })();

@@ -137,10 +137,6 @@
         <button type="button" class="site-sidebar-tool" data-hist-back title="浏览器后退" aria-label="浏览器后退">↩</button>
         <button type="button" class="site-sidebar-tool" data-hist-forward title="浏览器前进" aria-label="浏览器前进">↪</button>
       </div>
-      <button type="button" class="site-sidebar-tool site-sidebar-editor" data-sidebar-editor title="打开编辑器" aria-label="打开编辑器">
-        <span class="site-sidebar-short" aria-hidden="true">✦</span>
-        <span class="site-sidebar-label">编辑</span>
-      </button>
     </div>
   `;
 
@@ -153,7 +149,6 @@
   const forwardBtn=aside.querySelector('[data-hist-forward]');
   const prevBtn=aside.querySelector('[data-lane-prev]');
   const nextBtn=aside.querySelector('[data-lane-next]');
-  const editorBtn=aside.querySelector('[data-sidebar-editor]');
 
   const setExpanded=(open,{persist=true}={})=>{
     const expanded=!!open;
@@ -266,16 +261,6 @@
       }
     }catch{/* ignore */}
     history.forward();
-  });
-
-  editorBtn.addEventListener('click',()=>{
-    const existing=document.getElementById('editorOpen');
-    if(existing){
-      existing.click();
-      return;
-    }
-    pushTrailBeforeLeave();
-    location.assign('editor.html');
   });
 
   aside.querySelectorAll('.site-sidebar-link[href]').forEach(anchor=>{

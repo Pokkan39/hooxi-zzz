@@ -1,4 +1,138 @@
 const pageKey=location.pathname.split('/').pop().replace('.html','')||'mainline';
+const safePageUrl=(value,{image=false,outbound=false}={})=>{const text=String(value||'').trim();if(!text)return '';if(image&&(text.startsWith('data:image/')||text.startsWith('blob:')))return text;try{const url=new URL(text,location.href);if(outbound){const relative=!/^[a-z][a-z0-9+.-]*:/i.test(text)&&!text.startsWith('//');if(relative&&(!/^(?:\/(?!\/)|\.{1,2}\/|[a-z0-9_-]+(?:[./][a-z0-9_./-]+))(?:[?#][^\s]*)?$/i.test(text)||/[\u0000-\u001f\u007f\s]/.test(text)))return '';return ['http:','https:'].includes(url.protocol)&&(relative?url.origin===location.origin:true)?url.href:''}return ['http:','https:'].includes(url.protocol)||url.origin===location.origin?url.href:''}catch{return ''}};
+const archiveShellKey=document.body.classList.contains('archive-mainline')?'mainline':document.body.classList.contains('archive-events')?'events':document.body.classList.contains('archive-behind')?'behind-scenes':'';
+
+if(archiveShellKey){
+  const laneParam=new URLSearchParams(location.search).get('lane')||'';
+  const laneMap={stories:'stories',events:'events',behind:'behindScenes','behind-scenes':'behindScenes',media:'mainline',mainline:'mainline'};
+  const dataKey=archiveShellKey==='mainline'&&laneMap[laneParam]?laneMap[laneParam]:archiveShellKey==='behind-scenes'?'behindScenes':archiveShellKey;
+  const previewData=(()=>{if(!new URLSearchParams(location.search).has('editorPreview'))return null;try{return JSON.parse(localStorage.getItem('hooxi:preview:data'))}catch{return null}})();
+  const archiveData=previewData||window.archiveData||{};
+  const mediaById=new Map((window.hooxiMediaCatalog?.items||[]).map(media=>[media.id,media]));
+  const catalogMediaFor=item=>{
+    const ids=[...(Array.isArray(item.mediaIds)?item.mediaIds:[]),...(Array.isArray(item.sourceIds)?item.sourceIds:[])];
+    const archiveSource=safePageUrl(item.sourceUrl,{outbound:true});
+    for(const id of ids){
+      const media=mediaById.get(id);
+      if(!media)continue;
+      const canonical=safePageUrl(media.canonicalUrl,{outbound:true});
+      if(!canonical)continue;
+      if(archiveSource&&archiveSource!==canonical)continue;
+      if(item.sourceUrl&&!archiveSource)continue;
+      return media;
+    }
+    return null;
+  };
+  const items=((archiveData[dataKey]||[])).map(item=>{
+    const media=catalogMediaFor(item);
+    return {...item,cover:item.cover||item.portrait||media?.cover||'',sourceUrl:item.sourceUrl||item.wikiUrl||media?.canonicalUrl||'',wikiUrl:item.wikiUrl||item.sourceUrl||'',sourceCheckedAt:item.sourceCheckedAt||media?.sourceCheckedAt||'',rightsStatus:item.rightsStatus||media?.rightsStatus||'',rightsNote:item.rightsNote||media?.rightsNote||''};
+  });
+  const groups=((archiveData.pageMeta?.[dataKey]?.groups||[])).map(group=>({...group,id:String(group.id),title:String(group.title||'未命名分组')}));
+  const ui={query:'',version:'all',type:'all',spoiler:'all'};
+  const esc=value=>String(value||'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  const sourceLabel=href=>{
+    if(/bilibili\.com\/video\/BV/i.test(href))return '打开 B 站视频 ↗';
+    if(/miyoushe\.com/i.test(href))return '打开米游社原文 ↗';
+    if(/baike\.mihoyo\.com/i.test(href))return '打开官方百科词条 ↗';
+    return '打开资料来源 ↗';
+  };
+  const sourceCandidates=item=>[item.video,item.sourceUrl,item.wikiUrl].map(value=>safePageUrl(value,{outbound:true})).filter(Boolean);
+  const primaryUrl=item=>sourceCandidates(item)[0]||'';
+  const versionValues=[...new Set(items.map(item=>item.version||'未标注'))];
+  const typeValues=[...new Set(items.map(item=>item.routeType||item.type||item.tag||'未分类'))];
+  const spoilerValues=[...new Set(items.map(item=>item.spoilerLevel||'未标注'))];
+  const matches=item=>{
+    const query=ui.query.trim().toLowerCase();
+    const haystack=[item.title,item.summary,item.version,item.type,item.routeType,item.tag,item.chapter,item.faction,item.location,...(item.characters||[])].join(' ').toLowerCase();
+    return (ui.version==='all'||(item.version||'未标注')===ui.version)
+      && (ui.type==='all'||(item.routeType||item.type||item.tag||'未分类')===ui.type)
+      && (ui.spoiler==='all'||(item.spoilerLevel||'未标注')===ui.spoiler)
+      && (!query||haystack.includes(query));
+  };
+  const filterMarkup=()=>archiveShellKey==='behind-scenes'?'':`<form class="archive-filter-bar" aria-label="档案筛选" onsubmit="return false"><label>关键词<input type="search" data-filter="query" value="${esc(ui.query)}" placeholder="搜索标题、角色或地点"/></label><label>版本<select data-filter="version"><option value="all">全部版本</option>${versionValues.map(value=>`<option value="${esc(value)}"${ui.version===value?' selected':''}>${esc(value)}</option>`).join('')}</select></label><label>类型<select data-filter="type"><option value="all">全部类型</option>${typeValues.map(value=>`<option value="${esc(value)}"${ui.type===value?' selected':''}>${esc(value)}</option>`).join('')}</select></label><label>剧透<select data-filter="spoiler"><option value="all">全部提示</option>${spoilerValues.map(value=>`<option value="${esc(value)}"${ui.spoiler===value?' selected':''}>${esc(value)}</option>`).join('')}</select></label><output id="archiveResultCount" aria-live="polite"></output><button type="button" data-filter-clear>清空筛选</button></form>`;
+  const detailsMarkup=item=>{
+    const fields=[['章节',item.chapter],['发布日期',item.releaseDate],['状态',item.status],['相关角色',Array.isArray(item.characters)?item.characters.join('、'):item.characters],['地点',item.location],['核验日期',item.sourceCheckedAt||'未记录'],['权利状态',item.rightsStatus||'未记录'],['使用说明',item.rightsNote||'未记录']].filter(([,value])=>value);
+    const related=(item.relatedIds||[]).filter(Boolean);
+    const primary=primaryUrl(item);
+    const secondary=safePageUrl(item.wikiUrl,{outbound:true});
+    const secondaryMarkup=secondary&&secondary!==primary?`<a href="${esc(secondary)}" target="_blank" rel="noreferrer">备用来源 ↗</a>`:'';
+    if(!fields.length&&!related.length&&!secondaryMarkup)return '';
+    return `<details data-archive-disclosure id="${esc(item.id)}-details"><summary>查看记录说明</summary><div id="${esc(item.id)}-metadata" class="archive-record-details">${fields.length?`<dl>${fields.map(([label,value])=>`<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl>`:''}${related.length?`<p>关联记录：${related.map(id=>`<a href="#${esc(id)}">${esc(id)}</a>`).join('、')}</p>`:''}${secondaryMarkup?`<p>${secondaryMarkup}</p>`:''}</div></details>`;
+  };
+  const cardMarkup=item=>{
+    const image=item.cover&&/^assets\//.test(item.cover)?`<img src="${esc(item.cover)}" alt="${esc(item.title)}" loading="lazy"/>`:'';
+    const meta=item.version||item.routeType||item.type||item.tag||'';
+    const href=primaryUrl(item);
+    const hasUnsafeSource=Boolean(item.video||item.sourceUrl||item.wikiUrl)&&!href;
+    return `<article id="${esc(item.id)}" class="archive-record" data-record-id="${esc(item.id)}" tabindex="-1"><div class="archive-record-cover">${image}</div><div class="archive-record-copy"><p class="archive-record-meta">${esc(meta)}</p><h3>${esc(item.title)}</h3>${item.summary&&item.summary!==item.title?`<p class="archive-record-summary">${esc(item.summary)}</p>`:''}${href?`<a class="archive-source-action" data-source-action href="${esc(href)}" target="_blank" rel="noreferrer">${sourceLabel(href)}</a>`:`<span class="archive-source-action is-disabled">${hasUnsafeSource?'来源不可用':'资料待接入'}</span>`}${detailsMarkup(item)}</div></article>`;
+  };
+  const rowsFor=groupId=>items.filter(item=>(item.groupId||'')===groupId);
+  const looseItems=items.filter(item=>!groups.some(group=>group.id===(item.groupId||'')));
+  const groupMarkup=(group,index)=>{
+    const rows=rowsFor(group.id);
+    const cards=rows.map(cardMarkup).join('');
+    if(archiveShellKey==='events'){
+      const latest=groups[groups.length-1]?.id===group.id;
+      return `<details id="event-group-${esc(group.id)}" class="archive-group" data-archive-disclosure data-default-open="${latest}"${latest?' open':''}><summary><span>${esc(group.title)}</span><b>${rows.length} 条记录</b></summary><div id="event-group-${esc(group.id)}-records" class="archive-group-records">${cards}</div></details>`;
+    }
+    return `<section id="archive-group-${esc(group.id)}" class="archive-group"><div class="archive-group-heading"><h2>${esc(group.title)}</h2>${group.summary&&!/镜像/.test(group.summary)?`<p>${esc(group.summary)}</p>`:''}</div><div class="archive-group-records">${cards}</div></section>`;
+  };
+  const sourceMarkup=()=>{
+    const samples=items.map(item=>({...item,safeSourceUrl:safePageUrl(item.sourceUrl,{outbound:true})})).filter(item=>item.safeSourceUrl&&item.sourceCheckedAt&&item.rightsStatus).slice(0,3);
+    const target=document.querySelector('#sourceList');
+    if(!target)return;
+    target.innerHTML=samples.length?`<ul>${samples.map(item=>`<li><a href="${esc(item.safeSourceUrl)}" target="_blank" rel="noreferrer">${esc(item.title)}</a><span>核验：${esc(item.sourceCheckedAt)}；权利状态：${esc(item.rightsStatus)}</span></li>`).join('')}</ul>`:'<p>来源、核验日期与权利状态按各记录的既有字段保留并显示。</p>';
+  };
+  const filtersActive=()=>ui.query.trim()||ui.version!=='all'||ui.type!=='all'||ui.spoiler!=='all';
+  const applyFilters=()=>{
+    const records=[...document.querySelectorAll('.archive-record')];
+    let count=0;
+    records.forEach(record=>{const item=items.find(entry=>entry.id===record.dataset.recordId);const visible=Boolean(item&&matches(item));record.hidden=!visible;if(visible)count+=1;});
+    if(archiveShellKey==='events')document.querySelectorAll('details.archive-group').forEach(group=>{
+      const hasMatch=[...group.querySelectorAll('.archive-record')].some(record=>!record.hidden);
+      group.hidden=Boolean(filtersActive()&&!hasMatch);
+      group.open=filtersActive()?hasMatch:group.dataset.defaultOpen==='true';
+    });
+    const output=document.querySelector('#archiveResultCount');
+    if(output)output.textContent=`${count} / ${items.length} 条结果`;
+  };
+  const resetFilters=()=>{ui.query='';ui.version='all';ui.type='all';ui.spoiler='all';};
+  const clearFilters=()=>{resetFilters();render();};
+  const revealHash=()=>{
+    const raw=location.hash.slice(1);if(!raw)return;
+    let id;try{id=decodeURIComponent(raw)}catch{id=raw}
+    const target=document.getElementById(id);
+    if(!target)return;
+    if(target.closest('[hidden]')){resetFilters();render();return;}
+    if(target instanceof HTMLDetailsElement)target.open=true;
+    for(let parent=target.parentElement;parent;parent=parent.parentElement)if(parent instanceof HTMLDetailsElement)parent.open=true;
+    const focusTarget=target instanceof HTMLDetailsElement?target.querySelector(':scope > summary'):target;
+    if(focusTarget&&!focusTarget.matches('a,button,input,select,textarea,summary,[tabindex]'))focusTarget.tabIndex=-1;
+    requestAnimationFrame(()=>{target.scrollIntoView({behavior:'smooth',block:'start'});target.classList.add('archive-record-focus');focusTarget?.focus({preventScroll:true});setTimeout(()=>target.classList.remove('archive-record-focus'),1800);});
+  };
+  const bindFilters=()=>{
+    document.querySelectorAll('[data-filter]').forEach(control=>control.addEventListener(control.dataset.filter==='query'?'input':'change',()=>{ui[control.dataset.filter]=control.value;applyFilters();}));
+    document.querySelector('[data-filter-clear]')?.addEventListener('click',clearFilters);
+  };
+  const setLaneTitle=()=>{
+    if(archiveShellKey!=='mainline'||dataKey==='mainline')return;
+    const copy={stories:['角色剧情','按既有车道查看角色剧情记录。'],events:['往期活动','按既有车道查看活动记录。'],behindScenes:['幕后与对谈','按既有车道查看制作记录与对谈。']}[dataKey];
+    if(!copy)return;
+    const title=document.querySelector('#pageTitle'),intro=document.querySelector('.archive-hero > p:last-of-type');
+    if(title)title.textContent=copy[0];if(intro)intro.textContent=copy[1];
+  };
+  function render(){
+    setLaneTitle();
+    const timeline=document.querySelector('#pageTimeline');
+    if(!timeline)return;
+    const renderedGroups=groups.map(groupMarkup).join('');
+    const loose=looseItems.length?`<section id="archive-group-loose" class="archive-group"><div class="archive-group-heading"><h2>其他记录</h2></div><div class="archive-group-records">${looseItems.map(cardMarkup).join('')}</div></section>`:'';
+    timeline.innerHTML=filterMarkup()+renderedGroups+loose||'<p class="archive-empty">当前没有可显示的记录。</p>';
+    sourceMarkup();bindFilters();applyFilters();revealHash();
+  }
+  render();
+  window.addEventListener('hashchange',revealHash);
+}else{
 const laneParam=new URLSearchParams(location.search).get('lane')||'';
 // 主线页可用 ?lane=stories|events 切换剧情车道，避免角色剧情/活动混进主线轴
 const laneMap={stories:'stories',events:'events',behind:'behindScenes','behind-scenes':'behindScenes',media:'mainline',mainline:'mainline'};
@@ -12,7 +146,6 @@ const pageData=(archiveData&&archiveData[dataKey])||[];
 const pageStoreKey=`hooxi:${pageKey==='mainline'&&dataKey!=='mainline'?dataKey:pageKey}`;
 const pageToast=window.toast||function(msg){const el=document.querySelector('#toast');if(!el)return;el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200)};
 const escPage=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const safePageUrl=(value,{image=false}={})=>{const text=String(value||'').trim();if(!text)return '';if(image&&(text.startsWith('data:image/')||text.startsWith('blob:')))return text;try{const url=new URL(text,location.href);return ['http:','https:'].includes(url.protocol)||url.origin===location.origin?url.href:''}catch{return ''}};
 const slug=s=>String(s||'').toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g,'-').replace(/^-|-$/g,'')||`group-${Date.now()}`;
 let {items,groups,decorations}=loadPageState();
 const routeUi={version:'all',type:'all',query:'',showSpoilers:localStorage.getItem('hooxi:mainline:spoilers')==='true'};
@@ -291,3 +424,4 @@ function bindHashNavigation(){
   window.addEventListener('hashchange',()=>{tries=0;tick()});
 }
 renderPage();renderPageBanner();mountPageEditor();bindRevealFailsafe();bindHashNavigation();const sortReset=document.querySelector('#sortReset');if(sortReset)sortReset.onclick=()=>{({items,groups,decorations}=defaultState());persist('已恢复默认顺序');renderEditorList();renderPage()};
+}

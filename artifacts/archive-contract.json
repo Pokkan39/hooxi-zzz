@@ -1,11 +1,27 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-07-19",
+  "generatedAt": "2026-07-29",
   "counts": {
-    "factions": 17,
-    "characters": 56
+    "factions": 18,
+    "characters": 57
   },
   "routes": {
+    "publicArchive": [
+      "index.html",
+      "mainline.html",
+      "stories.html",
+      "character.html",
+      "faction.html",
+      "events.html",
+      "behind-scenes.html",
+      "cultivate.html"
+    ],
+    "publicPlay": [
+      "tape-wall-sample.html"
+    ],
+    "internalTool": [
+      "editor.html"
+    ],
     "exact": [
       "index.html",
       "mainline.html",
@@ -14,6 +30,8 @@
       "faction.html",
       "events.html",
       "behind-scenes.html",
+      "cultivate.html",
+      "tape-wall-sample.html",
       "editor.html"
     ],
     "queryKeys": {
@@ -30,14 +48,20 @@
       ],
       "faction.html": [
         "id"
+      ],
+      "cultivate.html": [
+        "q"
       ]
     },
     "hashTargets": {
       "stories.html": [
         "agentSearchForm",
-        "agentSearch"
+        "agentSearch",
+        "selected-agent-disclosure",
+        "selected-agent-disclosure-content"
       ],
       "character.html": [
+        "art",
         "media",
         "lore",
         "profile",
@@ -45,7 +69,32 @@
         "story",
         "build",
         "growth"
+      ],
+      "faction.html": [
+        "faction-directory-notes",
+        "factionContext",
+        "factionContextContent"
+      ],
+      "cultivate.html": [
+        "sources",
+        "cultivate-faq-698-01",
+        "cultivate-13",
+        "cultivate-13-source-details",
+        "cultivate-13-source-details-content"
+      ],
+      "tape-wall-sample.html": [
+        "store-interior",
+        "catalog",
+        "bangboo-desk"
       ]
+    },
+    "networkPolicy": {
+      "publicExternalRequests": [],
+      "internalToolExactAllowlist": {
+        "editor.html": [
+          "http://localhost:3001/api/auth/session"
+        ]
+      }
     },
     "laneValues": [
       "mainline",
@@ -54,6 +103,39 @@
       "behind",
       "media"
     ]
+  },
+  "characterHero": {
+    "characters": 57,
+    "defaultCount": 54,
+    "galleryFallbackIds": [
+      "norma",
+      "pyrois",
+      "velina"
+    ],
+    "galleryFallbackPaths": {
+      "norma": "assets/gallery/norma/05.png",
+      "pyrois": "assets/gallery/pyrois/05.png",
+      "velina": "assets/gallery/velina/06.png"
+    },
+    "themePriority": [
+      "i",
+      "l",
+      "c"
+    ],
+    "requiredThemeCount": 57,
+    "requiredUniqueThemeCount": 57,
+    "allowFactionFallbackOnNormalPath": false
+  },
+  "cultivate": {
+    "guideCount": 1,
+    "guideId": "698",
+    "faqCount": 23,
+    "materialCount": 44,
+    "catalogCandidateCount": 45,
+    "catalogOnlyIds": [
+      "698"
+    ],
+    "materialsOutsideCatalogIds": []
   },
   "ids": {
     "characters": [
@@ -95,6 +177,7 @@
       "pulchra",
       "pyrois",
       "qingyi",
+      "remielle",
       "rina",
       "seed",
       "seth",
@@ -117,6 +200,7 @@
     "factions": [
       "angels-of-delusion",
       "belobog",
+      "covenant-of-dayat",
       "criminal-investigation-srt",
       "cunning-hares",
       "defense-force-silver-squad",

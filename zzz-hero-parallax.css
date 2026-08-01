@@ -1,0 +1,47 @@
+/* 首页影画视差：鼠标驱动三层景深
+   - 影画层（.hero-star img）：倍率0.28，2880px宽图有大量横向位移余量
+   - 氛围光层（.zzz-hero-glow）：倍率0.55
+   - 文字层（.hero-copy）：倍率-0.32（反向，制造前景弹出感）
+   位移由 zzz-hero-parallax.js 用 gsap.quickTo 施加。 */
+
+body.home-page #homeHeroArt{isolation:isolate}
+
+/* 影画图片：开启硬件加速，overflow由视口约束 */
+body.home-page .hero-carousel-slide .hero-star{
+  will-change:transform;
+}
+
+/* 中层：氛围光效，纯渐变不用图（倍率 0.55） */
+body.home-page .zzz-hero-glow{
+  position:absolute;
+  inset:-8%;
+  z-index:1;
+  pointer-events:none;
+  background:
+    radial-gradient(46% 52% at 68% 38%,rgba(216,250,0,.18),transparent 68%),
+    radial-gradient(38% 44% at 24% 62%,rgba(62,199,214,.14),transparent 72%);
+  mix-blend-mode:screen;
+  will-change:transform;
+}
+
+/* 最前层：文字与 UI 标签反向位移（倍率 -0.32），仅补 will-change */
+body.home-page .hero-copy{will-change:transform}
+
+/* Swiper 接管内部换片调度后的最小协调 */
+body.home-page .zzz-hero-swiper{overflow:hidden}
+body.home-page .zzz-hero-swiper .hero-carousel-slide.swiper-slide{opacity:0}
+body.home-page .zzz-hero-swiper .hero-carousel-slide.swiper-slide.is-active{opacity:1}
+body.home-page .zzz-hero-swiper :is(.swiper-button-next,.swiper-button-prev,.swiper-pagination,.swiper-scrollbar){display:none!important}
+
+/* 移动端：氛围光收起 */
+@media(max-width:880px){
+  body.home-page .zzz-hero-glow{inset:0}
+}
+
+/* 触屏与减动效：归零 */
+@media(hover:none),(pointer:coarse){
+  body.home-page :is(.hero-carousel-slide .hero-star,.zzz-hero-glow,.hero-copy){transform:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+  body.home-page:not(.zzz-motion-forced) :is(.hero-carousel-slide .hero-star,.zzz-hero-glow,.hero-copy){transform:none!important}
+}

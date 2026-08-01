@@ -28,7 +28,8 @@
     "test:boundary": "node scripts/check-unofficial-boundary.mjs",
     "test:boundary:runtime": "node scripts/check-boundary-runtime.mjs",
     "test:boundary:all": "node scripts/check-boundary-all.mjs",
-    "test:contrast": "node scripts/check-hero-contrast.mjs"
+    "test:contrast": "node scripts/check-hero-contrast.mjs",
+    "test:deploy": "node scripts/check-deploy-tracking.mjs"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,254 @@
+/* HOOXI 全站底层动效 · 阶段 3 样板（首页作用域）
+   规范：docs/VISUAL-OVERHAUL-SPEC.md 第 4.1 节
+   - 05 信号锁定入场（GSAP timeline + 逐帧噪点抖动）
+   - 09 丝滑滚动（原生 scroll-behavior，不接管滚轮）
+   - 14 噪点扫描线（静态层，opacity <= .04）
+   本文件只提供静态终态与降级；动画时序由 zzz-motion.js 施加。 */
+
+/* ---------- 09 丝滑滚动 ---------- */
+/* 规范 4.1：底层五条铺到所有页面，故不再限定 body.home-page */
+html{scroll-behavior:smooth}
+/* 角色目录页的 #agentSearchForm 深链要在落地后立即聚焦搜索框，
+   平滑滚动会让聚焦被后续滚动打断（实测 deep-link-contract 失败），
+   故该页保持即时锚点滚动。 */
+html:has(body.archive-stories){scroll-behavior:auto}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+}
+
+/* ---------- 14 噪点扫描线 ---------- */
+/* 首页已有 .noise 层（home-neon.css，opacity:.032）。此处只在其上叠加
+   一条极低透明度的横向扫描带，保持合计视觉噪点不超过规范 .04 上限。 */
+.zzz-scanlines{
+  position:fixed;
+  inset:0;
+  z-index:89;
+  pointer-events:none;
+  opacity:.055;
+  mix-blend-mode:screen;
+  background:
+    radial-gradient(rgba(255,255,255,.7) .4px,transparent .6px) 0 0/5px 5px,
+    repeating-linear-gradient(0deg,transparent 0 2px,rgba(216,250,0,.16) 2px 3px);
+}
+
+/* ---------- 05 信号锁定入场 ---------- */
+/* 终态即清晰可读：未加 is-locking 前完全正常，JS/GSAP 缺失时无副作用。 */
+body.home-page [data-zzz-lock]{position:relative}
+
+body.home-page [data-zzz-lock].is-locking{
+  --sx:0px;
+  --sy:0px;
+  color:transparent;
+}
+/* 字形内部的雪花：用文本副本 + 噪点背景裁切到字形，不是盖住整段的遮罩 */
+body.home-page [data-zzz-lock].is-locking::before{
+  content:attr(data-zzz-lock-text);
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(rgba(255,255,255,.95) .5px,transparent .7px) var(--sx) var(--sy)/3px 3px,
+    repeating-linear-gradient(0deg,rgba(255,255,255,.5) 0 1px,transparent 1px 2px) var(--sx) var(--sy)/100% 2px,
+    linear-gradient(90deg,var(--home-lime,#d8fa00),var(--home-cyan,#3ec7d6));
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+  opacity:var(--zzz-lock-noise,1);
+}
+/* 锁定完成后的清晰层 */
+body.home-page [data-zzz-lock].is-locking::after{
+  content:attr(data-zzz-lock-text);
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  color:var(--home-ink,#e8ecf1);
+  opacity:var(--zzz-lock-clear,0);
+}
+body.home-page [data-zzz-lock].is-locked{color:inherit}
+body.home-page [data-zzz-lock].is-locked::before,
+body.home-page [data-zzz-lock].is-locked::after{content:none}
+
+/* ---------- 07 文字逐字浮现 ---------- */
+/* 自行拆分的字符层：inline-block 才能承载位移与缩放；
+   原文保留在容器 aria-label，字符本身 aria-hidden。 */
+/* 既有 `body.home-page .hero h1 span{display:block!important}` 用于标题次行独立成行，
+   会一并命中字符层。此处只把字符层改回 inline-block，次行 span 的行为保持不变。 */
+body.home-page .hero h1 span.zzz-char,
+body.home-page #heroTitle .zzz-char{
+  display:inline-block!important;
+  color:inherit!important;
+  font-size:inherit!important;
+  letter-spacing:inherit!important;
+  will-change:transform,opacity,filter;
+}
+@media(prefers-reduced-motion:reduce){
+  body.home-page:not(.zzz-motion-forced) #heroTitle .zzz-char{
+    transform:none!important;
+    opacity:1!important;
+    filter:none!important;
+  }
+}
+
+/* ---------- 10 磁吸鼠标 ---------- */
+/* 只用 transform 与 box-shadow，位移 6px 量级；不改宽高、不推开邻居。 */
+body.home-page .is-magnet{
+  transform:translate3d(var(--zzz-magnet-x,0),var(--zzz-magnet-y,0),0);
+  box-shadow:0 0 0 1px var(--home-cyan,#3ec7d6),0 8px 26px rgba(0,0,0,.42);
+}
+body.home-page .path-card.is-magnet,
+body.home-page .hero-primary-action.is-magnet,
+body.home-page .hero-play-action.is-magnet{
+  transition:transform 180ms var(--home-ease,cubic-bezier(.22,.61,.36,1)),box-shadow 180ms ease;
+}
+
+/* ---------- 12 自定义光标 ---------- */
+/* 由 JS 加的 .zzz-cursor-on 标记类控制，不再限定首页 */
+body.zzz-cursor-on{cursor:none}
+/* 输入、文本区与播放器控件保留原生光标语义，绝不吞掉文字光标与选择 */
+body.zzz-cursor-on :is(input,textarea,select,[contenteditable="true"]){cursor:auto}
+body.zzz-cursor-on :is(input[type="range"],#musicPlayer input,#musicPlayer button){cursor:pointer}
+.zzz-cursor{
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:120;
+  width:12px;
+  height:12px;
+  pointer-events:none;
+  background:var(--home-lime,#d8fa00);
+  opacity:.9;
+  transition:width 140ms ease,height 140ms ease,background-color 140ms ease,border-radius 140ms ease,opacity 140ms ease;
+}
+.zzz-cursor.is-ring{
+  width:30px;
+  height:30px;
+  border:2px solid var(--home-lime,#d8fa00);
+  border-radius:50%;
+  background:transparent;
+}
+.zzz-cursor.is-hidden{opacity:0}
+
+@media(hover:none),(pointer:coarse){
+  body.zzz-cursor-on{cursor:auto}
+  .zzz-cursor{display:none}
+  .is-magnet{transform:none;box-shadow:none}
+}
+
+@media(prefers-reduced-motion:reduce){
+  body:not(.zzz-motion-forced) .zzz-scanlines{background-position:0 0!important}
+  body:not(.zzz-motion-forced) [data-zzz-lock]{color:inherit!important}
+  body:not(.zzz-motion-forced) [data-zzz-lock]::before,
+  body:not(.zzz-motion-forced) [data-zzz-lock]::after{content:none!important}
+  body:not(.zzz-motion-forced).zzz-cursor-on{cursor:auto!important}
+  body:not(.zzz-motion-forced) .zzz-cursor{display:none!important}
+  body:not(.zzz-motion-forced) .is-magnet{transform:none!important;box-shadow:none!important;transition:none!important}
+}
+/* 动效降级提示：仅在系统开启减少动效时由 zzz-motion-notice.js 注入。
+   固定在右下角，不遮挡主内容；文字用正文色，不用荧光绿（规范 9.4）。 */
+.zzz-motion-notice{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  z-index:60;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  max-width:min(420px,calc(100vw - 32px));
+  padding:12px 14px;
+  background:var(--bg-2,#1a222d);
+  border:1px solid var(--zzz-lime-line,rgba(216,250,0,.42));
+  color:var(--text,#e8ecf1);
+  font-family:var(--font-body,inherit);
+  font-size:13px;
+  line-height:1.5;
+  box-shadow:0 10px 28px rgba(0,0,0,.45);
+}
+.zzz-motion-notice__text{margin:0}
+.zzz-motion-notice__act{
+  flex:0 0 auto;
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
+  padding:0 14px;
+  border:1px solid var(--zzz-lime-line,rgba(216,250,0,.42));
+  color:var(--zzz-lime,#d8fa00);
+  font-weight:600;
+  text-decoration:none;
+  white-space:nowrap;
+}
+.zzz-motion-notice__act:hover{background:var(--zzz-lime-dim,rgba(216,250,0,.14))}
+.zzz-motion-notice__close{
+  flex:0 0 auto;
+  width:44px;
+  height:44px;
+  background:transparent;
+  border:1px solid var(--line,rgba(232,236,241,.28));
+  color:var(--text,#e8ecf1);
+  font-size:18px;
+  line-height:1;
+  cursor:pointer;
+}
+.zzz-motion-notice__close:hover{border-color:var(--text,#e8ecf1)}
+.zzz-motion-notice :is(.zzz-motion-notice__act,.zzz-motion-notice__close):focus-visible{
+  outline:2px solid var(--signal,#3ec7d6);
+  outline-offset:2px;
+}
+
+/* 显式 ?motion=force 预览时恢复平滑锚点滚动。
+   需要压过 motion.css:607 的 reduced-motion `html{scroll-behavior:auto!important}`，
+   故用更高特异性 + !important；该全局规则本身保持不动。 */
+html.zzz-motion-forced:has(body.home-page.zzz-motion-forced){scroll-behavior:smooth!important}
+
+/* C1 固定侧栏楼层页码（参考 DNA 第 5 节 aside.sidebar）
+   落位实测：右侧余量为 0，故侧栏叠在内容上方，与官方 z-index:99 覆盖楼层同源。
+   层级 70 —— 高于动效提示 60 与 toast 30，低于自定义光标 120 与路由转场 1000。
+   首屏隐藏由 JS 加 is-on 控制，保护 Hero keyart 不被切边。 */
+body.home-page .zzz-rail{
+  position:fixed;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:70;
+  display:grid;
+  width:41px;
+  background:rgba(10,10,10,.82);
+  border-left:1px solid var(--zzz-lime-line,rgba(216,250,0,.42));
+  backdrop-filter:blur(2px);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .28s ease;
+}
+body.home-page .zzz-rail.is-on{opacity:1;pointer-events:auto}
+body.home-page .zzz-rail__item{
+  display:grid;
+  place-items:center;
+  width:41px;
+  min-height:44px;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:rgba(232,236,241,.42);
+  font:800 13px/1 var(--font-display,sans-serif);
+  letter-spacing:.02em;
+  cursor:pointer;
+}
+body.home-page .zzz-rail__item.is-current{
+  color:var(--zzz-lime,#d8fa00);
+  background:rgba(216,250,0,.10);
+}
+body.home-page .zzz-rail__item:hover{color:var(--text,#e8ecf1)}
+/* 焦点环：站内存在 outline-color:currentColor 类规则会把这里覆盖成 .42 灰，
+   故提高特异性并显式锁 color，实测对比度 9.75:1。 */
+body.home-page .zzz-rail .zzz-rail__item:focus-visible{
+  outline:2px solid var(--signal,#3ec7d6)!important;
+  outline-offset:-2px;
+  color:var(--text,#e8ecf1);
+}
+/* 小屏隐藏：实测会压住「开始查档」主按钮与楼层标题 */
+@media(max-width:640px){
+  body.home-page .zzz-rail{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  html:not(.zzz-motion-forced) body.home-page .zzz-rail{transition:none}
+}

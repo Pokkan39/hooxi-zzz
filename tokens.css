@@ -53,6 +53,10 @@
 
   /* type */
   --font-display:"Barlow Condensed","Segoe UI",system-ui,sans-serif;
+  /* 中文标题黑体栈：全部为系统自带字体，不引入官方或付费字体文件。
+     实测本机仅解析到 Microsoft YaHei UI，故把 Windows 常驻黑体排在前面；
+     思源/苹方/鸿蒙保留在后作跨平台回退。 */
+  --font-cn-display:"Microsoft YaHei UI","Microsoft YaHei","PingFang SC","Source Han Sans SC","Noto Sans CJK SC",sans-serif;
   --font-body:"Segoe UI","PingFang SC","Microsoft YaHei UI",sans-serif;
   --font-mono:"Space Mono","Consolas",monospace;
 
@@ -91,5 +95,34 @@
   --motion-fast:.16s;
   --motion-mid:.4s;
 
+  /* ZZZ 荧光点睛色 —— 极少量使用，见 2.3 用量纪律 */
+  --zzz-lime:#d8fa00;
+  --zzz-lime-dim:rgba(216,250,0,.14);
+  --zzz-lime-line:rgba(216,250,0,.42);
+
+  /* 斜切角度 —— 全站统一，禁止各处自定义 */
+  --zzz-skew:-25.3deg;
+  --zzz-skew-back:25.3deg;
+
+  /* 编号字号 */
+  --zzz-num-lg:clamp(96px,12vw,190px);
+  --zzz-num-md:clamp(40px,5vw,60px);
+
   color-scheme:dark;
+}
+
+/* Character detail defaults stay inside the character scope. Runtime values are
+   precomputed per agent and written only to body.archive-character / hero. */
+body.archive-character,
+body.archive-character .character-screen{
+  --character-accent:rgb(224 180 28);
+  --character-accent-rgb:224,180,28;
+  --character-ambient:rgb(224 180 28 / .22);
+  --character-on-accent:rgb(15 18 22);
+  --character-page-bg:rgb(12 15 21);
+  --character-surface:rgb(20 25 34 / .92);
+  --character-surface-strong:rgb(27 33 44 / .96);
+  --character-line:rgb(224 180 28 / .38);
+  --character-text:rgb(238 241 245);
+  --character-text-muted:rgb(190 198 210);
 }

@@ -254,6 +254,19 @@
 .char-related__list b{font-size:13px;line-height:1.35}
 
 /* ---------- 窄屏 ---------- */
+/* ---------- 角色页稳定标记 ---------- */
+.archive-character [data-source-section],
+.archive-character [data-archive-disclosure]{
+  --tool-line:var(--character-line);
+  border-color:var(--character-line);
+}
+.archive-character [data-source-action]{color:var(--character-accent)}
+.archive-character [data-unofficial-boundary]{color:var(--character-text)}
+.archive-character [data-archive-disclosure]>summary:focus-visible{
+  outline:2px solid var(--character-accent);
+  outline-offset:-3px;
+}
+
 @media(max-width:640px){
   .archive-finder,.event-filters,.story-lane-entry,.char-related{padding:14px}
   .archive-finder__row,.event-filters__row{gap:8px}

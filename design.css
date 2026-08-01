@@ -259,179 +259,131 @@
   .d-xray-veil{display:none}
 }
 
-/* ---------- 8b. 角色影画背景（可变色光栅）----------
-   影画铺满角色页舞台作背景：底层黑白，鼠标周围透出彩色原图。
-   --ax/--ay 由脚本写入指针位置，--acc 是该角色影画采样出的主色
-   （见 agent-xray.js）。素材本身各角色色调不同，所以"可变色"
-   来自影画自己，不是叠色滤镜。 */
-/* 宿主 .character-screen 是 grid 且带 isolation:isolate 与不透明底色。
-   背景层必须 absolute 脱离网格流（否则会占一个网格单元），
-   并盖掉宿主底色；isolate 封死了 z-index:-1 的退路，所以走正数层级，
-   由内容层各自的 z-index(1/2) 压在它上面。 */
-/* 角色页 3 列网格修复。
-   .character-screen 同时带 page-hero 类，live-hud.css:166 用
-   `.subpage .page-hero{grid-template-columns:...!important}` 强制成 2 列，
-   把 multi-page.css 定义的 88px 侧栏列吃掉，导致 .character-profile-panel
-   被挤到第二行 y=803、首屏看不到正文。这里按角色页恢复 3 列，
-   不改 live-hud.css 以免影响其他子页。 */
-/* 正文列给到 1.15fr：原 .8fr 只剩 433px，属性标签被挤成三行、
-   黄标签与白值贴死，读起来费劲。立绘舞台不需要那么宽。
-   第 4 列是 ZZZ 复刻新增的代理人名录，右侧再留出荧光黄竖条的宽度。 */
+/* ---------- 8b. 角色影画首屏 ----------
+   背景影画使用 cover 铺满容器，展示层边缘允许裁切；主题变量仅来自角色页作用域。 */
+body.archive-character{
+  min-height:100%;
+  padding-inline-start:0!important;
+  overflow-x:hidden;
+  color:var(--character-text);
+  background:var(--character-page-bg);
+}
+.subpage.archive-character main{
+  width:100%;
+  max-width:none;
+  margin:0;
+  padding:0;
+}
 .subpage.archive-character .character-screen{
-  grid-template-columns:88px minmax(280px,1fr) minmax(360px,.95fr) clamp(210px,17vw,290px)!important;
-  align-items:stretch!important;
-  padding-right:clamp(40px,4vw,62px)!important;
+  --character-hero-art-position:50% 50%;
+  --character-hero-portrait-top:clamp(34px,5vh,72px);
+  --character-hero-portrait-right:clamp(10px,3.5vw,58px);
+  --character-hero-portrait-bottom:0px;
+  --character-hero-portrait-width:min(58vw,820px);
+  --character-hero-portrait-height:calc(100% - clamp(34px,5vh,72px));
+  --character-hero-portrait-object-position:center bottom;
+  position:relative;
+  isolation:isolate;
+  display:block!important;
+  width:100%;
+  min-height:100svh;
+  height:100svh;
+  max-height:none;
+  margin:0;
+  padding:0!important;
+  overflow:hidden;
+  border:0;
+  background:var(--character-page-bg);
 }
-/* 首屏整体限高，否则名录/立绘任一变高都会把首屏拉长到几千像素 */
-.subpage.archive-character .character-screen,
-.subpage.archive-character .character-stage{
-  max-height:min(760px,calc(100vh - 70px));
+.archive-character .site-sidebar-root,
+.archive-character .site-sidebar-toggle,
+.archive-character .site-sidebar-scrim{
+  display:none!important;
 }
-.subpage.archive-character .character-stage{overflow:hidden}
+.archive-character .character-left-rail,
+.archive-character .character-stage,
+.archive-character .character-profile-panel,
+.archive-character .archive-side-nav{
+  display:none;
+}
 @media(max-width:900px){
   .subpage.archive-character .character-screen{
-    grid-template-columns:68px minmax(220px,1fr) minmax(250px,.8fr) clamp(180px,20vw,230px)!important;
+    min-height:100svh;
+    height:100svh;
   }
 }
-/* 880px 而非 760px：design.md 第 9.1.1 节要求 <=880px 须改为自然纵向流
-   并移除覆盖式名册与斜切接缝。760px 会让 800px 级设备仍用桌面覆盖布局。 */
-@media(max-width:880px){
-  .subpage.archive-character .character-screen{
-    display:block!important;
-    grid-template-columns:none!important;
-    padding-right:0!important;
-  }
-  /* 窄屏是单列纵向流，桌面端的首屏限高会把内容截断 */
-  .subpage.archive-character .character-screen,
-  .subpage.archive-character .character-stage{
-    max-height:none;
-  }
-}
-.archive-character .character-screen{background:#0b0d10}
-/* 影画作氛围底，不占首屏主位。
-   早前试过铺满 660px 高的整屏方案：正文面板被推到 y=803，首屏一个字都
-   看不到，背景反成主角。所以退为整屏低透明度氛围层，正文照常在最上层。 */
+.archive-character .character-screen{background:var(--character-page-bg)}
+/* 背景影画在完整首屏中以 cover 铺满，展示层边缘允许裁切。 */
 .d-keyart{
+  --acc:200,60,80;
+  --ax:50%;
+  --ay:42%;
   position:absolute;
   inset:0;
   z-index:0;
   overflow:hidden;
   pointer-events:none;
-  opacity:.42;
-  --ax:50%;
-  --ay:40%;
-  --ar:0px;
-  --acc:200,60,80;
+  background:linear-gradient(180deg,
+    color-mix(in srgb,#05070b 72%,var(--character-page-bg)) 0%,
+    color-mix(in srgb,var(--character-page-bg) 48%,var(--character-ambient)) 30%,
+    color-mix(in srgb,var(--character-page-bg) 68%,var(--character-ambient)) 72%,
+    var(--character-page-bg) 100%);
+  isolation:isolate;
+  opacity:1;
+  mix-blend-mode:normal;
 }
-.d-keyart.is-live{--ar:300px}
-/* 双层显形：底层铺官方单色版影画常驻，上层铺官方彩色版并按跟随光标的
-   径向遮罩挖洞，于是鼠标周围透出真实彩色版。两张官方素材构图逐像素对齐，
-   叠加不会错位。两层同 size/position 保证对齐。 */
-.d-keyart-base,
-.d-keyart-shift{
-  position:absolute;
-  inset:0;
-  /* 作氛围层时铺满更自然；顶部偏移避开影画上部的大字排版。 */
-  background-size:cover;
-  background-repeat:no-repeat;
-  background-position:50% 22%;
-}
-/* 底：官方单色版素材本身即是单色，不再做 CSS 去色——素材已是单色，
-   再叠 grayscale 会把它压成脏灰、丢掉官方配色（如安比的绿）。
-   仅轻微对比/饱和让它更耐看。 */
-.d-keyart-base{
-  background-image:var(--art-mono);
-  filter:contrast(1.06) saturate(1.1);
-}
-/* 上：官方彩色版素材，只在指针周围显形。遮罩逻辑保持原样。 */
-.d-keyart-shift{
-  background-image:var(--art-color);
-  filter:saturate(1.25) brightness(1.02);
-  -webkit-mask-image:radial-gradient(circle var(--ar) at var(--ax) var(--ay),
-                #000 0,#000 42%,transparent 100%);
-          mask-image:radial-gradient(circle var(--ar) at var(--ax) var(--ay),
-                #000 0,#000 42%,transparent 100%);
-  transition:-webkit-mask-image var(--t-fast) linear,mask-image var(--t-fast) linear;
-}
-/* 回退态：某些角色（如 pyrois）没有可配对的彩色版，archive-tools.js
-   不加 .has-art-pair、也不写 --art-mono/--art-color，只写单图 --art。
-   此时用同一张 --art：底层 CSS 去色作单色态，上层原图按遮罩显形。 */
-.d-keyart:not(.has-art-pair) .d-keyart-base{
-  background-image:var(--art);
-  filter:grayscale(.88) contrast(1.06) saturate(1.1);
-}
-.d-keyart:not(.has-art-pair) .d-keyart-shift{
-  background-image:var(--art);
-  filter:saturate(1.25) brightness(1.02);
-}
-/* 角色主色微光，跟随指针，面积小、透明度低，避免变成 AI 发光 */
-.d-keyart-glow{
-  position:absolute;
-  inset:0;
-  background:radial-gradient(circle 340px at var(--ax) var(--ay),
-    rgba(var(--acc),.13) 0,transparent 70%);
-  opacity:0;
-  transition:opacity var(--t-mid) ease;
-}
-.d-keyart.is-live .d-keyart-glow{opacity:1}
-/* 扫描线 + 底部渐隐，压住背景让正文可读 */
-.d-keyart::after{
+.d-keyart::before{
   content:"";
   position:absolute;
   inset:0;
-  background:
-    repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.14) 3px 4px),
-    linear-gradient(180deg,rgba(11,13,16,.06) 0,transparent 26%,
-      rgba(11,13,16,.72) 82%,#0b0d10 100%);
+  z-index:0;
+  pointer-events:none;
+  background:radial-gradient(circle at var(--ax) var(--ay),rgba(var(--acc),.14),transparent 42%);
+  opacity:.34;
+  transition:opacity .2s ease;
 }
-/* 舞台原有不透明渐变会盖住影画，接入背景后减弱为半透明，
-   同时保留角色主题色的中心光；网格与轨道环收淡避免与影画打架。 */
-.character-screen:has(.d-keyart) .character-stage{
-  background:
-    radial-gradient(circle at 50% 42%,
-      color-mix(in srgb,var(--character-theme) 22%,transparent),transparent 38%),
-    linear-gradient(145deg,rgba(48,52,56,.30),rgba(16,18,20,.55) 72%);
+.d-keyart-image{
+  position:relative;
+  z-index:1;
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:var(--character-hero-art-position,50% 50%);
+  filter:none;
+  opacity:1;
 }
-.character-screen:has(.d-keyart) .character-stage-grid{opacity:.10}
-.character-screen:has(.d-keyart) .character-stage-orbit{opacity:.45}
-/* 有影画背景时立绘保持彩色：立绘与背景各挂一套光栅会两层灰度叠加，
-   主体反而比背景更灰。黑白只留给背景，立绘始终是彩色主角。 */
-.character-screen:has(.d-keyart) .character-portrait .d-xray-veil{display:none}
-/* 标题修复两处：
-   1) multi-page.css 给 h1 设 line-height:.82，59px 字号只有 48px 行高，
-      长角色名换行后两行叠字；
-   2) live-hud.css 用 `.subpage .page-hero h1{font-size:...!important}`
-      压过普通规则（与它强制 2 列网格是同一手法），所以这里也要 !important。
-   正文列变窄后 59px 装不下「安比·德玛拉」，需降到 52px 上限。 */
-.subpage.archive-character .character-profile-panel h1{
-  font-size:clamp(30px,3.2vw,50px)!important;
-  line-height:1.06!important;
+.archive-character .character-hero-portrait{
+  position:absolute;
+  z-index:2;
+  top:var(--character-hero-portrait-top,clamp(34px,5vh,72px));
+  right:var(--character-hero-portrait-right,clamp(10px,3.5vw,58px));
+  bottom:var(--character-hero-portrait-bottom,0px);
+  display:block;
+  width:var(--character-hero-portrait-width,min(58vw,820px));
+  height:var(--character-hero-portrait-height,calc(100% - clamp(34px,5vh,72px)));
+  max-width:calc(100% - 20px);
+  object-fit:contain;
+  object-position:var(--character-hero-portrait-object-position,center bottom);
+  filter:drop-shadow(0 24px 34px rgba(0,0,0,.34));
+  pointer-events:none;
 }
-/* 属性标签修复：结构是 <span><b>标签</b>值</span>，但 multi-page.css 给
-   `.hero-status span,.hero-status b` 同时加了 padding:7px 10px 与边框，
-   于是内层 <b> 高度撑满外层 29px，黄块压住后面的值。
-   这里让内层 <b> 退为紧凑内联标签，值才有呼吸空间。 */
-.archive-character .character-profile-panel .hero-status{gap:10px}
-.archive-character .character-profile-panel .hero-status span{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:6px 11px;
+.archive-character .character-hero-portrait[data-portrait-source="portrait"]{
+  filter:drop-shadow(2px 0 0 rgba(10,12,16,.72))
+         drop-shadow(-2px 0 0 rgba(10,12,16,.72))
+         drop-shadow(0 2px 0 rgba(10,12,16,.72))
+         drop-shadow(0 -2px 0 rgba(10,12,16,.72))
+         drop-shadow(0 24px 34px rgba(0,0,0,.34));
 }
-.archive-character .character-profile-panel .hero-status span>b{
-  padding:2px 6px;
-  border:0;
-  box-shadow:none;
-  font-size:9px;
-  line-height:1.5;
+.archive-character .character-hero-portrait:not([src]),
+.archive-character .character-hero-portrait[hidden]{display:none!important}
+.archive-character .character-hero-portrait[data-portrait-source="card"]{
+  max-height:30%;
 }
-/* 正文面板补实底：字直接压在影画上会读不清 */
-.character-screen:has(.d-keyart) .character-profile-panel{
-  background:linear-gradient(90deg,rgba(9,11,14,.95),rgba(9,11,14,.78));
-}
-/* 触屏或减动效：静态官方单色版背景，不做指针交互 */
+
+.d-keyart.is-live::before{opacity:.62}
 @media (hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){
-  .d-keyart-shift,.d-keyart-glow{display:none}
+  .archive-character .d-keyart::before{transition-duration:1ms}
 }
 
 /* ---------- 9. 页脚 ---------- */
@@ -780,7 +732,7 @@
   writing-mode:vertical-rl;
 }
 
-/* ---------- 12f. 胶囊页签（复用现有 data-character-tab）---------- */
+/* ---------- 12f. 旧侧栏动作外观（角色页已停用）---------- */
 /* 侧栏页签是 writing-mode:vertical-rl 的竖排文字（29×38），
    给它套水平胶囊会变成细长条。这里按竖排本身的方向做圆角。 */
 .archive-character .character-rail-action{
@@ -839,63 +791,668 @@
   .zzz-card{opacity:1;transform:none;animation:none}
 }
 
-/* ---------- 12h. 与影画背景共存 ---------- */
-/* 有水印时影画降到 .22，让水印成为主纹理，两者不打架 */
-.character-screen:has(.zzz-watermark) .d-keyart{opacity:.22}
+/* ---------- 12h. 批次 1：停用旧 ZZZ 角色舞台 ---------- */
+.archive-character :is(.zzz-watermark,.zzz-roster,.zzz-catalog-screen,.zzz-idcard,.zzz-edge,.zzz-edge-badge,.zzz-kv-brand,.zzz-sticker-stack){
+  display:none;
+}
+.archive-character .ambient{display:none}
+.archive-character .noise{opacity:.035}
+.archive-character .character-screen > :not(.d-keyart){z-index:2}
 
-/* ---------- 12i. 窄屏降级 ----------
-   断点 880px 对齐 design.md 第 9.1.1 节：<=880px 须自然纵向流，
-   并移除覆盖式名册、斜切接缝及其他覆盖关系。 */
-@media(max-width:880px){
-  .zzz-edge,.zzz-edge-badge{display:none}
-  /* 移除斜切接缝：合同要求窄屏去掉覆盖关系与斜切 */
-  .zzz-card{clip-path:none}
-  .zzz-card-bar,.zzz-card-name{right:0}
-  .zzz-idcard{
-    position:static;
-    margin:14px 0 0;
-    border-radius:14px;
+/* ---------- 13. 角色影画首屏与连续档案 ---------- */
+.archive-character .character-topbar{
+  position:absolute;
+  inset:clamp(16px,2.4vw,34px) auto auto clamp(16px,3.5vw,58px);
+  z-index:4;
+}
+.archive-character .character-back{
+  display:inline-flex;
+  align-items:center;
+  min-height:44px;
+  padding:0 16px;
+  border:1px solid var(--character-line);
+  border-radius:999px;
+  color:var(--character-text);
+  background:color-mix(in srgb,var(--character-page-bg) 76%,transparent);
+  box-shadow:0 12px 36px rgba(0,0,0,.26);
+  font-family:var(--font-mono);
+  writing-mode:horizontal-tb;
+  white-space:nowrap;
+  letter-spacing:.04em;
+  text-decoration:none;
+  backdrop-filter:blur(10px);
+}
+.archive-character .character-back:hover,
+.archive-character .character-back:focus-visible{
+  color:var(--character-on-accent);
+  border-color:var(--character-accent);
+  background:var(--character-accent);
+}
+.archive-character .character-hero-copy{
+  position:absolute!important;
+  z-index:4!important;
+  left:clamp(18px,5vw,76px);
+  bottom:clamp(28px,7vh,76px);
+  width:min(760px,calc(100% - 36px));
+  padding:clamp(18px,2.5vw,30px);
+  border-left:3px solid var(--character-accent);
+  background:linear-gradient(90deg,color-mix(in srgb,var(--character-page-bg) 86%,transparent),transparent);
+}
+.archive-character .character-hero-english{
+  max-width:100%;
+  margin:0 0 10px;
+  color:var(--character-text-muted);
+  font:900 clamp(13px,1.5vw,20px)/1.15 var(--font-mono);
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+.archive-character .character-hero-copy h1{
+  margin:0;
+  color:var(--character-text);
+  font-family:var(--font-display);
+  font-size:clamp(48px,8.5vw,128px);
+  font-weight:950;
+  line-height:.86;
+  letter-spacing:-.055em;
+  text-transform:none;
+  text-wrap:balance;
+  overflow-wrap:anywhere;
+  text-shadow:0 4px 30px rgba(0,0,0,.58);
+}
+.archive-character .character-hero-copy h1 span{color:inherit}
+.archive-character .character-identity{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 12px;
+  margin:20px 0 0;
+}
+.archive-character .character-identity div{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+  min-width:min(210px,100%);
+  padding:8px 12px;
+  border-top:1px solid var(--character-line);
+  background:color-mix(in srgb,var(--character-surface) 82%,transparent);
+}
+.archive-character .character-identity dt{
+  color:var(--character-text-muted);
+  font:800 10px/1 var(--font-mono);
+  letter-spacing:.12em;
+}
+.archive-character .character-identity dd{
+  margin:0;
+  color:var(--character-text);
+  font:850 13px/1.3 var(--font-body);
+}
+.archive-character .character-identity a{color:inherit;text-decoration:none}
+.archive-character .character-identity a:hover{text-decoration:underline;text-underline-offset:3px}
+.archive-character .character-dossier-link{
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+  min-height:44px;
+  margin-top:18px;
+  padding:0 16px;
+  color:var(--character-on-accent);
+  background:var(--character-accent);
+  border:1px solid var(--character-accent);
+  border-radius:6px;
+  font:900 12px/1 var(--font-mono);
+  letter-spacing:.08em;
+  text-decoration:none;
+}
+.archive-character .character-dossier-link:hover,
+.archive-character .character-dossier-link:focus-visible{
+  color:var(--character-text);
+  background:var(--character-surface-strong);
+}
+.archive-character .character-detail-page{
+  position:relative;
+  isolation:isolate;
+  width:100%;
+  min-height:100svh;
+  margin:0;
+  padding:clamp(38px,6vw,84px) clamp(18px,5vw,76px) clamp(54px,8vw,108px);
+  overflow:hidden;
+  color:var(--character-text);
+  background:var(--character-page-bg);
+}
+.archive-character .character-detail-page::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background-image:var(--character-art-image);
+  background-repeat:no-repeat;
+  background-position:center top;
+  background-size:100% auto;
+  opacity:.06;
+  filter:saturate(1.15);
+  mask-image:linear-gradient(to bottom,#000 0%,transparent 76%);
+}
+.archive-character .character-detail-page > *{
+  position:relative;
+  z-index:1;
+  width:min(1120px,100%);
+  margin-inline:auto;
+}
+.archive-character .character-module-nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:0 auto 22px;
+  padding:8px;
+  border:1px solid var(--character-line);
+  border-radius:12px;
+  background:var(--character-surface);
+  box-shadow:0 20px 64px rgba(0,0,0,.2);
+}
+.archive-character .character-module-nav a{
+  flex:1 1 140px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:44px;
+  padding:0 16px;
+  border:1px solid transparent;
+  border-radius:7px;
+  color:var(--character-text-muted);
+  background:transparent;
+  font:900 13px/1 var(--font-mono);
+  letter-spacing:.08em;
+  text-decoration:none;
+}
+.archive-character .character-module-nav a > span{display:inline-block}
+.archive-character .character-module-nav a:hover,
+.archive-character .character-module-nav a:focus-visible{
+  color:var(--character-text);
+  border-color:var(--character-line);
+  outline:2px solid var(--character-accent);
+  outline-offset:2px;
+}
+.archive-character .character-module-nav a.is-active{
+  color:var(--character-on-accent);
+  border-color:var(--character-accent);
+  background:var(--character-accent);
+}
+.archive-character .character-content{
+  display:grid;
+  gap:clamp(48px,7vw,92px);
+  min-height:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+.archive-character .character-module{
+  display:grid;
+  gap:20px;
+  min-width:0;
+  margin:0;
+  padding:0;
+  border:0;
+  background:transparent;
+  box-shadow:none;
+  scroll-margin-top:24px;
+}
+.archive-character .character-module[role="tabpanel"]{opacity:1}
+.archive-character .character-module[role="tabpanel"].is-panel-entering{opacity:1}
+.archive-character .character-module[role="tabpanel"][hidden]{display:none!important}
+.archive-character .character-module-head{
+  display:grid;
+  gap:7px;
+  margin:0;
+  padding:0 0 18px 16px;
+  border:0;
+  border-left:3px solid var(--character-accent);
+  border-bottom:1px solid var(--character-line);
+}
+.archive-character .character-module-head span{
+  display:inline-block;
+  width:max-content;
+  padding:0;
+  color:var(--character-accent);
+  background:transparent;
+  font:900 11px/1 var(--font-mono);
+  letter-spacing:.14em;
+}
+.archive-character .character-module-head h2{
+  margin:0;
+  color:var(--character-text);
+  font-family:var(--font-display);
+  font-size:clamp(28px,4.4vw,56px);
+  line-height:.94;
+  letter-spacing:-.035em;
+}
+.archive-character .character-module-intro{
+  max-width:76ch;
+  margin:0;
+  color:var(--character-text-muted);
+  font-size:clamp(15px,1.6vw,18px);
+  line-height:1.8;
+}
+
+/* Component surfaces inside the archive stack */
+.archive-character :is(.character-content-card,.character-wiki-block,.character-growth-section,.character-media-slot){
+  margin:0;
+  border:1px solid color-mix(in srgb,var(--character-line) 72%,transparent);
+  border-radius:10px;
+  color:var(--character-text);
+  background:var(--character-surface-strong);
+}
+.archive-character :is(.character-content-card,.character-wiki-block){padding:18px}
+.archive-character :is(.character-content-card,.character-wiki-block) h3{margin:4px 0 10px;color:var(--character-text)}
+.archive-character :is(.character-content-card,.character-wiki-block) p{color:var(--character-text-muted);line-height:1.72}
+.archive-character :is(.character-content-card,.character-wiki-block) > span{color:var(--character-accent)}
+.archive-character .character-data-grid,
+.archive-character .character-wiki-columns{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.archive-character .character-data-grid > div{
+  display:grid;
+  gap:7px;
+  min-width:0;
+  padding:16px;
+  border:1px solid color-mix(in srgb,var(--character-line) 68%,transparent);
+  border-radius:8px;
+  background:var(--character-surface-strong);
+}
+.archive-character .character-data-grid span{color:var(--character-text-muted);font:800 10px/1 var(--font-mono);letter-spacing:.08em}
+.archive-character .character-data-grid b{color:var(--character-text);font-size:16px;overflow-wrap:anywhere}
+.archive-character .character-empty{
+  margin:0;
+  padding:18px;
+  border:1px dashed var(--character-line);
+  color:var(--character-text-muted);
+  background:color-mix(in srgb,var(--character-surface-strong) 72%,transparent);
+}
+.archive-character .character-disclosure{
+  border:1px solid var(--character-line);
+  border-radius:10px;
+  background:var(--character-surface-strong);
+  overflow:hidden;
+}
+.archive-character .character-disclosure > summary{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  min-height:50px;
+  padding:14px 16px;
+  color:var(--character-text);
+  font:900 13px/1.35 var(--font-mono);
+  cursor:pointer;
+  list-style:none;
+}
+.archive-character .character-disclosure > summary::-webkit-details-marker{display:none}
+.archive-character .character-disclosure > summary::after{content:"＋";color:var(--character-accent);font-size:18px}
+.archive-character .character-disclosure[open] > summary{color:var(--character-on-accent);background:var(--character-accent)}
+.archive-character .character-disclosure[open] > summary::after{content:"－";color:inherit}
+.archive-character .character-disclosure > :not(summary){margin:16px}
+.archive-character .character-media-checklist > summary b{color:inherit;font-size:11px}
+.archive-character .character-media-slot-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.archive-character .character-media-slot{display:grid;grid-template-columns:minmax(110px,.65fr) 1fr;overflow:hidden}
+.archive-character .character-media-slot-frame{min-height:110px;background:var(--character-page-bg)}
+.archive-character .character-media-slot-frame img{width:100%;height:100%;object-fit:cover}
+.archive-character .character-media-slot-copy{display:grid;align-content:center;gap:6px;padding:14px}
+.archive-character .character-media-slot-copy span{color:var(--character-accent);font:900 10px/1 var(--font-mono);letter-spacing:.08em}
+.archive-character .character-media-slot-copy small{color:var(--character-text-muted)}
+.archive-character .character-media-slot.is-empty{grid-template-columns:1fr;border-style:dashed}
+.archive-character .character-wiki-list{margin:0;padding-left:20px;color:var(--character-text-muted)}
+.archive-character .character-wiki-list b{color:var(--character-text)}
+.archive-character .character-wiki-note{color:var(--character-text-muted);line-height:1.65}
+.archive-character .character-gallery-block{overflow:hidden}
+.archive-character .wiki-gallery-slider{position:relative}
+.archive-character .wiki-gallery-viewport{overflow:hidden;border-radius:8px;background:var(--character-page-bg)}
+.archive-character .wiki-gallery-track{display:flex;transition:transform .35s ease}
+.archive-character .character-gallery-item{flex:0 0 100%;margin:0}
+.archive-character .character-gallery-item img{display:block;width:100%;max-height:70vh;object-fit:contain;background:var(--character-page-bg)}
+.archive-character .character-gallery-item figcaption{padding:10px;color:var(--character-text-muted);font-size:12px}
+.archive-character .wiki-gallery-nav{position:absolute;z-index:2;top:45%;display:grid;place-items:center;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border:1px solid var(--character-line);border-radius:50%;color:var(--character-text);background:var(--character-surface);cursor:pointer}
+.archive-character .wiki-gallery-nav:hover{color:var(--character-on-accent);background:var(--character-accent)}
+.archive-character .wiki-gallery-nav.prev{left:10px}
+.archive-character .wiki-gallery-nav.next{right:10px}
+.archive-character .wiki-gallery-meta{display:flex;justify-content:space-between;gap:16px;margin-top:10px;color:var(--character-text-muted)}
+.archive-character .wiki-gallery-meta i{color:var(--character-accent);font-style:normal}
+.archive-character .wiki-gallery-dots{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.archive-character .wiki-gallery-dots button{display:grid;place-items:center;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border:1px solid var(--character-line);border-radius:50%;color:var(--character-text-muted);background:transparent;cursor:pointer}
+.archive-character .wiki-gallery-dots button.is-active{color:var(--character-on-accent);background:var(--character-accent)}
+.archive-character .wiki-gallery-nav:focus-visible,
+.archive-character .wiki-gallery-dots button:focus-visible{outline:3px solid var(--character-accent);outline-offset:3px}
+.archive-character .character-gallery-item[aria-hidden="true"]{pointer-events:none}
+.archive-character .wiki-growth-slider{display:grid;gap:16px}
+.archive-character .wiki-growth-slider-head{display:flex;justify-content:space-between;color:var(--character-text-muted)}
+.archive-character .wiki-growth-slider-head b{color:var(--character-accent)}
+.archive-character .wiki-growth-range input{width:100%;accent-color:var(--character-accent)}
+.archive-character .wiki-growth-ticks{display:flex;flex-wrap:wrap;gap:6px}
+.archive-character .wiki-growth-ticks button{min-height:38px;padding:0 12px;border:1px solid var(--character-line);border-radius:6px;color:var(--character-text-muted);background:transparent;cursor:pointer}
+.archive-character .wiki-growth-ticks button.is-active{color:var(--character-on-accent);background:var(--character-accent)}
+.archive-character .character-growth-header,
+.archive-character .character-growth-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:8px}
+.archive-character .character-growth-section{padding:16px}
+.archive-character .character-growth-row span{padding:8px;color:var(--character-text-muted);background:color-mix(in srgb,var(--character-page-bg) 65%,transparent)}
+.archive-character .character-growth-materials{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.archive-character .character-growth-material{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--character-line);border-radius:7px;color:var(--character-text);text-decoration:none}
+.archive-character .character-growth-icon{object-fit:contain}
+.archive-character .character-growth-grade{display:grid;place-items:center;width:48px;height:48px;color:var(--character-on-accent);background:var(--character-accent);font:900 9px/1 var(--font-mono)}
+.archive-character .character-growth-material span{display:grid;gap:3px}
+.archive-character .character-growth-material small{color:var(--character-text-muted)}
+.archive-character .related-record{
+  display:grid;
+  gap:5px;
+  margin:0;
+  padding:16px;
+  border:1px solid var(--character-line);
+  border-radius:8px;
+  color:var(--character-text);
+  background:var(--character-surface-strong);
+  text-decoration:none;
+}
+.archive-character .related-record:hover,
+.archive-character .related-record:focus-visible{border-color:var(--character-accent);box-shadow:inset 4px 0 0 var(--character-accent)}
+.archive-character .related-record span{color:var(--character-accent);font:900 10px/1 var(--font-mono);letter-spacing:.08em}
+.archive-character .related-record small{color:var(--character-text-muted)}
+.archive-character .character-media-cover img{display:block;width:100%;max-height:62vh;object-fit:contain;background:var(--character-page-bg)}
+.archive-character :is(.video-link,.related-record-inline){color:var(--character-accent)}
+.archive-character .video-link.disabled{color:var(--character-text-muted)}
+.archive-character .free-components{display:grid;gap:10px;margin-top:20px}
+.archive-character .free-components:empty{display:none}
+.archive-character .character-art-credit{
+  margin-top:22px;
+  padding:18px 20px;
+  border:1px solid var(--character-line);
+  border-radius:12px;
+  color:var(--character-text);
+  background:var(--character-surface);
+}
+.archive-character .character-art-credit [hidden]{display:none!important}
+.archive-character .character-art-credit h2{margin:0 0 10px;color:var(--character-text);font-size:18px}
+.archive-character .character-art-credit p{margin:6px 0;color:var(--character-text);line-height:1.6}
+.archive-character .character-art-credit [data-source-action]{color:var(--character-text)}
+.archive-character .character-art-credit a{color:var(--character-text);text-decoration-color:var(--character-accent);text-underline-offset:3px}
+.archive-character footer{
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:10px 24px;
+  margin:0;
+  padding:22px clamp(18px,5vw,76px);
+  border-top:1px solid var(--character-line);
+  color:var(--character-text-muted);
+  background:var(--character-page-bg);
+}
+.archive-character footer [data-unofficial-boundary]{color:var(--character-text)}
+
+@keyframes archive-character-text-enter{
+  from{opacity:0;transform:translate3d(0,8px,0)}
+  to{opacity:1;transform:none}
+}
+@keyframes archive-character-english-enter{
+  from{opacity:0;transform:translate3d(-10px,0,0)}
+  to{opacity:1;transform:none}
+}
+@keyframes archive-character-english-breathe{
+  0%,100%{transform:none}
+  50%{transform:translateY(-1px) scaleX(1.008)}
+}
+@keyframes archive-character-tab-confirm{
+  from{opacity:.84;transform:scale(.985)}
+  to{opacity:1;transform:none}
+}
+@media (prefers-reduced-motion:no-preference){
+  .archive-character .character-screen[data-character-text-motion="enter"] .character-hero-english{
+    animation:archive-character-english-enter var(--motion-fast) var(--ease-out) both,
+      archive-character-english-breathe var(--motion-mid) var(--motion-mid) var(--ease-out) 2;
   }
-  /* 桌面端名录是 640px 高的 sticky 竖列；窄屏改横向滑动后必须
-     解除限高与 sticky，否则留下一个 640px 高的空容器。 */
-  .zzz-roster{
-    padding:12px 0;
-    position:static;
+  .archive-character .character-screen[data-character-text-motion="enter"] .character-hero-copy h1{
+    animation:archive-character-text-enter 240ms 40ms var(--ease-out) both;
+  }
+  .archive-character .character-screen[data-character-text-motion="enter"] .character-identity div{
+    animation:archive-character-text-enter 210ms var(--ease-out) both;
+  }
+  .archive-character .character-screen[data-character-text-motion="enter"] .character-identity div:nth-child(1){animation-delay:110ms}
+  .archive-character .character-screen[data-character-text-motion="enter"] .character-identity div:nth-child(2){animation-delay:145ms}
+  .archive-character .character-screen[data-character-text-motion="enter"] .character-identity div:nth-child(3){animation-delay:180ms}
+  .archive-character .character-screen[data-character-text-motion="enter"] .character-dossier-link{
+    animation:archive-character-text-enter 220ms 250ms var(--ease-out) both;
+  }
+  .archive-character .character-module-nav a.is-active > span{
+    animation:archive-character-tab-confirm var(--motion-fast) var(--ease-out) both;
+  }
+  .archive-character .character-module-head > :is(span,h2){
+    transition:transform var(--motion-fast) var(--ease-out),opacity var(--motion-fast) var(--ease-out);
+  }
+  .archive-character .character-module.is-panel-entering .character-module-head > span{
+    opacity:.01;
+    transform:translateY(4px);
+  }
+  .archive-character .character-module.is-panel-entering .character-module-head > h2{
+    opacity:.01;
+    transform:translateY(7px);
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .archive-character .character-screen[data-character-text-motion="enter"] :is(.character-hero-english,.character-hero-copy h1,.character-identity div,.character-dossier-link),
+  .archive-character .character-module-nav a.is-active > span{
+    opacity:1!important;
+    transform:none!important;
+    animation:none!important;
+  }
+  .archive-character .character-module-head > :is(span,h2){
+    opacity:1!important;
+    transform:none!important;
+    transition:none!important;
+  }
+}
+
+@media(max-width:720px){
+  .subpage.archive-character .character-screen{
     height:auto;
+    min-height:0;
+    max-height:none;
+    overflow:visible;
   }
-  /* 竖屏塞不下 56 张卡，改横向滑动 */
-  .zzz-roster-scroll{
-    grid-template-columns:repeat(56,120px);
-    grid-auto-flow:column;
-    overflow-x:auto;
-    overflow-y:hidden;
-    padding-bottom:10px;
+  .archive-character .d-keyart{
+    position:relative;
+    inset:auto;
+    width:100%;
+    height:auto;
+    min-height:0;
+    aspect-ratio:16 / 9;
+    overflow:hidden;
   }
-  .zzz-wm-out{font-size:clamp(48px,15vw,86px)}
-  .zzz-wm-arc{display:none}
+  .archive-character .d-keyart-image{
+    width:100%;
+    height:100%;
+    max-height:none;
+    object-fit:cover;
+  }
+  .archive-character .character-hero-portrait,
+  .archive-character .character-hero-portrait[data-portrait-source="card"]{
+    position:relative;
+    top:auto;
+    right:auto;
+    bottom:auto;
+    width:min(100%,540px);
+    height:auto;
+    max-width:100%;
+    max-height:none;
+    margin:0 auto;
+    object-fit:contain;
+    object-position:center bottom;
+  }
+  .archive-character .character-hero-portrait[data-portrait-source="card"]{
+    width:min(46%,180px);
+    margin:18px 14px 18px auto;
+  }
+  .archive-character .character-topbar{
+    inset:12px auto auto 12px;
+  }
+  .archive-character .character-hero-copy{
+    position:relative!important;
+    left:auto;
+    bottom:auto;
+    width:100%;
+    padding:20px 18px 26px;
+    border-left:0;
+    border-top:3px solid var(--character-accent);
+    background:var(--character-surface);
+  }
+  .archive-character .character-hero-english{font-size:clamp(12px,4vw,16px);letter-spacing:.1em}
+  .archive-character .character-hero-copy h1{font-size:clamp(42px,15vw,68px)}
+  .archive-character .character-identity{display:grid}
+  .archive-character .character-identity div{min-width:0}
+  .archive-character .character-detail-page{min-height:0;padding:38px 16px 64px}
+  .archive-character .character-module-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .archive-character .character-module-nav a{width:100%}
+  .archive-character .character-content{gap:52px}
+  .archive-character .character-data-grid,
+  .archive-character .character-wiki-columns,
+  .archive-character .character-media-slot-grid,
+  .archive-character .character-growth-materials{grid-template-columns:1fr}
+  .archive-character .character-media-slot{grid-template-columns:1fr}
+  .archive-character .character-media-slot-frame{min-height:160px}
+  .archive-character footer{display:grid}
+}
+@media (hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){
+  .archive-character .d-keyart::before,
+  .archive-character .character-module[role="tabpanel"]{transition-duration:1ms}
+  .archive-character .wiki-gallery-track{transition:none}
 }
 
-/* ---------- 角色主题色改为跟随角色印象色 ---------- */
-/* multi-page.css 把 --character-theme 固定为 #ff9c52（橙），它驱动角色页
-   13 个元素：左侧轨道编号与菱形标记、立绘边框、身份牌圆环、档案编号、
-   面板左边框等。固定橙与当前角色无关，同一页的强调色因此不统一。
-
-   改为跟随 --art-letter-ui。用它而不是原始 --art-letter 是必须的：
-   实测 53 个印象色里有 22 个原色在深底上对比度不足 4.5（billy-kid 2.52、
-   zhu-yuan 2.28、miyabi 3.26 等），直接用会读不清；--art-letter-ui 是
-   archive-tools.js 按目标相对亮度 0.48 提亮后的值，实测 53/53 全部达标。
-
-   回退值保留原橙：无影画素材的 3 个角色取不到印象色时表现不变。 */
-.subpage.archive-character{
-  --character-theme:rgb(var(--art-letter-ui,255 156 82));
+/* 角色页 Hero 多层视差（s18b）*/
+.archive-character .character-screen{
+  perspective:1400px;
+  transform-style:preserve-3d;
 }
-
-/* 大标题高亮字同样跟随印象色。multi-page.css 已经写了
-   `.character-profile-panel h1 span{color:var(--character-theme)}`，但
-   live-hud.css 的 `.subpage .page-hero h1 span{color:inherit!important}`
-   胜出，把它拉回标题的白色，所以这里必须同样用 !important 才压得过。
-   限定 .archive-character，其它子页标题配色不变；
-   取不到印象色时回退原橙 255 156 82。 */
-.subpage.archive-character .page-hero h1 span{
-  color:var(--character-theme)!important;
+.archive-character #characterHeroPortrait{
+  transform-origin:center 65%;
+  will-change:transform;
+}
+.archive-character .d-keyart-image{
+  will-change:transform;
+}
+.archive-character .character-hero-copy{
+  will-change:transform;
+} */
+.archive-character .talent-module{
+  border:1px solid var(--zzz-lime-line,rgba(216,250,0,.42));
+  background:var(--bg-2,#1a222d);
+  border-radius:2px;
+  overflow:hidden;
+}
+.archive-character .talent-tabs{
+  display:flex;
+  flex-wrap:wrap;
+  gap:2px;
+  padding:6px 6px 0;
+  background:var(--bg-1,#121820);
+  border-bottom:1px solid var(--zzz-lime-line,rgba(216,250,0,.42));
+}
+.archive-character .talent-tab{
+  flex:0 0 auto;
+  width:52px;height:52px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  background:var(--bg-2,#1a222d);
+  border:1px solid transparent;
+  border-bottom:none;
+  border-radius:2px 2px 0 0;
+  cursor:pointer;
+  transition:background .15s,border-color .15s;
+  padding:4px;
+}
+.archive-character .talent-tab:hover{
+  background:var(--bg-3,#243041);
+  border-color:var(--zzz-lime-line,rgba(216,250,0,.42));
+}
+.archive-character .talent-tab.is-active{
+  background:var(--bg-3,#243041);
+  border-color:var(--zzz-lime-line,rgba(216,250,0,.42));
+  box-shadow:0 0 10px var(--zzz-lime-dim,rgba(216,250,0,.14));
+  position:relative;
+}
+.archive-character .talent-tab.is-active::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;
+  background:var(--zzz-lime,#d8fa00);
+}
+.archive-character .talent-tab img{
+  width:36px;height:36px;object-fit:contain;
+  image-rendering:auto;
+}
+.archive-character .talent-tab-fallback{
+  font-size:10px;font-family:var(--font-display,sans-serif);font-weight:700;
+  color:var(--signal,#3ec7d6);text-align:center;letter-spacing:.04em;
+  line-height:1.2;word-break:break-all;
+}
+.archive-character .talent-panels{
+  padding:0;
+}
+.archive-character .talent-panel{
+  display:none;padding:16px 18px 18px;
+}
+.archive-character .talent-panel.is-active{display:block;}
+.archive-character .talent-panel-copy h4{
+  font-family:var(--font-display,sans-serif);
+  font-size:1rem;font-weight:700;
+  color:var(--text,#e8ecf1);
+  letter-spacing:.06em;text-transform:uppercase;
+  margin:0 0 8px;
+}
+.archive-character .talent-desc{
+  font-size:.875rem;color:var(--text-dim,#8c9ab0);
+  line-height:1.7;white-space:pre-line;
+  margin:0 0 12px;
+}
+.archive-character .talent-growth{
+  border-top:1px solid var(--bg-3,#243041);
+  padding-top:12px;margin-top:4px;
+}
+.archive-character .talent-growth h4{
+  font-size:.72rem;font-family:var(--font-display,sans-serif);font-weight:600;
+  color:var(--signal,#3ec7d6);text-transform:uppercase;letter-spacing:.1em;
+  margin:0 0 8px;
+}
+.archive-character .talent-growth-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+  gap:8px;
+}
+.archive-character .talent-growth-stage{
+  background:var(--bg-1,#121820);
+  border:1px solid var(--bg-3,#243041);
+  border-radius:2px;padding:8px 10px;
+}
+.archive-character .talent-growth-stage b{
+  display:block;
+  font-size:.78rem;color:var(--amber,#e0b41c);
+  font-family:var(--font-display,sans-serif);font-weight:700;
+  letter-spacing:.06em;margin-bottom:6px;
+}
+.archive-character .talent-growth-stage ul{
+  list-style:none;padding:0;margin:0;
+  font-size:.74rem;color:var(--text-dim,#8c9ab0);line-height:1.6;
+}
+.archive-character .talent-module .character-wiki-note{
+  font-size:.72rem;color:var(--text-dim,#8c9ab0);
+  padding:8px 18px 14px;border-top:1px solid var(--bg-3,#243041);
+  margin:0;
+}
+@media(max-width:600px){
+  .archive-character .talent-tab{width:44px;height:44px;}
+  .archive-character .talent-tab img{width:28px;height:28px;}
+  .archive-character .talent-growth-grid{grid-template-columns:1fr 1fr;}
 }

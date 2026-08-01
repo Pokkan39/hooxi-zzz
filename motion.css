@@ -233,7 +233,10 @@ body{
   --motion-cut:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);
 }
 
-@view-transition{navigation:auto}
+/* 原为 @view-transition{navigation:auto}（原生黄色擦除）。
+   规范 4.8 第 20 条改用电视信号缓冲转场，两套不能并存：
+   原生跨文档转场会直接接管导航，使脚本的点击拦截拿不到控制权。
+   保留下方 keyframes 与伪元素规则不删，便于需要时改回原生方案。 */
 @keyframes final-route-old{
   from{clip-path:inset(0);opacity:1;transform:translate3d(0,0,0)}
   to{clip-path:inset(0 100% 0 0);opacity:.96;transform:translate3d(-10px,0,0)}

@@ -20,6 +20,11 @@ artifacts/*
 # formal-site-gate-baseline.json 是正式站施工门禁的指纹基线；缺失时
 # check-formal-site-gate.py 返回 2（MISSING_BASELINE），因此必须随仓库跟踪。
 !artifacts/formal-site-gate-baseline.json
+# 蕾米埃尔官方 Wiki 素材转换仅放行清单与转换证据；原始 PNG/截图继续忽略。
+!artifacts/remielle-official-20260729/
+artifacts/remielle-official-20260729/*
+!artifacts/remielle-official-20260729/source-manifest.json
+!artifacts/remielle-official-20260729/conversion-evidence.json
 # CI 里把报告从 artifacts/ 拷出来上传用的中转目录，不入库
 /ci-report/
 *.opt-test.webp
@@ -35,9 +40,9 @@ tmp/
 /reference-materials/
 /*.png
 
-# 来源不合规素材，禁止入库。
-# assets/mindscape/ 取自 Steam 创意工坊壁纸包（workshop 431960/3491187965），
-# 不是游戏解包；其第三态（_Full）是去除服装的二次改图，53 个角色全部如此。
-# 站内已无任何代码引用它，保留在工作区仅为等待用户决定是否删除。
-# 此处忽略是为了防止 git add -A 之类的操作把它带进提交历史。
-/assets/mindscape/
+# 正式发布包含 53 张项目方确认许可的 Toastertjie Default + 1 张蕾米埃尔官方 Wiki 素材转换 Default，共54张正式 Default。
+# Partial、Full 与运行包不入库。
+/assets/mindscape/*
+!/assets/mindscape/default/
+/assets/mindscape/default/*
+!/assets/mindscape/default/*.webp

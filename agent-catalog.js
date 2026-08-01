@@ -1,5 +1,6 @@
 (()=>{
-  const snapshotDate='2026-07-18';
+  const snapshotDate='2026-07-29';
+  const remielleWikiUrl='https://baike.mihoyo.com/zzz/wiki/content/2076/detail?mhy_presentation_style=fullscreen';
   const sourceLinks={
     official:'https://zenless.hoyoverse.com/',
     wiki:'https://baike.mihoyo.com/zzz/wiki/',
@@ -22,7 +23,8 @@
     'metropolitan-order-division':'都市秩序相关编制，关注街头秩序与异常事件处置。',
     'defense-force-silver-squad':'防卫军白银小队，保留军旅痕迹与高强度训练背景。',
     'external-strategy-department':'外务筹策相关编制，偏重情报、协调与特殊勤务。',
-    'phaethon':'绳匠「法厄同」一侧的档案入口，串联录像店与城市委托线。'
+    'phaethon':'绳匠「法厄同」一侧的档案入口，串联录像店与城市委托线。',
+    'covenant-of-dayat':'达识结社名称及蕾米埃尔·丹的成员关系由其官方角色百科页确认；独立阵营资料待官方公布。'
   };
   const factionLogos={
     'cunning-hares':'assets/icons/cunning-hares.png',
@@ -41,21 +43,31 @@
     'metropolitan-order-division':'assets/icons/metropolitan-order-division.png',
     'defense-force-silver-squad':'assets/icons/defense-force-silver-squad.png',
     'external-strategy-department':'assets/icons/external-strategy-department.png',
-    'phaethon':'assets/icons/phaethon.png'
+    'phaethon':'assets/icons/phaethon.png',
+    'covenant-of-dayat':'assets/icons/covenant-of-dayat.png'
   };
   const factions=[
-    ['cunning-hares','狡兔屋','#f3d33b'],['belobog','白祇重工','#ef6e3a'],['victoria-housekeeping','维多利亚家政','#bfc9dc'],['sons-of-calydon','卡吕冬之子','#e65031'],['section-6','对空洞特别行动部第六课','#65bce8'],['criminal-investigation-srt','刑侦特勤组','#3aaad8'],['obol-squad','奥波勒斯小队','#db3848'],['stars-of-lyra','天琴座','#f6a3cc'],['mockingbird','「反舌鸟」','#8169c7'],['yunkui-summit','云岿山','#d9b553'],['spook-shack','怪啖屋','#6bb68d'],['krampus-compliance-authority','「坎卜斯黑枝」','#a55555'],['angels-of-delusion','「妄想天使」','#ef8fc0'],['metropolitan-order-division','都市秩序部','#5b86b8'],['defense-force-silver-squad','防卫军・白银小队','#b8c3d1'],['external-strategy-department','外务筹策局','#988bc4'],['phaethon','「法厄同」','#e6c33b']
+    ['cunning-hares','狡兔屋','#f3d33b'],['belobog','白祇重工','#ef6e3a'],['victoria-housekeeping','维多利亚家政','#bfc9dc'],['sons-of-calydon','卡吕冬之子','#e65031'],['section-6','对空洞特别行动部第六课','#65bce8'],['criminal-investigation-srt','刑侦特勤组','#3aaad8'],['obol-squad','奥波勒斯小队','#db3848'],['stars-of-lyra','天琴座','#f6a3cc'],['mockingbird','「反舌鸟」','#8169c7'],['yunkui-summit','云岿山','#d9b553'],['spook-shack','怪啖屋','#6bb68d'],['krampus-compliance-authority','「坎卜斯黑枝」','#a55555'],['angels-of-delusion','「妄想天使」','#ef8fc0'],['metropolitan-order-division','都市秩序部','#5b86b8'],['defense-force-silver-squad','防卫军・白银小队','#b8c3d1'],['external-strategy-department','外务筹策局','#988bc4'],['phaethon','「法厄同」','#e6c33b'],['covenant-of-dayat','达识结社','#cdb586']
   ].map(([id,name,theme])=>{
     const wikiId=({
       'cunning-hares':'547',
       'victoria-housekeeping':'548'
     })[id]||'';
-    return {
+    const base={
       id,name,theme,
       logo:factionLogos[id]||'',
       background:'',
       summary:factionBlurbs[id]||`${name}相关代理人阵营档案。`,
-      members:[],
+      members:[]
+    };
+    if(id==='covenant-of-dayat') return {
+      ...base,
+      sourceType:'official-member-page',
+      sourceLabel:'蕾米埃尔·丹官方角色百科',
+      sourceUrl:remielleWikiUrl
+    };
+    return {
+      ...base,
       wikiId,
       wikiUrl:wikiId?`https://baike.mihoyo.com/zzz/wiki/content/${wikiId}/detail`:''
     };
@@ -99,6 +111,7 @@
     ['pulchra','波可娜·费雷尼','Pulchra Fellini','sons-of-calydon','A','Physical','Stun','Slash','2025-03-12','Box Cutter','June 19th'],
     ['pyrois','佩洛伊斯','Pyrois','phaethon','I','Ether','Attack','Slash','2026-06-17','Sol Exuvia','待核验'],
     ['qingyi','青衣','Qingyi','criminal-investigation-srt','S','Electric','Stun','Strike','2024-08-14','Ice-Jade Teapot','January 1st'],
+    ['remielle','蕾米埃尔·丹','REMIELLE','covenant-of-dayat','待公布','待公布','待公布','待公布','待公布','待公布','待公布'],
     ['seed','「席德」','Seed','obol-squad','S','Electric','Attack','Slash / Strike','2025-09-04','Cordis Germina','November 22nd'],
     ['seth','赛斯·洛威尔','Seth Lowell','criminal-investigation-srt','A','Electric','Defense','Slash','2024-09-04','Peacekeeper - Specialized','April 8th'],
     ['soldier-0-anby','零号·安比','Soldier 0 - Anby','defense-force-silver-squad','S','Electric','Attack','Slash','2025-03-12','Severed Innocence','February 20th'],
@@ -131,12 +144,15 @@
     return text;
   };
   const localCard=id=>`assets/portraits/${id}-card.webp`;
+  const localPortrait=id=>`assets/portraits/${id}-portrait.webp`;
   const enrichmentBag=window.agentEnrichment?.agents||{};
   const characters=rows.map(([id,name,englishName,factionId,rank,attribute,specialty,attackType,releaseDate,signatureWEngine,birthday])=>{
     const enrich=enrichmentBag[id]||{};
     const factionName=factions.find(item=>item.id===factionId)?.name||'待核验阵营';
     const impression=String(enrich.impression||'').trim();
-    const summary=firstLine(impression)||`${name}是${factionName}的${zh[specialty]||specialty}代理人。`;
+    const summary=id==='remielle'
+      ?'蕾米埃尔·丹是达识结社成员；更多代理人资料待官方公布。'
+      :(firstLine(impression)||`${name}是${factionName}的${zh[specialty]||specialty}代理人。`);
     const personalStories=(enrich.personalStories||[]).filter(item=>item&&item.summary).map(item=>({
       title:item.title||'角色故事',
       summary:item.summary,
@@ -164,9 +180,13 @@
     const wikiDetail=enrich.wikiUrl||(enrich.wikiId?`https://baike.mihoyo.com/zzz/wiki/content/${enrich.wikiId}/detail`:'');
     const sources=[
       {label:'绝区零官方资料',url:sourceLinks.official,type:'官方资料'},
-      {label:'米哈游绝区零百科',url:wikiDetail||sourceLinks.wiki,type:'资料汇总'},
-      {label:'Prydwen 角色卡面与攻略',url:`https://www.prydwen.gg/zenless/characters/${id==='anby'?'anby-demara':id==='soldier-0-anby'?'anby-demara-soldier-0':id==='starlight-billy'?'billy-starlight':id}`,type:'第三方资料'}
+      {label:'米哈游绝区零百科',url:wikiDetail||sourceLinks.wiki,type:id==='remielle'?'官方百科':'资料汇总'}
     ];
+    if(id!=='remielle') sources.push({
+      label:'Prydwen 角色卡面与攻略',
+      url:`https://www.prydwen.gg/zenless/characters/${id==='anby'?'anby-demara':id==='soldier-0-anby'?'anby-demara-soldier-0':id==='starlight-billy'?'billy-starlight':id}`,
+      type:'第三方资料'
+    });
     (enrich.strategyLinks||[]).forEach(link=>{
       if(link?.url) sources.push({label:link.title||'相关资料',url:link.url,type:'攻略合集'});
     });
@@ -176,9 +196,10 @@
       specialty:zh[specialty]||specialty,
       attackType:attackType.split(' / ').map(value=>zh[value]||value).join(' / '),
       releaseDate,signatureWEngine,birthday,
+      card,
       avatar:card,
       headshot:card,
-      portrait:id==='anby'?'assets/portraits/anby-portrait.png':card,
+      portrait:localPortrait(id),
       iconUrl:wikiIcon,
       headerImgUrl:wikiHeader,
       summary,
@@ -196,13 +217,14 @@
       personalStories,
       relatedIds:[],
       wikiId:enrich.wikiId||'',
+      ...(id==='remielle'?{wikiUrl:wikiDetail}:{}),
       archiveNote:window.agentEnrichment?.note||''
     };
   });
   factions.forEach(faction=>{
     const members=characters.filter(character=>character.factionId===faction.id);
     faction.members=members.map(character=>character.id);
-    if(members.length){
+    if(members.length&&faction.id!=='covenant-of-dayat'){
       const names=members.slice(0,4).map(character=>character.name).join('、');
       const more=members.length>4?`等 ${members.length} 人`:`共 ${members.length} 人`;
       faction.summary=`${faction.summary} 现收录：${names}${more.startsWith('等')?more:`，${more}`}。`;
@@ -226,6 +248,14 @@
       if(item.growth?.length) merged.growth=item.growth;
       if(item.sources?.length) merged.sources=item.sources;
       if(item.members) merged.members=item.members;
+      if(item.sourceType==='official-member-page'){
+        merged.summary=item.summary;
+        merged.sourceType=item.sourceType;
+        merged.sourceLabel=item.sourceLabel;
+        merged.sourceUrl=item.sourceUrl;
+        delete merged.wikiId;
+        delete merged.wikiUrl;
+      }
       if(item.theme&&!local.theme) merged.theme=item.theme;
       // 美术路径以 catalog 为准，避免旧空 logo / 坏相对路径覆盖
       if(item.logo!==undefined) merged.logo=item.logo||local.logo||'';

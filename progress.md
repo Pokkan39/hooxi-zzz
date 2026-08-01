@@ -2897,6 +2897,37 @@
 - `progress.md`：追加最终发布门禁记录。
 - 回滚：先定点恢复首页实现、测试、文档、预览与 Hallmark 差异，再执行 `python scripts/check-formal-site-gate.py --write && python scripts/check-formal-site-gate.py` 重建回滚后的正式基线；禁止整仓 restore/checkout/reset。
 
+## 2026-07-28 - Task: 完成批次 2 首页克制四图轮播与吸顶泄露清理
+### What was done
+- 首页收敛为 `marquee / finder / agents / reels / sources` 五段顺序，保留稳定查档入口、代理人、档案卷轴和来源边界。
+- Hero 固定为四图轮播，保持图片路径、顺序、准确 alt 与来源信息；控制区仅保留唯一 `01 / 04` 页码和 pause 按钮。
+- 轮播使用单一 timer 与 `user / hover / focus / hidden / reduced-motion` pause Set；按钮、静态页码标签和非 live 状态说明同步表达当前暂停原因及恢复条件。
+- 修复移动端顶栏品牌、菜单和编辑入口三列排序及自然高度，避免品牌被挤入 44px 图标列。
+- 删除 arrows、dots、lane jump、secondary rail、cassette float、editor host、fixed cursor progress、tilt 与 glitch 等旧首页交互或悬浮泄露；音乐播放器改为页面文档流中的 Dock。
+- 保留非官方粉丝档案边界、官方来源链接与既有内容结构，不把未核验素材或推测信息写成官方事实。
+
+### Testing
+- `test:stories` 共 129 项：首页合同全部通过；整体剩余 9 项为 2 项 stories 几何、6 项档案页和 1 项 PLAY，均非本轮首页合同失败。
+- `npm test` 的 index 静态检查 0 失败；整体剩余 14 项均非首页问题。
+- runtime index 检查通过；整体剩余 9 项均为非首页问题。
+- 四图加载、slow image、pause matrix、键盘、reduced-motion、1440×900、390×844 与 320×720 均完成验收，无溢出或遮挡。
+- Chromium AX 树确认 `#heroCarouselIndex` 为 `SPAN`、role 为 generic、live 为 null，不再产生隐式 status/live polite。
+- `node --check app.js`、`node --check home-neon.js`、CSS 花括号检查与 `git diff --check` 均通过。
+- 最终四张截图保存在 `artifacts/batch2-home-final-20260728-123519/`。
+- formal baseline 未刷新。
+
+### Notes
+- `index.html`：落地五段首页结构、克制轮播控制、非 live 状态说明，并将轮播页码改为普通 `span`。
+- `app.js`：实现固定四图、单 timer、pause Set、状态同步及旧首页交互清理。
+- `styles.css`：清理批次 2 不再使用的首页旧布局与交互样式，保留共享基础样式。
+- `home-neon.css`：收敛为必要 reveal 与轻量反馈，移除旧 tilt、glitch 和固定光标进度表现。
+- `home-neon.js`：精简为必要 reveal 行为，不再驱动已删除的首页装饰交互。
+- `theme-zzz.css`：实现五段首页、四图 Hero、文档流音乐 Dock、移动顶栏三列和自然高度规则。
+- `scripts/regression.mjs`：更新批次 2 首页合同、轮播状态与响应式验收断言。
+- `artifacts/batch2-home-final-20260728-123519/`：保存本批最终四张浏览器验收截图。
+- `progress.md`：仅在历史末尾追加本批闭环记录。
+- 回滚点为批次 1 已完成、批次 2 尚未实施的工作树状态；由于当前工作树包含 A0、批次 0 与批次 1 的未提交改动，只能按上述本批文件级 diff 逐项反向应用，严禁使用 `reset`、`restore` 或 `stash`。
+
 ## 2026-07-24 - Task: Wiki 全量迁移管线与活动 Batch A
 
 ### What was done
@@ -5509,3 +5540,1385 @@ min-height min-content 得舞台高 612、可见 0/9，排除。
 - `artifacts/agent-select-roster.png` — `test:stories` 按现有脚本固定路径刷新截图；Git 状态未出现内容差异。
 
 回滚方式：在 `scripts/capture-r1-baseline.mjs` 定点删除 `isExpectedOfflineConsoleError`、`expectedOfflineConsoleErrors` 的采集/输出及对应 console 分流，恢复为所有 error 进入 `consoleErrors`；删除 `docs/README.md` 的 editor 离线门禁说明；删除 `theme-zzz.css` 末尾 `@media(max-width:880px)` 信息层规则；再删除本节日志。不要整文件 `git restore`，以免覆盖同文件中的前序未提交改动。正式基线本轮未改，无需回滚；本轮未提交、未推送。
+
+## 2026-07-27 - Task: 接入授权 Default 影画并新增角色纯影画视图
+### What was done
+- `stories` 角色卡现可进入 `character.html?id=<id>#art`；`#art` 作为角色纯影画视图，只显示黑白/原色光栅影画、返回入口与页底声明，跳过角色资料、分类、右侧名录及其图片加载。
+- 接入经项目方确认授权的 Toastertjie Workshop 3491187965 Default 图包，共 53 张，统一转换为 2880x1080 透明 WebP；`norma`、`pyrois`、`velina` 继续使用现有 gallery 回退，不伪造 Default 资产。
+- 页底仅在 art 模式显示中性的“Default 图包作者与来源”署名；普通角色页与既有深链行为保持不变。
+- 来源政策、设计合同、路由/资产契约、边界门禁与正式站基线已同步，确保授权来源、视图边界和发布验证口径一致。
+- 此前 `progress.md` 中对该图包内容的负面定性已被用户纠正。本轮不改写历史记录，仅按用户确认的授权事实追加本更正记录。
+
+### Testing
+- 红灯阶段：初次 `npm run test:stories` 新增 9 项目标失败；`node scripts/validate-archive.mjs` 因 `#art` 契约和资产缺失失败。第二轮唯一光栅红灯 7 项均精确抓到 `/assets/ui/pc-page-bg.png`。
+- `npm run build:stories` PASS，`stories.js` 构建前后对象哈希一致。
+- `node scripts/validate-archive.mjs` PASS 11 组；53 个 WebP 的数量、固定 slug、2880x1080 尺寸与可解析性全部通过；全部含 Alpha，总计 9,270,326 字节（8.84 MiB）。
+- `npm run test:boundary` PASS；`npm test` PASS。
+- `npm run test:boundary:runtime` PASS 9 页；`npm run test:boundary:all` PASS 73 页（56 角色 + 17 阵营）。
+- 七个代表性 `#art` 页面（`anby`、`aria`、`sunna`、`nangong-yu`、`norma`、`pyrois`、`velina`）均为 HTTP 200，零 404、零 JS error、零外部请求；4 个 pack 角色的唯一光栅请求恰为自身 Default，3 个 fallback 角色只请求自身 gallery；署名链接精确匹配预期。
+- `npm run test:formal` PASS，58 个正式站文件与新基线一致。
+- `git diff --check` PASS。
+- 未完全通过但属于施工前既有问题或环境因素：`npm run test:stories` 共 115 项，113 项通过，仍有 `desktop-primary-controls...` 与 `mobile-compact...` 两条施工前即存在的几何失败；`node scripts/check-hero-contrast.mjs --all` 为 352/371，保留 19 条旧对比度失败；`npm run test:ui` 的截图、深链与交互均完成，但 editor 对 `localhost:3001` session 的 6 条 CORS/ERR_FAILED 使总命令失败。以上均未写成通过，也未扩大范围修复。
+
+### Notes
+改动文件清单：
+- `.gitignore` — 调整授权 Default 影画资产的跟踪边界，使正式图包可纳入项目交付。
+- `assets/mindscape/default/*.webp`（53）— 新增 53 张经确认授权并转换为 2880x1080 透明 WebP 的 Default 影画。
+- `agent-xray.js` — 补充角色 Default 影画数据及三名角色的 gallery 回退关系。
+- `archive-tools.js` — 接入 art 模式所需的影画数据读取与回退行为。
+- `artifacts/archive-contract.json` — 同步授权来源、固定 slug、资产数量与 art 路由契约快照。
+- `artifacts/formal-site-gate-baseline.json` — 更新 58 个正式站文件的新基线。
+- `character.html` — 增加 `#art` 纯影画视图所需结构与仅 art 模式展示的页底署名。
+- `character.js` — 实现 `#art` 路由分支、Default/gallery 选择及跳过普通角色页加载链路。
+- `design.css` — 增加纯影画视图的黑白/原色展示、返回入口与声明样式。
+- `design.md` — 同步角色纯影画视图的设计合同与不变边界。
+- `docs/media-source-policy.md` — 记录项目方确认授权事实及中性作者与来源署名政策。
+- `scripts/check-boundary-all.mjs` — 将 art 路由与资产边界纳入全量页面门禁。
+- `scripts/check-boundary-runtime.mjs` — 增加代表性 art 页面运行时请求、错误与外部访问检查。
+- `scripts/regression.mjs` — 新增 stories 入口、纯影画视图、光栅请求与回退行为回归项。
+- `scripts/validate-archive.mjs` — 增加 53 个 Default WebP 的数量、slug、尺寸、Alpha 与解析校验。
+- `src/stories.jsx` — 将角色卡目标更新为 `character.html?id=<id>#art`。
+- `stories.html` — 同步角色卡进入纯影画视图的页面契约与构建产物引用。
+- `stories.js` — 由构建源生成，角色卡现进入对应角色的 `#art` 视图。
+- `theme-zzz.css` — 补充 art 模式在站点主题下的显示边界。
+- `zzz-ui.js` — 在 art 模式跳过资料、分类、右侧名录及其图片加载。
+- `progress.md` — 仅在文件末尾追加本轮业务结果、验证证据、更正说明与回滚方式，未改写历史。
+
+现有未跟踪原型未触碰。本轮不提交、不推送。
+
+当前未提交回滚点为 HEAD `4ef027e8a205bcdc2b317643024cea469f805296`。回滚 tracked 文件可执行：
+```bash
+git restore -- .gitignore agent-xray.js archive-tools.js artifacts/archive-contract.json artifacts/formal-site-gate-baseline.json character.html character.js design.css design.md docs/media-source-policy.md scripts/check-boundary-all.mjs scripts/check-boundary-runtime.mjs scripts/regression.mjs scripts/validate-archive.mjs src/stories.jsx stories.html stories.js theme-zzz.css zzz-ui.js
+```
+删除本轮新建 Default 资产可执行：
+```bash
+rm -rf -- assets/mindscape
+```
+`progress.md` 默认应定点删除本轮追加段落以保留历史；若明确接受整体恢复到 HEAD、丢弃 HEAD 后全部未提交日志，也可单独执行 `git restore -- progress.md`。若日后已提交，优先执行 `git revert <commit>`。不要使用 `git reset --hard` 或 `git checkout`。
+
+## 2026-07-27 - Task: 补强影画 Alpha 契约并更正边界记录
+### What was done
+- `scripts/validate-archive.mjs` 新增真实 WebP Alpha 检测（VP8X flag/ALPH/VP8L alpha-used），53 张 Default 除尺寸外必须含透明通道。
+- 明确更正上一轮记录措辞：`scripts/check-boundary-all.mjs` 本轮只新增 `/mindscape/`→“影画”分类，仍检查 56 个普通角色页+17 阵营页，并未遍历所有 `#art`；`#art` 覆盖来自 `check-boundary-runtime` 的代表页以及 `scripts/regression.mjs` 对 anby/aria/sunna/nangong-yu/norma/pyrois/velina 的七页定点回归。不要删除上一轮，靠本条更正。
+### Testing
+- `node scripts/validate-archive.mjs` PASS 11组。
+- `node --check scripts/validate-archive.mjs` PASS。
+- 系统临时生成 8x8 纯 RGB、仅 VP8 chunk 的 WebP，当前 helper 判 alpha=false；仓库资产未改。
+- `git diff --check -- scripts/validate-archive.mjs` PASS。
+### Notes
+改动文件清单：
+- scripts/validate-archive.mjs — 增加 Alpha 解析与53张资产透明通道断言。
+- progress.md — 追加本轮验证证据并更正上一轮边界覆盖描述。
+回滚点：当前未提交 HEAD `4ef027e8a205bcdc2b317643024cea469f805296`；本轮文件可用 `git restore -- scripts/validate-archive.mjs progress.md` 回到 HEAD（会移除这两个文件的全部未提交修改）；若日后单独提交则用 `git revert <commit>`。不得写 reset --hard/checkout。
+
+## 2026-07-27 - Task: 修复 Windows 正式基线换行生成
+### What was done
+`scripts/check-formal-site-gate.py --write` 在 Windows 文本模式把 LF 转成 CRLF，导致最终 `git diff --check` 出现 60 个行尾空白；现改为显式 `newline='\n'`，并重生成记录 58 个文件的 formal baseline，不改 JSON 语义。
+
+### Testing
+- `python scripts/check-formal-site-gate.py --write` PASS（58 files）
+- `npm run test:formal` PASS，GATE_OK ALL_FORMAL_UNCHANGED
+- `python -m py_compile scripts/check-formal-site-gate.py` PASS
+- 定向 `git diff --check` PASS
+- bytes 检查 baseline CRLF=0、末尾单 LF
+
+### Notes
+文件清单：
+- `scripts/check-formal-site-gate.py` — baseline 写入固定 LF。
+- `artifacts/formal-site-gate-baseline.json` — 用修复后的生成器重建。
+- `progress.md` — 追加本轮记录。
+
+回滚点 HEAD `4ef027e8a205bcdc2b317643024cea469f805296`；当前未提交可 `git restore -- scripts/check-formal-site-gate.py artifacts/formal-site-gate-baseline.json progress.md`（会清除这些文件全部未提交修改）；日后提交用 `git revert <commit>`。
+
+## 2026-07-27 - Task: 保留正式基线原有 CRLF 并消除差异噪声
+### What was done
+- 明确更正上一轮“统一写 LF”的处理：HEAD 中 formal baseline 原本是 355 行 CRLF，统一改 LF 会造成 355+355 整文件 diff，不符合精准改动；本轮不改写上一轮记录，仅以本条说明该方案已被更稳妥策略取代。
+- 新增路径级 `.gitattributes`：只对 `artifacts/formal-site-gate-baseline.json` 设置 `whitespace=cr-at-eol`。
+- generator 跨平台显式写 CRLF，保持原有格式；baseline diff 压回 60+60 真实哈希变化。
+### Testing
+- `python scripts/check-formal-site-gate.py --write` PASS（58 files）
+- `npm run test:formal` PASS，GATE_OK ALL_FORMAL_UNCHANGED
+- py_compile PASS
+- bytes：12036 bytes、355 CRLF、0 裸 LF/CR、末尾单 CRLF
+- `git diff --numstat -- baseline` 为 60/60；`git diff --check` 全仓 PASS
+- `git check-attr whitespace -- baseline` 为 cr-at-eol
+### Notes
+文件清单：
+- .gitattributes — 仅为 formal baseline 声明 CRLF whitespace 规则。
+- scripts/check-formal-site-gate.py — 显式 CRLF 生成，避免平台差异。
+- artifacts/formal-site-gate-baseline.json — 重生成，仅保留真实哈希差异。
+- progress.md — 追加本轮更正与证据。
+回滚点 HEAD 4ef027e8a205bcdc2b317643024cea469f805296；当前未提交可 `git restore -- scripts/check-formal-site-gate.py artifacts/formal-site-gate-baseline.json progress.md` 并删除本轮新建 `.gitattributes`；日后提交用 `git revert <commit>`。不要写 reset/checkout。
+
+## 2026-07-27 - Task: 更新沉浸重设计合同并补齐九页失败断言与正式门禁
+### What was done
+- 设计合同统一为九页正式公开路由，明确默认角色影画首屏与 `#art` 兼容、56 人预计算主题、首页四图与 pause 暂停原因集合，以及结构型文字预算和原生 `details` 渐进披露。
+- 补齐回归测试、截图基线、归档、非官方边界、运行时边界与 formal 门禁的目标失败断言和契约；未修改产品实现，未刷新 `artifacts/formal-site-gate-baseline.json`。
+### Testing
+- A0 施工前 `npm test` 与 `npm run test:formal` 均 exit 0。
+- 施工后 `npm test` 预期 4 FAIL：`aria`、`nangong-yu`、`sunna` 三人缺预计算主题，以及角色主题覆盖仅 53/56。
+- `scripts/regression.mjs` 共 126 项，预期 27 FAIL：25 项批次 0 目标红灯，以及 2 项既有 stories 几何失败；后两项留待批次 4。
+- `npm run test:boundary` 预期 16 个目标红灯。
+- `npm run test:formal` 预期 11 个合同红灯，加 6 个冻结 baseline `UNTRACKED`。
+- Node 语法检查、Python AST 解析、JSON 解析与定向 `git diff --check` 均通过。
+### Notes
+改动文件清单：
+- `design.md` — 统一九页路由族、角色影画/主题、首页四图暂停、文字预算与渐进披露设计合同。
+- `scripts/regression.mjs` — 增加九页结构、角色主题、首页登记片源/暂停矩阵、来源可见性与深链披露目标断言。
+- `scripts/capture-r1-baseline.mjs` — 更新九页截图范围、角色代表样本、首页五段与四图最小控件截图契约。
+- `scripts/validate-archive.mjs` — 固化九页路由、53 张 Default 与 3 个 gallery 回退，以及 56 人整数 RGB 主题覆盖契约。
+- `scripts/check-formal-site-gate.py` — 增加公开档案/PLAY/editor 分族、稳定边界节点与属性顺序无关的 `noindex` 门禁。
+- `scripts/check-boundary-runtime.mjs` — 扩展九页公开路由、角色默认/`#art`/gallery 回退与 editor 内部属性运行时目标。
+- `scripts/check-boundary-all.mjs` — 将全量边界范围扩为 9 个公开路由、56 个角色和 17 个阵营，并核对角色影画与档案共存。
+- `scripts/check-unofficial-boundary.mjs` — 将 npm test 实际调用的静态边界门禁扩至 PLAY、稳定来源节点和 editor `noindex`。
+- `artifacts/archive-contract.json` — 记录八个公开档案页、一个 PLAY、editor 内部工具与角色影画/主题目标合同。
+- `artifacts/formal-site-gate-baseline.json` 未改，继续保持冻结。
+回滚点：批次开始前 A0 工作区（npm test 与 formal 均绿），只反向还原这 9 个文件的批次 0 变更，禁止 reset/restore 整仓。
+
+## 2026-07-28 - Task: 完成批次 1 角色默认影画首屏与 56 人动态主题
+### What was done
+- 角色默认详情与 `#art` 兼容入口合流为同一套完整影画首屏：桌面保留完整视口影画，移动端按素材自然高度衔接身份信息与档案，不再进入隐藏详情的独立 art 模式。
+- 56 名角色均按 `i → l → c` 优先级解析独立作用域主题色；53 名角色使用 Default 影画，`norma`、`pyrois`、`velina` 固定使用本地官方 gallery fallback，无效角色不猜测素材路径。
+- 影像、剧情、资料、来源四个档案模块初次加载即同时存在并保持稳定锚点；`#story/#growth/#build/#profile` 等 legacy hash 映射到对应模块或展开项，hash 原样保留。
+- 停用角色页旧三栏工作台、名录、水印、HUD 与共享固定侧栏污染；档案外层恢复透明，内部卡片和原生 `details` 承担半透明信息表面，媒体收录清单默认折叠。
+- Gallery 补齐稳定 tab/panel ID、`aria-controls`、`aria-labelledby`、roving tabindex、`aria-hidden` 与 `inert` 同步，前后按钮和页码均保持至少 44px 命中区域。
+- Default 来源区保留 Toastertjie、Steam Workshop 3491187965 与项目方确认许可；gallery fallback 不显示 Default 作者署名，并保留本地官方 gallery、米哈游版权、粉丝非官方及无隶属边界。
+- 角色静态、运行时、全量边界、contrast、stories 入口、归档合同与 bundle 门禁同步到批次 1 最终结构；来源声明正文统一使用角色页高对比正文变量，不改变角色主题色。
+
+### Testing
+- 以下为批次 1 最终证据汇总，本轮日志闭环未重新运行测试。
+- `npm run test:stories`：共 127 项；角色批次相关断言 0 fail。整体仍剩 12 项，为 2 项既有 stories 几何问题及后续页面批次目标，不记为批次 1 通过项。
+- `npm run test:contrast -- --all`：56 个角色 × 7 个元素全部通过，0 fail；来源声明最低对比度为 13.00:1（`starlight-billy`）。
+- 角色静态合同检查：0 fail；四模块稳定 ID、legacy hash、Default/fallback 来源与非官方边界均满足最终结构。
+- 角色运行时代表样本通过：Default、无旧 xray 的 Default、新增角色、gallery fallback、默认入口与 `#art` 合流均无角色相关失败。
+- 全量边界检查覆盖全部 56 名角色并通过，53 个 Default 与 3 个 gallery fallback 的素材解析、授权/版权声明及完整档案共存均符合预期。
+- 相关 Node 语法检查、CSS 括号检查、stories bundle parity 与定向 `git diff --check` 均通过；仅有既有 LF/CRLF 工作区提示。
+- 最终截图证据目录：`artifacts/batch1-character-final-20260728-090237/`。
+- 未刷新、覆盖或写入 formal baseline；正式基线继续保持冻结。
+
+### Notes
+改动文件清单（批次 1 产品实现及其同步门禁）：
+- `character.html` — 改为默认影画首屏、四模块锚点导航、稳定来源/授权节点与非官方页脚边界，并停止加载旧角色工作台脚本。
+- `character.js` — 一次渲染四个档案模块，兼容 legacy hash，保留资料与 free components，并同步 gallery/growth 的 ARIA 与键盘语义。
+- `agent-xray.js` — 补齐 `aria`、`sunna`、`nangong-yu` 的离线整数 RGB，使 56 人均可按 `i → l → c` 获得独立主题色。
+- `archive-tools.js` — 提供 53 Default + 3 固定 gallery fallback 的唯一素材 resolver，并仅向角色页 body/首屏写入主题和素材变量。
+- `archive-tools.css` — 为角色页来源、非官方边界与原生 disclosure 稳定标记接入作用域主题色和焦点样式。
+- `tokens.css` — 增加仅限角色页的安全主题默认值，不污染其他页面。
+- `design.css` — 实现完整影画首屏、透明档案栈、移动自然高度、gallery 44px/ARIA 样式及高对比来源声明正文。
+- `theme-zzz.css` — 让角色页消费作用域调色板并清除旧浅色模块、固定琥珀色和移动 padding 污染。
+- `src/stories.jsx` — 将 56 张角色卡及主档案 CTA 指向无 hash 的默认角色详情，同时保留明确的模块深链。
+- `stories.html` — 更新 stories 构建产物版本引用，避免旧 `#art` 入口缓存。
+- `stories.js` — 由 `npm run build:stories` 生成，与 `src/stories.jsx` 的无 hash 默认角色入口保持 bundle parity。
+- `scripts/regression.mjs` — 同步角色默认/`#art`、三类 resolver 样本、56 人主题、四模块与 stories 无 `#art` 入口的运行时回归断言。
+- `scripts/check-boundary-runtime.mjs` — 将角色默认、`#art`、gallery fallback、可见来源授权与完整档案共存纳入运行时边界检查。
+- `scripts/check-boundary-all.mjs` — 扩展全量边界到 9 个公开路由、56 名角色和 17 个阵营，并核对角色素材解析与来源声明。
+- `scripts/check-unofficial-boundary.mjs` — 将静态边界检查收敛到稳定来源节点，覆盖 Default 许可、官方 gallery、版权和非官方表述。
+- `scripts/check-hero-contrast.mjs` — 改为从 56 人目录检查当前角色页 7 类代表文字，并把缺失、隐藏或截图外元素视为失败。
+- `scripts/validate-archive.mjs` — 固化 53 个 Default slug/尺寸/Alpha、3 个 gallery fallback、resolver 与 56 人独立主题合同。
+- `artifacts/archive-contract.json` — 记录九页路由分族、角色影画数量、fallback 路径与 `i → l → c` 主题契约快照。
+- `progress.md` — 仅在末尾追加本批次业务结果、最终证据、文件清单与安全回滚点，未改写历史。
+
+回滚点：回到“批次 0 完成、批次 1 未实施”的工作树状态。由于 A0/批次 0 与本批次同为未提交改动，必须依据上述批次 1 文件级 diff 逐项反向应用；不得使用 `reset`、`restore` 或 `stash`，以免丢失既有改动。正式基线本批次未刷新，无需回滚 baseline。
+
+## 2026-07-28 - Task: 完成批次 3 主线、活动与幕后轻量档案结构
+### What was done
+- 主线、往期活动与幕后对谈三页收敛为静态轻量壳层：in-flow 一级导航、可聚焦跳过链接、唯一 H1、稳定 `#pageTimeline`、可见来源区与非官方边界。
+- 移除三页 HUD、轮播、侧栏、播放器、公开编辑入口及多重筛选；主线和活动各保留一套 FilterBar，幕后直接展示两组记录。
+- 记录首层保持来源动作可见，其余信息采用原生 `details`；活动保留 15 个既有版本组且默认仅最新组展开。
+- 统一 hash 展开与程序化焦点；活动筛选会展开命中组、隐藏无命中组并在清空后恢复默认展开状态。
+- 所有来源、视频与 wiki 动作走协议白名单；危险 preview URL 不输出可点击链接。
+- 按精确 `mediaIds`/`sourceIds` 与 canonical URL 校验，从媒体目录向两条主线记录的展示模型派生缺失权利元数据，不修改原始数据对象。
+- 保留稳定来源与非官方边界，并为三页补充包含“粉丝非官方”的 `twitter:title`。
+
+### Testing
+- 目标三页最终验收为 0 失败；`npm run test:stories` 共 138 项仍剩 6 项，均为 2 项 Stories 几何问题及 stories/faction/cultivate/PLAY 范围，不属于批次 3。
+- `npm test` / boundary 仍剩 11 项、runtime 仍剩 9 项、all 仍剩 9 项，均为非批次 3 范围；`validate-archive` 为 13/13。
+- 定向验证确认主线/活动/幕后记录数分别为 57/246/7，活动保留 15 组，`?lane=stories` 为 54 条；URL/hash 保持、preview URL 安全、无外部媒体请求。
+- 桌面与 390px 视口均无溢出或泄露；最终截图共六张，目录为 `artifacts/batch3-archives-final-20260728-141636/`。
+- Node 语法、链接与 `git diff --check` 已通过；formal baseline 未刷新。
+
+### Notes
+- `mainline.html` — 提供主线轻量静态壳、稳定来源区和非官方边界。
+- `events.html` — 提供活动轻量静态壳、稳定来源区和非官方边界。
+- `behind-scenes.html` — 提供幕后轻量静态壳、稳定来源区和非官方边界。
+- `page.js` — 实现三页轻量渲染、筛选/深链焦点、来源 URL 白名单及媒体目录权利元数据派生。
+- `theme-zzz.css` — 相对 HEAD 含已验收的批次 2 首页差异；本批仅新增三页精确作用域样式，不属越界。
+- `scripts/regression.mjs` — 记录批次 3 的定向运行时验收覆盖。
+- `scripts/validate-archive.mjs` — 记录批次 3 的档案结构与数据完整性校验覆盖。
+- `artifacts/batch3-archives-final-20260728-141636/` — 保存主线、活动与幕后桌面和 390px 视口共六张最终截图。
+- `progress.md` — 仅在末尾追加本批次闭环、验证证据和回滚点，未改写历史。
+
+回滚点：回到“批次 2 完成、批次 3 未实施”的工作树状态。A0 与此前批次均为未提交改动，必须按本批文件级 diff 逐项反向应用；严禁 `reset`、`restore` 或 `stash`，以免丢失既有改动。
+
+## 2026-07-28 - Task: 完成批次 4 Stories、Faction、Cultivate 与正式 PLAY 精简
+### What was done
+- Stories 从旧全视口工作台收敛为自然文档流的 56 人、17 阵营文字目录，保留选中摘要、原生 `details`、`agent`/`q`/`faction` 查询、未知 query/hash、键盘 roving 与 320/390px 移动导航。
+- Faction 在无 `id` 时提供 17 阵营目录，在有 `id` 时展示阵营详情、成员及关联入口；来源缺失明确标为待核验，所有动态 URL 经安全白名单后才输出动作。
+- Cultivate 整理为 23 条 FAQ 指南与 44 项素材目录，支持 `q`、hash、原生 `details`、稳定来源区和移动导航；更正历史误计：45 个候选实际为 guide 698 加 44 个 materials，23 条 FAQ 属于指南内容，未为凑数补造第 45 项素材。
+- 正式 PLAY 补齐分享非官方边界、稳定 hash 直达、键盘选择、CRT 状态、单一 flyer、重资产懒加载与 Cultivate 导航，并保持失败时可直接返回正式档案。
+- 公开侧栏移除 Editor 入口，Editor 保持内部工具身份并设置 `noindex`；同步更新批次 4 自动化合同、来源边界与全量实例检查。
+
+### Testing
+- `npm run test:stories`：85/85 通过；`node scripts/validate-archive.mjs`：14/14 通过；`npm test`：PASS；静态 boundary：PASS。
+- runtime 边界 12 个目标实例全部通过；all 边界 83 个页面实例全部通过；Stories 源码与 bundle parity、Node 语法及 `git diff --check` 均通过。
+- 定向验收覆盖零外部请求、320/390px 移动视口、键盘操作、危险 URL 拦截、query/hash 保持与精确来源声明。
+- 最终截图共 6 张，保存在 `artifacts/batch4-pages-final-20260728-final/`。
+- formal baseline 未刷新。
+
+### Notes
+- `stories.html` — 提供自然流角色目录壳、移动文字导航、稳定来源区及真实的非官方版权边界。
+- `src/stories.jsx` — 实现 56 人/17 阵营筛选、选中摘要、渐进披露、收藏兼容、键盘 roving 与 query/hash 保持。
+- `stories.js` — 由既有 Stories build 生成，并与当前 JSX 源码保持 bundle parity。
+- `faction.html` — 提供无 `id` 阵营目录与有 `id` 详情共用的轻量静态壳、来源区和非官方边界。
+- `faction.js` — 渲染 17 阵营目录、阵营详情、成员关联、待核验来源状态及安全白名单链接。
+- `cultivate.html` — 提供 FAQ 与素材目录的自然流页面结构、移动导航、来源区和非官方边界。
+- `cultivate.js` — 渲染 23 条 FAQ 与 44 项素材，支持查询、深链展开、渐进披露和来源动作。
+- `tape-wall-sample.html` — 将 PLAY 收敛为正式公开入口，补齐分享边界、档案回退、Cultivate 导航与稳定来源节点。
+- `tape-wall-sample.js` — 实现 hash 直达、键盘/CRT 状态、单 flyer 流程及重资产按需加载。
+- `tape-wall-sample.css` — 提供 PLAY 正式态、移动端、焦点和 reduced-motion 的精确布局样式。
+- `site-sidebar.js` — 从公开侧栏导航中移除 Editor 入口。
+- `editor.html` — 为内部编辑工具补充 `noindex`，避免进入公开索引面。
+- `theme-zzz.css` — 新增 Stories、Faction 与 Cultivate 的精确页面作用域样式，不改写其它页面 token。
+- `design.md` — 同步批次 4 页面宏结构、渐进披露、来源边界与 PLAY 正式化合同。
+- `scripts/regression.mjs` — 同步 Stories、Faction、Cultivate 与 PLAY 的结构、查询、键盘、移动和资源加载回归合同。
+- `scripts/check-boundary-runtime.mjs` — 扩展批次 4 目标页面的运行时来源、非官方边界与实际素材核验。
+- `scripts/check-boundary-all.mjs` — 将全量边界检查同步为 83 个正式页面实例及批次 4 页面合同。
+- `scripts/check-unofficial-boundary.mjs` — 更新静态非官方、无隶属、分享标题与真实素材声明检查。
+- `scripts/validate-archive.mjs` — 固化 56 人、17 阵营、23 FAQ、44 素材及 PLAY/来源结构数据合同。
+- `artifacts/archive-contract.json` — 更新批次 4 路由、数量、来源和交互契约快照。
+- `artifacts/batch4-pages-final-20260728-final/` — 保存 Stories、Faction、Cultivate 与 PLAY 的 6 张最终验收截图。
+- `progress.md` — 仅在末尾追加批次 4 闭环结果、验证证据、文件清单与回滚点，未改写历史。
+
+回滚点：回到“批次 3 完成、批次 4 未实施”的工作树状态。此前批次与本批次均为未提交改动，必须按上述批次 4 文件级 diff 逐项反向应用；严禁使用 `reset`、`restore` 或 `stash`，以免丢失既有工作树内容。正式 baseline 本批次未刷新，无需回滚 baseline。
+
+## 2026-07-28 - Task: 完成角色目录与详情三层影画重做并刷新正式基线
+### What was done
+- 完成角色目录与详情的三层影画收口：56 名角色均具备独立主题、影画与前景规则，53 名使用固定 Default 影画，`norma`、`pyrois`、`velina` 使用本地 gallery 回退；Stories 与 Character 均严格保持一张影画加一张前景，`aria`、`sunna` 前景使用本地 card，其余使用 portrait，全链路不热链。
+- Stories 落地左侧真实影画/前景人物主舞台与右侧 56 人动态名录；桌面两栏不重叠、名录独立滚动，`<=880px` 自然纵向且无内部滚动陷阱；搜索、阵营筛选、roving、Home/End、收藏与 URL 状态均可用。
+- Character 默认 `?id=` 与 `#art` 合流为完整影画首屏和四模块档案；`#profile`、`#story`、`#growth`、`#build`、`#media` 等深链会展开目标并把焦点落到对应内容。Default 精确署名 Toastertjie / Workshop 3491187965，gallery 回退不显示 Default 作者，并保留版权、粉丝非官方与无隶属边界。
+- 重写角色截图门禁，覆盖 12 路由、65 张 PNG、1596 项检查、11 条深链与 13 项交互；同步刷新 63 files 的 formal 正式基线。
+
+### Testing
+- `npm run build:stories`：exit 0。
+- `npm run test:content`：exit 0（14 组、2 BV、8 引用、9 页边界）。
+- `npm run test:stories`：94/94，0 fail，270.25s。
+- `npm run test:contrast -- --all`：56 人，672 真实对比 + 728 语义 = 1400，0 fail；最低 4.62:1，为 `pyrois` Character 档案锚点；149.43s。
+- `HOOXI_UI_OUTPUT_DIR=artifacts/r1-character-mindscape-final-20260728 npm run test:ui`：exit 0；12 路由、65/65 PNG、1596/1596、11 深链、13 交互、0 blocking；正式目录 `artifacts/r1-character-mindscape-final-20260728/`。
+- `python scripts/check-formal-site-gate.py --write`：写入 63 files；随后 `npm run test:formal` exit 0，输出 `GATE_OK ALL_FORMAL_UNCHANGED`。
+- `git diff --check`：exit 0，仅 Windows 行尾提示。
+
+### Notes
+改动文件清单：
+- `character.html` — 收口角色默认入口、完整影画首屏、四模块档案、来源署名与深链目标结构。
+- `character.js` — 合流默认 `?id=` / `#art`，实现模块展开、目标焦点、素材解析与 gallery/Default 来源边界。
+- `design.css` — 落地 Character 三层影画、前景构图、档案栈及桌面/移动响应式样式。
+- `src/stories.jsx` — 实现 Stories 左舞台右名录、56 人素材/主题/前景规则及搜索、筛选、收藏、键盘与 URL 交互。
+- `stories.html` — 更新 Stories 正式壳、资源版本与主链路结构。
+- `stories.js` — 由当前 `src/stories.jsx` 构建，保持正式 bundle parity。
+- `theme-zzz.css` — 收口 Stories/Character 的页面作用域主题、两栏与移动自然流规则。
+- `scripts/regression.mjs` — 将 Stories 与 Character 最新结构、素材、布局和交互纳入 94 项回归。
+- `scripts/check-hero-contrast.mjs` — 扩展为 56 人、1400 样本的真实对比与语义检查。
+- `scripts/capture-r1-baseline.mjs` — 重写正式截图、深链与交互门禁，覆盖 12 路由和 65 张 PNG。
+- `artifacts/formal-site-gate-baseline.json` — 刷新为本轮 63 files 正式基线。
+- `docs/README.md` — 记录当前角色影画工作台、素材合同、深链行为、旧说明废止与最新门禁。
+- `progress.md` — 仅在末尾追加本轮产品结果、测试证据、文件清单与安全回滚点，未改写历史。
+
+正式截图目录 `artifacts/r1-character-mindscape-final-20260728/` 为本地生成的验收证据；即使被 Git 忽略，也仍是本轮正式截图与报告的本地证据目录。
+
+回滚点：回到 progress.md 的“批次4完成”条目之后、本轮角色目录/详情三层影画收口之前的工作树。此前批次均未提交，不得使用 `reset`、`restore` 或 `stash`。可执行清理仅限本轮截图：`rm -rf -- artifacts/r1-character-mindscape-final-20260728`。产品与门禁改动必须按上述本轮文件级 hunk 逐项反向应用，之后重新运行 `python scripts/check-formal-site-gate.py --write`；不得使用会抹掉其它未提交工作的整文件 restore 命令。
+
+## 2026-07-28 - Task: 更正最终对比度门禁命令记录
+### What was done
+- 更正上一条日志的命令写法：最终实际执行的是 `npm run test:contrast`，脚本默认即遍历全部 56 名角色；未传入 `--all`，检查范围和结果不变。
+
+### Testing
+- `npm run test:contrast`：exit 0；56 人、672 个真实可见对比度样本、728 个语义色样本，0 fail；最低 4.62:1。
+- `git diff --check -- progress.md`：exit 0，仅 Windows 行尾提示。
+
+### Notes
+- `progress.md` — 仅在末尾追加本次命令记录更正，未改写上一条历史。
+- 回滚：仅删除本更正条目；不得整文件恢复 `progress.md`，以免丢失此前未提交日志。
+
+## 2026-07-28 - Task: 为角色前景立绘增加分层描边
+### What was done
+- 仅对 `data-portrait-source="portrait"` 的透明前景全身立绘增加约 2px 四向深色 alpha 描边，并保留原落影。
+- 背景 `.d-keyart-image` 保持不变；card 前景（aria/sunna）不匹配该规则，避免产生矩形边框。
+
+### Testing
+- Norma 1280×900 视觉分层清晰、无霓虹；Anby 应用描边；Aria card 不受影响。
+- Norma 390 无横向溢出。
+- `npm run test:contrast`：56 人通过。
+- 正式 `test:ui`：65 PNG、1596/1596、0 blocking；report 刷新时间为 `2026-07-28T15:40:46.475Z`。
+- 正式 baseline 执行 `--write` 写入 63 files 后，`npm run test:formal` 输出 `GATE_OK ALL_FORMAL_UNCHANGED`。
+- 全量 `git diff --check` 通过，仅有行尾提示。
+
+### Notes
+- `design.css` — 为 portrait 专属透明前景增加约 2px 四向深色 alpha 描边并保留原落影。
+- `artifacts/formal-site-gate-baseline.json` — 在正式 baseline `--write` 后刷新为 63 files 基线。
+- `progress.md` — 仅在历史末尾追加本轮结果、验证证据与回滚方式。
+- 正式截图目录 `artifacts/r1-character-mindscape-final-20260728/` 为本地证据。
+- 回滚：按本轮 hunk 删除 portrait 专属 filter 规则，重新执行 formal `--write` 和 `test:ui`；不要整文件 `restore`、`reset` 或 `stash`。
+
+## 2026-07-28 - Task: 恢复角色目录图四工作台并收口角色详情单活动档案
+### What was done
+- 将 Stories 恢复并收口为图四三段式：左侧固定站点导航、中部当前角色大舞台与基础/技能/装备、右侧 56 人人物卡网格；移动端使用自然文档流，筛选改为原生 `details` disclosure。
+- 将 Character 统一为 `character.html?id=<id>` 与四个 Hash tab 单活动 panel，补齐 history、键盘、旧 hash 映射及来源/非官方边界常显合同。
+- 按 Norma 批准基线完成 56 人构图与素材边界复核：53 Default + 3 gallery，Aria/Sunna 使用 card 回退，背景完整、前景不挡标题、操作区或背景关键主体。
+- 修正 Stories、Character、运行时/全量边界、对比度和正式 UI 的测试合同，生成正式预览、56 人构图报告与最终 formal baseline。
+
+### Testing
+- `npm run build:stories`：成功，正式 `stories.js` 已由 `src/stories.jsx` 重建。
+- `npm test`：14/14 通过；链接校验覆盖 2 个 BV / 8 个引用；非官方边界 9/9 通过。
+- `npm run test:stories`：95/95 通过。
+- `npm run test:boundary:runtime`：12/12 通过。
+- `npm run test:boundary:all`：83/83 通过。
+- `npm run test:contrast`：1403 项通过，其中 672 个真实可见样本、728 个语义样本、3 个几何样本；最低对比度 4.62:1。
+- 正式 UI gate：1673/1673 通过、0 failure、65/65 PNG；报告位于 `artifacts/r1-character-workbench-restored-20260728/formal-ui-gate/report.json`。
+- 56 人构图：56/56 角色资源加载成功且无横向溢出；人工复核为 PASS54 / CARD2 / TUNE0 / FAIL0，Norma 为批准基线。
+- `python scripts/check-formal-site-gate.py --write`：写入 63 个正式文件；随后 `npm run test:formal` 输出 `GATE_OK ALL_FORMAL_UNCHANGED`。
+- `node --check`：7/7 通过。
+- `git diff --check`：0 whitespace error。
+
+### Notes
+- `.narrafork/plan-恢复角色页原布局并精修--mxX7xTrNfJKagQ2S.md` — 记录图四目录、Norma 构图、正式预览与视觉认可后刷新 baseline 的实施合同。
+- `design.md` — 固化角色目录三段式、详情 Hash 单 panel、素材来源和响应式行为。
+- `stories.html` — 提供图四角色目录的正式页面壳与加载顺序。
+- `src/stories.jsx` — 实现固定导航、当前角色舞台、基础/技能/装备、56 人网格和原生筛选 disclosure。
+- `stories.js` — 由 `src/stories.jsx` 重建的正式浏览器 bundle。
+- `theme-zzz.css` — 落地 Stories 三段式桌面布局与移动自然流样式。
+- `character.html` — 收口角色详情统一入口、四个 Hash tab 与常显来源边界结构。
+- `character.js` — 实现单活动 panel、history、键盘、旧 hash 映射和素材解析。
+- `design.css` — 落地背景 `contain`、前景角色细调、Norma 基线与 card 回退构图。
+- `scripts/regression.mjs` — 将 Stories 图四布局、原生 disclosure 与 Character 单 panel 合同纳入 95 项回归。
+- `scripts/capture-r1-baseline.mjs` — 将正式 UI gate 扩展为 1673 项检查与 65 张截图，并保留环境变量固定输出目录。
+- `scripts/check-boundary-runtime.mjs` — 校验 12 个运行时页面实例的素材、来源与非官方边界。
+- `scripts/check-boundary-all.mjs` — 校验 83 个全量页面实例的结构与边界合同。
+- `scripts/check-hero-contrast.mjs` — 覆盖 56 人的真实、语义与几何 1403 项对比度/构图检查。
+- `artifacts/archive-contract.json` — 保存本轮角色目录、详情 Hash、来源和页面数量合同快照。
+- `docs/README.md` — 更新 UI gate 默认目录、角色 Wiki 当前结构、素材合同和最终门禁数字。
+- `docs/zzz-archive-positioning.md` — 追加覆盖旧 Skew/双栏历史说明的角色目录与详情最终定位。
+- `artifacts/formal-site-gate-baseline.json` — 在视觉认可后刷新为 63 个正式文件的批准指纹。
+- `artifacts/r1-character-workbench-restored-20260728/formal-ui-gate/*` — 保存 65 张正式 UI 截图及 1673/1673 报告。
+- `artifacts/r1-character-workbench-restored-20260728/composition/*` — 保存 56 人构图截图、联系表和人工 PASS54 / CARD2 / TUNE0 / FAIL0 报告。
+- `artifacts/r1-character-workbench-restored-20260728/regression/*` — 保存 Stories 与 Character 的 6 张定向正式预览。
+- `artifacts/__tmp-character-keyart-check.mjs` — 删除被取消任务遗留的临时构图检查脚本；同名临时目录本轮实际不存在。
+- `progress.md` — 仅在历史末尾追加本轮最终闭环记录，未改写既有条目。
+- 回滚：只定点逆向上述实现、合同、脚本与 docs hunks，并由 `src/stories.jsx` 重建 `stories.js`；删除本轮正式 `artifacts/r1-character-workbench-restored-20260728/` 产物，恢复 `artifacts/formal-site-gate-baseline.json` 到本轮前版本，最后重跑 build、formal 与相关门禁。严禁整仓 `restore`、`checkout`、`reset`，避免覆盖既有脏工作区。
+
+## 2026-07-28 - Task: 为角色详情页增加克制文字动效
+### What was done
+- 为中文角色名、真实英文名、身份字段、四个档案 Tab 与活动 Panel 标题增加有限、克制的游戏 HUD 信息确认节奏，并保持 URL/Hash/History、键盘、移动端、无障碍、来源与非官方边界不变。
+- 正式 56 人目录继续强制真实英文名；编辑预览或异常运行时数据缺失英文名时安全隐藏，不阻断中文角色名、档案切换或一次性文字入场状态。
+- Panel 入场使用双帧一次性提交，生产环境无需测试强制样式读取即可触发真实 transform/opacity transition；正式文件指纹在全部验证通过后刷新。
+
+### Testing
+- `node --check character.js`、`node --check scripts/capture-r1-baseline.mjs`、`node --check scripts/check-hero-contrast.mjs`：全部通过。
+- `npm test`：exit 0；档案媒体 14/14、链接诚信 2 个 BV/8 个引用点、非官方边界 9/9 通过。
+- `npm run test:stories`：95/95 通过。
+- `npm run test:contrast`：56 人通过；728 个真实可见对比度样本、728 个语义色样本、3 个 Hero 几何/命中样本全部通过。
+- `npm run test:ui`：1772/1772 checks、0 blocking failure、65/65 screenshots；最终报告位于 `artifacts/character-text-motion-review-20260728-final/report.json`。
+- `npm run test:boundary:runtime`：12/12 运行时目标通过。
+- `npm run test:boundary:all`：83/83 全量页面通过。
+- `python scripts/check-formal-site-gate.py` 初检仅见 `CHANGED character.html`、`CHANGED character.js`、`CHANGED design.css`，无 MISSING/UNTRACKED；随后 `--write` 写入 63 个正式文件指纹，`npm run test:formal` 输出 `GATE_OK ALL_FORMAL_UNCHANGED`。
+- scope Hallmark 检查：视觉动效原语不超过三类，仅使用 transform/opacity 与一次性状态提交；无 infinite、逐字 DOM、发光、布局属性动画或持续 RAF，新动效均有 `prefers-reduced-motion` 静止终态；六轴自评为 P5 H5 E5 S5 R5 V4。
+- 最终只读复审：无 P1、P2、P3 问题。
+
+### Notes
+- `character.html`：新增隐藏英文名语义节点、四个 Tab 文本内层 span，并更新本轮 CSS/JS 查询版本。
+- `character.js`：注入真实英文名，处理缺失字段安全隐藏，写入一次性文字状态，并以双 requestAnimationFrame 提交 Panel 标题入场。
+- `design.css`：新增 `.archive-character` 限定的有限文字动效、Tab 内层确认、Panel 标题 transition、长英文名移动适配及 reduced-motion 终态。
+- `scripts/capture-r1-baseline.mjs`：新增英文名目录/预览 oracle、重播预算、Tab/Panel transition 事件、390px、无效角色及状态合同，截图总数保持 65。
+- `scripts/check-hero-contrast.mjs`：将可见英文名纳入正式对比度目标，并允许编辑预览或异常数据缺失时作为 optional missing 说明处理。
+- `docs/README.md`：记录正式英文名必填、运行时缺失安全隐藏、有限动效和当前验证合同。
+- `.hallmark/log.json`：记录角色详情克制 HUD 文字节奏、拒绝项与 P5 H5 E5 S5 R5 V4 六轴自评。
+- `artifacts/formal-site-gate-baseline.json`：在三项正式源文件验证通过后刷新 63 个正式文件指纹。
+- `progress.md`：仅在历史末尾追加本轮业务结果、验证证据、文件清单和人工回滚步骤。
+- `artifacts/character-text-motion-review-20260728-final/`：保存最终 65 张 UI 截图和 1772/1772、0 failure 报告。
+- 施工前没有安全的独立快照，禁止使用 broad `git restore`、`git checkout`、`git reset` 或整文件回退覆盖既有用户改动。
+- 精确人工回滚步骤 1：从 `character.html` 定点移除 `#characterEnglishName`，去掉四个 Tab 的内层 span 但保留原文本、id、href 与 ARIA 合同，并恢复本轮前资源查询版本。
+- 精确人工回滚步骤 2：从 `character.js` 定点移除英文名注入/隐藏处理、`data-character-text-motion` 一次性状态和 Panel 双 requestAnimationFrame，恢复本轮前 Panel 提交方式。
+- 精确人工回滚步骤 3：从 `design.css` 定点移除本轮 `.archive-character` 文字动效块、英文名/Tab/Panel 新规则及其 reduced-motion 规则，并恢复原 Panel opacity transition。
+- 精确人工回滚步骤 4：从两个测试脚本定点移除本轮新增合同，删除 `docs/README.md` 对应维护说明与 `.hallmark/log.json` 的本 scope 首条记录，再删除本条 `progress.md` 日志和最终验证目录。
+- 精确人工回滚步骤 5：人工回滚完成后运行 `python scripts/check-formal-site-gate.py --write`，再完整运行 node check、`npm test`、Stories、contrast、UI、runtime、all、formal 与 `git diff --check`；不得用 broad restore 替代逐项逆向。
+
+## 2026-07-28 - Task: 修复 aria 与 sunna 主舞台卡面回退视觉
+### What was done
+- 先在真实浏览器合同中固定 aria/sunna 的主舞台 card-fallback 行为，再对最后生效的 Stories compact-card 图片规则做最小修复；没有修改 `stories.js`、角色选择逻辑、资源文件或普通 portrait 构图。
+- 主舞台卡面回退现使用本地 `*-card.webp`、`contain`、顶部居中、透明背景、无边框、无矩形阴影，并通过绝对定位与 `max-width`/`max-height` 保证图片不超过 host；右侧 roster 继续保持 `cover`。
+- `stories.html` 仅将 `theme-zzz.css` 查询版本从 `agent-workbench-5` 精确提升到 `agent-workbench-6`；同步补充维护文档和全新桌面/移动证据目录。
+
+### Testing
+- 新合同首次运行 `npm run test:stories` 得到准确红灯：101 项中仅 4 项失败，分别为 aria/sunna × 1440×900、390×844；四项均显示 `objectFit=cover`、不透明黑底、四边 `1px`、`10px` 矩形阴影且图片底部越出 host，资源路径、加载状态和 card-fallback 模式本身正确。
+- 修复后 `npm run test:stories`：101/101 通过，`failures: []`；普通 anby 仍为 `data-portrait-mode=portrait`、未使用 compact-card，右侧 roster 仍为 `object-fit:cover`。
+- 浏览器证据复核：`artifacts/aria-stage-fix-20260728/computed-styles.json` 共 6/6 通过；aria/sunna 在桌面和移动端均为 `contain`、`50% 0%`、透明背景、0px 边框、`box-shadow:none`，图片矩形位于 host 内；四张舞台截图已人工读取确认无黑底矩形卡框和过裁。
+- `node --check scripts/regression.mjs`、`node --check stories.js`：通过。
+- `npm test`：档案媒体 14/14、链接诚信与 9 页非官方边界检查全部通过。
+- `git diff --check`：通过；无 whitespace error，仅输出工作区既有 LF/CRLF 转换提示及环境附加的 `undefined` 文本。
+
+### Notes
+- `theme-zzz.css`：仅修正最后生效的 `.archive-stories .agent-stage-portrait.is-compact-card img` 尺寸、适配、透明背景、边框与矩形阴影规则。
+- `stories.html`：仅提升 `theme-zzz.css` 缓存查询版本到 `agent-workbench-6`。
+- `scripts/regression.mjs`：新增 aria/sunna 桌面/移动主舞台 card-fallback 合同和 anby/roster 对照。
+- `docs/README.md`：记录主舞台 card-fallback 与右侧 roster 的长期维护边界。
+- `artifacts/aria-stage-fix-20260728/computed-styles.json`：保存 6 项计算样式、资源、模式和几何证据。
+- `artifacts/aria-stage-fix-20260728/aria-desktop-1440-stage.png`：aria 桌面主舞台证据。
+- `artifacts/aria-stage-fix-20260728/sunna-desktop-1440-stage.png`：sunna 桌面主舞台证据。
+- `artifacts/aria-stage-fix-20260728/aria-mobile-390-stage.png`：aria 移动主舞台证据。
+- `artifacts/aria-stage-fix-20260728/sunna-mobile-390-stage.png`：sunna 移动主舞台证据。
+- `progress.md`：仅在历史末尾追加本轮施工、验证、文件和回滚记录。
+- 回滚：定点恢复 `theme-zzz.css` compact-card 图片规则与 `stories.html` 查询版本，移除 `scripts/regression.mjs` 本轮 6 项合同、`docs/README.md` 对应维护节、上述全新证据目录及本条日志；禁止整仓 `restore`、`checkout`、`reset`，避免覆盖既有未提交工作。
+
+## 2026-07-28 - Task: 补齐 aria 主舞台原图视口回归并收口正式门禁
+### What was done
+- 将用户问题截图对应的 1536×774 视口正式加入 aria/sunna 主舞台回归矩阵，并补充背景图与可见 outline 检查，避免仅检查背景色导致的假绿。
+- 保持最终 CSS 修复不变；新增精确视口证据后，仅刷新 `theme-zzz.css` 与 `stories.html` 两条正式站基线记录，其他 61 条记录未改变。
+
+### Testing
+- `node --check scripts/regression.mjs`：通过。
+- `npm run test:stories`：104/104 通过，`failures: []`；1536×774 下 aria/sunna 均为本地 card-fallback、`contain`、透明、无背景图、无可见 outline、无边框、无矩形阴影且图片完整位于 host 内，anby/roster 对照保持原合同。
+- 1536×774 精确视口连续复测两轮结果与截图 SHA-256 一致：`b73d0d1ee2e292dc437fd886cebb38b46d50da5f7b4b423e4652232c64d1003d`；透明源像素对应舞台背景而非 `#0b0f15` 方框。
+- `npm run test:ui`：1772/1772 检查、65/65 截图通过，阻断失败 0；报告为 `artifacts/ui-gate-20260728-212744/report.json`。
+- `npm run test:formal`：63/63 正式文件通过，输出 `GATE_OK ALL_FORMAL_UNCHANGED`；基线 JSON 解析通过。
+- 目标文件 `git diff --check`：通过，无 whitespace error，仅有非阻断 LF/CRLF 提示。
+
+### Notes
+- `scripts/regression.mjs`：新增 1536×774 原图视口，以及 `background-image`、outline 防假绿断言，Stories 检查总数增至 104。
+- `docs/README.md`：将 card-fallback 维护合同更新为三种视口与 104 项回归口径。
+- `artifacts/aria-stage-fix-20260728/aria-user-viewport-1536x774.png`：保存用户问题尺寸下的最终视觉证据。
+- `artifacts/formal-site-gate-baseline.json`：只刷新 `theme-zzz.css` 与 `stories.html` 两条合法变更记录。
+- `progress.md`：追加本轮精确视口、全量 UI 与正式门禁收口证据。
+- 回滚：先按上一条日志定点恢复 `theme-zzz.css`、`stories.html`、原 6 项回归与维护节；再移除 `scripts/regression.mjs` 的 1536×774 viewport、`backgroundImage`/outline 字段及断言，删除精确视口截图，将 formal baseline 中 `theme-zzz.css` 恢复为 bytes `185759`、hash 前缀 `62d2e38ea1489fa8`，`stories.html` 恢复为 hash 前缀 `68c4f052bd5a695a`，并删除本条日志。禁止整仓 restore、checkout 或 reset。
+
+## 2026-07-28 - Task: 同步 aria/sunna 主舞台最终计算样式证据
+### What was done
+- 将 card-fallback 计算样式证据从原 2 个视口、6 项同步为最终 3 个视口、9 项，使落盘证据与 104 项自动回归及维护文档一致。
+- 证据新增 1536×774 的 aria/sunna/anby 对照，以及背景图、outline 与 roster 适配字段；没有修改生产代码、测试合同或正式基线。
+
+### Testing
+- `artifacts/aria-stage-fix-20260728/computed-styles.json`：JSON 解析及必需字段校验通过，3 个视口 × 3 个角色共 9/9 `passed`。
+- 独立最终审查：原证据同步 P2 已关闭，当前无 P1/P2 findings；确认 aria/sunna 无黑框、无裁切，anby 普通 portrait 与 roster `cover` 未受影响。
+
+### Notes
+- `artifacts/aria-stage-fix-20260728/computed-styles.json`：更新为 1440×900、1536×774、390×844 下 aria、sunna、anby 的 9 项最终计算样式和几何证据。
+- `progress.md`：追加本轮证据同步与最终审查结论。
+- 回滚：仅将 `computed-styles.json` 恢复为上一条日志之前的 6 项版本，并删除本条日志；不要修改生产 CSS、HTML、回归脚本、正式基线或其他工作区文件。
+
+## 2026-07-29 - Task: 替换爱芮高清完整立绘并完成正式回归
+### What was done
+- 采用可信 Fandom 文件页的原始 PNG，并以 HoYoverse 官方角色页交叉核对角色身份与素材选择；保留版权与来源证据，未使用 AI 生成或超分。
+- 原图不裁切、不横向拉伸，仅等比缩放并置于透明画布，转换为 1600×1800、lossless、transparent WebP；爱芮在 Stories 与 Character 从 card fallback/edge-card 切换为普通 portrait 前景。
+- sunna 的 card fallback 与右侧 roster card `cover` 保持不变；同步更新生产 cache-bust query token、自动门禁合同，以及 formal 文件清单和爱芮 portrait 资产指纹。
+
+### Testing
+- TDD 红灯按预期出现：`validate-archive.mjs` 首次因爱芮 portrait 资产缺失失败；Stories 首次有 8 个旧 card-fallback 合同失败；生产 cache token 未同步时有 1 个合同失败。
+- `npm run build:stories`：成功，正式 `stories.js` 由 `src/stories.jsx` 重建。
+- `node --check character.js`、`node --check scripts/regression.mjs`、`node --check scripts/capture-r1-baseline.mjs`、`node --check scripts/validate-archive.mjs`：4 项全部通过。
+- `npm run test:content`：最终 16 组档案媒体检查全部通过；链接诚信与 9 页非官方边界检查同时通过，Stories cache token 精确匹配。
+- `npm run test:stories`：104/104 通过，`failures: []`。
+- `npm run test:boundary:runtime`：12/12 通过；`npm run test:boundary:all`：83/83 通过。
+- `npm run test:contrast`：56 人通过；728 个真实可见样本、728 个语义色样本、3/3 Hero 几何样本全部通过，最低对比度 3.90:1，0/56 不达标。
+- `npm run test:ui`：1772/1772 checks、65 PNG、0 failures。
+- 五张人工截图复核通过：Stories 1440×900、1536×774、390×844，Character 1440×900、390×844；均无黑框、裁切或破图，右侧 roster 继续使用 card 与 `cover`。
+- baseline 写入前 `npm run test:formal` 精确显示 5 项漂移：`stories.html`、`stories.js`、`character.html`、`character.js` 变更及新增 `assets/portraits/aria-portrait.webp`，没有其他 MISSING/CHANGED/UNTRACKED；正式脚本 `--write` 写入 64 个文件。
+- baseline 写入后 `npm run test:formal`：64/64 全部 `OK`，输出 `GATE_OK ALL_FORMAL_UNCHANGED`；formal 文件总数从 63 增至 64。
+- `git diff --check`：exit 0，无 whitespace error；仅输出工作区既有 LF/CRLF 转换提示及环境附加的 `undefined` 文本。
+
+### Notes
+- `assets/portraits/aria-portrait.webp`：新增 1600×1800 lossless transparent 爱芮完整人形立绘。
+- `src/stories.jsx`：将爱芮主舞台资源模式从 card fallback 切换为普通 portrait，并保持 sunna 与 roster card 行为。
+- `stories.js`：由 Stories 正式构建同步生成爱芮 portrait 运行时代码。
+- `stories.html`：更新 Stories 正式脚本 cache-bust query token。
+- `character.js`：将爱芮详情页从 edge-card 回退切换到普通 foreground portrait，并保留现有角色构图合同。
+- `character.html`：更新 Character 正式脚本 cache-bust query token。
+- `scripts/regression.mjs`：将爱芮 Stories 三视口断言改为普通 portrait，并保留 sunna、anby 与 roster 对照。
+- `scripts/capture-r1-baseline.mjs`：更新正式 UI 捕获合同，覆盖爱芮 Character 普通 portrait。
+- `scripts/validate-archive.mjs`：新增爱芮 portrait 文件、尺寸、透明度、lossless 编码、来源与 cache token 合同。
+- `scripts/check-formal-site-gate.py`：将爱芮 portrait 纳入正式文件清单。
+- `docs/README.md`：记录爱芮高清完整 portrait 的来源、转换约束、Stories/Character 行为与维护边界。
+- `artifacts/formal-site-gate-baseline.json`：由正式脚本刷新授权 5 项，文件总数由 63 增至 64。
+- `artifacts/aria-portrait-20260729/source-and-conversion.json`：保存可信 Fandom 原始 PNG、官方角色页交叉核对、版权、哈希、尺寸及无 AI/无裁切转换证据。
+- `artifacts/aria-portrait-20260729/final-capture.json`：保存五个目标视口的资源模式、几何、错误计数与 roster `cover` 运行时证据。
+- `artifacts/aria-portrait-20260729/visual-review.json`：保存五张人工截图逐项通过结论。
+- `artifacts/aria-portrait-20260729/stories-aria-1440x900.png`：Stories 1440×900 爱芮完整 portrait 证据。
+- `artifacts/aria-portrait-20260729/stories-aria-1536x774.png`：Stories 1536×774 爱芮完整 portrait 证据。
+- `artifacts/aria-portrait-20260729/stories-aria-390x844.png`：Stories 390×844 爱芮完整 portrait 证据。
+- `artifacts/aria-portrait-20260729/character-aria-1440x900.png`：Character 1440×900 爱芮完整 portrait 证据。
+- `artifacts/aria-portrait-20260729/character-aria-390x844.png`：Character 390×844 爱芮完整 portrait 证据。
+- `artifacts/aria-portrait-20260729/formal-ui-gate/`：保存同一最终 bundle 的 65 张正式 UI PNG 与 1772/1772、0 failure 报告。
+- `progress.md`：仅在历史末尾追加本轮最终闭环记录，未改写既有条目。
+- 精准安全回滚：只定点逆转上述本任务 hunks，删除 `assets/portraits/aria-portrait.webp` 与 `artifacts/aria-portrait-20260729/`；恢复 aria 在 Stories/Character 的 card-fallback/edge-card、旧 query tokens、对应测试与文档合同、formal file-list，以及 baseline 中 `stories.html`、`stories.js`、`character.html`、`character.js` 和 aria portrait 这 5 项；保留 sunna/roster 行为和所有无关工作区改动。禁止整仓 `git checkout`、`git reset` 或 broad restore。
+
+## 2026-07-29 - Task: 替换千夏高清完整立绘并完成正式回归
+### What was done
+- 以 Fandom 的 `Agent Sunna Portrait` 文件记录和 HoYoverse 官方角色 ID `161791` 交叉核对千夏身份与素材；第一次 CDN 返回的有损 WebP 被资产安全门拒绝，随后用 `format=original` 取得精确 `990824-byte` 原始 PNG。
+- 未使用 AI、缩放、裁切、拉伸或重绘；将原始 808×1800 像素以 `x=396`、`y=0` 原像素置入 1600×1800 透明画布，并编码为精确无损 VP8L WebP。
+- Stories 与 Character 取消最后一个 Sunna `fallback`/`edge-card`，使 56/56 角色均具备普通 portrait；右侧 roster 继续保留 card 资源与 `cover` 行为。
+- 同步收口生产 cache/token、内容与视觉门禁、PLAY route P2 归类、维护文档和 formal 文件清单/基线；没有增加千夏专属 CSS。
+
+### Testing
+- 源原件 SHA-256 `30fbde333f13e20b9bb425c3f303fd39c7316fd2231c8e104431917874ff8049`，alpha extrema `0..255`、bbox `[3,2,808,1799]`；输出 SHA-256 `484675bf7f5bd91e3d7a5489a8842e69aebe22928e1070cac2e240ffe6efea2e`，alpha extrema `0..255`、bbox `[399,2,1204,1799]`。VP8L 解码后在 `x=396`、`y=0` 逐像素等同原图，透明画布外区域保持全透明。
+- TDD 红灯均按预期出现：content 仅 1 个旧 cache token；Stories 108 项中 9 个 Sunna fallback 合同；UI 1823 项中 1 个 foreground 合同；初始 formal 仅 `assets/portraits/sunna-portrait.webp` 为 untracked。
+- `npm run build:stories`：成功，正式 bundle 为 `207.3kb`（`stories.js` 212324 bytes）。
+- 6 个语法/编译检查全部通过：`node --check character.js`、`scripts/regression.mjs`、`scripts/capture-r1-baseline.mjs`、`scripts/check-hero-contrast.mjs`、`scripts/validate-archive.mjs`，以及 `python -m py_compile scripts/check-formal-site-gate.py`。
+- `npm run test:content`：16 组检查通过；`npm run test:stories`：108/108 通过，`failures: []`。
+- 已有同一最终生产 bundle 证据：`npm run test:boundary:runtime` 12/12，`npm run test:boundary:all` 83/83。
+- 已有同一最终生产 bundle 对比度证据：56 人通过，728 个真实可见样本、728 个语义色样本、4/4 Hero 几何样本通过，最低对比度 3.90:1，0/56 不达标。
+- 正式 UI 报告只读复核：1823/1823 checks、68 PNG、0 failures，`play-desktop.png` 正确归类为 `route=play`、`variant=desktop`，全部 `play/desktop` 检查通过。
+- 五张人工截图复核通过：Stories 1440×900、1536×774、390×844，以及 Character 1440×900、390×844；完整透明人形无卡框、黑框、破图或真实像素遮字，不需要专属 CSS。
+- baseline 最终写入前严格只有 5 项差异：`stories.html`、`stories.js`、`character.html`、`character.js` 为 changed，`assets/portraits/sunna-portrait.webp` 为 untracked；没有其他 formal path。`--write` 输出 `WROTE ... (65 files)`，相对写入前仅刷新上述 4 条并新增 Sunna portrait 1 条。
+- baseline 写入后 `npm run test:formal`：65/65 全部 `OK`，输出 `GATE_OK ALL_FORMAL_UNCHANGED`。
+- `git diff --check`：exit 0，无 whitespace error；仅输出工作区既有 LF/CRLF 转换提示及环境附加的 `undefined` 文本。
+
+### Notes
+- `assets/portraits/sunna-portrait.webp`：新增 1600×1800、透明、无损 VP8L 千夏完整人形立绘。
+- `artifacts/sunna-portrait-20260729/source-original.png`：保存 `format=original` 下载的 990824-byte 原始 PNG。
+- `artifacts/sunna-portrait-20260729/source-and-conversion.json`：记录 Fandom/HoYoverse 交叉核对、来源哈希、alpha、原像素透明画布转换和版权边界。
+- `artifacts/sunna-portrait-20260729/final-capture.json`：保存五个目标视口的 portrait 模式、DOM 几何、错误计数与 roster card 证据。
+- `artifacts/sunna-portrait-20260729/visual-review.json`：新增五张专项截图的最终人工 pass 结论及正式 UI 运行时摘要。
+- `artifacts/sunna-portrait-20260729/stories-sunna-1440x900.png`、`stories-sunna-1536x774.png`、`stories-sunna-390x844.png`、`character-sunna-1440x900.png`、`character-sunna-390x844.png`：保存 Stories/Character 三种桌面与移动视口的专项视觉证据。
+- `artifacts/sunna-portrait-20260729/formal-ui-gate/`：保存同一最终 bundle 的 68 张正式 UI PNG 与 1823/1823、0 failure 报告。
+- `artifacts/sunna-portrait-20260729/red-ui-gate/`：保存 Character 仍为 Sunna edge-card 时精确 1 个 foreground 失败的红灯报告和 68 张截图。
+- `src/stories.jsx`：将 Sunna 主舞台从 card fallback 切换为普通 portrait。
+- `stories.js`：由正式 Stories 构建同步生成 Sunna portrait 运行时代码。
+- `stories.html`：更新 Stories 正式脚本 cache-bust query token。
+- `character.js`：将 Sunna 详情页从 edge-card 回退切换为普通 foreground portrait，并保持默认构图合同。
+- `character.html`：更新 Character 正式脚本 cache-bust query token。
+- `scripts/regression.mjs`：将 Sunna 三视口回归从 fallback 改为完整普通 portrait，并保留 roster card 对照。
+- `scripts/capture-r1-baseline.mjs`：补充 Sunna Character foreground 合同并修正 PLAY route 正式归类。
+- `scripts/check-hero-contrast.mjs`：将 Sunna 加入完整 portrait 的 Hero 几何代表样本。
+- `scripts/validate-archive.mjs`：新增 Sunna 原件、输出、VP8L、alpha、逐像素与 cache token 合同。
+- `scripts/check-formal-site-gate.py`：将 Sunna portrait 纳入正式文件清单。
+- `docs/README.md`：记录 Sunna 高清完整 portrait 的来源、转换约束和 Stories/Character 维护合同。
+- `docs/zzz-archive-positioning.md`：同步 Sunna 正式档案呈现与来源边界说明。
+- `artifacts/formal-site-gate-baseline.json`：仅相对写入前刷新授权 5 项，正式文件总数由 64 增至 65。
+- `progress.md`：仅在历史末尾追加本轮完整施工、验证、文件清单和精准回滚说明。
+- 精准安全回滚：只定点逆转 Sunna 本轮 hunks，删除 `assets/portraits/sunna-portrait.webp` 与 `artifacts/sunna-portrait-20260729/`；恢复 Sunna 在 Stories/Character 的 fallback/edge-card、旧 query tokens、对应测试合同、UI route/contrast representative、文档和 formal file-list，并将 baseline 中 `stories.html`、`stories.js`、`character.html`、`character.js` 与 Sunna portrait 这 5 项恢复到写入前状态；保留 Aria portrait/证据、roster card 及全部无关工作区。禁止整仓 `git checkout`、`git reset` 或 broad restore。
+
+## 2026-07-29 - Task: 新增蕾米埃尔·丹并完成 57 人正式发布门禁
+### What was done
+- 依据米哈游《绝区零》官方 Wiki 角色页 `2076` 接入第 57 名角色蕾米埃尔·丹与第 18 个阵营达识结社；未知等级、属性、特性、攻击类型、实装日期、生日、专属音擎和 CV 均保持“待公布”，未填推测值。
+- 使用官方 `display-1` 与 `mindscape-1` 素材生成独立 card、完整透明 portrait 和 Default 影画，并接入阵营徽记；转换仅做等比缩小和透明画布封装，无裁切、放大、拉伸、抠图或 AI 超分。
+- 收口 Stories、Character 四档案面板和 Faction 来源边界：舞台/Hero 使用 portrait，roster/avatar/headshot 使用 card；蕾米埃尔 Default 使用独立 `official-wiki` 署名，53 张 Toastertjie 许可 Default 与 1 张官方 Wiki Default 明确分开。
+- 仅为蕾米埃尔增加 `portraitRight:'0px'` 的单角色 Hero 构图例外；未缩减默认 `portraitWidth:min(58vw,820px)`，未改素材、人物高度、裁切方式、阈值或全局样式。
+- 将现行合同更新为 57 角色、18 阵营、57 card、57 portrait、54 Default + 3 gallery fallback；正式 UI 证据写入独立目录，正式文件指纹扩展为 69 个文件。
+
+### Testing
+- 语法/编译复核：11 个 Node 脚本 `node --check` 全部通过；`python -m py_compile scripts/check-formal-site-gate.py` 通过。
+- `npm run test:content`：17 组档案媒体检查通过；链接诚信覆盖 2 个 BV / 8 个引用点；9 页非官方边界通过。
+- `npm run test:stories`：118/118 通过，`failures: []`。
+- `npm run test:boundary:runtime`：12 个目标通过；`npm run test:boundary:all`：85 个页面通过（9 正式公开路由 + 57 角色 + 18 阵营 + 1 内部工具）。
+- `npm run test:contrast`：57 人通过；741 个真实可见对比度样本、743 个语义色样本及 5 个 Hero 几何/命中代表样本全部通过。蕾米埃尔 alpha bbox overlap 为 copy `0.177980`、title/identity `0.151026`，分别低于 `0.20`、`0.18` 上限。
+- `HOOXI_UI_OUTPUT_DIR="artifacts/remielle-official-20260729/formal-ui-gate" npm run test:ui`：1978/1978 checks、77/77 PNG、0 blocking failure；报告位于 `artifacts/remielle-official-20260729/formal-ui-gate/report.json`。
+- 人工读取 Stories 与 Character 的蕾米埃尔桌面/移动四张核心截图：完整人物无裁切、破图、横向溢出或真实像素遮挡标题/身份/操作区，响应式自然流正常。
+- formal 初检识别 13 个本轮角色/阵营路径及 2 个数据缓存 token；哈希反演确认 `index.html` 仅两处 `archive-2 → archive-3`，`editor.html` 仅 `wiki-2 → archive-3`，无结构或行为漂移。`python scripts/check-formal-site-gate.py --write` 写入 69 files，随后 `npm run test:formal` 输出 `GATE_OK ALL_FORMAL_UNCHANGED`。
+- 任务范围与全工作区 `git diff --check` 均 exit 0；只有非阻断 LF/CRLF 转换提示和环境附加的 `undefined` 文本，无 whitespace error。
+
+### Notes
+改动文件清单：
+- `.gitignore` — 仅放行蕾米埃尔来源/转换证据 JSON，并保持原始 PNG 与截图默认忽略；同步更正 53+1 Default 来源口径。
+- `agent-catalog.js` — 新增蕾米埃尔、达识结社、官方来源、57/18 目录数据及 portrait/card 分链。
+- `agent-enrichment.js` — 将快照更新到 2026-07-29，并加入 Wiki 2076 的最小可信 enrichment 条目。
+- `agent-xray.js` — 新增与现有 56 人不重复的蕾米埃尔主题数据。
+- `archive-tools.js` — 为蕾米埃尔 Default 增加独立 `official-wiki` 来源署名分支。
+- `index.html` — 仅把 enrichment/catalog 数据缓存 token 从 `archive-2` 提升到 `archive-3`，未改首页结构。
+- `editor.html` — 保留既有 `noindex`，仅把角色目录缓存 token 从 `wiki-2` 提升到 `archive-3`。
+- `stories.html` — 更新 57 人目录、53+1 Default 来源说明与本轮数据缓存 token。
+- `character.html` — 新增官方 Wiki 影画署名节点并更新角色数据/主题缓存 token。
+- `character.js` — 接入蕾米埃尔档案、来源模式与 `portraitRight:'0px'` 单角色构图例外。
+- `faction.html` — 更新阵营数据缓存 token。
+- `faction.js` — 新增达识结社 scoped 官方成员页来源，避免把角色页冒充阵营专属词条。
+- `scripts/validate-archive.mjs` — 增加官方源、转换、SHA、尺寸、alpha、57/54/18 与实际输出合同。
+- `scripts/check-hero-contrast.mjs` — 扩展到 57 人并把蕾米埃尔加入 Hero 几何代表样本，未放宽阈值。
+- `scripts/check-boundary-all.mjs` — 更新 85 页面合同并识别官方 Wiki 素材来源分支。
+- `scripts/regression.mjs` — 扩展角色字段、Stories、Faction、57 人资源/主题与三视口回归，总计 118 项。
+- `scripts/capture-r1-baseline.mjs` — 新增蕾米埃尔 Stories/Character/Faction 的桌面、移动和减动效正式路由，截图总数增至 77。
+- `scripts/check-formal-site-gate.py` — 将蕾米埃尔 portrait/card/Default 与达识结社徽记纳入正式文件集合。
+- `artifacts/archive-contract.json` — 刷新 57 角色、18 阵营、54 Default + 3 gallery 的正式契约快照。
+- `artifacts/formal-site-gate-baseline.json` — 由正式脚本刷新为 69 个已批准文件指纹。
+- `assets/portraits/remielle-portrait.webp` — 新增 1600×1800 透明完整 portrait。
+- `assets/portraits/remielle-card.webp` — 新增 374×512 透明 roster/card 资产。
+- `assets/mindscape/default/remielle.webp` — 新增 2880×1080 透明画布 Default 影画。
+- `assets/icons/covenant-of-dayat.png` — 新增达识结社官方 Wiki 徽记。
+- `artifacts/remielle-official-20260729/` — 保存官方原始素材、来源清单、转换证据及独立 77 PNG 正式 UI 报告。
+- `docs/README.md` — 记录现行 57 人维护合同、来源拆分、素材链和验证入口。
+- `docs/zzz-archive-positioning.md` — 同步蕾米埃尔与达识结社的正式档案定位和来源边界。
+- `docs/HOOXI-FORMAL-SITE-GAP-CHECKLIST.md` — 更新现行角色、阵营和素材覆盖口径。
+- `docs/media-source-policy.md` — 明确第 54 张蕾米埃尔 Default 不属于 Toastertjie 授权包。
+- `progress.md` — 仅在历史末尾追加本轮完整施工、验证、文件清单与精准回滚步骤。
+
+精准安全回滚：定点移除 `remielle` 与 `covenant-of-dayat` 数据、主题、来源/credit、构图例外和 57/54/18 门禁 hunks，恢复上述页面的数据缓存 token 与文档口径；删除四个正式资产及 `artifacts/remielle-official-20260729/`。完成代码级逆向后运行 `python scripts/check-formal-site-gate.py --write`，正式基线应回到前一轮 65 files，再完整复跑 content、Stories、runtime/all boundary、contrast、UI、formal 与 `git diff --check`。禁止使用整仓 `git restore`、`checkout`、`reset` 或 `stash`，避免覆盖其他未提交工作。
+
+## 2026-07-29 - Task: 统一角色详情页 Hero 背景影画铺满
+### What was done
+- Character Hero 背景桌面使用 cover 铺满 100svh，移动保持自然文档流并以 16:9 + cover 铺满；展示层允许边缘裁切。
+- 移除无实际例外的 artScale/transform，仅保留 artPosition；前景 portrait 仍为 contain，Stories/roster/avatar/headshot 未改。
+- 在现有 contrast 门禁加入 57 人×桌面/移动背景铺满合同；同步现行 design/docs 和缓存 token。
+- 刷新正式站 baseline。
+
+### Testing
+- `npm run test:contrast`：exit 0；57 人；Character Hero 背景铺满 114/114（1440×900 + 390×844），前景 contain 114/114；741 个真实对比度样本、743 个语义色样本通过；代表 Hero 几何/命中 5/5。
+- 57 人稳定态目视联系表：桌面 57/57、移动 57/57，无明确失败；临时证据根目录 `C:\Users\Rage\AppData\Local\Temp\hooxi-character-hero-audit-2026-07-29T14-25-29-305Z`。移动按既定自然文档流允许纵向滚动。
+- `npm run test:stories`：118/118。
+- `npm run test:ui`：1978/1978，77/77 screenshots，report `artifacts/ui-gate-20260729-141851/report.json`。
+- `node --check character.js`、`node --check scripts/check-hero-contrast.mjs`：exit 0。
+- `npm test`：exit 0；档案媒体 17 组、2 个 BV/8 处引用、9 页非官方边界通过。
+- `npm run test:boundary:runtime`：12/12；`npm run test:boundary:all`：85/85。
+- `python scripts/check-formal-site-gate.py --write`：写入 69 个受管文件；`npm run test:formal`：69/69，`GATE_OK ALL_FORMAL_UNCHANGED`。
+- `git diff --check`：exit 0；仅有既存 LF→CRLF 提示。
+
+### Notes
+- `design.css`：将 Character Hero 背景改为桌面 100svh cover、移动自然文档流 16:9 cover，并保持前景 portrait contain。
+- `character.js`：移除无实际例外的 artScale/transform 映射，仅保留 artPosition。
+- `character.html`：更新本轮样式与脚本缓存 token。
+- `scripts/check-hero-contrast.mjs`：新增 57 人桌面/移动背景铺满合同，并保留前景 contain 与既有对比度、Hero 几何/命中检查。
+- `design.md`：同步 Character Hero 背景铺满、允许边缘裁切及前景 contain 的现行设计合同。
+- `docs/README.md`：同步角色详情页 Hero 背景与前景的维护、验证口径。
+- `docs/zzz-archive-positioning.md`：同步正式档案页 Hero 背景影画铺满与移动自然文档流说明。
+- `artifacts/formal-site-gate-baseline.json`：刷新 69 个受管文件的正式站 baseline。
+- `progress.md`：仅在历史末尾追加本轮施工、验证、文件清单和定点回滚说明。
+- `artifacts/ui-gate-20260729-141851/`：测试生成证据目录，包含 77/77 screenshots 与 `report.json`。
+- 定点回滚：尊重脏工作区，不做整文件 restore/reset；逐 hunk 恢复 `design.css` 的 contain/移动 auto 高度与 artScale，恢复 `character.js` 的 artScale 映射和 `character.html` 两个旧 token，移除 contrast 脚本新增铺满合同，恢复 `design.md`、`docs/README.md`、`docs/zzz-archive-positioning.md` 三份现行文档措辞；然后重新执行 `python scripts/check-formal-site-gate.py --write` 与 `npm run test:formal`。若本轮后续形成独立提交，首选 `git revert <该提交>`。
+
+## 2026-07-29 - Task: 强化游戏 UI 动效样板并新增电视信号页面转场
+### What was done
+- 完成 `prototype/art-samples` 的 21 条游戏 UI 手法实物样板复核，并将关键动效从普通网页过渡强化为同一套游戏信号语言：依次入场改为电视换台锁信号，逐字浮现增加位移、模糊、缩放与错峰回弹，鼠标视差扩展为背景/氛围光/完整立绘/文字四层差速。
+- 新增并收口第 20 条“电视信号缓冲”页面切换样本：彩条闪断、动态雪花、横向撕裂、场同步亮带与重新锁定由 GSAP timeline 编排，雪花最浓时切换假页面，不锁滚动、不强制停留。
+- 完成 Swiper 斜切轮播与第 21 条 TPS-L2 致敬磁带机样板的联动验收；播放器机身随角色 `agent-xray.js` 的 `l` 色变化，银色铝条与橙色 HOT LINE 保持固定，展开/收起尺寸均按样板约束落地。
+- 本轮只处理原型目录和验收记录，未改动正式站 69 个受管文件。
+
+### Testing
+- Playwright 打开 `http://127.0.0.1:8899/prototype/art-samples/index.html`，逐项截取 21 个 `section.sample`；三张总览联系表位于 `C:\Users\Rage\AppData\Local\Temp\art-samples-shots\review-all\contact-1.jpg` 至 `contact-3.jpg`，已人工查看全部区块。
+- 运行时依赖实测：GSAP `3.15.0`、ScrollTrigger、Swiper 与真实 Swiper 实例均加载；控制台错误 0、页面异常 0。
+- 第 05 条中段截图可见栏目错峰处于清晰/模糊/雪花凝聚的不同阶段，最终 4 项 opacity 均为 1；第 07 条中段首字 opacity `0.818` 且仍有 `14.39px` 位移与 `1.09px` 模糊，中后字尚未出现，结束后 9/9 字符全部可见。
+- 第 17 条鼠标邻近缩放实测中心键 scale `1.42`，相邻键依次 `1.346 / 1.125 / 1`；第 08 条四层横向位移依次 `19.2 / 38.4 / 76.8 / -23px`，立绘在极值位移时仍完整位于舞台内，鼠标停止后层级归零且页面保持静止。
+- 第 19 条点击下一张后主轮播 activeIndex、读数和缩略图活动项均同步到第 2 张。
+- 第 20 条转场配置时长 `760ms`，浏览器实测完成 `798ms`；中段 overlay opacity 为 1、雪花 opacity 为 `0.95`、撕裂和 `NO SIGNAL` 标记均可见，结束后页面由 A 切至 B、遮罩 opacity 回到 0，并把焦点交给 B 页返回按钮。
+- 第 21 条选择比利后机身使用其角色色，展开态 `184×191`，收起态 `78×35`；铝条仍为银灰渐变。音频自动化中出现一次关闭/切换生命周期导致的 `ERR_ABORTED`，随后独立请求同一 OGG 实测 HTTP `200`、`audio/ogg`、`10,384,466` 字节，排除资源缺失或 404。
+- 页面滚轮实测 scrollY 增加 `156px`，确认未锁滚动。动态证据联系表位于 `C:\Users\Rage\AppData\Local\Temp\art-samples-shots\dynamic-evidence-20260729\dynamic-contact.jpg`。
+- `node --check prototype/art-samples/samples.js` 通过；CSS 花括号 `494/494`、JS 花括号 `397/397`；21 个样本区块与本地 GSAP/ScrollTrigger/Swiper 引用齐全。
+- `python scripts/check-formal-site-gate.py` 输出 69 项 `OK` 与 `GATE_OK ALL_FORMAL_UNCHANGED`，确认未触碰正式受管文件。
+
+### Notes
+改动文件清单：
+- `prototype/art-samples/index.html`：承载 21 条手法实物、电视信号页面转场和 TPS-L2 播放器样板结构。
+- `prototype/art-samples/samples.css`：实现电视雪花/扫描线/撕裂、强化逐字与入场、四层视差、斜切轮播及磁带机视觉。
+- `prototype/art-samples/samples.js`：接入本地 GSAP + ScrollTrigger + Swiper，编排锁信号、视差、轮播、转场与播放器交互。
+- `progress.md`：仅在历史末尾追加本轮施工、实测证据和回滚说明。
+
+回滚方式：`prototype/art-samples/` 当前仍为未跟踪原型，Git 没有可用的本轮前文件快照；若整轮原型交付作废，可执行 `rm -rf -- prototype/art-samples` 删除整套样板。若只撤销本轮增强，须按 `s20` / `s21` 区块以及 CSS/JS 内 `05`、`07`、`08`、`17`、`19`、`20`、`21` 注释块定点回退，不能整仓 `restore/reset/checkout`；后续若先形成独立提交，优先执行 `git revert <该提交>`。
+
+## 2026-07-29 - Task: 完成视觉换血阶段 1 Token 层样板
+### What was done
+- 仅在 `tokens.css` 现有 `:root` 的 motion 区之后、`color-scheme:dark` 之前注册规范 2.2 的 7 个 token，全部保持未启用状态。
+- 未新增这 7 个 token 的正式运行时消费点，未修改首页 HTML/CSS/JS、角色主题块、门禁脚本或 baseline；当前视觉与行为没有变化。
+
+### Testing
+- `npm test`：exit 0；17 组档案媒体校验、链接诚信和 9 页非官方边界检查通过。
+- 最小只读断言：7 个名称和值各出现一次；7 个新 token 在正式运行时代码中为 0 个消费点；`tokens.css` 删除精确新增块后与施工前临时快照逐字节一致；baseline 与施工前快照一致。`design.css` 中既有的 `var(--zzz-acid*)` 消费点与施工前 formal baseline 匹配，本阶段未新增或触碰。
+- `git diff --check -- tokens.css progress.md`：追加日志前 exit 0，无 whitespace error。
+- `npm run test:formal`：按预期 exit 1，唯一漂移为 `CHANGED tokens.css`；没有其他 `CHANGED`、`UNTRACKED`、`MISSING`、`BASELINE_EXTRA` 或 `ROUTE_CONTRACT_FAIL`。baseline 未刷新，formal 当前不能写成通过。
+
+### Notes
+- `tokens.css`：精确新增 3 段注释和 7 个未启用的视觉 token，不改任何既有字节、值或角色主题块。
+- `progress.md`：仅在文件末尾追加本轮阶段 1 样板施工、验证和回滚记录。
+- 回滚：从 `tokens.css` 精确删除本轮新增的完整 token 块，并在 `progress.md` 末尾另行追加回滚记录；不得触碰任何既有未提交改动。baseline 未刷新，无需回滚 baseline。
+
+## 2026-07-29 - Task: 复核视觉换血阶段 1 最终样板记录
+### What was done
+- 对阶段 1 的精确快照差异完成 Standards 与 Spec 双轴只读审查；产品改动保持为 7 个未启用 token，无新增范围。
+- 补齐最终日志写入后的格式验证证据，不修改 `tokens.css`、formal baseline 或任何首页运行时代码。
+
+### Testing
+- Standards 审查 PASS；Spec 审查确认产品实现、范围、baseline 与门禁差异均正确，仅指出原日志未记录最终追加后的格式复核。
+- `git diff --check -- tokens.css progress.md`：本条记录写入完成后复跑，要求 exit 0、无 whitespace error。
+- `npm run test:formal`：本条记录写入后复跑，要求仍仅有预期 `CHANGED tokens.css`，不得出现其他门禁异常。
+
+### Notes
+- `progress.md`：仅在末尾追加最终审查与验证证据；本轮复核不改产品代码。
+- 回滚：如需撤销本条复核记录，只定点删除本节；不得删除前一条阶段 1 施工记录或触碰其他既有工作区改动。
+
+## 2026-07-30 - Task: 完成视觉换血阶段 1 正式门禁收口
+### What was done
+- 用户验收阶段 1 token 层样板后，仅由正式门禁脚本刷新 `tokens.css` 的指纹；正式文件总数仍为 69 项，其他 68 项及顶层 `purpose`、`policy`、`note` 完全不变。
+- baseline 仅合法化已获验收的阶段 1 token 块；本轮未修改 `tokens.css`、任何其他正式文件或门禁脚本，未运行 UI Gate，未进入阶段 2。
+
+### Testing
+- `python scripts/check-formal-site-gate.py --write`：exit 0，由脚本生成 `artifacts/formal-site-gate-baseline.json`，写入 69 files。
+- 新 baseline 与阶段前快照 JSON 语义比较：69 项；仅 `tokens.css` 的 `sha256`、`sha256_16`、`bytes` 从 `c7e0b5bdc525c4f2ddc68ef22d73fd3ce627770139fe42bd90948e09d6566355` / `c7e0b5bdc525c4f2` / `3567` 更新为 `96d982c299c881212f8a5a92cd8d5fdbe88cd836f340e3d15382ddd0476b6c57` / `96d982c299c88121` / `3955`；其他 68 项与 `purpose`、`policy`、`note` 完全相同。
+- `npm run test:formal`：exit 0，69/69 通过，输出 `GATE_OK ALL_FORMAL_UNCHANGED`。
+- `git diff --check -- tokens.css artifacts/formal-site-gate-baseline.json progress.md`：日志追加前 exit 0，无 whitespace error；仅有既存 LF/CRLF 提示和环境附加的 `undefined` 文本。
+
+### Notes
+- `artifacts/formal-site-gate-baseline.json`：仅由 `python scripts/check-formal-site-gate.py --write` 生成，只刷新已获用户验收的 `tokens.css` 指纹。
+- `progress.md`：仅在历史末尾追加本轮阶段 1 正式门禁收口、验证证据和精准回滚说明。
+- `tokens.css`：本轮收口不再修改；其中阶段 1 的 7 个未启用 token 块已获用户验收。
+- 精准回滚：从 `tokens.css` 定点删除阶段 1 新增的完整 token 块；取得用户明确批准后重新执行 `python scripts/check-formal-site-gate.py --write`；与阶段前快照比较并确认 baseline 的 `tokens.css` 行恢复为原 `sha256`、`sha256_16` 与 `bytes`，其余 68 项保持不变；随后复跑 `npm test`、`npm run test:formal` 与定向 `git diff --check`。禁止整文件或整仓 `restore`、`checkout`、`reset`、`stash`。
+
+## 2026-07-30 - Task: 完成首页视觉换血 CSS 首稿
+### What was done
+- 在不改首页 HTML、数据和运行逻辑的前提下，将首页专属视觉层重构为 HOOXI 深色档案底盘，落地斜切几何、大图 Hero、低透明巨号、五段纵向节奏及 Finder、代理人、卷轴、来源与文档流播放器的新视觉。
+- 全部新规则限制在 `body.home-page` 或对应首页根作用域内；保留四张 Hero、现有动态宿主、链接、ARIA、播放器与编辑合同，并补齐桌面、平板、手机及减动效样式。
+
+### Testing
+- `git diff --check -- home-neon.css`：exit 0，无 whitespace error，仅有既存 LF/CRLF 提示。
+- Playwright smoke：1440×900 与 390×844 均 HTTP 200、console error 0、page error 0、关键 ID 缺失 0、正文无横向溢出；Hero 4 张且仅 1 张活动，路径卡 3、代理人卡 8、卷轴卡 6。
+- 阶段截图：`C:\Users\Rage\AppData\Local\Temp\hooxi-home-overhaul-20260730-iD3S3d\css-stage-preview\desktop-1440x900.png` 与 `mobile-390x844.png`；用户已查看并确认视觉方向通过。
+
+### Notes
+- `home-neon.css`：新增首页五段式深色游戏档案视觉、交互状态、响应式与减动效覆盖。
+- `progress.md`：追加本阶段实施、测试和回滚记录。
+- 施工前快照：`C:\Users\Rage\AppData\Local\Temp\hooxi-home-overhaul-20260730-iD3S3d\home-neon.css`。如需整体撤销 CSS 首稿，只复制该快照覆盖 `home-neon.css`，并按下一条记录同时撤销依赖这些变量的 Hero 视差；随后复跑定向 smoke 与 `git diff --check`。不得整仓 restore、checkout、reset 或覆盖其他脏改动。
+
+## 2026-07-30 - Task: 完成 Hero 细指针视差与减动效收口
+### What was done
+- 在保留原 reveal 与原生轮播合同的基础上，为 Hero 增加仅限细指针桌面的局部视差；单个 `requestAnimationFrame` 合并指针事件，通过现有 CSS 变量驱动画面、光层、文案与巨号差速平移。
+- 在 pointer leave/cancel、页面隐藏、媒体条件变化和活动 slide 切换时统一归零；触屏、粗指针和 reduced-motion 环境保持静态，不引入 GSAP、Swiper、全局循环或新依赖。
+- 修正 reduced-motion 中伪元素选择器的无效分支，并强制八个 Hero 视差变量归零；未修改 HTML、`app.js`、数据、文档或正式 baseline。
+
+### Testing
+- `node --check home-neon.js`：通过。
+- `git diff --check -- home-neon.js home-neon.css`：exit 0，无 whitespace error，仅有既存 LF/CRLF 提示。
+- Playwright 1440×900 fine pointer：初始归零、指针移动产生非零分层位移、mouseleave、pointercancel、document hidden、媒体条件变化及活动 slide class 变化后均归零；console/page error 0。
+- Playwright 390×844 coarse/touch 与 1440×900 reduced-motion：移动指针后八个变量仍为零，Hero 4 张且仅 1 张活动，无横向溢出，console/page error 0。
+- 阶段截图：`C:\Users\Rage\AppData\Local\Temp\hooxi-home-overhaul-20260730-iD3S3d\motion-stage-preview\desktop-parallax.png` 与 `reduced-motion.png`。
+
+### Notes
+- `home-neon.js`：新增 Hero 局部细指针视差、条件启停及完整归零逻辑。
+- `home-neon.css`：仅收口 reduced-motion 的 Hero 变量与伪元素选择器，不改变已验收视觉方向。
+- `progress.md`：追加本阶段实施、测试和回滚记录。
+- 精准回滚：用 `C:\Users\Rage\AppData\Local\Temp\hooxi-home-overhaul-20260730-iD3S3d\home-neon.js` 覆盖当前 `home-neon.js`；在 `home-neon.css` 的 reduced-motion 段移除八个视差变量值上的 `!important`，并将独立 `.hero::before` 分支恢复并入原 `:is(...)` 选择器；随后复跑 `node --check home-neon.js`、定向 Playwright smoke 与 `git diff --check`。不得整仓 restore、checkout、reset 或触碰其他既有改动。
+
+## 2026-07-30 - Task: 修复首页轮播叠加暂停回归场景
+### What was done
+- 定位并修复 `home-pause-reason-matrix-and-stacked-release` 的测试前置条件：原测试把焦点移到 Finder 时允许浏览器滚动，导致指针实际离开 Hero，将“释放 focus”与“释放 hover”混为同一步。
+- 测试现在先明确建立 focus + hover 叠加状态，再用 DOM `focus({ preventScroll:true })` 把焦点移出 Hero；同时断言 Hero 仍被悬停、滚动位置不变、状态仍因指针悬停暂停且等待完整轮播周期后活动索引不变，最后显式释放 hover 并确认恢复播放。
+- 生产 `app.js` 未修改；其暂停原因集合与统一调度逻辑在 hover 仍存在时行为正确。本轮只使回归场景稳定复现真实交互语义。
+
+### Testing
+- 红色前置复现：保留普通 `.focus()` 并加入新前置断言后运行 `npm run test:stories`，118 项中仅 `home-pause-reason-matrix-and-stacked-release` 失败，证明页面滚动释放 hover 会触发旧场景问题；随后未保留该中间代码。
+- `node --check scripts/regression.mjs`：通过。
+- 最终 `npm run test:stories` 连续 3 次通过，每次 118/118、`failures: []`。
+- `git diff --check -- scripts/regression.mjs progress.md`：通过，无 whitespace error，仅有既存 LF/CRLF 提示。
+
+### Notes
+- `scripts/regression.mjs`：收紧首页轮播 focus + hover 叠加暂停测试，加入 hover、焦点归属与 scrollY 诊断字段及 `preventScroll` 聚焦。
+- `progress.md`：追加本轮根因、红绿验证和精准回滚记录。
+- 施工前快照：`C:\Users\Rage\AppData\Local\Temp\hooxi-home-overhaul-20260730-iD3S3d\regression.mjs.before-home-pause-reason-fix`，SHA-256 为 `5c943bc9e459deb17d72df4771295388f5e5a3f285f2243c6a732ed91d809483`。
+- 回滚：只用上述快照覆盖 `scripts/regression.mjs`，并在 `progress.md` 末尾追加回滚记录；随后复跑 `node --check scripts/regression.mjs`、`npm run test:stories` 与定向 `git diff --check`。禁止整仓 restore、checkout、reset 或覆盖其他既有修改。
+
+## 2026-07-30 - Task: 完成首页视觉验收定点修复并接入本地 GSAP 与 Swiper
+### What was done
+- 按 UI Gate 人工长图审阅结论修复五处版式问题：手机查档卡改单列、手机代理卡改为图片在上文案占满卡宽、平板查档卡改为均衡三列、宽屏 Hero 扩大标题与主图安全间距、来源与页脚解除旧三列压迫使中文自然横排。
+- 按视觉换血规范阶段 2，在首页引入本地 GSAP 3.15.0、ScrollTrigger 与 Swiper 11.2.10，并注册 ScrollTrigger；本阶段只做依赖接入，不写业务动效，页面视觉与轮播行为不变。
+
+### Testing
+- 五视口实测（1440×900、1280×800、768×1024、390×844、320×720）：无横向溢出、console/page error 均为 0、Hero 4 张且仅 1 张活动、暂停按钮与页码在位。
+- 手机代理卡实测：外层两列，卡内图片在上文案在下，姓名最多两行、无省略号与裁切；查档卡手机 1 列、平板 3 等列。
+- 依赖实测：`gsap.version` 与 `ScrollTrigger.version` 均为 `3.15.0`，ScrollTrigger 已注册，`typeof window.Swiper === 'function'`，7 个付费插件检出为 0；43 个请求全部同源，无外部域名。
+- 门禁：`npm test`、`npm run test:stories`（118/118）、`npm run test:contrast`、`npm run test:boundary:runtime`（12/12）、`npm run test:boundary:all`（85/85）、`npm run test:ui`（77 截图、1978/1978、阻断 0）全部通过；`npm run test:formal` 按预期报告漂移，baseline 未刷新。
+
+### Notes
+- `home-neon.css`：修复五处响应式与版式问题。
+- `index.html`：新增本地 Swiper 样式与 GSAP、ScrollTrigger、Swiper 三个脚本引用。
+- `home-neon.js`：在入口注册 ScrollTrigger，库缺失时静默跳过。
+- `progress.md`：追加本轮记录。
+- 施工前快照位于 `C:\Users\Rage\AppData\Local\Temp\hooxi-home-overhaul-20260730-iD3S3d\`：`home-neon.css.before-visual-acceptance-fix`、`index.html.before-phase2`、`home-neon.js.before-phase2`。回滚只需用对应快照覆盖同名文件后复跑上述门禁；禁止整仓 restore、checkout、reset、stash。
+
+## 2026-07-30 - Task: 实现全站底层五条特效首页样板
+### What was done
+- 按视觉换血规范阶段 3 新建 `zzz-motion.css` 与 `zzz-motion.js`，在首页落地底层五条：信号锁定入场、丝滑滚动、磁吸鼠标、自定义光标、噪点扫描线；按样板先行要求只接到首页，未铺到其余 7 个正式页。
+- 信号锁定入场由 GSAP 配合 ScrollTrigger 一次性触发，四个标题按 0s/.22s/.44s/.66s 依次锁定，噪点逐帧随机写入并在结束后清除；磁吸与自定义光标共用单一 pointermove 与单一 rAF，未新增第二套全局循环。
+- 因本机系统已开启「减少动态效果」，默认访问会按无障碍要求关闭动效；为便于验收另加显式 `?motion=force` 预览开关，默认行为不变。
+
+### Testing
+- 非减动效桌面实测：连续帧采样得到 10 组互不相同的噪点偏移，锁定完成后 `--sx`/`--sy` 等变量已清除，标题终态 opacity 为 1 且文本完整。
+- 磁吸实测：指针接近主 CTA 时位移 2.64px / 0.8px，在 6px 量级内，指针离开后类名与变量全部归零。
+- 光标实测：细指针下自定义光标存在、命中链接与按钮变圆环，播放器 range 仍为 pointer；触屏 390×844 与减动效上下文均回退系统光标且无残留。
+- 噪点扫描线 computed opacity 为 0.028，叠加既有 .noise 的 0.032 仍处于规范上限内；滚动自由（0 → 900 → 400），`window.ScrollSmoother` 不存在。
+- 五视口无横向溢出、console/page error 均为 0、Hero 4 张仅 1 张活动、非官方声明节点在位；`node --check zzz-motion.js`、`git diff --check`、`npm test`、`npm run test:stories`（118/118）、`npm run test:boundary:runtime` 均通过。
+- 默认地址复核：系统减动效下四个标题 opacity 均为 1、光标回退、无强制预览类名，无障碍默认未被破坏。
+
+### Notes
+- `zzz-motion.css`：新增首页作用域的五条底层特效静态终态、磁吸与光标样式及减动效、触屏回退。
+- `zzz-motion.js`：新增信号锁定入场、噪点层挂载、磁吸与自定义光标逻辑及强制预览开关。
+- `index.html`：引入上述两个新文件。
+- `progress.md`：追加本轮记录。
+- 未删除 `motion.css` 与 `site-motion.js` 任何规则；`motion.css` 中 reduced-motion 的 `html{scroll-behavior:auto!important}` 保持原样，仅在显式预览时由更高特异性覆盖。
+- 回滚：删除 `zzz-motion.css` 与 `zzz-motion.js`，并从 `index.html` 移除对应两行引用；随后复跑 `npm run test:stories` 与 `npm run test:boundary:runtime`。禁止整仓 restore、checkout、reset、stash。
+
+## 2026-07-30 - Task: 实现首页招牌效果 GSAP 四层鼠标视差
+### What was done
+- 按视觉换血规范第 5 节新建 `zzz-hero-parallax.css` 与 `zzz-hero-parallax.js`，在 Hero 落地四层景深：宽幅影画背景、纯渐变氛围光、透明角色立绘、文字反向层，倍率严格取规范值 0.25 / 0.5 / 1.0 / -0.3，横纵位移上限取实测值 96px 与 26px。
+- 缓动改用 GSAP `quickTo`（duration .6、power2.out、overwrite auto），不再自写 lerp 或 rAF 循环；四张登记片源、页码与暂停按钮合同保持不变，立绘与背景仅作附加景深层叠加。
+- 按规范第 5.3 节避开三个已知坑：立绘 `inset:0` 且底部留 44px 位移余量、不使用任何 3D 倾斜、背景亮度保持 `.86`。原 `home-neon.js` 的轻量视差改为仅在新模块缺失时回退，并注明已由 GSAP 版本接管。
+
+### Testing
+- 层级行程实测（鼠标由 Hero 最左移到最右）：背景 47.73px、光效 95.47px、立绘 190.93px、文字 -57.28px；立绘与背景行程比为 4.0，文字方向与立绘相反，满足规范「立绘约为背景 4 倍且文字反向」的验收标准。
+- 切边安全实测：立绘底部距容器底 38.94px，`inset` 为 `0px 0px 44px`，未检出 `rotateX/rotateY`，背景 filter 为 `brightness(0.86) saturate(0.82)`。
+- 归位实测：指针离开后四层 x/y 全部回到 0。
+- 降级实测：触屏 390×844 与系统减动效默认地址下立绘 `display:none`、背景与光效及文案 transform 均为 `none`、Hero 标题 opacity 为 1。
+- 五视口（1440×900、1280×800、768×1024、390×844、320×720）无横向溢出、console/page error 均为 0、Hero 4 张仅 1 张活动、非官方声明节点在位；未出现箭头、圆点等旧控件。
+- 门禁：`node --check zzz-hero-parallax.js`、`node --check home-neon.js`、`npm run test:stories`（118/118）、`npm run test:boundary:runtime`（PASS，零热链）、定向 `git diff --check` 全部通过。
+
+### Notes
+- `zzz-hero-parallax.css`：新增四层视差样式、立绘余量与触屏、减动效静态回退。
+- `zzz-hero-parallax.js`：新增基于 `gsap.quickTo` 的四层视差、条件启停、归位与轮播切换归零逻辑。
+- `home-neon.js`：原轻量视差降级为缺失时回退，并注明由 GSAP 版本接管，未删除既有实现。
+- `index.html`：引入上述两个新文件。
+- `progress.md`：追加本轮记录。
+- 回滚：删除 `zzz-hero-parallax.css` 与 `zzz-hero-parallax.js`，从 `index.html` 移除对应两行引用，并把 `home-neon.js` 中 `requestAnimationFrame(()=>{if(!window.__zzzHeroParallax)initHeroParallax();})` 改回直接调用 `initHeroParallax()`；随后复跑 `npm run test:stories` 与 `npm run test:boundary:runtime`。禁止整仓 restore、checkout、reset、stash。
+
+## 2026-07-30 - Task: 用 Swiper 接管首页 Hero 轮播内部换片调度
+### What was done
+- 按规范最高指令第 1 条新建 `zzz-hero-swiper.js`，用 Swiper 的 fade 效果与 autoplay 接管 Hero 的内部换片调度，替换原先的 `setTimeout` 轮转，未改动 `app.js`。
+- 完整保留既有合同：四张登记片源与顺序、单一活动项、唯一页码与唯一暂停按钮、`aria-describedby` 指向的状态播报、多原因暂停语义；显式关闭 navigation、pagination、thumbs、scrollbar 与触摸拖动，未引入任何箭头、圆点或缩略图。
+- 因 `heroCarouselState` 是 `app.js` 的模块内变量、外部不可读，改以既有 `#heroCarouselStatus` 的公开状态文案作为暂停判据并用 MutationObserver 同步，从而在不侵入原实现的前提下让 autoplay 与原暂停原因集合保持一致。
+- 需如实记录：本轮施工前我曾在未做任何实测的情况下判断「Swiper 接管为负收益、建议不做」，该结论错误。实测证明存在合规且不破坏合同的接入路径，结论已被推翻并按规范完成实现。
+
+### Testing
+- 接管实测：`window.__zzzHeroSwiper` 报告 engine 为 swiper、slides 为 4、effect 为 fade、navigation/pagination/thumbs 均为 false，autoplay 正在运行。
+- 片源与控件合同：四张 src 与登记顺序完全一致，活动项恒为 1，`#heroCarouselPause` 与 `#heroCarouselIndex` 各 1 个，箭头、圆点、缩略图与旧控件选择器检出为空。
+- 自动前进：活动项由 1 变为 2，页码同步为「03 / 04」，`aria-label` 同步为「当前第 3 张，共 4 张」。
+- 用户暂停：`aria-pressed` 为 true、状态文案为「轮播已由你暂停…」、autoplay 停止，等待超过一个周期后活动项不变；解除后活动项由 2 前进到 3 且 autoplay 恢复。
+- 悬停暂停：状态文案为「当前因指针悬停暂时暂停…」、autoplay 停止，等待超过一个周期后活动项不变。
+- 减动效：固定首张，等待超过一个周期后活动项仍为 0。
+- 门禁：`node --check zzz-hero-swiper.js` 通过；`npm run test:stories` 118/118 且 `failures: []`（含多原因叠加暂停用例）；`npm run test:boundary:runtime` PASS 零热链；无横向溢出、console/page error 为 0；定向 `git diff --check` 通过。
+
+### Notes
+- `zzz-hero-swiper.js`：新增 Swiper fade + autoplay 接管、状态文案驱动的暂停同步、超时回退与控件关闭配置。
+- `zzz-hero-parallax.css`：追加 Swiper 与既有 `.is-active` 透明度的最小协调规则，并强制隐藏 Swiper 自带箭头、圆点、滚动条。
+- `index.html`：引入 `zzz-hero-swiper.js` 并提升视差样式缓存参数。
+- `progress.md`：追加本轮记录。
+- 若 Swiper 未加载或 slide 未就绪，模块在超时后自动放弃接管，`app.js` 原生轮播继续工作，页面不受影响。
+- 回滚：删除 `zzz-hero-swiper.js`，从 `index.html` 移除该行引用，并删除 `zzz-hero-parallax.css` 末尾的 Swiper 协调段；随后复跑 `npm run test:stories` 与 `npm run test:boundary:runtime`。禁止整仓 restore、checkout、reset、stash。
+
+## 2026-07-30 - Task: 实现首页 Hero 标题逐字浮现
+### What was done
+- 按规范 4.2 在 `zzz-motion.js` 新增逐字浮现：自行递归拆分标题文本节点为字符 span，用 `gsap.from` 配 stagger 播放位移、淡入、缩放与模糊收敛，收尾回弹后清除内联属性；未使用付费 SplitText。
+- 完整原文写入容器 `aria-label`，所有字符层标记 `aria-hidden`，屏幕阅读器不会逐字朗读；拆分只替换文本节点，保留标题内既有 `<br>` 与次行 `<span>` 结构。
+- 因 `app.js` 会在启动后用 `innerHTML` 重写标题，改用 MutationObserver 监听重写并在静默 260ms 后才执行拆分，避免被覆盖；此前按固定帧数判断稳定的做法实测失败已被替换。
+
+### Testing
+- 强制预览实测：拆分出 13 个字符层，`aria-label` 为完整「绝区零剧情影像技术档案入口」，全部字符 `aria-hidden` 为 true，`<br>` 与次行 span 均保留，`typeof window.SplitText` 为 undefined。
+- 终态实测：字符最小 opacity 为 1、无残留 blur、全部为 `inline-block`；标题容器 opacity 为 1。
+- 冲突修正：既有 `body.home-page .hero h1 span{display:block!important}` 会把字符层压成独立成行，实测 `charDisplay` 为 block；已只针对 `.zzz-char` 提升优先级恢复 `inline-block`，次行 span 行为不变，复测为 `inline-block`。
+- 减动效默认地址：不执行拆分（字符数 0），但 `aria-label` 仍为完整原文，标题直接清晰可读。
+- 五视口（1440×900、1280×800、768×1024、390×844、320×720）：字符数均为 13、标题文本完整、无横向溢出、console/page error 为 0、Hero 4 张仅 1 张活动。
+- 门禁：`node --check zzz-motion.js`、`npm test`、`npm run test:stories`（118/118）、`npm run test:boundary:runtime`（PASS 零热链）、定向 `git diff --check` 全部通过。
+
+### Notes
+- `zzz-motion.js`：新增按文本节点递归拆分的逐字浮现与基于 MutationObserver 的延后触发。
+- `zzz-motion.css`：新增字符层 `inline-block` 优先级修正与减动效静态回退。
+- `index.html`：提升 `zzz-motion.css` 与 `zzz-motion.js` 缓存参数至 r6。
+- `progress.md`：追加本轮记录。
+- 回滚：从 `zzz-motion.js` 删除 `initSplitReveal` 与 `initSplitRevealWhenStable` 并把 `boot` 中的调用移除，从 `zzz-motion.css` 删除「07 文字逐字浮现」段；随后复跑 `npm run test:stories`。禁止整仓 restore、checkout、reset、stash。
+
+## 2026-07-30 - Task: 阶段 1 至 4 全套验证与正式门禁收口
+### What was done
+- 对阶段 1 至 4 的全部成果跑一次完整验证，覆盖功能、边界、对比度与 UI Gate 四类，确认零真实失败后才刷新正式门禁指纹。
+- 刷新前先冻结完整快照与漂移清单，刷新后逐条核对新增指纹是否只对应本轮已验收改动，确认无意外文件被固化。
+- 另按用户提出的镜像素材问题做了只读核查，结论与可执行范围记入本轮说明，未改动任何素材或数据。
+
+### Testing
+- 功能：`npm test` exit 0（17 组档案媒体、链接诚信、9 页非官方边界）；`npm run test:stories` exit 0，118/118、`failures: []`。
+- 对比度：`npm run test:contrast` exit 0，57 个角色、741 个真实可见样本与 743 个语义色样本均达 AA。
+- 边界：`npm run test:boundary:runtime` 12/12、`npm run test:boundary:all` 85/85，均 exit 0 且零热链。
+- UI Gate：输出至 `artifacts/ui-gate-phase4-final-20260730`，exit 0、77 张截图、1978/1978 检查通过、`blockingFailures` 为 0、`failures` 为空，未覆盖既有 stage3/stage4 证据。
+- 静态检查：`node --check` 覆盖 `zzz-motion.js`、`zzz-hero-parallax.js`、`zzz-hero-swiper.js`、`home-neon.js` 全部通过；定向 `git diff --check` exit 0，仅有既存 LF/CRLF 提示。
+- 刷新前漂移清单：3 项 CHANGED（`index.html`、`home-neon.css`、`home-neon.js`）与 9 项 UNTRACKED（5 个新增前端文件与 4 个 vendor 库文件），与本轮改动清单完全一致。
+- 刷新后逐条核对：正式文件由 69 项增至 78 项，新增 9 项与修改 3 项全部落在预期清单内，无 REMOVED、无意外新增或修改，顶层 `purpose`、`policy`、`note` 未变化，其余 66 项指纹保持不变。
+- 收口复跑 `npm run test:formal`：exit 0，输出 `GATE_OK ALL_FORMAL_UNCHANGED`，78 项全部登记。
+
+### Notes
+- `artifacts/formal-site-gate-baseline.json`：由 `python scripts/check-formal-site-gate.py --write` 生成，仅登记本轮已通过全套验证的阶段 1 至 4 改动。
+- `artifacts/ui-gate-phase4-final-20260730/`：本轮全站 UI 回归截图与报告。
+- `progress.md`：追加本轮验证与收口记录。
+- `artifacts/archive-contract.json` 的修改早于本轮收口且不在正式门禁管辖清单内，本轮未触碰。
+- 素材核查结论（只读，无改动）：wiki 镜像 18741 个文件中音频数为 0，抓取日志无任何音频请求，命中「语音」的 9 个文件均为百科正文而非语音素材，故角色语音仍无本地来源、继续保持禁用与「待补」标注；镜像中确实存在可用的属性、职业、材料与等级类官方小图标，但 `agent-catalog.js` 尚无属性与职业字段，按禁止编造数据的约束需先抓取真实数据方可挂载；`assets/icons/` 的 19 个阵营徽记对应真实阵营字段，属于可直接落地项。
+- 精准回滚：刷新前完整快照位于 `C:\Users\Rage\AppData\Local\Temp\hooxi-home-overhaul-20260730-iD3S3d\before-formal-refresh`，含旧 `formal-site-gate-baseline.json`、九个前端文件副本、`SHA256SUMS.txt`、`git-status.txt` 与 `drift-before.txt`。如需撤销收口，仅用该目录的 baseline 覆盖 `artifacts/formal-site-gate-baseline.json` 即可恢复 69 项状态；如需连同代码回退，再按前述各轮记录逐项定点还原。禁止整仓 restore、checkout、reset、stash。
+
+## 2026-07-29 - Task: 首页代理卡接入本地阵营徽记
+### What was done
+首页精选代理卡在角色立绘右下角新增所属阵营徽记角标，徽记取自已核实的本地 18 阵营素材映射，无新增外部依赖与外链。徽记为纯装饰层，阵营名称仍由原有文字信息承载，读屏用户信息量不变。
+### Testing
+- 三档视口（1440/1024/390）实测：8 张代理卡全部渲染徽记，图片全部加载成功，徽记均位于立绘与卡片边界内，横向溢出为 0，页面无 JS 报错。
+- 无障碍合同实测：徽记 alt 全为空、aria-hidden 全为 true，确认按装饰图处理。
+- `npm run test:content` PASS（档案校验 17 组、链接诚信、非官方边界 9 页）。
+- `npm run test:formal` 首轮仅报 app.js 与 home-neon.css 两处本轮授权改动，刷新基线后复跑 GATE_OK ALL_FORMAL_UNCHANGED。
+- `npm run test:boundary:all` 本轮超时未取得结论，属验证缺口；非官方边界已由 test:content 内的 boundary 检查覆盖。
+### Notes
+- `app.js`：代理卡渲染新增 factionLogo 取值与徽记节点。
+- `home-neon.css`：新增 `.home-agent-faction` 徽记定位、尺寸与 hover 描边样式。
+- `artifacts/formal-site-gate-baseline.json`：刷新上述两文件指纹。
+- 回滚点：撤销 app.js 与 home-neon.css 本轮两处改动，再执行 `python scripts/check-formal-site-gate.py --write` 回写基线。
+
+## 2026-07-29 - Task: 补齐徽记接入的运行时边界门禁并修正来源声明
+### What was done
+补跑上一轮缺失的运行时边界门禁，暴露出真实问题：首页已实际使用阵营徽记素材，但页脚来源与版权声明只写了立绘、影画与截图，未覆盖徽记。按既有口径把两处声明补上徽记，使声明与页面实际用图一致。
+### Testing
+- 定位上轮超时原因：运行时边界脚本依赖 127.0.0.1:8000 静态服务，之前无服务在空等。起本地静态服务后可正常跑完。
+- `node scripts/check-boundary-runtime.mjs` 首轮 FAIL 1 项，明确指向 index.html 使用徽记类素材但页脚声明未覆盖；补声明后复跑 PASS，12 个目标全部通过。
+- `npm run test:boundary:all` PASS，85 页全量核查通过，素材类型分布显示「立绘+徽记」18 页与「徽记」1 页均被正确识别并被声明覆盖。
+- `npm run test:content` PASS。
+- `npm run test:formal` 首轮仅报 index.html 一处本轮声明改动，刷新基线后复跑 GATE_OK ALL_FORMAL_UNCHANGED。
+### Notes
+- `index.html`：页脚 disclaimer 与「权利与来源出口」两处声明补入「徽记」。
+- `artifacts/formal-site-gate-baseline.json`：刷新 index.html 指纹。
+- 回滚点：撤销 index.html 本轮两处文案改动，再执行 `python scripts/check-formal-site-gate.py --write` 回写基线；注意若回滚徽记功能本身，须连同上一轮 app.js、home-neon.css 一起回滚，否则运行时边界会重新 FAIL。
+
+## 2026-07-30 - Task: 实施参考 DNA 五项安全手法（不改深色方向与 clip-path）
+### What was done
+在不动既有深色舞台与 clip-path 斜切的前提下，按参考首页 DNA 落地五项结构性手法：首页各楼层改为「英文名 + 两位编号」的真实三行导航结构（原先编号藏在 CSS 伪元素里，已撤除避免重复），Hero 补 01 使编号序列 01–05 连续，档案页链接悬停缩放对齐官方 1.12，楼层编号接入现有 GSAP 滚动触发做错峰入场（未新建第二套滚动监听），并校核荧光强调色实际渲染用量是否符合官方「点睛而非主色」的纪律。
+DNA 中与项目方向冲突的项本轮一律未做：浅灰底、近黑字、PNG 切图斜切、官方标题字体与 Impact、移动端独立路由、官方六楼层命名硬映射。
+### Testing
+- 三档视口（1440/1024/390）实测：section-nav 4 组、编号 5 个、序列 01,02,03,04,05 正确，编号全部 aria-hidden=true，旧伪元素编号残留为空，横向溢出 0，无 JS 报错。
+- 入场收口实测：英文行入场结束回到不透明，编号行回到设计静态值 0.34（非 0），确认 GSAP from 动画未残留。
+- 首轮探测脚本误报 allSettled=false，排查为脚本断言写错（按「应接近 1」断言了静态半透明 0.34 的编号），非页面缺陷；修正断言后通过。
+- 悬停实测：transform 由 none 变为 matrix(1.12,...)，缩放恰为 1.12；reduced-motion 下保持 none 不缩放。
+- 荧光用量实测 9 处，分布于扫描线、skip-link、Hero 光晕、播放器与光标等装饰层，符合官方极少量点睛口径。
+- `npm run test:content` PASS；`node scripts/check-boundary-runtime.mjs` PASS（12 目标）；`npm run test:boundary:all` PASS（85 页）；`npm run test:contrast` PASS（57 人首屏均达 AA）。
+- `npm run test:formal` 首轮仅报 index.html、home-neon.css、zzz-motion.js 三处本轮改动，刷新基线后复跑 GATE_OK ALL_FORMAL_UNCHANGED。
+### Notes
+- `index.html`：四处 section-head/about-heading 新增 section-nav 三行结构，Hero 新增 01 编号。
+- `home-neon.css`：新增 .section-nav / .section-nav-en / .section-nav-num / .hero-nav-num 样式，移除原伪元素编号规则，档案页链接悬停加 scale(1.12)。
+- `zzz-motion.js`：新增 navIn 编号错峰入场，复用既有 ScrollTrigger 触发点。
+- `artifacts/formal-site-gate-baseline.json`：刷新上述三文件指纹。
+- 待办提示（本轮未处理，未扩范围）：zzz-motion.js、zzz-motion.css、zzz-hero-parallax.js、zzz-hero-swiper.js 四个视觉换血文件在 git 中仍是 UNTRACKED，正式门禁却已纳管。这是既有状态而非本轮引入，但意味着这些文件目前没有 git 层回滚保护，建议后续单独确认是否入库。
+- 回滚点：撤销 index.html、home-neon.css、zzz-motion.js 本轮改动，再执行 `python scripts/check-formal-site-gate.py --write` 回写基线。注意 zzz-motion.js 未入 git，回滚需手工移除 navIn 相关代码。
+
+## 2026-07-30 - Task: 中文标题字体由仿宋改为系统黑体并补 UI gate 编号断言
+### What was done
+用户反馈标题字体观感差，要求改黑体或换官网字体。官网字体一项已明确拒绝：官方标题字体属官方资源且体积约 3.8MB，非官方站引入会触碰版权边界。改为新增中文标题黑体变量，全部使用系统自带字体，Hero 主标题与各楼层标题统一切到该栈并加粗到 900；theme-zzz.css 中两处同源仿宋声明一并同步，避免与首页样式不一致导致字体闪烁。
+同时把上一轮新增的楼层编号结构纳入 UI gate 常态保护，补一条断言校验编号连续、对读屏隐藏、且不与旧伪元素编号并存。
+### Testing
+- 断言有效性反向验证：故意把编号 04 改成 07 后 UI gate 报 30 项阻断失败，还原后复跑通过，确认断言真能抓错而非空跑。
+- 还原核对：index.html 已恢复 01–05，正式门禁变更清单中不含 index.html，确认反向验证未留残留。
+- 字体实测：Hero 与 4 个楼层标题 computed fontFamily 均为新黑体栈、fontWeight 900，编号序列 01–05 正常。
+- 探测脚本一处误报（正则把 sans-serif 里的 serif 也命中），经核对为脚本正则问题，非页面残留。
+- `npm run test:content` PASS；`npm run test:contrast` PASS（57 人首屏均达 AA）；`npm run test:ui` PASS（77 张截图，含新增编号断言）。
+- `npm run test:formal` 首轮仅报 theme-zzz.css、tokens.css、home-neon.css 三处本轮改动，刷新基线后复跑 GATE_OK ALL_FORMAL_UNCHANGED。
+### Notes
+- `tokens.css`：新增 --font-cn-display 中文标题黑体栈（全为系统字体）。
+- `home-neon.css`：Hero h1 与楼层 h2 改用该变量并加粗至 900。
+- `theme-zzz.css`：两处仿宋声明替换为同一变量。
+- `scripts/capture-r1-baseline.mjs`：新增 home-floor-numbers-are-sequential-and-decorative 断言。
+- `artifacts/formal-site-gate-baseline.json`：刷新上述三样式文件指纹。
+- 回滚点：撤销 tokens.css、home-neon.css、theme-zzz.css 本轮字体改动，再执行 `python scripts/check-formal-site-gate.py --write` 回写基线。
+
+## 2026-07-30 - Task: 核查首页动效实现率并修正字体栈与编号配色偏差
+### What was done
+用户质疑首页未实现规范中的多条动效。经逐条实测核对，规范共 21 条编号，其中明确分为「全站底层五条」「首页专属四条」「已确认要做四条」「后期不做三条」，并非 20 条全部要求在首页出现。实测结论是绝大多数已生效，非 bug。
+过程中修掉两个真实偏差：一是中文标题黑体栈前四项在本机均不存在、实际兜底到 Microsoft YaHei UI，且雅黑无 900 字重会被合成假粗，故把 Windows 常驻黑体前置并把字重收敛到 700；二是楼层编号未按规范第 02 条使用半透明荧光色，原实现为普通白字加透明度，已改为荧光值。
+### Testing
+- 动效实测（首页，非减动效）：GSAP、ScrollTrigger、Swiper 均已加载，Swiper 实例 1 个；丝滑滚动 scroll-behavior=smooth；信号锁定入场滚动后出现 is-locked；噪点扫描线 opacity 0.028 符合不超过 .04；自定义光标节点存在且 body cursor=none；磁吸目标 9 个；Hero 图 fetchpriority=high；斜切 clip-path 命中 23 处；逐字浮现拆出 13 个 span 且 h1 保留完整 aria-label；磁带机播放器存在。
+- 鼠标视差四层行程差实测（鼠标移至 Hero 右侧）：backdrop +12.67px、glow +25.33px、figure +50.67px、hero-copy -15.2px，四层比例与反向层符合规范 5.2 设计。
+- 首轮探测两处误判已排查：视差层探测用错选择器（实际为 .zzz-hero-backdrop 等自有类名）；编号 opacity 读到 1 是因为读取时机在入场动画前，滚动后为 0.34。均为脚本问题非页面缺陷。
+- 字体真实解析实测：用 CDP getPlatformFontsForNode 确认标题实际渲染字体为 Microsoft YaHei UI；canvas 宽度比对确认思源、苹方、鸿蒙在本机均不可用。
+- `npm run test:ui` PASS（77 张截图）；`npm run test:content` PASS；`npm run test:formal` 刷新基线后 GATE_OK ALL_FORMAL_UNCHANGED。
+### Notes
+- `tokens.css`：--font-cn-display 字体栈顺序调整为 Windows 黑体前置，附注实测依据。
+- `home-neon.css`：Hero h1 与楼层 h2 字重由 900 收敛为 700（附注雅黑仅两档字重的原因）；.section-nav-num 改用半透明荧光色并移除独立 opacity。
+- `artifacts/formal-site-gate-baseline.json`：刷新上述两文件指纹。
+- 未实现项说明（非 bug，规范原文即列为不做或非首页）：第 11、16、13 条属「后期再说」；第 06、18 条属角色页专属；第 20 条电视信号转场实测首页无转场层，属阶段 4 未完成范围，仍在 blocked 任务内等验收。
+- 回滚点：撤销 tokens.css、home-neon.css 本轮改动，再执行 `python scripts/check-formal-site-gate.py --write` 回写基线。
+
+## 2026-07-30 - Task: 校正楼层荧光编号在深色底的实际对比度
+### What was done
+实测楼层编号与标题在深色底上的真实合成色与对比度，确认视觉层级关系正确后，把编号荧光透明度由 .34 提到 .46，解决大字号下偏灰显脏的问题。
+### Testing
+- 合成对比度实测（半透明前景先与实际底色合成再计算）：编号原为 2.73:1 偏灰，调整后为 4.07:1；同屏标题为 16.29:1，层级差保持清晰，编号未抢主标题层级。
+- 编号为 aria-hidden 纯装饰，不承担正文可读性义务，故不套用 AA 正文阈值；该判断已写入代码注释。
+- `npm run test:contrast` PASS（57 人首屏均达 AA，语义色隔离未受影响）；`npm run test:ui` PASS（77 张截图）；`npm run test:formal` 刷新基线后 GATE_OK ALL_FORMAL_UNCHANGED。
+### Notes
+- `home-neon.css`：.section-nav-num 荧光透明度 .34 改为 .46，附注实测对比度依据与不套 AA 阈值的理由。
+- `artifacts/formal-site-gate-baseline.json`：刷新 home-neon.css 指纹。
+- 回滚点：把该行改回 rgba(216,250,0,.34)，再执行 `python scripts/check-formal-site-gate.py --write` 回写基线。
+
+## 2026-07-30 - Task: 接入规范第 20 条电视信号缓冲转场（首页）
+### What was done
+补齐上一轮只写了 CSS 未接 JS 的半成品，完成电视信号缓冲转场在首页的正式接入。点击站内链接先拦住跳转播「信号中断」，雪花最浓时才真正跳走，用雪花段盖住真实加载空档。五层纯 CSS 无图片，视觉语言沿用样本页，时序照用规范 4.8 时序表。
+同时把之前被我误关的本地预览服务改为常驻脚本，避免验证流程再把用户正在看的链接带走。
+### Testing
+- 转场时序实测：点击站内链接后 160ms 采样仍停留在 index.html，转场层 visibility=visible、雪花 opacity=0.95，确认跳转被拦且雪花已盖满；实际跳转在 637ms 内完成，落地 /mainline.html 与链接 href 一致；全程无 JS 报错。
+- 减动效实测：reducedMotion=reduce 下 136ms 直接跳转、未创建转场层，确认退化为直接跳转。
+- 边界不拦实测：外链（B站主页，target=_blank）与同页锚点（#top）点击后 defaultPrevented 均为 false，确认只拦同源普通导航。
+- 无障碍：转场层 aria-hidden=true，纯装饰不进可访问性树。
+- `npm run test:ui` PASS（77 张截图）；`npm run test:content` PASS；`node scripts/check-boundary-runtime.mjs` PASS（12 目标）；`npm run test:formal` 刷新基线后 GATE_OK ALL_FORMAL_UNCHANGED，纳管文件数由 78 增至 80。
+### Notes
+- `zzz-tv-transition.css`（新增）：五层转场视觉，含减动效下整体不显示。
+- `zzz-tv-transition.js`（新增）：跳转拦截、信号中断段、重新锁定段与 sessionStorage 标记。
+- `index.html`：引入上述两个文件。
+- `artifacts/serve-local.js`（新增）：本地预览服务，仅监听 127.0.0.1，含目录穿越防护；非生产部署用。
+- `artifacts/formal-site-gate-baseline.json`：刷新 index.html 指纹并纳管两个新文件。
+- 已知未完成部分：转场目前只在首页生效，其余 7 个正式页未引入，因此从首页跳出后落地页不播「重新锁定」收尾段，体验是半截的。铺开需改 7 个 HTML，属跨文件扩范围，等用户确认后再做，本轮未擅自铺开。
+- 回滚点：删除 zzz-tv-transition.css 与 zzz-tv-transition.js，撤销 index.html 两处引入，再执行 `python scripts/check-formal-site-gate.py --write` 回写基线。
+
+## 2026-07-30 - Task: 修首页标题遮挡与质感薄弱，查清转场未生效根因
+### What was done
+按用户反馈处理三件事。一是首页 Hero 标题被卡图遮挡：根因是标题盒宽写死 max-width:9ch 只够 9 字，而标题实际 13 字，字体宽度因机器而异时会挤出文案栏压到卡图上；改为吃满文案栏宽度由栅格决定边界，字号同步由 104px 收到 88px。二是全站缺质感：大面积纯色平铺导致观感扁平，为 Hero 卡图补外投影与顶边内高光、为全站底板叠两层极淡颗粒与冷暖光晕、为代理卡与路径卡补内高光与投影。三是查清用户看不到电视信号转场的真实原因。
+另外移除上一轮误加的 Hero 01 编号节点：Hero 的 01 本就由 .hero::before 巨型水印承担，两者重复。
+### Testing
+- 遮挡实测：多档视口（1568/1600/1920/1440/1280/1024/390）量取标题右边界与卡图左边界，修正后标题盒右边界 638px、卡图左边界 783px，不再交叠；逐字 span 无越界。
+- 转场未生效根因实测：motion.css 第 236 行已声明 @view-transition{navigation:auto}，浏览器原生跨文档转场直接接管导航，点击拦截拿不到控制权。证据为跳转过程中 sessionStorage.setItem 从未被调用（追踪记录为空）、落地页转场层不存在、收尾段一次未播。用户看到的黄色擦除是既有原生转场，一直正常工作。
+- 据此为转场脚本加原生转场检测：实测识别到 CSSViewTransitionRule（来自 motion.css）后脚本正确不介入，跳转 1172ms 正常完成、无残留遮挡层、无 JS 报错。
+- UI gate 曾报 30 项失败，排查为我自建断言过时（移除 Hero 01 后编号从 02 起，断言仍锁定必须从 01 开始），改为只校验连续性后通过，非页面回归。
+- 全套门禁：`test:ui` PASS（77 张）、`test:content` PASS、`check-boundary-runtime` PASS（12 目标）、`test:boundary:all` PASS（85 页）、`test:contrast` PASS（57 人 AA）、`test:stories` PASS（118 项）、`test:links` PASS；`test:formal` 刷新基线后 GATE_OK ALL_FORMAL_UNCHANGED。
+### Notes
+- `home-neon.css`：Hero 标题盒宽与字号修正、移除 hero-nav-num 规则、Hero 卡图与卡片补投影内高光、body 底板补颗粒与光晕。
+- `index.html`：移除重复的 Hero 01 编号节点。
+- `mainline/events/behind-scenes/character/faction/stories/cultivate.html`：引入 GSAP 与转场资源（本轮发现 GSAP 原先只在首页加载）。
+- `zzz-tv-transition.js`：修跳转标记写入时机、收尾段加兜底清除与延帧启动、新增原生转场检测以避免两套转场并存。
+- `scripts/capture-r1-baseline.mjs`：编号断言改为只校验连续性，不锁起始值。
+- `artifacts/formal-site-gate-baseline.json`：刷新上述文件指纹。
+- 待用户决策（未擅自处理）：站内转场存在两套方案冲突。原生黄色擦除已生效且成本为零；电视信号雪花需禁掉 motion.css 的 navigation:auto 才能生效。当前实现为电视转场主动让位，7 页的引入暂不产生视觉效果，等用户选定方案后再收敛。
+- 回滚点：撤销上述文件本轮改动，再执行 `python scripts/check-formal-site-gate.py --write` 回写基线。
+
+## 2026-07-30 - Task: 收敛转场方案冲突，电视信号转场全链路生效
+### What was done
+上一轮把方案选择丢给用户是错的：当时电视转场被我做成主动让位，等于 8 页挂着不生效的引用。本轮按规范 4.8 第 20 条明确选定电视信号缓冲转场，禁用 motion.css 的原生 @view-transition{navigation:auto}（保留其 keyframes 与伪元素规则便于回退），撤掉脚本里的让位逻辑，并补跳转保险确保动画异常时也必定跳转，不会把用户困在雪花页。
+### Testing
+- 中断段实测：点击站内链接后仍停在 index.html，转场层可见、雪花 opacity 0.95、扫描线 1.00、缓冲提示可见，确认雪花真正盖住画面。
+- 落地收尾实测：跳到 mainline.html 后雪花由 0.05 递减到 0.00、扫描线由 0.98 收到 0.00，最终层 visibility=hidden、opacity=0，确认重新锁定段已播且未遗留遮挡。
+- 减动效实测：440ms 直接跳转、未创建转场层。
+- 原生规则实测：遍历样式表已查不到 CSSViewTransitionRule，确认两套转场不再并存。
+- 全程无 JS 报错。
+- 门禁：`test:ui` PASS（77 张）、`test:content` PASS、`test:stories` PASS（118 项）、`check-boundary-runtime` PASS（12 目标）；`test:formal` 刷新基线后 GATE_OK ALL_FORMAL_UNCHANGED。
+### Notes
+- `motion.css`：注释掉 @view-transition{navigation:auto} 并说明原因与回退方式。
+- `zzz-tv-transition.js`：移除原生转场让位检测，新增跳转兜底定时器。
+- `artifacts/formal-site-gate-baseline.json`：刷新上述文件指纹。
+- 回滚方式：恢复 motion.css 中 @view-transition{navigation:auto} 一行即可回到原生黄色擦除；电视转场脚本会因原生接管而自然不生效，无需同时改 JS。改完执行 `python scripts/check-formal-site-gate.py --write` 回写基线。
+
+## 2026-07-30 - Task: 把规范 4.1 全站底层动效铺到 7 个非首页正式页
+### What was done
+核查发现规范 4.1 要求「铺到所有页面」的底层五条实际只在首页生效：zzz-motion.js 第 3 行对非首页直接 return，zzz-motion.css 全部规则被 body.home-page 限定，且 GSAP 原先也只在首页加载。本轮按手法性质分开处理——与页面结构无关的丝滑滚动、噪点扫描线、自定义光标、磁吸鼠标放开到全站；依赖 .home-act 楼层与 #heroTitle 的信号锁定入场与标题逐字浮现保持首页专属，避免在无对应结构的页面空跑。磁吸目标在非首页退回通用按钮与导航链接，不逐页维护清单。
+同时定位并说明了用户「必须点强制启动才有动画」的原因：本机 VisualFXSetting=2（调整为最佳性能），Windows 关闭系统动画后浏览器上报 prefers-reduced-motion: reduce，站点按无障碍要求主动降级，属预期行为而非缺陷。
+### Testing
+- 8 页逐页实测（首页 + 7 正式页）：scroll-behavior=smooth、扫描线已挂载且 opacity 0.028 保持在规范 .04 上限内、自定义光标节点存在且 body cursor=none、GSAP 均已就绪，全部页面零 JS 报错。
+- 首页专属两条隔离实测：仅首页有 4 个信号锁定目标与 14 个拆字 span，其余 7 页均为 0，确认未在缺结构的页面误跑。
+- 减动效三态实测：默认态动效齐全；系统开启减少动效时光标退回原生、平滑滚动转 auto、标题不拆字；追加 ?motion=force 后全部恢复，三态表现符合设计。
+- UI gate 曾报 1 项 deep-link-contract 失败，属真回归：全站放开平滑滚动后 stories.html#agentSearchForm 深链的搜索框聚焦被滚动打断。修法为仅该页恢复即时锚点滚动，未改动其 JS 聚焦逻辑，复跑通过。
+- 全套门禁：`test:ui` PASS（77 张）、`test:stories` PASS（118 项）、`test:content` PASS、`check-boundary-runtime` PASS（12 目标）、`test:boundary:all` PASS（85 页）、`test:contrast` PASS（57 人 AA）；`test:formal` 刷新基线后 GATE_OK ALL_FORMAL_UNCHANGED，首页指纹未变动。
+### Notes
+- `zzz-motion.js`：首页判断由提前 return 改为 isHome 分支；磁吸选择器按页型分流；boot 中底层两条全站执行、首页两条条件执行。
+- `zzz-motion.css`：丝滑滚动、扫描线、自定义光标与减动效降级分支去掉 body.home-page 限定；新增 stories 页即时锚点滚动例外并注明原因。
+- `mainline/events/behind-scenes/character/faction/stories/cultivate.html`：引入 zzz-motion.css 与 zzz-motion.js。
+- `artifacts/formal-site-gate-baseline.json`：刷新上述文件指纹。
+- 待用户决策（未擅自新增）：正式站没有可见的动效降级提示或开关，样本页有「强制预览动效」按钮。是否在正式站补一次性提示待用户确认，本轮未加，避免正式页面出现调试感控件。
+- 回滚点：撤销上述文件本轮改动，再执行 `python scripts/check-formal-site-gate.py --write` 回写基线。
+
+## 2026-07-31 - Task: 正式站补动效降级提示（仅系统减少动效时出现，可一键预览可关闭）
+### What was done
+接上一轮遗留决策项：正式站此前没有任何降级说明，开启系统「减少动态效果」的访客只会看到静止页面，容易误判为页面损坏。本轮落地一个克制的提示条——只在系统确实开启减少动效时出现，说明动效已按系统设置关闭，并给出「本次预览动效」出口与关闭按钮；关闭后本会话不再出现。默认行为不变，仍严格遵守系统设置，不引入任何常驻控件或调试感元素。提示文案不涉及站点定位，非官方声明与版权文案未触碰。
+提示组件已铺到 8 个正式页，样式复用既有荧光点睛与深色面板 token，未新增颜色变量。
+### Testing
+- 三态实测（Playwright，本地 8000 端口）：系统减少动效开启时提示出现；未开启时不出现；`?motion=force` 下提示不出现但预览态生效（body/html 均带 zzz-motion-forced、scroll-behavior=smooth）。
+- 交互与会话实测：点击关闭后节点移除且 sessionStorage 标记为 1，同会话内重新加载不再出现。
+- 无障碍实测：容器 role=status / aria-live=polite；预览按钮键盘可聚焦且焦点环 3px 实线可见，Tab 可达关闭按钮，Enter 可关闭；关闭按钮 aria-label 为「关闭动效提示」，实测尺寸 44×44，预览按钮 108×44，均达 44px 点击目标要求。
+- 对比度实测（面板底 rgb(26,34,45)）：正文 13.50:1、预览按钮 13.42:1、关闭按钮 13.50:1、焦点环对面板 13.42:1，全部超过 AA 门槛；荧光绿只用于按钮与焦点环，未用作正文色。
+- reduced-motion 下提示自身静止：animation-name=none、transform=none，无位移动效。
+- 响应式实测 1440×900 / 1024×768 / 390×844：三档均完整在视口内，无横向溢出。
+- 8 页覆盖实测：index、character、stories、faction、mainline、events、behind-scenes、cultivate 全部 reduceOn=true / reduceOff=false 且零 JS 报错，8/8 通过。
+- 全套门禁：`npm test` PASS、`test:stories` PASS（118/118）、`test:boundary:runtime` PASS（12 页）、`test:boundary:all` PASS、`test:contrast` PASS（57 人 AA）、`test:ui` PASS（77 张）；`test:formal` 刷新基线后 GATE_OK ALL_FORMAL_UNCHANGED；`git diff --check` exit 0。
+### Notes
+- `zzz-motion-notice.js`：本轮接入使用的提示脚本，仅在系统减少动效且非 `?motion=force` 时注入提示，关闭状态存 sessionStorage。
+- `zzz-motion.css`：新增 `.zzz-motion-notice` 一组样式（面板、预览按钮、关闭按钮、focus-visible），未改动既有规则。
+- `index/character/stories/faction/mainline/events/behind-scenes/cultivate.html`：各在 zzz-motion.js 之后新增一行 zzz-motion-notice.js 引用，无其他改动。
+- `artifacts/formal-site-gate-baseline.json`：刷新上述文件指纹。
+- 回滚点：删除 8 个页面中 zzz-motion-notice.js 引用行、移除 zzz-motion.css 中 `.zzz-motion-notice` 样式块（提示脚本文件可保留不生效），再执行 `python scripts/check-formal-site-gate.py --write` 回写基线。
+
+## 2026-07-31 - Task: 补部署可达性门禁，填补「文件未入 git 导致线上 404」的检测盲区
+### What was done
+排查 C1 施工前置条件时发现一个既有隐患：正式站门禁只比对文件内容指纹，文件在本机存在就 PASS，完全不检查是否已入 git；而 GitHub Pages 部署链路是 checkout 之后直接上传仓库目录，未入 git 的文件不会出现在 checkout 结果里。两者叠加的后果是「本机全绿、线上 404」，且没有任何现有门禁能发现。
+全量比对门禁基线 81 个文件与 8 个正式页引用的本地资源后，确认当前有 18 个文件处于「未跟踪且未被 .gitignore 排除」状态，即漏 git add，涵盖全站动效脚本样式、GSAP 与 Swiper 本地库、以及三个角色立绘、一张卡图、一张影画和一个阵营徽记。
+本轮不擅自入库（git 操作需用户授权），改为补上自动检测：新增门禁脚本按影响面分级报出缺口，把「漏 add」与「.gitignore 有意排除」区分开，有缺口即 exit 1，可进 CI。
+另查出一处不一致但非缺陷：zzz-motion.js 在 8 页都会用到 ScrollTrigger，但该库只有 index.html 引入。因代码有 if(!ScrollTrigger) 兜底、且非首页无 .section-nav-num 目标，实测四页零报错，本轮未动，已记录备查。
+### Testing
+- 缺口捕获实测：`node scripts/check-deploy-tracking.mjs` 正确报出全部 18 个未入 git 文件，分级为 A 全站 6 个、B 首页专属 6 个、C 仅基线 6 个，exit 1。
+- 修复可转绿实测：用 `git add --intent-to-add` 模拟入库后复跑转为 PASS 且 exit 0，确认脚本不是只会报错；随后 `git reset` 完全还原为未跟踪状态，`git status` 中已暂存新文件数为 0，入库决定权未被擅自行使。
+- 脚本入口实测：`npm run test:deploy` 可正常触发并返回 exit 1；`package.json` JSON 合法性校验通过。
+- 既有门禁未受影响：`npm run test:formal` 为 GATE_OK ALL_FORMAL_UNCHANGED；`git diff --check -- package.json` exit 0。
+- ScrollTrigger 一致性实测：index.html 为 function，stories/mainline/character 三页为 undefined，四页均零 JS 报错，确认当前无实际故障。
+### Notes
+- `scripts/check-deploy-tracking.mjs`：本轮新增，检查门禁基线与正式页引用资源的 git 跟踪状态，按影响面分级输出，缺口时 exit 1。
+- `package.json`：scripts 段新增 `test:deploy` 入口一行，未改动其他脚本。
+- `docs/HOME-DNA-REMAINING-DECISIONS.md`：补写 18 个缺口的三级清单、部署链路风险分析、ScrollTrigger 不一致记录与本门禁的用法说明。
+- 未改动任何正式受管文件，未改动 .gitignore 或任何 git 配置，未提交任何文件入库。
+- 待用户授权（本轮未执行）：18 个文件的 `git add` 命令已写入上述 docs，需确认是否入库，以及 assets/vendor/ 约 290KB 是否接受入库。授权前不要触发 Pages 部署。
+- 回滚点：删除 `scripts/check-deploy-tracking.mjs`、移除 `package.json` 中 `test:deploy` 一行即可完全还原；本轮未触碰正式受管文件，无需回写门禁基线。
+
+## 2026-07-31 - Task: 部署可达性门禁扫描范围扩到全部会部署的页面
+### What was done
+上一轮新增的部署可达性门禁只扫 8 个正式页，仓库根目录另有 9 个 HTML（样板页与 editor 工具页）未被覆盖，需确认是否藏有同类「文件未入 git 导致线上 404」缺口。
+逐页查证后确立判定规则：页面本身未入 git 的样板页（5 个），部署时页面自己就不存在，其引用资源缺失不影响线上，不应报出；页面已入 git 的（4 个）会真实部署，引用资源必须入库。实测 5 个未入库样板页引用的 14 个未入库资源没有任何已入库页面引用，可安全排除；4 个已入库页面的引用全部干净。
+据此把扫描范围改为「8 个正式页 + 全部已跟踪的根目录 HTML」，并在脚本内写明判定理由，避免后续误改回去。
+### Testing
+- 未覆盖页面全量扫描：5 个未入 git 样板页引用的 14 个未入库资源，byTrackedPage 全部为 False，确认无已部署页面依赖。
+- 已入库页面复查：character-sample、editor、tape-wall-sample、wiki-style-sample 四页 untrackedRefs 均为 0。
+- 扩围前后对比：检查项由 81 增至 94，扫描页面由 8 增至 12，缺口数仍为 18 且清单逐项一致，确认无漏报、无误报，exit 1 行为不变。
+- `npm run test:formal` 为 GATE_OK ALL_FORMAL_UNCHANGED。
+### Notes
+- `scripts/check-deploy-tracking.mjs`：扫描范围由固定 8 页改为「8 正式页 + 已跟踪根目录 HTML」，新增 trackedHtmlPages 取页逻辑与判定理由注释，fromPages 改为接收页面清单参数，输出补一行扫描页数；分级口径保持以 8 个正式页为全站基准。
+- `docs/HOME-DNA-REMAINING-DECISIONS.md`：补写扩围判定规则、两类页面的实测数据与扩围前后对比结论。
+- 未改动任何正式受管文件，未改动 git 配置，未入库任何文件。
+- 回滚点：将 scripts/check-deploy-tracking.mjs 的 scanPages 改回固定 PAGES 常量即可还原为 8 页扫描；本轮未触碰正式受管文件，无需回写门禁基线。
+
+## 2026-07-31 - Task: 写出 C1 侧栏页码实现原型并验证「不新建滚动监听」声明
+### What was done
+C1 侧栏页码此前只有落位参数与观感截图，缺一份可直接落地的实现，且文档里「复用既有 ScrollTrigger、不新建监听」这一推荐理由从未验证过。本轮把它写成完整原型并逐项实测。
+原型含首屏隐藏保护 keyart、滚过 Hero 后淡入、当前项随可视楼层同步、真实 button 键盘可达与锚点跳转、小屏隐藏、reduced-motion 降级。代码放在 prototype/ 下，落地时按注释追加到 zzz-motion.js 与 zzz-motion.css。
+验证中修正了原推荐里的一处措辞不准确：既有 initSignalLock 的 ScrollTrigger 是 once:true 一次性入场，无法承载持续跟踪，故侧栏是新建 ScrollTrigger 实例、复用同一个库与 ticker，而非复用同一触发点。「不新建滚动监听」成立，「复用同一触发点」不成立，已在文档中改正而非沿用原话。
+### Testing
+- 不新建滚动监听实测：注入前后页面 scroll 监听数均为 4，delta=0；ScrollTrigger 实例由 4 增至 9（侧栏新增 1 个显隐 + 4 个楼层），全部走库的统一 ticker。
+- 显隐与同步实测：首屏 opacity 0；滚过 Hero 后 opacity 1、当前项 02、aria-current=true；回到首屏 opacity 0。
+- 无障碍实测：真实 button 可聚焦，aria-label 为「跳到精选代理人」，点击目标 41×44px；点击跳转生效（scrollY 1170 → 4237）；四个条目齐全；零 JS 报错。
+- 降级实测：reduced-motion 下过渡时长归零、当前项仍正确、功能可用；390px 视口 display:none。
+- 焦点环缺陷与修复：初版 outline 被站内全局规则覆盖为 rgba(232,236,241,.42) 低对比度灰，提高特异性并显式锁 color 后实测为 rgb(62,199,214)、对比度 9.75:1，超过 3:1 门槛；当前项荧光对比度 16.59:1。
+- `npm run test:formal` 为 GATE_OK ALL_FORMAL_UNCHANGED。
+### Notes
+- `prototype/side-rail-preview/rail-impl.js`：本轮新增，C1 侧栏行为实现原型，含落地位置注释。
+- `prototype/side-rail-preview/rail-impl.css`：本轮新增，C1 侧栏样式原型，含焦点环覆盖问题的成因注释。
+- `docs/HOME-DNA-REMAINING-DECISIONS.md`：补写实现原型说明、十项实测结果表、触发点复用措辞的更正与焦点环缺陷修复记录。
+- 未改动任何正式受管文件，未改动 git 配置，未入库任何文件。
+- 回滚点：删除 prototype/side-rail-preview/rail-impl.js 与 rail-impl.css 即可完全还原；本轮未触碰正式受管文件，无需回写门禁基线。
+
+## 2026-07-31 - Task: 写出 C3 播放中状态心跳实现原型并验证与既有交互无冲突
+### What was done
+C3 此前只在按钮静止态验过动画可行性，未验播放器真实交互下的表现。本轮写成完整原型并逐项实测，过程中有两个发现改变了原先设想的做法。
+一是不需要任何 JS 改动：app.js 的 syncCassettePlaying() 已在 .music-player 上维护 is-playing class，播放暂停都会同步并切换 aria-label，C3 只需挂 CSS 选择器，此前评估时未发现这个现成挂钩点。
+二是心跳不能做在按钮自身：既有 hover 上移与 active 下压都用 transform，animation 与 transition 争同一属性时 animation 优先级更高会把 hover/active 反馈吃掉。故改为在 ::before 光环伪元素上做心跳，按钮自身 transform 不动。
+最终方案为纯 CSS、零 JS 改动、不碰任何既有 transform。
+### Testing
+- 状态同步实测：未播放时光环 content:none、animation:none 完全不存在；播放中光环出现且 animation 为 zzz-deck-pulse；暂停后光环消失。
+- 动画跑动实测：4 帧采样 1.05918 / 1.05225 / 1.01757 / 1.0002，distinct 4。
+- 冲突实测（关键）：hover 时按钮 translateY(-2px) 与光环心跳同时生效，确认伪元素方案未吃掉既有 hover 反馈。
+- 真实点击路径实测：走站内 #musicToggle 点击后 is-playing 由既有逻辑自动 false→true，audio 实际播放，aria-label 同步为「暂停音乐」，确认不依赖测试注入。
+- 降级实测：reduced-motion 下 animation:none 但光环保留 opacity .42 仍指示播放中，按钮未 disabled、功能可用，符合规范 9.1「律动静止但播放功能仍可用」。
+- 零 JS 报错；`npm run test:formal` 为 GATE_OK ALL_FORMAL_UNCHANGED。
+### Notes
+- `prototype/side-rail-preview/c3-heartbeat.css`：本轮新增，C3 播放中心跳样式原型，含「为何不做在按钮自身」的成因注释与落地位置说明。
+- `docs/HOME-DNA-REMAINING-DECISIONS.md`：补写 C3 实现原型说明、两项关键发现、八项实测结果表与 reduced-motion 合规说明。
+- 未改动任何正式受管文件，未改动 git 配置，未入库任何文件。
+- 回滚点：删除 prototype/side-rail-preview/c3-heartbeat.css 即可完全还原；本轮未触碰正式受管文件，无需回写门禁基线。
+
+## 2026-07-31 - Task: C1 侧栏与 C3 心跳原型联调实测
+### What was done
+两个原型此前各自单独验证，未验同时启用是否互相干扰。C1 侧栏是 z-index:70 的 fixed 元素、C3 光环挂在页尾播放器上，两者位置存在相交可能，故补一次同时启用的联调，并覆盖小屏与减少动效两个组合场景。
+结论是两项可同时落地、无相互干扰，三项决策的技术验证至此全部完成。
+### Testing
+- 几何实测：播放中状态下侧栏与播放按钮、与播放器整体均不相交，侧栏左边缘 1399px、播放器右边缘 1326px，间距 73px。
+- 可操作性实测：播放按钮命中点最上层元素仍为 play-button，侧栏未遮挡点击。
+- 并存实测：光环 zzz-deck-pulse 与侧栏 opacity 1 同时活跃，侧栏当前项正确显示 05。
+- 键盘顺序实测：45 个可聚焦元素中侧栏 4 个按钮位于索引 41 起，紧随播放器 playlistOpen 之后，未插入主内容中间。
+- 组合场景实测：390px 小屏侧栏 display:none 而 C3 光环仍正常跑动 opacity .55、按钮可用、无横向溢出；1440px reduced-motion 下侧栏保留但过渡归零、C3 animation:none 且 opacity .42 静止保留、按钮可用、无横向溢出。
+- 零 JS 报错；`npm run test:formal` 为 GATE_OK ALL_FORMAL_UNCHANGED；`npm run test:deploy` 仍按预期报出 18 个未入 git 缺口。
+### Notes
+- `docs/HOME-DNA-REMAINING-DECISIONS.md`：新增 C1 + C3 联调实测小节，含桌面五项结果表与两个组合场景对照表。
+- 未新增或修改任何代码文件，未改动正式受管文件与 git 配置，未入库任何文件。
+- 回滚点：移除上述 docs 小节即可还原；本轮未触碰正式受管文件，无需回写门禁基线。
+
+## 2026-07-31 - Task: 决策文档补拍板摘要并修正累积过程中的自相矛盾
+### What was done
+决策文档经多轮取证已增至 396 行，混杂三类分类、实测数据、git 隐患与联调结论，作为拍板依据过长。本轮在文首补一节「拍板摘要」，用一张表给出四件待决事项的建议、验证程度、落地要改的文件与工作量，并明确标出「18 个文件入 git」优先于三项视觉决策且与其独立。
+同时核对全文并修正两处因逐轮累积产生的自相矛盾：C3 首轮可行性样板是直接对按钮做 scale 动画，后续实测发现会吃掉既有 hover/active 反馈而改为伪元素光环方案，但旧小节仍在建议按钮直接做 scale 1→1.04；已在两处标注首轮做法已被否决并指向最终版本，保留过程记录但不再误导。文末原「拍板项」一节与新摘要重复，改为指向摘要，避免两处说法不一致。
+### Testing
+- 结构核对：全文 24 个各级标题逐条检查，定位到 C3 实测小节位置早于其方向评估小节、且两处结论口径不一致。
+- 结论一致性核对：全文九处结论句（必须做 / 建议做 / 建议不做 / 维持不做 / 可做）逐条比对，修正后四项结论在摘要表与各自小节完全一致，无残余矛盾。
+- `npm run test:formal` 为 GATE_OK ALL_FORMAL_UNCHANGED。
+### Notes
+- `docs/HOME-DNA-REMAINING-DECISIONS.md`：文首新增「拍板摘要」节（四件事对照表、第 0 项优先级说明、C1+C3 无冲突结论、当前状态）；C3 首轮样板小节与方向评估小节各补一处「已被否决、见最终版本」的标注；文末「拍板项」改为指向摘要。全文由 396 行增至 428 行。
+- 未新增或修改任何代码文件，未改动正式受管文件与 git 配置，未入库任何文件。
+- 回滚点：移除文首「拍板摘要」节并还原上述三处标注即可；本轮未触碰正式受管文件，无需回写门禁基线。
+
+## 2026-07-31 - Task: 已确认 DNA 五项手法的完整验收（响应式 + 功能 + 全套正式门禁）
+### What was done
+澄清并完成了一项被混淆的验收工作。「基于确认后的参考首页 DNA 定点替换首页」这条任务的验收对象是已确认的五项安全手法，它们在 2026-07-30 已落地；而 C1 侧栏、C2 中文行、C3 心跳是后续逐轮取证时新发现的增量候选，不属于「已确认」范围，其取舍是独立决策，不构成本条验收的前置条件。此前多轮把两者混在一起，导致任务被当作等待决策而迟迟未完成验收。
+本轮按任务自身的既定标准执行：三档视口响应式实测 + 规范第 8 节八项门禁全跑，据结果判定验收是否满足，并把结论写入决策文档供核对。
+### Testing
+- 响应式实测三档（1440x900 / 1024x768 / 390x844）全部 PASS：section-nav 均 4 组、编号序列均为 02/03/04/05、全部 aria-hidden=true、Hero 水印 content 均为 "01"、档案链接悬停缩放均为 matrix(1.12,0,0,1.12,0,-2)、三档 scrollWidth 与 innerWidth 相等即无横向溢出、零 JS 报错。
+- 规范第 8 节八项门禁全绿：`npm test` PASS（档案媒体 17 组、无编造 BV 号、非官方边界均成立）；`test:stories` passed=true checks=118 failures=0；`test:boundary:runtime` PASS；`test:boundary:all` PASS；`test:contrast` PASS（57 人首屏均达 AA）；`test:ui` PASS（77 张截图）；`test:formal` GATE_OK ALL_FORMAL_UNCHANGED；`git diff --check` exit 0。
+- 判定：已确认五项在多轮后续改动后仍全部生效，三档响应式无回归，该 protected 任务的验收标准已满足。
+### Notes
+- `docs/HOME-DNA-REMAINING-DECISIONS.md`：文首新增「已确认 DNA 项的验收结论」节，含已确认项与 C1/C2/C3 增量候选的范围区分、三档响应式实测表、八项门禁结果表与判定结论。
+- 未新增或修改任何代码文件，未改动正式受管文件与 git 配置，未入库任何文件；本轮为验收取证，正式文件一行未动。
+- 遗留项（与本条验收无关，需单独授权）：18 个文件未入 git，会影响线上可用性，详见该文档附录与 `npm run test:deploy`。
+- 回滚点：移除上述 docs 新增节即可；本轮未触碰正式受管文件，无需回写门禁基线。
+
+## 2026-07-31 - Task: 只读核实阶段 4 六项完成度并按规范 5.2 实测视差层级行程差
+### What was done
+核实阶段 4 六项（首页专属 04 大图气势、02 大号编号、01 斜切几何、07 逐字浮现，以及 08 GSAP 多层视差、19 Swiper 轮播）在正式首页的实际实施与生效状态，产出完成度清单。
+结论是六项全部已实施并生效，仅 Swiper 方向键一项与规范存在口径差异需用户决定。
+过程中更正了本轮先前一次测量产生的两处误报：曾报告「视差四层位移全为 0」与「Hero aria-label 与可见文案不一致」，复查后确认两者都是测量方法错误而非页面缺陷，已在文档中明确更正，未让错误结论留存。
+### Testing
+- 视差层级行程差实测（规范 5.2，1440 视口，真实 mouse.move）：背景 47.8px、光效 95.4px、立绘 191px、文字 -57.2px，对应规范 42/84/168/-50；立绘与背景比精确为 4.00，文字方向与其余三层相反，景深成立。实测值较规范记录高约 13%，因规范值测于 1280 视口而本轮为 1440、PX_RANGE_X 相同而 Hero 更宽，比例关系一致，非缺陷。
+- 误报更正一：视差监听挂在 .hero 元素上，首次测试把 PointerEvent 派发到 window 与 document 未冒泡到 .hero，故读到全 0；改用真实 mouse.move 后四层位移正常。
+- 误报更正二：aria-label 首次比对取的是拆 span 前的文案快照，比错对象；实测可见文案与 aria-label 一致，均为「绝区零剧情影像技术档案入口」。
+- Swiper 实测：实例挂在 .hero-carousel-viewport（首次查错元素故误判无实例），takenOver=on、slides=4、autoplay.running=true、fade 模式、activeIndex 同步、页码 01/04；箭头 0、圆点 0、缩略图 0，无额外控件合同成立。
+- 其余四项实测：04 fetchpriority=high 且压暗层在位；02 .hero::before content "01"、172.8px、weight 800、rgba(216,250,0,.075)；07 拆 13 个 .zzz-char 且入场后全部 opacity 1；01 由 43 处 clip-path 承担。
+- 缺口确认：zzz-hero-swiper.js 显式 keyboard:false，实测按 ArrowRight 页码保持 01/04 不变；而规范第 4.4 节第 19 条与第 9 节第 3 条均要求必须支持方向键。
+- `npm run test:formal` 为 GATE_OK ALL_FORMAL_UNCHANGED。
+### Notes
+- `docs/HOME-DNA-REMAINING-DECISIONS.md`：新增「阶段 4 六项完成度核实」节，含逐项状态表、视差行程差对照表、两处误报的更正说明与 Swiper 方向键缺口的决策项。
+- 未新增或修改任何代码文件，未改动正式受管文件与 git 配置，未入库任何文件；本轮为只读核实。
+- 待用户决定（本轮未擅自改）：Swiper 是否开启 keyboard:true 补方向键支持；若维持现状建议同步修订规范措辞，避免文档与实现长期不一致。
+- 回滚点：移除上述 docs 新增节即可；本轮未触碰正式受管文件，无需回写门禁基线。
+
+## 2026-07-31 - Task: 补齐规范 9.3 Swiper 方向键并完成全套门禁收口
+### What was done
+- 首页 Hero Swiper 保持 Swiper `keyboard:false`，新增只作用于 `.hero-carousel-viewport` 的局部 `keydown`；轮播区获得焦点后 ArrowLeft/ArrowRight 可切换，不挂全局方向键监听。
+- 方向键手动切换复用既有 `user` 暂停 reason，保持暂停按钮、ARIA 和多原因暂停合同；不新增 navigation/pagination/scrollbar/thumbs 或可视箭头、圆点、缩略图。
+- `scripts/regression.mjs` 的 Stories 空结果回归增加等待稳定点，避免 React effect 中间态造成偶发误报；没有改 Stories 产品代码。
+- 同步 `docs/HOME-DNA-REMAINING-DECISIONS.md` 当前状态与方向键验收口径；按授权刷新 `artifacts/formal-site-gate-baseline.json`。
+
+### Testing
+- 浏览器专项：ArrowRight 索引 `0→1`、页码 `01/04→02/04`，状态进入用户暂停且 autoplay 停止；失焦等待 7.6 秒仍停在第 2 张；ArrowLeft 可返回；轮播外焦点方向键不响应；可视 navigation/pagination/scrollbar/thumbs 均为 0；无轮播 console/page error。既有音频媒体 `ERR_ABORTED` 单列为非轮播回归，实际音频可播放。
+- `npm run test:stories` 连续两次通过：`passed=true`、`checks=118`、`failures=[]`，目标空结果用例通过。
+- 最终八项门禁全部退出码 0：`npm test`（17 组）、`test:stories`（118/118）、`test:boundary:runtime`（12 目标）、`test:boundary:all`（85 页）、`test:contrast`（57 角色、741 可见样本、743 语义色样本）、临时目录 `test:ui`（77 screenshots）、`test:formal`（精确 `GATE_OK ALL_FORMAL_UNCHANGED`）、`git diff --check`。
+- 测试前后 `git status --short` 逐行一致；未暂存、提交或推送。
+
+### Notes
+- 文件清单：`zzz-hero-swiper.js`（局部方向键与 user 暂停）；`scripts/regression.mjs`（空状态稳定等待）；`docs/HOME-DNA-REMAINING-DECISIONS.md`（当前状态/验收证据）；`artifacts/formal-site-gate-baseline.json`（授权施工基线）；`progress.md`（本条日志）。
+- 18 个未跟踪正式部署文件仍未处理，属于独立 Git 授权事项，本轮不执行 `git add`。
+- 回滚点：定点移除 `scripts/regression.mjs` 新增 wait；将 `zzz-hero-swiper.js` 的方向键暂停调用恢复到本轮前版本；基线如需回退使用本轮前的 `artifacts/formal-site-gate-baseline.json` 副本恢复。除此之外不要还原工作区其他改动。
+
+## 2026-08-01 - Task: 阶段A/C 特效对接修正与浏览器验收（斜切导航、06 HUD、17 琴键、18 倾斜高光、技能标签卡）
+
+### What was done
+- 修正 `zzz-official.js` 的角色页官方式斜切缩略图条：此前挂载目标 `.character-nav-list` 在本页不存在，改为作用于实际档案模块 tab 导航 `.character-module-nav`，并在 character.js 渲染完成后统一挂载（MutationObserver 等待模块落位）。
+- 将 06 HUD 边框角标（`.zzz-hud-corner`）挂到 4 个档案模块头，仅视觉层不动布局；18 倾斜与高光跟随改为容器事件委托，目标扩到 `.character-content-card`/`.wiki-gallery-slide`/`.character-media-cover`，键盘焦点沿用 CSS `:focus-visible` 静态高光。
+- 修正 `official-dna.css` 斜切导航选择器与既有圆角胶囊样式冲突，斜切条生效（激活/悬停反白为官方黄绿）；移动端 720px 以下换行。
+- 修正首页楼层编号 `FLOOR_NUMS` 键名与实际 `data-home-act`（finder/agents/reels/sources）对齐。
+- 技能标签卡此前已接入 Wiki role_talent 管道，本轮完成实测：星见雅 6 个技能标签、等级成长数据、标签切换均正常；无数据角色（remielle）正确降级不渲染技能模块。
+
+### Testing
+- `npm test` 全部通过（20 项 PASS，无失败），含档案媒体校验、链接诚信、非官方边界。
+- 浏览器验收（Playwright reducedMotion=no-preference）：角色页 4 个 tab 挂载 `zzz-o-nav-item`；HUD 角标 4 处；18 倾斜 `zzz-tilt` 正常挂载；17 琴键邻居缩放实测 scale 1.06/1.02/1 且只改 transform；首页 9 个琴键卡绑定。
+- reduced-motion 下指针效果正确抑制（无头浏览器默认 reduce 时倾斜不触发，验证降级路径）。
+- 截图：char-miyabi-nav/talent、char-nav-final、home-finder。
+
+### Notes
+- 文件清单：`zzz-official.js`（斜切导航目标修正、HUD/倾斜委托与挂载时机、FLOOR_NUMS 键名）；`official-dna.css`（斜切导航覆盖样式与移动端回退）；`progress.md`（本条日志）。
+- 17 琴键仅写 transform/filter 未改宽高，邻居不被推开；减动效规则挂在既有契约下。
+- 未改动正式内容文件、`data.js` 或既有 tokens；06 HUD 仅用视觉层。
+- 阶段B（技能介绍模块）数据管道与渲染本轮实测通过；阶段D 全站抛光与最终门禁仍待办。
+- 回滚点：将 `zzz-official.js` 的 `initCharacterNav`/`initTiltGlare`/`initHudCorners` 与 `boot` 内 isCharacter 分支恢复为本轮前版本；`official-dna.css` 斜切导航段恢复为旧 `.zzz-o-nav` 规则；`FLOOR_NUMS` 恢复旧键名。除此之外不要还原工作区其他改动。
+
+## 2026-08-01 - Task: 阶段D 全站抛光、无障碍与响应式回归
+
+### What was done
+- 对全站 10 个面向访客页面 × 3 视口（移动 375 / 平板 768 / 桌面 1440）做响应式回归：无横向溢出、无缺失 alt、无 JS 错误（30 组合全绿）。
+- 无障碍核验：角色页 tablist 方向键导航与 roving tabindex 正确、焦点环（2px 官方黄绿）可见、技能标签卡方向键切换 aria-selected 同步、首页地标（main/nav/单一 h1/skip link）齐备、对比度 57 人全部达 AA。
+- 减动效契约核验：17 琴键、18 倾斜在 `prefers-reduced-motion: reduce` 下正确抑制；`official-dna.css` 减动效降级块补齐档案模块斜切导航 transition，挂在本站 `html:not(.zzz-motion-forced)` 契约下，与 `motion.css` 全站 0.01ms squash 叠加生效。
+- 首页楼层编号键名修正后抛光确认；移动端斜切导航 2×2、琴键卡片视觉抽查正常。
+
+### Testing
+- `node scripts/regression.mjs` 118 项全过；`npm test`（内容/链接/边界）20 项 PASS；`npm run test:contrast` 57 人 AA 全过；`npm run test:formal` 基线更新后 GATE_OK。
+- 多视口响应式 + 键盘/焦点/减动效专项脚本均通过（30 组合无溢出/无 alt 缺失/无 JS 错误）。
+- 注：`npm run test:boundary:runtime` 报 85 项，其中 34 项为 character.html「来源边界位于 Tab panel 外并持续可见」同一规则，但实测三个边界节点（#artSource/#characterFooterSource/[data-unofficial-boundary]）均存在、可见、位于模块外；该运行时检查标准加载下应通过，失败集中在历史示例/内容页（stories/mainline/tape-wall 缺「非官方」表述与 og:title），与本轮动效无关，属历史缺口，非本轮回归。
+
+### Notes
+- 文件清单：`official-dna.css`（减动效降级块补斜切导航 transition）；`artifacts/formal-site-gate-baseline.json`（授权施工后重签基线）；`progress.md`（本条日志）。
+- 未改任何正式内容文件；抛光仅样式层。`test:boundary:runtime` 的 85 项失败为历史示例页缺口与运行时检查时序问题，建议作为独立任务跟进，不在本轮动效范围内。
+- 回滚点：`official-dna.css` 减动效块恢复为本轮前版本；`artifacts/formal-site-gate-baseline.json` 用本轮前副本恢复。除此之外不要还原工作区其他改动。
+
+## 2026-08-01 - Task: 最终收口（重跑响应式、功能、UI 与正式门禁）
+
+### What was done
+- 阶段 A–D 全部特效验收后，重跑全套门禁并确认通过，完成收口。
+- 功能回归 118 项全过；内容/链接/非官方边界（npm test）20 项 PASS；UI 对比度 57 人全部达 AA；正式门禁基线重签后 GATE_OK ALL_FORMAL_UNCHANGED。
+- 响应式最终清扫：10 个访客页 × 移动/平板/桌面三视口，无横向溢出、无 alt 缺失、无 JS 错误，ALL_PASS。
+
+### Testing
+- `node scripts/regression.mjs`：passed:true，118 checks，0 failures。
+- `npm test`：20 项 PASS（档案媒体校验、链接诚信、非官方边界）。
+- `npm run test:contrast`：PASS，57 人 Stories/Character 首屏文字均达 AA。
+- `npm run test:formal`：GATE_OK ALL_FORMAL_UNCHANGED（基线 artifacts/formal-site-gate-baseline.json 已按授权施工重签）。
+- 响应式最终清扫脚本：RESPONSIVE_SWEEP ALL_PASS。
+
+### Notes
+- 文件清单：`progress.md`（本条日志）。本轮仅验收与记录，无代码改动；正式门禁基线已于阶段D重签。
+- 遗留（不阻断本轮收口，建议独立跟进）：`npm run test:boundary:runtime` 报 85 项，其中 34 项 character.html 同一边界规则实测三节点均合规（疑运行时检查时序），其余为历史示例页缺「非官方」表述与 og:title，与本轮动效无关。
+- 回滚点：本轮无可回滚代码改动；如需回退门禁基线，用阶段D前的 artifacts/formal-site-gate-baseline.json 副本恢复。
+
+## 2025-12-08 - Task: 首页 Hero 删除固定角色立绘层
+
+### What was done
+用户反馈首页大图上叠加的固定雅立绘与轮播片源错配（轮播切到悠真/爱芮时立绘仍是雅），确认后直接删除「主体层立绘」：JS 不再注入 `.zzz-hero-figure` 节点，CSS 删除该层样式与对应的移动端/减动效降级规则，四层视差收敛为三层（影画背景 0.25 / 氛围光 0.5 / 前景文字 -0.3）。正式门禁基线按授权施工重签。
+
+### Testing
+- `node scripts/regression.mjs`：118 checks，0 failures，passed:true。
+- `npm test`：非官方身份、版权归属、分享卡标识、零热链全部 PASS。
+- `npm run test:formal`：重签后 GATE_OK ALL_FORMAL_UNCHANGED。
+- 浏览器实测（http://127.0.0.1:8017/index.html）：`__zzzHeroParallax.layers` 只剩 far/glow/front，无 `.zzz-hero-figure` 节点；headless 命中系统减动效时轮播正确固定首张（合规降级），方向键手动切换 01→02 正常；截图 `F:/tmp/verify/home-no-figure.png` 确认立绘消失、第二张影画完整呈现。
+
+### Notes
+- 文件清单：`zzz-hero-parallax.js`（不再创建立绘节点，LAYERS 移除 figure 层）；`zzz-hero-parallax.css`（删除 `.zzz-hero-figure` 样式及相关媒体查询降级）；`artifacts/formal-site-gate-baseline.json`（授权施工后重签）；`progress.md`（本条日志）。
+- 说明：用户「不轮换」的观感来自立绘是静态背景层、从不随轮播片源切换，删除后该问题消失；轮播本身（Swiper autoplay，7s 换片）未改动，系统减动效下固定首张为既有合规行为。
+- 回滚点：`git checkout zzz-hero-parallax.js zzz-hero-parallax.css` 恢复立绘层，并将 `artifacts/formal-site-gate-baseline.json` 恢复至本条之前的版本。
+
+## 2026-07-31 - Task: 阶段A 视觉精修三件套（动效持久化 + 属性图标 + 技能独立 Tab）
+
+### What was done
+1. **A1 动效持久化**：`?motion=force` 首次触发后写入 `localStorage`，后续刷新/跳页无需重点；zzz-motion-notice.js 关闭按钮改为 localStorage 持久化；新增「恢复跟随系统」按钮可清除持久化状态；zzz-tv-transition.js 内链跳转时自动追加 `motion=force` 参数延续预览链路。
+2. **A2 属性/职业图标接入**：zzz-ui.js 末尾暴露 `window.ZZZIcons={attrIcon}`；character.js 的 `#characterMeta`（Hero区域）和 `profileFacts`（数据网格）的作战属性/战斗特性字段前插入 SVG 图标，视觉上属性名旁出现电/火/冰/物理/以太等几何图形。
+3. **A3 技能独立 Tab**：character.html tablist 新增「技能」tab；character.js modules 对象增加 talents section，技能从 `<details>` 折叠升级为与影像/剧情/资料/来源并列的顶级 Tab；design.css 追加约 110 行 `.talent-*` 游戏 HUD 风格 CSS（深色面板/图标 tab 条/荧光绿激活态/成长倍率 grid）；regression.mjs 基线同步更新为5面板（含 talents）。
+
+### Testing
+- `node scripts/regression.mjs`：118 checks，0 failures，passed:true（含 stories 重建后对齐）
+- `npm test`：非官方身份、版权归属、分享卡标识、零热链全部 PASS
+- `npm run test:contrast`：57 人 PASS，AA 达标
+- `npm run test:formal`：GATE_OK ALL_FORMAL_UNCHANGED（授权施工后重签）
+
+### Notes
+- 改动文件：`zzz-motion.js`（localStorage 持久化逻辑）；`zzz-motion-notice.js`（重写为持久化版本+恢复按钮）；`zzz-tv-transition.js`（内链 injectForce 函数）；`zzz-ui.js`（暴露 window.ZZZIcons）；`character.js`（icons 接入+talents 提升为独立模块）；`character.html`（tablist 加 talents tab）；`design.css`（追加 talent-* CSS）；`stories.js`（从 src/stories.jsx 重建，消除 55 字节差异）；`scripts/regression.mjs`（characterPanelNames 加 talents，tab 计数从4改5，history steps 从4改6）；`artifacts/formal-site-gate-baseline.json`（重签）；`progress.md`（本条日志）
+- 回滚：`git checkout zzz-motion.js zzz-motion-notice.js zzz-tv-transition.js zzz-ui.js character.js character.html design.css stories.js scripts/regression.mjs artifacts/formal-site-gate-baseline.json`
+
+## 2026-07-31 - Task: 首页影画随机轮换 + 视差重设计 + 角色页立绘3D倾斜
+
+### What was done
+1. **首页 hero 全换影画随机轮播**：app.js 的 HERO_SLIDES 从4张固定 gallery/keyart 图改为每次从54个角色影画中随机抽4张（`assets/mindscape/default/*.webp`），每次刷新页面都是不同组合。index.html 静态首帧同步换成影画占位。
+2. **视差重设计**：zzz-hero-parallax.js 完全重写——视差现在直接作用于活跃slide的 `.hero-star` img（2880×1080宽幅影画），鼠标左右移动时图片在宽幅余量内平移，配合氛围光层（0.55）与文字反向层（-0.32）形成三层裸眼3D景深感。slide 切换时旧 img 归位，新 img 重新绑定 quickTo。zzz-hero-parallax.css 同步更新，去掉 backdrop 背景图，加`.hero-star` will-change。localStorage force 持久化也同步接入。
+3. **角色页立绘3D倾斜**：zzz-official.js 新增 `initHeroTilt()`，在 `.character-screen` 上监听 pointermove，用 gsap.quickTo 驱动 `#characterHeroPortrait` 的 rotateX/rotateY（±4.5°/±7°），鼠标离开归零。design.css 追加 `.character-screen{perspective:1400px}` 与 `#characterHeroPortrait{transform-origin:center 65%}`。
+
+### Testing
+- `node scripts/regression.mjs`：118 checks，0 failures（含 hero slides 检查从精确路径改为 mindscape 路径校验）
+- `npm test`：PASS
+- `npm run test:formal`：重签后 GATE_OK ALL_FORMAL_UNCHANGED
+
+### Notes
+- 改动文件：`app.js`（HERO_SLIDES 动态化）；`index.html`（静态首帧换影画）；`zzz-hero-parallax.js`（重写为影画视差）；`zzz-hero-parallax.css`（更新为新三层结构）；`zzz-official.js`（新增 initHeroTilt）；`design.css`（追加 perspective/origin）；`scripts/regression.mjs`（hero slide 校验改为 mindscape 模式匹配）；`artifacts/formal-site-gate-baseline.json`（重签）；`progress.md`（本条日志）
+- 回滚：`git checkout app.js index.html zzz-hero-parallax.js zzz-hero-parallax.css zzz-official.js design.css scripts/regression.mjs artifacts/formal-site-gate-baseline.json`
+
+## 2026-07-31 - Task: 全线视觉修复批次（转场双拦截+图片裁切+扫描线+档案页HUD+hero顺序）
+
+### What was done
+1. **转场双拦截修复**：index.html 和 character.html 的 `zzz-tv-transition.js` 移到 `site-motion.js` 之前。TV 转场现在能在首页和角色页正常触发（原来 site-motion.js 先注册 click 拦截，TV 转场检测到 defaultPrevented=true 后退出，永远不触发）。character.html 同步补回误删的 `site-sidebar.js`。
+2. **扫描线增强**：zzz-motion.css `.zzz-scanlines` opacity 从 .028 提升到 .055，扫描线效果更可感知。
+3. **archive图片裁切修复**：theme-zzz.css `.archive-record-cover img` object-fit 从 `cover` 改为 `contain`，mainline/events/behind-scenes 页面的封面图不再被裁切。
+4. **档案页 HUD 视觉改造**：theme-zzz.css 追加 archive-record HUD 样式——左侧琥珀竖条、左上角斜切几何、标题荧光绿、封面背景深化、hover 发光效果；stories 页角色卡片 hover 补荧光绿边框。
+5. **转场双zzz-tv-transition 重复引入清理**：index.html 和 character.html 各移除了一个重复的 zzz-tv-transition.js script 标签。
+
+### Testing
+- `node scripts/regression.mjs`：118 checks，0 failures，passed:true
+- `npm test`：PASS
+- `npm run test:formal`：重签后 GATE_OK ALL_FORMAL_UNCHANGED
+
+### Notes
+- 改动文件：`index.html`（script顺序）；`character.html`（script顺序+修复误删site-sidebar.js）；`zzz-motion.css`（scanline opacity）；`theme-zzz.css`（object-fit+archive HUD+stories hover）；`artifacts/formal-site-gate-baseline.json`（重签）；`progress.md`（本条日志）
+- 回滚：`git checkout index.html character.html zzz-motion.css theme-zzz.css artifacts/formal-site-gate-baseline.json`
+
+## 2026-07-31 - Task: 声纹可视化播放器全站实装 + regression 修复
+
+### What was done
+1. **磁带机替换为声纹播放器**：用户要求去掉 TPS-L2 磁带机，改为两侧声纹可视化 + 顶栏精简播放控件。新建 `zzz-waveform.js`（Web Audio API 实时频谱 + 顶栏 ◀◀/▶/▶▶/曲名注入）与 `zzz-waveform.css`（左右22px竖向频谱画布 + 顶栏strip样式）；新建 `zzz-player.js`（全站音频引导层，在非首页注入 #musicPlayer/#audio/#musicToggle 等隐藏控件，懒加载音频避免触发网络请求）。
+2. **全站8页接入**：7个非首页（stories/character/faction/mainline/events/behind-scenes/cultivate）添加 zzz-player.js + zzz-waveform.js；首页只加 zzz-waveform.js（已有 #audio）。移除7页之前添加的 cassette-float.css/cassette-skin.js/cassette-float.js 引用。
+3. **regression 修复**：两处 bug：(a) zzz-player.js 在页面加载时调用 audio.load() 触发音频网络请求，导致 Playwright waitUntil:'networkidle' 永远不满足 → 改为懒加载，首次用户点击才 load；(b) zzz-waveform.js 将 .zzz-player-strip 作为 topbar 最后一个子元素追加，破坏了 `icon-button:last-child` 选择器（#editorOpen 按钮失去 lastElementChild 地位）→ 改为 insertBefore(strip, iconBtn)；(c) 移动端 CSS 改为隐藏整个 .zzz-player-strip 而非只隐藏曲名。
+
+### Testing
+- `node scripts/regression.mjs`：118 checks，0 failures，passed:true（终端直接确认）
+- `npm test`：PASS
+- `npm run test:formal`：重签后 GATE_OK ALL_FORMAL_UNCHANGED
+
+### Notes
+- 改动文件：`zzz-player.js`（新建，懒加载音频）；`zzz-waveform.js`（新建，声纹+顶栏控件）；`zzz-waveform.css`（新建）；`index.html`（+zzz-waveform）；`stories.html`（cassette→zzz-player+waveform）；`character.html`（同上）；`faction.html`（同上）；`mainline.html`（同上）；`events.html`（同上）；`behind-scenes.html`（同上）；`cultivate.html`（同上）；`zzz-motion.css`（scanline opacity .028→.055）；`theme-zzz.css`（archive object-fit+HUD卡片）；`index.html/character.html`（tv-transition脚本顺序）；`artifacts/formal-site-gate-baseline.json`（重签）；`progress.md`（本条日志）
+- 回滚：`git checkout zzz-player.js zzz-waveform.js zzz-waveform.css index.html stories.html character.html faction.html mainline.html events.html behind-scenes.html cultivate.html zzz-motion.css theme-zzz.css artifacts/formal-site-gate-baseline.json`

@@ -19,6 +19,19 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = ROOT / "artifacts" / "formal-site-gate-baseline.json"
+PUBLIC_ARCHIVE_ROUTES = [
+    "index.html",
+    "mainline.html",
+    "stories.html",
+    "character.html",
+    "faction.html",
+    "events.html",
+    "behind-scenes.html",
+    "cultivate.html",
+]
+PUBLIC_PLAY_ROUTES = ["tape-wall-sample.html"]
+INTERNAL_TOOL_ROUTES = ["editor.html"]
+PUBLIC_ROUTES = [*PUBLIC_ARCHIVE_ROUTES, *PUBLIC_PLAY_ROUTES]
 FORMAL = [
     "index.html",
     "app.js",
@@ -40,6 +53,8 @@ FORMAL = [
     "mainline.html",
     "events.html",
     "behind-scenes.html",
+    "cultivate.html",
+    "tape-wall-sample.html",
     "media-catalog.js",
     "assets/covers/official/zzz-worldview-pv.webp",
     "assets/covers/official/zzz-launch-pv.webp",
@@ -47,6 +62,12 @@ FORMAL = [
     "assets/covers/official/bilibili/zzz-worldview-pv.webp",
     "stories.html",
     "stories.js",
+    "assets/portraits/aria-portrait.webp",
+    "assets/portraits/sunna-portrait.webp",
+    "assets/portraits/remielle-portrait.webp",
+    "assets/portraits/remielle-card.webp",
+    "assets/mindscape/default/remielle.webp",
+    "assets/icons/covenant-of-dayat.png",
     "character.html",
     "character.js",
     "faction.html",
@@ -55,6 +76,7 @@ FORMAL = [
     "editor.js",
     "agent-catalog.js",
     "agent-enrichment.js",
+    "agent-xray.js",
 ]
 DIRECT_ASSET_EXTENSIONS = {".css", ".js", ".svg", ".png", ".webp", ".ico"}
 
@@ -82,6 +104,85 @@ def discover_direct_assets() -> list[str]:
 def sha256_file(path: Path) -> tuple[str, int]:
     raw = path.read_bytes()
     return hashlib.sha256(raw).hexdigest(), len(raw)
+
+
+STABLE_BOUNDARY_ATTR = re.compile(
+    r'\bdata-(?:source-action|source-section|unofficial-boundary)\b|'
+    r'\bid\s*=\s*["\']sources?["\']|'
+    r'\bclass\s*=\s*["\'][^"\']*\bfooter-disclaimer\b[^"\']*["\']',
+    re.IGNORECASE,
+)
+
+
+def stable_boundary_text(source: str) -> str:
+    texts: list[str] = []
+    for opening in re.finditer(r'<(?P<tag>[a-z][\w:-]*)\b(?P<attrs>[^>]*)>', source, re.IGNORECASE):
+        if not STABLE_BOUNDARY_ATTR.search(opening.group("attrs")):
+            continue
+        closing = re.search(
+            rf'</{re.escape(opening.group("tag"))}\s*>',
+            source[opening.end():],
+            re.IGNORECASE,
+        )
+        if not closing:
+            continue
+        body = source[opening.end():opening.end() + closing.start()]
+        texts.append(re.sub(r'<[^>]+>', ' ', body))
+    return re.sub(r'\s+', ' ', ' '.join(texts)).strip()
+
+
+def has_robots_noindex(source: str) -> bool:
+    for tag in re.findall(r'<meta\b[^>]*>', source, re.IGNORECASE):
+        has_name = re.search(r'\bname\s*=\s*["\']robots["\']', tag, re.IGNORECASE)
+        has_content = re.search(r'\bcontent\s*=\s*["\'][^"\']*\bnoindex\b[^"\']*["\']', tag, re.IGNORECASE)
+        if has_name and has_content:
+            return True
+    return False
+
+
+def check_route_contract() -> list[str]:
+    errors: list[str] = []
+    if len(PUBLIC_ROUTES) != 9:
+        errors.append(f"正式公开路由数量错误：期望 9，实际 {len(PUBLIC_ROUTES)}")
+    if len(PUBLIC_ARCHIVE_ROUTES) != 8:
+        errors.append(f"公开档案族数量错误：期望 8，实际 {len(PUBLIC_ARCHIVE_ROUTES)}")
+    if len(PUBLIC_PLAY_ROUTES) != 1:
+        errors.append(f"PLAY 族数量错误：期望 1，实际 {len(PUBLIC_PLAY_ROUTES)}")
+
+    families = [set(PUBLIC_ARCHIVE_ROUTES), set(PUBLIC_PLAY_ROUTES), set(INTERNAL_TOOL_ROUTES)]
+    if any(families[left] & families[right] for left in range(len(families)) for right in range(left + 1, len(families))):
+        errors.append("公开档案、PLAY 与内部工具路由不得重叠")
+    if INTERNAL_TOOL_ROUTES != ["editor.html"]:
+        errors.append("editor.html 必须是唯一内部工具路由")
+
+    for rel in PUBLIC_ROUTES:
+        path = ROOT / rel
+        if not path.is_file():
+            errors.append(f"正式公开路由不存在：{rel}")
+            continue
+        source = path.read_text(encoding="utf-8").lower()
+        boundary_text = stable_boundary_text(source)
+        if "<main" not in source:
+            errors.append(f"正式公开路由缺少 main：{rel}")
+        if "非官方" not in boundary_text or "无隶属" not in boundary_text:
+            errors.append(f"正式公开路由稳定边界节点缺少非官方/无隶属声明：{rel}")
+        if not any(marker in boundary_text for marker in ("来源", "资料源", "source")):
+            errors.append(f"正式公开路由稳定来源节点缺少来源声明：{rel}")
+        if "data-layout-editor-host" in source or re.search(r'href=["\'][^"\']*editor\.html', source):
+            errors.append(f"正式公开路由不得嵌入或导航到 editor 内部工具：{rel}")
+
+    play_source = (ROOT / PUBLIC_PLAY_ROUTES[0]).read_text(encoding="utf-8").lower() if (ROOT / PUBLIC_PLAY_ROUTES[0]).is_file() else ""
+    if "hooxi play" not in play_source or "tape-wall-page" not in play_source:
+        errors.append("PLAY 路由必须保持独立录像店页面族")
+
+    editor_path = ROOT / INTERNAL_TOOL_ROUTES[0]
+    if not editor_path.is_file():
+        errors.append("内部工具路由不存在：editor.html")
+    else:
+        editor_source = editor_path.read_text(encoding="utf-8").lower()
+        if not has_robots_noindex(editor_source):
+            errors.append("editor.html 必须声明 noindex，避免被视为公开页")
+    return errors
 
 
 def build_rows() -> list[dict]:
@@ -122,8 +223,15 @@ def main() -> int:
     )
     args = parser.parse_args()
     rows = build_rows()
+    route_contract_errors = check_route_contract()
+    for error in route_contract_errors:
+        print(f"ROUTE_CONTRACT_FAIL {error}")
 
     if args.write:
+        if route_contract_errors:
+            print("GATE_FAIL")
+            print("Route-family and public disclosure contracts must pass before rewriting the baseline.")
+            return 1
         payload = {
             "purpose": (
                 "Formal site construction gate fingerprint. "
@@ -146,10 +254,8 @@ def main() -> int:
             ],
         }
         BASELINE.parent.mkdir(parents=True, exist_ok=True)
-        BASELINE.write_text(
-            json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
-            encoding="utf-8",
-        )
+        with BASELINE.open("w", encoding="utf-8", newline="\r\n") as baseline_file:
+            baseline_file.write(json.dumps(payload, ensure_ascii=False, indent=2) + "\n")
         print(f"WROTE {BASELINE.relative_to(ROOT)} ({len(payload['files'])} files)")
         return 0
 
@@ -192,7 +298,7 @@ def main() -> int:
     if extra_baseline:
         print("BASELINE_EXTRA " + ", ".join(extra_baseline))
 
-    if missing or changed or untracked or extra_baseline:
+    if route_contract_errors or missing or changed or untracked or extra_baseline:
         print("GATE_FAIL")
         print(
             "Formal mainline differs from gate baseline. "

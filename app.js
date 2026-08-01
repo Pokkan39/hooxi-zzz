@@ -1,103 +1,131 @@
-const defaultConfig={appearance:{title:'绝区零剧情影像 / 技术档案入口',intro:'按版本补剧情，按代理人追关联。先在非官方档案里定位片段，再前往来源观看。',bgUrl:'',bgOpacity:18,particles:true,gridEffect:true,heroImage:'assets/hero/zzz-random-play-keyart.png',titleScale:100,bodyScale:100},cards:[{category:'主线剧情',no:'01',tag:'主线 · 序章',title:'绳匠的序章',desc:'从录像店出发，代理人第一次接触空洞。',video:''},{category:'主线剧情',no:'02',tag:'主线 · 第一章',title:'猫的失物',desc:'在六分街与空洞之间，寻找失踪的委托人。',video:''},{category:'角色档案',no:'03',tag:'角色剧情 · 安比',title:'安比的午后',desc:'一份汉堡，一次意外的约会。',video:''},{category:'角色档案',no:'04',tag:'EP / PV · 角色展示',title:'代理人的信号',desc:'收录角色 EP、PV 与战斗演示视频。',video:''},{category:'往期活动',no:'05',tag:'往期活动 · 新艾利都',title:'城市的回声',desc:'回看限时活动与特别主题剧情。',video:''}],tracks:[{name:'ChiliChill乐团 _ 三Z-STUDIO _ HOYO-MiX - pinKing.ogg',url:'assets/audio/ChiliChill乐团 _ 三Z-STUDIO _ HOYO-MiX - pinKing.ogg'},{name:'hanser _ 三Z-STUDIO _ HOYO-MiX - 食通万物 修心修身.ogg',url:'assets/audio/hanser _ 三Z-STUDIO _ HOYO-MiX - 食通万物 修心修身.ogg'},{name:'King Gnu - AIZO.ogg',url:'assets/audio/King Gnu - AIZO.ogg'},{name:'Sihan _ 三Z-STUDIO _ HOYO-MiX - DAMIDAMI.ogg',url:'assets/audio/Sihan _ 三Z-STUDIO _ HOYO-MiX - DAMIDAMI.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的日常.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的日常.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的日常·悠闲.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的日常·悠闲.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的日常·自由(1).ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的日常·自由(1).ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的日常·自由.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的日常·自由.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的遐想.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的遐想.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的遐想·热情.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的遐想·热情.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的遐想·静谧(1).ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的遐想·静谧(1).ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的遐想·静谧.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的遐想·静谧.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的遐想·热情.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的遐想·热情.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - Billy Mode.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - Billy Mode.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - Burning Desires 绝望吧台.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - Burning Desires 绝望吧台.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - chaos_exe.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - chaos_exe.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - Fearless 无所畏惧.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - Fearless 无所畏惧.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - ReDreaming Angel 复梦天使.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - ReDreaming Angel 复梦天使.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 乐园梦游计.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 乐园梦游计.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 午晴闲闻.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 午晴闲闻.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 天使ロード中…^_−☆.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 天使ロード中…^_−☆.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 妄想色心跳.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 妄想色心跳.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 小停再出发.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 小停再出发.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 当群星交汇 (Feat_耀嘉音).ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 当群星交汇 (Feat_耀嘉音).ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 把心跳变成节奏.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 把心跳变成节奏.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 晓.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 晓.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 流光夜巷.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 流光夜巷.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 澄空映辉.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 澄空映辉.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 繁星数载.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 繁星数载.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 绘本.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 绘本.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 问.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 问.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ Alaina Cross - FURYON 狂怒觉醒.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ Alaina Cross - FURYON 狂怒觉醒.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ Ashley Alisha - Tiny Giant 小巨星.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ Ashley Alisha - Tiny Giant 小巨星.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 乐园游梦记.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 乐园游梦记.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 原色.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 原色.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 闪亮.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 闪亮.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ 黄美珍 - 千万次初见.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ 黄美珍 - 千万次初见.ogg'},{name:'苏诗丁 _ 三Z-STUDIO _ HOYO-MiX - 不及.ogg',url:'assets/audio/苏诗丁 _ 三Z-STUDIO _ HOYO-MiX - 不及.ogg'},{name:'宫阁 _ 三Z-STUDIO _ HOYO-MiX - My Curse, My Fate (Destin et malédiction).ogg',url:'assets/audio/宫阁 _ 三Z-STUDIO _ HOYO-MiX - My Curse, My Fate (Destin et malédiction).ogg'},{name:'金玟岐 _ 三Z-STUDIO _ HOYO-MiX - 红透晚烟青.ogg',url:'assets/audio/金玟岐 _ 三Z-STUDIO _ HOYO-MiX - 红透晚烟青.ogg'},{name:'阿兰 _ 三Z-STUDIO _ HOYO-MiX - 一颗方糖悬滞的时间.ogg',url:'assets/audio/阿兰 _ 三Z-STUDIO _ HOYO-MiX - 一颗方糖悬滞的时间.ogg'}]};
+const defaultConfig={appearance:{title:'绝区零剧情影像 / 技术档案入口',intro:'按版本补剧情，按代理人追关联。先在非官方档案里定位片段，再前往来源观看。',bgUrl:'',bgOpacity:18,particles:true,gridEffect:true,titleScale:100,bodyScale:100},cards:[{category:'主线剧情',no:'01',tag:'主线 · 序章',title:'绳匠的序章',desc:'从录像店出发，代理人第一次接触空洞。',video:''},{category:'主线剧情',no:'02',tag:'主线 · 第一章',title:'猫的失物',desc:'在六分街与空洞之间，寻找失踪的委托人。',video:''},{category:'角色档案',no:'03',tag:'角色剧情 · 安比',title:'安比的午后',desc:'一份汉堡，一次意外的约会。',video:''},{category:'角色档案',no:'04',tag:'EP / PV · 角色展示',title:'代理人的信号',desc:'收录角色 EP、PV 与战斗演示视频。',video:''},{category:'往期活动',no:'05',tag:'往期活动 · 新艾利都',title:'城市的回声',desc:'回看限时活动与特别主题剧情。',video:''}],tracks:[{name:'ChiliChill乐团 _ 三Z-STUDIO _ HOYO-MiX - pinKing.ogg',url:'assets/audio/ChiliChill乐团 _ 三Z-STUDIO _ HOYO-MiX - pinKing.ogg'},{name:'hanser _ 三Z-STUDIO _ HOYO-MiX - 食通万物 修心修身.ogg',url:'assets/audio/hanser _ 三Z-STUDIO _ HOYO-MiX - 食通万物 修心修身.ogg'},{name:'King Gnu - AIZO.ogg',url:'assets/audio/King Gnu - AIZO.ogg'},{name:'Sihan _ 三Z-STUDIO _ HOYO-MiX - DAMIDAMI.ogg',url:'assets/audio/Sihan _ 三Z-STUDIO _ HOYO-MiX - DAMIDAMI.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的日常.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的日常.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的日常·悠闲.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的日常·悠闲.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的日常·自由(1).ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的日常·自由(1).ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的日常·自由.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的日常·自由.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的遐想.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的遐想.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的遐想·热情.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的遐想·热情.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的遐想·静谧(1).ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的遐想·静谧(1).ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的遐想·静谧.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的遐想·静谧.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的遐想·热情.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的遐想·热情.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - Billy Mode.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - Billy Mode.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - Burning Desires 绝望吧台.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - Burning Desires 绝望吧台.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - chaos_exe.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - chaos_exe.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - Fearless 无所畏惧.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - Fearless 无所畏惧.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - ReDreaming Angel 复梦天使.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - ReDreaming Angel 复梦天使.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 乐园梦游计.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 乐园梦游计.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 午晴闲闻.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 午晴闲闻.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 天使ロード中…^_−☆.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 天使ロード中…^_−☆.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 妄想色心跳.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 妄想色心跳.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 小停再出发.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 小停再出发.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 当群星交汇 (Feat_耀嘉音).ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 当群星交汇 (Feat_耀嘉音).ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 把心跳变成节奏.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 把心跳变成节奏.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 晓.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 晓.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 流光夜巷.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 流光夜巷.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 澄空映辉.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 澄空映辉.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 繁星数载.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 繁星数载.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 绘本.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 绘本.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 问.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 问.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ Alaina Cross - FURYON 狂怒觉醒.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ Alaina Cross - FURYON 狂怒觉醒.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ Ashley Alisha - Tiny Giant 小巨星.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ Ashley Alisha - Tiny Giant 小巨星.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 乐园游梦记.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 乐园游梦记.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 原色.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 原色.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 闪亮.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 闪亮.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ 黄美珍 - 千万次初见.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ 黄美珍 - 千万次初见.ogg'},{name:'苏诗丁 _ 三Z-STUDIO _ HOYO-MiX - 不及.ogg',url:'assets/audio/苏诗丁 _ 三Z-STUDIO _ HOYO-MiX - 不及.ogg'},{name:'宫阁 _ 三Z-STUDIO _ HOYO-MiX - My Curse, My Fate (Destin et malédiction).ogg',url:'assets/audio/宫阁 _ 三Z-STUDIO _ HOYO-MiX - My Curse, My Fate (Destin et malédiction).ogg'},{name:'金玟岐 _ 三Z-STUDIO _ HOYO-MiX - 红透晚烟青.ogg',url:'assets/audio/金玟岐 _ 三Z-STUDIO _ HOYO-MiX - 红透晚烟青.ogg'},{name:'阿兰 _ 三Z-STUDIO _ HOYO-MiX - 一颗方糖悬滞的时间.ogg',url:'assets/audio/阿兰 _ 三Z-STUDIO _ HOYO-MiX - 一颗方糖悬滞的时间.ogg'}]};
 window.hooxiDefaultConfig=defaultConfig;
 function loadConfig(){try{const saved=JSON.parse(localStorage.getItem('hooxiZZZConfig'));if(!saved)return structuredClone(defaultConfig);if(saved.tracks?.some(t=>t.url?.startsWith('blob:'))){saved.tracks=structuredClone(defaultConfig.tracks)}const cfg={...structuredClone(defaultConfig),...saved,appearance:{...structuredClone(defaultConfig.appearance),...(saved.appearance||{})}};if(!cfg.appearance.intro||/整合站|可替换|示例内容|普通档案页承载/.test(cfg.appearance.intro)||cfg.appearance.intro==='《绝区零》剧情视频档案与角色关系导航。按主线补课、按代理人找关联，少剧透，再回视频平台观看。')cfg.appearance.intro=defaultConfig.appearance.intro;if(!cfg.appearance.title||/新艾利都/.test(cfg.appearance.title)||cfg.appearance.title==='先找到片 / 再决定看哪段')cfg.appearance.title=defaultConfig.appearance.title;return cfg}catch{return structuredClone(defaultConfig)}}
 const safeUrl=(value,{image=false}={})=>{const text=String(value||'').trim();if(!text)return '';if(image&&(text.startsWith('data:image/')||text.startsWith('blob:')))return text;try{const url=new URL(text,location.href);return ['http:','https:'].includes(url.protocol)||url.origin===location.origin?url.href:''}catch{return ''}};
-let config=loadConfig(),previewArchiveData=null;if(new URLSearchParams(location.search).has('editorPreview')){try{previewArchiveData=JSON.parse(localStorage.getItem('hooxi:preview:data'));const hero=previewArchiveData?.site?.pages?.home?.hero;if(hero)config.appearance={...config.appearance,eyebrow:hero.eyebrow||'',title:hero.title||config.appearance.title,intro:hero.intro||config.appearance.intro,heroImage:hero.image||config.appearance.heroImage,titleScale:Number(hero.titleScale)||config.appearance.titleScale||100,bodyScale:Number(hero.bodyScale)||config.appearance.bodyScale||100}}catch{}}let currentTrack=0;let playMode=localStorage.getItem('hooxiPlayMode')||'order';let cassetteSide=localStorage.getItem('hooxiCassetteSide')||'A';const playModes={order:{label:'顺序',aria:'播放模式：顺序播放'},random:{label:'随机',aria:'播放模式：随机播放'},single:{label:'单曲',aria:'播放模式：单曲循环'}};const $=s=>document.querySelector(s);const esc=s=>String(s||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let config=loadConfig(),previewArchiveData=null;if(new URLSearchParams(location.search).has('editorPreview')){try{previewArchiveData=JSON.parse(localStorage.getItem('hooxi:preview:data'));const hero=previewArchiveData?.site?.pages?.home?.hero;if(hero)config.appearance={...config.appearance,eyebrow:hero.eyebrow||'',title:hero.title||config.appearance.title,intro:hero.intro||config.appearance.intro,titleScale:Number(hero.titleScale)||config.appearance.titleScale||100,bodyScale:Number(hero.bodyScale)||config.appearance.bodyScale||100}}catch{}}let currentTrack=0;let playMode=localStorage.getItem('hooxiPlayMode')||'order';let cassetteSide=localStorage.getItem('hooxiCassetteSide')||'A';const playModes={order:{label:'顺序',aria:'播放模式：顺序播放'},random:{label:'随机',aria:'播放模式：随机播放'},single:{label:'单曲',aria:'播放模式：单曲循环'}};const $=s=>document.querySelector(s);const esc=s=>String(s||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function renderFreeComponents(pageKey){const components=(previewArchiveData||window.archiveData)?.site?.pages?.[pageKey]?.components||[];if(!components.length)return;const host=document.querySelector('main')||document.body;const markup=components.map(component=>component.type==='image'?`<img class="free-component" src="${esc(safeUrl(component.src,{image:true}))}" alt="${esc(component.alt)}" data-editor-id="component.${esc(component.id)}" data-editor-type="image" data-editor-field="src" data-component-id="${esc(component.id)}"/>`:component.type==='link'?`<a class="free-component" href="${esc(safeUrl(component.href)||'#')}" data-editor-id="component.${esc(component.id)}" data-editor-type="link" data-editor-field="text" data-component-id="${esc(component.id)}">${esc(component.text)}</a>`:`<p class="free-component" data-editor-id="component.${esc(component.id)}" data-editor-type="text" data-editor-field="text" data-component-id="${esc(component.id)}">${esc(component.text)}</p>`).join('');host.insertAdjacentHTML('beforeend',`<div class="free-components">${markup}</div>`)}
 function save(){localStorage.setItem('hooxiZZZConfig',JSON.stringify(config));toast('配置已保存到本机浏览器')}
 function toast(msg){const el=$('#toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200)}
-function applyAppearance(){const a=config.appearance;const [first,...rest]=a.title.split(' / ');$('#heroTitle').innerHTML=`${esc(first)}<br/><span>${esc(rest.join(' / ')||'剧情档案')}</span>`;$('#heroTitle').dataset.editorId='site.page.home.hero.title';$('#heroTitle').dataset.editorField='title';$('#heroIntro').textContent=a.intro;$('#heroIntro').dataset.editorId='site.page.home.hero.intro';$('#heroIntro').dataset.editorField='intro';const eyebrow=$('.hero .eyebrow');if(eyebrow){eyebrow.textContent=a.eyebrow||eyebrow.textContent;eyebrow.dataset.editorId='site.page.home.hero.eyebrow';eyebrow.dataset.editorField='eyebrow'};renderHeroCarousel();const titleScale=Math.min(140,Math.max(80,Number(a.titleScale)||100));const bodyScale=Math.min(130,Math.max(85,Number(a.bodyScale)||100));document.documentElement.style.setProperty('--hero-title-scale',`${titleScale/100}`);document.documentElement.style.setProperty('--body-text-scale',`${bodyScale/100}`);document.body.style.setProperty('--user-bg',a.bgUrl?`url("${a.bgUrl.replaceAll('"','')}" )`:'none');document.body.style.setProperty('--bg-opacity',a.bgOpacity/100);$('.ambient').classList.toggle('paused',!a.particles);document.body.classList.toggle('no-grid',!a.gridEffect);if($('#editTitle')){$('#editTitle').value=a.title;$('#editIntro').value=a.intro;$('#bgUrl').value=a.bgUrl;$('#bgOpacity').value=a.bgOpacity;$('#bgOpacityValue').textContent=`${a.bgOpacity}%`;$('#particles').checked=a.particles;$('#gridEffect').checked=a.gridEffect}}
-let heroCarouselState={index:0,slides:[],timer:null,bound:false};
-// 银幕轮换片源：keyart 之后接三张官方 wiki 影画。
-// 片源全部本地托管，页脚声明必须同时覆盖「立绘」与「影画」，
-// 否则运行时边界门禁会按实际渲染路径反查出未覆盖类型。
-const HERO_EXTRA_SLIDES=[
-  {src:'assets/gallery/miyabi/05.webp',label:'HOSHIMI MIYABI',code:'HC-01',note:'OFFICIAL GALLERY · 16:9',alt:'《绝区零》代理人星见雅的官方影画展示'},
-  {src:'assets/gallery/harumasa/04.webp',label:'ASABA HARUMASA',code:'HC-02',note:'OFFICIAL GALLERY · 16:9',alt:'《绝区零》代理人浅羽悠真的官方影画展示'},
-  {src:'assets/gallery/aria/01.webp',label:'ARIA',code:'HC-03',note:'OFFICIAL GALLERY · 16:9',alt:'《绝区零》代理人爱芮的官方影画展示'}
-];
-function collectHeroCarouselSlides(){
-  // keyart 必须留在 index 0：只有 index 0 的 img 带 #heroStarImg，
-  // 验收脚本的 home-archive-entry 断言该 id 指向本地 keyart。新增片源只能追加在末尾。
-  // 直接取 webp：image-webp.js 会在 img 已开始加载后改写 src，
-  // 造成原 .png 请求被 abort（editor 页 iframe 预览首页时可稳定复现）。
-  let primary=safeUrl(config.appearance?.heroImage,{image:true})||'assets/hero/zzz-random-play-keyart.png';
-  primary=primary.replace(/assets\/hero\/zzz-random-play-keyart\.png$/i,'assets/hero/zzz-random-play-keyart.webp');
-  return [
-    {src:primary,label:'RANDOM PLAY',code:'RP-00',note:'LOCAL KEYART · 16:10',alt:'哲与铃所在 Random Play 录像店的《绝区零》主视觉'},
-    ...HERO_EXTRA_SLIDES
-  ];
+function applyAppearance(){const a=config.appearance;const [first,...rest]=a.title.split(' / ');$('#heroTitle').innerHTML=`${esc(first)}<br/><span>${esc(rest.join(' / ')||'剧情档案')}</span>`;$('#heroTitle').dataset.editorId='site.page.home.hero.title';$('#heroTitle').dataset.editorField='title';$('#heroIntro').textContent=a.intro;$('#heroIntro').dataset.editorId='site.page.home.hero.intro';$('#heroIntro').dataset.editorField='intro';const eyebrow=$('.hero .eyebrow');if(eyebrow){eyebrow.textContent=a.eyebrow||eyebrow.textContent;eyebrow.dataset.editorId='site.page.home.hero.eyebrow';eyebrow.dataset.editorField='eyebrow'};const titleScale=Math.min(140,Math.max(80,Number(a.titleScale)||100));const bodyScale=Math.min(130,Math.max(85,Number(a.bodyScale)||100));document.documentElement.style.setProperty('--hero-title-scale',`${titleScale/100}`);document.documentElement.style.setProperty('--body-text-scale',`${bodyScale/100}`);document.body.style.setProperty('--user-bg',a.bgUrl?`url("${a.bgUrl.replaceAll('"','')}" )`:'none');document.body.style.setProperty('--bg-opacity',a.bgOpacity/100);$('.ambient').classList.toggle('paused',!a.particles);document.body.classList.toggle('no-grid',!a.gridEffect);if($('#editTitle')){$('#editTitle').value=a.title;$('#editIntro').value=a.intro;$('#bgUrl').value=a.bgUrl;$('#bgOpacity').value=a.bgOpacity;$('#bgOpacityValue').textContent=`${a.bgOpacity}%`;$('#particles').checked=a.particles;$('#gridEffect').checked=a.gridEffect}}
+const MINDSCAPE_IDS=['alice','anby','anton','aria','astra-yao','banyue','ben','billy-kid','burnice','caesar','cissia','corin','dialyn','ellen','evelyn','grace-howard','harumasa','hugo','jane-doe','ju-fufu','koleda','lighter','lucia','lucy','lycaon','manato','miyabi','nangong-yu','nekomata','nicole-demara','orphie-and-magus','pan-yinhu','piper','promeia','pulchra','qingyi','remielle','rina','seed','seth','soldier-0-anby','soldier-11','soukaku','starlight-billy','sunna','trigger','ukinami-yuzuha','vivian','yanagi','ye-shunguang','yidhari','yixuan','zhao','zhu-yuan'];
+function pickHeroSlides(n){
+  const catalog=(window.agentCatalog?.characters)||[];
+  const shuffled=[...MINDSCAPE_IDS].sort(()=>Math.random()-.5);
+  return shuffled.slice(0,n).map(id=>{
+    const agent=catalog.find(c=>c.id===id);
+    const name=agent?.name||id;
+    return {src:`assets/mindscape/default/${id}.webp`,alt:`${name} · 影画`};
+  });
 }
-function updateHeroCarouselChrome(slide,index,total){
-  const indexBox=$('#heroCoverIndex');
+const HERO_SLIDES=pickHeroSlides(4);
+const heroCarouselState={index:0,slides:[],timer:null,timerToken:0,pauses:new Set(),bound:false,media:null};
+function updateHeroCarouselChrome(){
+  const indexBox=$('#heroCarouselIndex');
   if(indexBox){
-    indexBox.innerHTML=`<span>FILE / ${esc(slide.code||`HC-${String(index+1).padStart(2,'0')}`)}</span><b>${esc((slide.label||'ARCHIVE').slice(0,18))}</b><small>${esc(slide.note||'16:10 CROP')} · ${index+1}/${total}</small>`;
+    const current=heroCarouselState.index+1;
+    const total=heroCarouselState.slides.length;
+    indexBox.textContent=`${String(current).padStart(2,'0')} / ${String(total).padStart(2,'0')}`;
+    indexBox.setAttribute('aria-label',`当前第 ${current} 张，共 ${total} 张`);
   }
-  document.querySelectorAll('#heroCarouselDots [data-hero-dot]').forEach((dot,i)=>{
-    const on=i===index;
-    dot.classList.toggle('is-active',on);
-    dot.setAttribute('aria-selected',String(on));
-  });
+  const pause=$('#heroCarouselPause');
+  const status=$('#heroCarouselStatus');
+  if(pause){
+    const userPaused=heroCarouselState.pauses.has('user');
+    const temporaryReasons=[
+      ['hover','指针悬停'],
+      ['focus','焦点位于 Hero'],
+      ['hidden','页面不可见'],
+      ['reduced-motion','系统减动效设置']
+    ].filter(([reason])=>heroCarouselState.pauses.has(reason)).map(([,label])=>label);
+    pause.setAttribute('aria-pressed',String(userPaused));
+    pause.setAttribute('aria-label',userPaused?'继续首页轮播':'暂停首页轮播');
+    pause.textContent=userPaused?'继续':'暂停';
+    if(status){
+      if(userPaused){
+        status.textContent=temporaryReasons.length
+          ?`轮播已由你暂停，同时因${temporaryReasons.join('、')}暂时暂停；解除用户暂停后，仍需相应条件解除才会自动继续。`
+          :'轮播已由你暂停。选择“继续”后恢复自动轮播。';
+      }else if(temporaryReasons.length){
+        status.textContent=`当前因${temporaryReasons.join('、')}暂时暂停；相应条件解除后自动继续。${heroCarouselState.pauses.has('reduced-motion')?'减动效启用时固定首张。':''}`;
+      }else{
+        status.textContent='轮播正在自动播放，每 7 秒切换一张。';
+      }
+    }
+  }
 }
-function showHeroCarouselSlide(nextIndex,{restart=true}={}){
-  const slides=heroCarouselState.slides;
-  if(!slides.length)return;
-  heroCarouselState.index=(nextIndex+slides.length)%slides.length;
-  document.querySelectorAll('#heroCarouselTrack [data-hero-slide]').forEach((slide,i)=>{
-    slide.classList.toggle('is-active',i===heroCarouselState.index);
-  });
-  updateHeroCarouselChrome(slides[heroCarouselState.index],heroCarouselState.index,slides.length);
-  if(restart)restartHeroCarouselTimer();
-}
-function stopHeroCarouselTimer(){
-  if(heroCarouselState.timer){
-    clearInterval(heroCarouselState.timer);
+function clearHeroCarouselTimer(){
+  heroCarouselState.timerToken++;
+  if(heroCarouselState.timer!==null){
+    clearTimeout(heroCarouselState.timer);
     heroCarouselState.timer=null;
   }
 }
-function restartHeroCarouselTimer(){
-  stopHeroCarouselTimer();
-  if(heroCarouselState.slides.length<2)return;
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-  heroCarouselState.timer=setInterval(()=>showHeroCarouselSlide(heroCarouselState.index+1,{restart:false}),6500);
+function showHeroCarouselSlide(nextIndex){
+  const slides=heroCarouselState.slides;
+  if(!slides.length)return false;
+  const index=(nextIndex+slides.length)%slides.length;
+  if(!slides[index].ready)return false;
+  heroCarouselState.index=index;
+  slides.forEach((slide,i)=>slide.element.classList.toggle('is-active',i===index));
+  updateHeroCarouselChrome();
+  return true;
+}
+function scheduleHeroCarousel(){
+  clearHeroCarouselTimer();
+  if(heroCarouselState.pauses.size||heroCarouselState.slides.length<2)return;
+  const token=++heroCarouselState.timerToken;
+  heroCarouselState.timer=setTimeout(()=>{
+    if(token!==heroCarouselState.timerToken)return;
+    heroCarouselState.timer=null;
+    const next=(heroCarouselState.index+1)%heroCarouselState.slides.length;
+    showHeroCarouselSlide(next);
+    scheduleHeroCarousel();
+  },7000);
+}
+function setHeroPauseReason(reason,paused){
+  if(paused)heroCarouselState.pauses.add(reason);
+  else heroCarouselState.pauses.delete(reason);
+  if(reason==='reduced-motion'&&paused)showHeroCarouselSlide(0);
+  updateHeroCarouselChrome();
+  scheduleHeroCarousel();
 }
 function bindHeroCarouselUi(){
   if(heroCarouselState.bound)return;
-  const art=$('#homeHeroArt');
-  if(!art)return;
-  $('#heroCarouselPrev')?.addEventListener('click',()=>showHeroCarouselSlide(heroCarouselState.index-1));
-  $('#heroCarouselNext')?.addEventListener('click',()=>showHeroCarouselSlide(heroCarouselState.index+1));
-  art.addEventListener('mouseenter',stopHeroCarouselTimer);
-  art.addEventListener('mouseleave',restartHeroCarouselTimer);
-  art.addEventListener('focusin',stopHeroCarouselTimer);
-  art.addEventListener('focusout',()=>{
-    if(!art.contains(document.activeElement))restartHeroCarouselTimer();
+  const hero=$('.hero');
+  const pause=$('#heroCarouselPause');
+  if(!hero||!pause)return;
+  hero.addEventListener('pointerenter',()=>setHeroPauseReason('hover',true));
+  hero.addEventListener('pointerleave',()=>setHeroPauseReason('hover',false));
+  hero.addEventListener('focusin',()=>setHeroPauseReason('focus',true));
+  hero.addEventListener('focusout',event=>{
+    if(!hero.contains(event.relatedTarget))setHeroPauseReason('focus',false);
   });
-  document.addEventListener('visibilitychange',()=>{
-    if(document.hidden)stopHeroCarouselTimer();
-    else restartHeroCarouselTimer();
-  });
+  pause.addEventListener('click',()=>setHeroPauseReason('user',!heroCarouselState.pauses.has('user')));
+  document.addEventListener('visibilitychange',()=>setHeroPauseReason('hidden',document.hidden));
+  heroCarouselState.media=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const syncReducedMotion=event=>setHeroPauseReason('reduced-motion',event.matches);
+  heroCarouselState.media.addEventListener?.('change',syncReducedMotion);
+  heroCarouselState.media.addListener?.(syncReducedMotion);
   heroCarouselState.bound=true;
 }
 function renderHeroCarousel(){
   const track=$('#heroCarouselTrack');
-  const dots=$('#heroCarouselDots');
-  const art=$('#homeHeroArt');
-  if(!track||!art)return;
-  const slides=collectHeroCarouselSlides();
-  heroCarouselState.slides=slides;
+  if(!track)return;
+  clearHeroCarouselTimer();
+  track.innerHTML=HERO_SLIDES.map((slide,i)=>`<figure class="hero-carousel-slide${i===0?' is-active':''}" data-hero-slide="${i}"><img class="hero-star"${i===0?' id="heroStarImg"':''} src="${slide.src}" alt="${slide.alt}" ${i===0?'width="1146" height="717" decoding="async" fetchpriority="high"':'loading="lazy" decoding="async"'} /></figure>`).join('');
   heroCarouselState.index=0;
-  track.innerHTML=slides.map((slide,i)=>`<figure class="hero-carousel-slide${i===0?' is-active':''}" data-hero-slide="${i}"><img class="hero-star"${i===0?' id="heroStarImg"':''} src="${esc(slide.src)}" alt="${esc(slide.alt||slide.label||'首页大图')}" ${i===0?'width="1146" height="717" decoding="async" fetchpriority="high" data-editor-id="site.page.home.hero.image" data-editor-type="image" data-editor-field="image"':'loading="lazy" decoding="async"'} /></figure>`).join('');
-  if(dots){
-    dots.innerHTML=slides.map((slide,i)=>`<button type="button" role="tab" aria-selected="${i===0?'true':'false'}" class="hero-carousel-dot${i===0?' is-active':''}" data-hero-dot="${i}" aria-label="切换到第 ${i+1} 张：${esc(slide.label||'大图')}"></button>`).join('');
-    dots.querySelectorAll('[data-hero-dot]').forEach(btn=>{
-      btn.addEventListener('click',()=>showHeroCarouselSlide(Number(btn.dataset.heroDot)||0));
-    });
-  }
-  art.classList.toggle('is-single',slides.length<2);
-  updateHeroCarouselChrome(slides[0],0,slides.length);
+  heroCarouselState.slides=[...track.querySelectorAll('[data-hero-slide]')].map((element,index)=>{
+    const image=element.querySelector('img');
+    const slide={element,image,ready:!!(image.complete&&image.naturalWidth)};
+    image.addEventListener('load',()=>{slide.ready=true;});
+    return slide;
+  });
+  heroCarouselState.slides[0].element.classList.add('is-active');
   bindHeroCarouselUi();
-  restartHeroCarouselTimer();
+  setHeroPauseReason('hidden',document.hidden);
+  setHeroPauseReason('reduced-motion',heroCarouselState.media?.matches||false);
+  updateHeroCarouselChrome();
+  scheduleHeroCarousel();
 }
 function pickLaneItems(items,limit=6){
   return [...(items||[])]
@@ -110,18 +138,18 @@ function pickLaneItems(items,limit=6){
     })
     .slice(0,limit);
 }
-function renderHomeLaneCards(host,items,{pageHref,emptyText}){
+function renderHomeReelCards(host,items){
   if(!host)return;
   if(!items.length){
-    host.innerHTML=`<p class="home-empty">${esc(emptyText)}</p>`;
+    host.innerHTML='<p class="home-empty">档案预览尚未装载。</p>';
     return;
   }
-  host.innerHTML=items.map((item,i)=>{
+  host.innerHTML=items.map(item=>{
     const cover=safeUrl(item.cover,{image:true})||item.cover||'';
-    const tag=item.tag||item.version||item.type||'档案';
-    const summary=((item.summary||item.chapter||'').replace(/\s+/g,' ').trim().slice(0,42));
-    return `<a class="home-lane-card" href="${esc(pageHref)}${item.id?'#'+esc(item.id):''}" data-fx="press"><span class="home-lane-cover">${cover?`<img src="${esc(cover)}" alt="" loading="lazy"/>`:`<span>${esc(String(i+1).padStart(2,'0'))}</span>`}</span><span class="home-lane-copy"><small>${esc(tag)}</small><b>${esc(item.title||'未命名')}</b><em>${esc(summary||'进入栏目查看详情')}</em></span></a>`;
-  }).join('')+`<a class="home-lane-card more" href="${esc(pageHref)}" data-fx="press"><span class="home-lane-copy"><small>VIEW ALL</small><b>进入完整栏目</b><em>首页只展示预览，正文与筛选仍在正式页。</em></span></a>`;
+    const tag=item.tag||item.version||item.type||item.section;
+    const summary=(item.summary||item.chapter||'').replace(/\s+/g,' ').trim().slice(0,42);
+    return `<a class="home-reel-card" href="${esc(item.pageHref)}${item.id?'#'+esc(item.id):''}" data-fx="press"><span class="home-reel-cover">${cover?`<img src="${esc(cover)}" alt="" loading="lazy"/>`:''}</span><span class="home-reel-copy"><small>${esc(tag)}</small><b>${esc(item.title||'未命名')}</b><em>${esc(summary||'进入正式页查看详情')}</em></span></a>`;
+  }).join('');
 }
 function renderHomeModules(archive){
   const host=$('#homeModules');
@@ -129,74 +157,38 @@ function renderHomeModules(archive){
   const factions=archive.factions||[];
   const characters=archive.characters||[];
   const mainline=archive.mainline||[];
-  const stories=archive.stories||[];
-  const events=archive.events||[];
-  const behind=archive.behindScenes||[];
   const paths=[
-    {
-      href:'mainline.html',
-      kicker:'PATH 01 · MAINLINE',
-      title:'主线补课',
-      desc:'按版本与章节找空洞行动与世界观媒体，适合从头补。',
-      meta:`${mainline.length} 条主线 · 车道可切换`,
-      tone:'is-primary'
-    },
-    {
-      href:'stories.html',
-      kicker:'PATH 02 · AGENTS',
-      title:'角色与阵营',
-      desc:`${characters.length} 名代理人 · ${factions.length} 个阵营，可搜可筛，再下钻单人档案。`,
-      meta:'花名册最厚 · 主推荐',
-      tone:''
-    },
-    {
-      href:'stories.html#agentSearchForm',
-      kicker:'PATH 03 · SEARCH',
-      title:'按名字找人',
-      desc:'直接定位代理人，再看相关影像与阵营关系。',
-      meta:'跳转目录搜索',
-      tone:'is-soft'
-    }
+    {href:'mainline.html',kicker:'剧情',title:'主线补课',desc:'按版本与章节找空洞行动与世界观媒体。',meta:`${mainline.length} 条主线`,tone:'is-primary'},
+    {href:'stories.html',kicker:'代理人',title:'角色与阵营',desc:`${characters.length} 名代理人、${factions.length} 个阵营，可搜可筛。`,meta:'进入单人档案',tone:''},
+    {href:'stories.html#agentSearchForm',kicker:'搜索',title:'按名字找人',desc:'直接定位代理人，再看相关影像与阵营关系。',meta:'打开目录搜索',tone:'is-soft'}
   ];
   host.innerHTML=paths.map(p=>`<a class="path-card ${p.tone}" href="${esc(p.href)}" data-fx="press"><span class="path-kicker">${esc(p.kicker)}</span><b>${esc(p.title)}</b><p>${esc(p.desc)}</p><span class="path-meta">${esc(p.meta)}</span></a>`).join('');
-
-  const rail=$('#homeSecondaryRail');
-  if(rail){
-    const chips=[
-      {href:'#lane-mainline',label:'主线预览',meta:`${mainline.length} 条`},
-      {href:'#lane-events',label:'活动预览',meta:`${events.length} 条`},
-      {href:'#lane-behind',label:'幕后预览',meta:behind.length?`${behind.length} 条`:'待接入'},
-      {href:'cultivate.html',label:'代理人养成',meta:'FAQ + 素材索引'},
-      {href:'tape-wall-sample.html',label:'录像店',meta:'可选'}
-    ];
-    rail.innerHTML=chips.map(c=>`<a class="chip-link" href="${esc(c.href)}" data-fx="press">${esc(c.label)} <em>${esc(c.meta)}</em></a>`).join('');
-  }
 }
 function renderHomeArchive(){
   const archive=previewArchiveData||window.archiveData||{};
   const factions=archive.factions||[];
   const characters=archive.characters||[];
   const mainline=archive.mainline||[];
-  const stories=archive.stories||[];
   const events=archive.events||[];
   const behind=archive.behindScenes||[];
   const status=$('#archiveStatus');
   if(status)status.textContent=`${factions.length} 阵营 · ${characters.length} 代理人 · ${mainline.length} 主线 · ${events.length} 活动 · ${behind.length} 幕后`;
   renderHomeModules(archive);
-  renderHomeLaneCards($('#homeLaneMainline'),pickLaneItems(mainline,6),{pageHref:'mainline.html',emptyText:'主线预览尚未装载。'});
-  renderHomeLaneCards($('#homeLaneEvents'),pickLaneItems(events,6),{pageHref:'events.html',emptyText:'活动预览尚未装载。'});
-  renderHomeLaneCards($('#homeLaneBehind'),pickLaneItems(behind,6),{pageHref:'behind-scenes.html',emptyText:'幕后预览尚未装载。'});
-  // 优先入口已并入三条路径，#homeArchiveNav 可选不存在
-  const nav=$('#homeArchiveNav');
-  if(nav)nav.innerHTML='';
+  const reels=[
+    ...pickLaneItems(mainline,2).map(item=>({...item,pageHref:'mainline.html',section:'主线'})),
+    ...pickLaneItems(events,2).map(item=>({...item,pageHref:'events.html',section:'活动'})),
+    ...pickLaneItems(behind,2).map(item=>({...item,pageHref:'behind-scenes.html',section:'幕后'}))
+  ];
+  renderHomeReelCards($('#homeArchiveReels'),reels);
   const rail=$('#homeAgentRail');
   if(rail){
     const featured=characters.slice(0,8);
-    rail.innerHTML=featured.length?featured.map((character,i)=>{
+    rail.innerHTML=featured.length?featured.map(character=>{
       const faction=factions.find(item=>item.id===character.factionId);
       const img=safeUrl(character.headshot||character.avatar||character.portrait,{image:true})||character.headshot||character.avatar||'';
-  return `<a class="home-agent-card" href="character.html?id=${encodeURIComponent(character.id)}" style="--agent-theme:${esc(faction?.theme||'#e0b41c')}" data-fx="press"><span class="home-agent-index">${String(i+1).padStart(2,'0')}</span><span class="home-agent-avatar">${img?`<img src="${esc(img)}" alt="${esc(character.name)}" loading="lazy"/>`:`<span>${esc((character.name||'?').slice(0,1))}</span>`}</span><span class="home-agent-copy"><b>${esc(character.name)}</b><small>${esc([faction?.name||'未分组', character.attribute, character.specialty].filter(Boolean).join(' · '))}</small><em>${esc(((character.summary||'').replace(/\s+/g,' ').trim().slice(0,22)))}${((character.summary||'').trim().length>22?'…':'')}</em></span></a>`;
-    }).join('')+'<a class="home-agent-card more" href="stories.html" data-fx="press"><span class="home-agent-copy"><b>查看全部代理人</b><small>进入角色 / 阵营目录</small><em>按阵营浏览，或直接搜索名字进入单人档案。</em></span></a>':'<p class="home-empty">角色档案尚未装载。请确认 agent-catalog / enrichment 已正确引入。</p>';
+      const factionLogo=faction?.logo?safeUrl(faction.logo,{image:true})||faction.logo:'';
+      return `<a class="home-agent-card" href="character.html?id=${encodeURIComponent(character.id)}" style="--agent-theme:${esc(faction?.theme||'#e0b41c')}" data-fx="press"><span class="home-agent-avatar">${img?`<img src="${esc(img)}" alt="${esc(character.name)}" loading="lazy"/>`:`<span>${esc((character.name||'?').slice(0,1))}</span>`}${factionLogo?`<span class="home-agent-faction"><img src="${esc(factionLogo)}" alt="" aria-hidden="true" loading="lazy"/></span>`:''}</span><span class="home-agent-copy"><b>${esc(character.name)}</b><small>${esc([faction?.name||'未分组',character.attribute,character.specialty].filter(Boolean).join(' · '))}</small><em>${esc((character.summary||'').replace(/\s+/g,' ').trim().slice(0,22))}${(character.summary||'').trim().length>22?'…':''}</em></span></a>`;
+    }).join(''):'<p class="home-empty">角色档案尚未装载。请确认 agent-catalog / enrichment 已正确引入。</p>';
   }
 }
 function render(){renderHomeArchive();if($('#contentList'))renderContentEditor();}
@@ -240,7 +232,7 @@ function updatePlayer(){
   syncCassettePlaying();
 }
 function play(fromUser=false){if(!$('#audio').src){if(fromUser)toast('请先添加可用的音频文件');return}const request=$('#audio').play();request.then(()=>{const icon='❚❚'; const mt=$('#musicToggle'); if(mt) mt.textContent=icon; const ct=$('#cassetteToggle'); if(ct) ct.textContent=icon; syncCassettePlaying(true);}).catch(error=>{if(fromUser)toast(error?.name==='NotAllowedError'?'浏览器仍未允许播放，请检查 Edge 网站声音权限':'音频加载失败，请检查文件路径和格式')})}function next(dir=1){if(!config.tracks.length)return;currentTrack=playMode==='random'&&config.tracks.length>1?(()=>{let n=currentTrack;while(n===currentTrack)n=Math.floor(Math.random()*config.tracks.length);return n})():(currentTrack+dir+config.tracks.length)%config.tracks.length;updatePlayer()}function cyclePlayMode(){const modes=['order','random','single'];playMode=modes[(modes.indexOf(playMode)+1)%modes.length];localStorage.setItem('hooxiPlayMode',playMode);updatePlayer();toast(`已切换为${playModes[playMode].aria.replace('播放模式：','')}`)}
-if(document.querySelector('#heroTitle')){applyAppearance();render();renderFreeComponents('home');}updatePlayer();
+if(document.querySelector('#heroTitle')){applyAppearance();renderHeroCarousel();render();renderFreeComponents('home');}updatePlayer();
 function bindHomeNav(){
   const toggle=$('#homeNavToggle');
   const nav=$('#homeNav');

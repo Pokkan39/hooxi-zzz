@@ -1,0 +1,276 @@
+/* 官方镜像视觉复刻基础层（extracted-dna.md 实测数据）
+   素材来源：F:/website-archives 本地镜像，字体已本地化到 assets/vendor/fonts/。
+   仅复刻排版/布局/图形语言；装饰文案不抄官方原文标语，非官方声明保留。 */
+
+@font-face{
+  font-family:'Hongmeng';
+  src:url('assets/vendor/fonts/hongmengti.woff2') format('woff2');
+  font-display:swap;
+}
+@font-face{
+  font-family:'ZZZ Impact';
+  src:url('assets/vendor/fonts/Impact.ttf') format('truetype');
+  font-display:swap;
+}
+
+:root{
+  --o-lime:#d8fa00;
+  --o-black:#000;
+  --o-dark:#0a0a0a;
+  --o-ink:#222122;
+  --o-paper:#efefef;
+  --o-white:#fff;
+  --o-skew:-25.3deg;
+  --o-skew-back:25.3deg;
+  --o-font-hm:'Hongmeng','Microsoft YaHei',sans-serif;
+  --o-font-num:'ZZZ Impact',Impact,sans-serif;
+  --o-topbar-h:50px;
+}
+
+/* ---------- 顶栏（官方 header.header：纯黑 50px，fixed，z 99） ---------- */
+body.official-chrome .topbar{
+  position:fixed;
+  inset:0 0 auto 0;
+  height:var(--o-topbar-h);
+  z-index:99;
+  background:var(--o-black);
+  border-bottom:1px solid rgba(255,255,255,.14);
+  display:flex;
+  align-items:center;
+  gap:18px;
+  padding:0 clamp(12px,2vw,28px);
+}
+body.official-chrome .topbar .brand-mark{
+  font-family:var(--o-font-num);
+  background:var(--o-lime);
+  color:var(--o-black);
+}
+body.official-chrome .topbar nav a{
+  position:relative;
+  transition:transform .18s ease,color .18s ease,background-color .18s ease;
+}
+/* 官方悬停：scale(1.12) + 反白（DNA 第 7 节） */
+body.official-chrome .topbar nav a:hover{
+  transform:scale(1.12);
+  background:var(--o-white);
+  color:var(--o-black);
+}
+body.official-chrome .topbar nav a:focus-visible{
+  outline:2px solid var(--o-lime);
+  outline-offset:2px;
+}
+body.official-chrome main{padding-top:var(--o-topbar-h)}
+
+/* ---------- 楼层导航三行（官方 .section-nav：中文 + EN + 两位编号） ---------- */
+body.official-dna .section-nav{
+  display:grid;
+  gap:2px;
+  justify-items:start;
+}
+body.official-dna .section-nav-label{
+  font-family:var(--o-font-hm);
+  font-weight:700;
+  letter-spacing:.08em;
+}
+body.official-dna .section-nav-en{
+  text-transform:uppercase;
+  letter-spacing:.22em;
+  opacity:.55;
+}
+body.official-dna .section-nav-num{
+  font-family:var(--o-font-num);
+  font-size:clamp(28px,3vw,44px);
+  line-height:.9;
+  color:var(--o-lime);
+  -webkit-text-stroke:1px rgba(0,0,0,.35);
+}
+
+/* ---------- 斜切平行四边形组件（官方 home-character__nav 同款手法） ---------- */
+.o-skew{transform:skewX(var(--o-skew))}
+.o-skew>.o-skew-inner{transform:skewX(var(--o-skew-back))}
+
+@media(prefers-reduced-motion:reduce){
+  body.official-chrome .topbar nav a{transition:none}
+  body.official-chrome .topbar nav a:hover{transform:none}
+}
+
+/* ---------- 17 琴键式邻近缩放（规范 4.7，transform-only，不推邻居） ---------- */
+.zzz-key{
+  transform:scale(var(--key-scale,1));
+  filter:brightness(calc(1 + (var(--key-scale,1) - 1) * 2.5));
+  transition:transform .22s var(--home-ease,cubic-bezier(.22,.61,.36,1)),filter .22s ease;
+  will-change:transform;
+  z-index:1;
+  position:relative;
+}
+.zzz-key.is-key-hot{z-index:3}
+.zzz-key.is-key-near{z-index:2}
+
+/* ---------- 18 角色卡片倾斜与高光跟随（规范 4.3/4.5） ---------- */
+.zzz-tilt{
+  transform:perspective(900px) rotateX(var(--card-rx,0deg)) rotateY(var(--card-ry,0deg));
+  transition:transform .18s ease;
+  position:relative;
+  overflow:hidden;
+}
+.zzz-tilt::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:radial-gradient(240px 240px at var(--glare-x,50%) var(--glare-y,50%),rgba(216,250,0,.14),transparent 60%);
+  opacity:0;
+  transition:opacity .2s ease;
+}
+.zzz-tilt:hover::after,.zzz-tilt:focus-visible::after{opacity:1}
+
+/* ---------- 06 HUD 边框角标（规范 4.4：只改视觉不动布局） ---------- */
+.zzz-hud-corner{
+  position:relative;
+}
+.zzz-hud-corner::before,.zzz-hud-corner::after{
+  content:'';
+  position:absolute;
+  width:14px;
+  height:14px;
+  pointer-events:none;
+  border:1.5px solid var(--o-lime);
+  opacity:.9;
+}
+.zzz-hud-corner::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
+.zzz-hud-corner::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
+
+/* ---------- 角色页官方式斜切缩略图导航条（DNA home-character__nav） ---------- */
+body.archive-character .character-module-nav.zzz-o-nav{
+  flex-wrap:nowrap;
+  gap:4px;
+  align-items:stretch;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+body.archive-character .character-module-nav.zzz-o-nav .zzz-o-nav-item{
+  flex:1 1 0;
+  min-width:0;
+  transform:skewX(var(--o-skew));
+  border-radius:0;
+  background:rgba(10,10,10,.82);
+  border:1px solid rgba(255,255,255,.14);
+  color:var(--o-paper);
+  font-family:var(--o-font-hm);
+  font-size:15px;
+  letter-spacing:.08em;
+  transition:background-color .18s ease,border-color .18s ease,color .18s ease;
+}
+body.archive-character .character-module-nav.zzz-o-nav .zzz-o-nav-item>span{
+  display:grid;
+  place-items:center;
+  width:100%;
+  min-height:56px;
+  padding:0 10px;
+  transform:skewX(var(--o-skew-back));
+}
+body.archive-character .character-module-nav.zzz-o-nav .zzz-o-nav-item:hover,
+body.archive-character .character-module-nav.zzz-o-nav .zzz-o-nav-item:focus-visible,
+body.archive-character .character-module-nav.zzz-o-nav .zzz-o-nav-item.is-active{
+  background:var(--o-lime);
+  border-color:var(--o-lime);
+  color:var(--o-black);
+  outline:none;
+}
+body.archive-character .character-module-nav.zzz-o-nav .zzz-o-nav-item:focus-visible{
+  outline:2px solid var(--o-lime);
+  outline-offset:2px;
+}
+@media (max-width:720px){
+  body.archive-character .character-module-nav.zzz-o-nav{flex-wrap:wrap}
+  body.archive-character .character-module-nav.zzz-o-nav .zzz-o-nav-item{flex:1 1 46%}
+}
+
+/* ---------- 技能介绍模块（role_talent，Wiki 快照） ---------- */
+.talent-module{display:grid;gap:14px}
+.talent-tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.talent-tab{
+  width:56px;
+  height:56px;
+  display:grid;
+  place-items:center;
+  background:rgba(10,10,10,.82);
+  border:1px solid rgba(255,255,255,.16);
+  cursor:pointer;
+  transition:transform .18s ease,border-color .18s ease,background-color .18s ease;
+}
+.talent-tab img{width:36px;height:36px;object-fit:contain}
+.talent-tab-fallback{
+  font-family:var(--o-font-hm);
+  font-weight:700;
+  color:var(--o-paper);
+  font-size:14px;
+}
+.talent-tab.is-active{
+  border-color:var(--o-lime);
+  background:rgba(216,250,0,.10);
+  transform:translateY(-2px);
+}
+.talent-tab:focus-visible{outline:2px solid var(--o-lime);outline-offset:2px}
+.talent-panel{display:grid;gap:12px}
+.talent-panel[hidden]{display:none}
+.talent-panel-copy h4{
+  margin:0 0 6px;
+  font-family:var(--o-font-hm);
+  font-size:18px;
+  color:var(--o-white);
+}
+.talent-desc{
+  margin:0;
+  line-height:1.7;
+  color:var(--o-paper);
+  white-space:pre-line;
+}
+.talent-growth h4{
+  margin:0 0 8px;
+  font-size:13px;
+  letter-spacing:.12em;
+  color:var(--o-lime);
+  text-transform:uppercase;
+}
+.talent-growth-grid{
+  display:grid;
+  gap:8px;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+}
+.talent-growth-stage{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.10);
+  padding:8px 10px;
+}
+.talent-growth-stage b{
+  display:block;
+  margin-bottom:4px;
+  font-family:var(--o-font-num);
+  color:var(--o-lime);
+  font-size:13px;
+  letter-spacing:.08em;
+}
+.talent-growth-stage ul{margin:0;padding-left:16px}
+.talent-growth-stage li{font-size:12.5px;line-height:1.6;color:var(--o-paper);white-space:pre-line}
+
+@media(max-width:640px){
+  .talent-tab{width:48px;height:48px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html:not(.zzz-motion-forced) .zzz-key,
+  html:not(.zzz-motion-forced) .zzz-tilt,
+  html:not(.zzz-motion-forced) .talent-tab,
+  html:not(.zzz-motion-forced) body.archive-character .character-module-nav.zzz-o-nav .zzz-o-nav-item{transition:none}
+  html:not(.zzz-motion-forced) .zzz-key{transform:none!important;filter:none!important}
+  html:not(.zzz-motion-forced) .zzz-tilt{transform:none!important}
+  html:not(.zzz-motion-forced) .zzz-tilt::after{opacity:0!important}
+}
