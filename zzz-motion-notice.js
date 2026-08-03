@@ -6,7 +6,7 @@
 
   var KEY='zzzMotionNoticeDismissed';
   var FORCE_KEY='zzzMotionForce';
-  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
+  var reduce={matches:false};
   var forced=new URLSearchParams(location.search).get('motion')==='force';
 
   // 已在预览态、系统未开减少动效，都不提示

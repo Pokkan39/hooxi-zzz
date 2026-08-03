@@ -97,10 +97,7 @@ function bindHeroCarouselUi(){
   });
   pause.addEventListener('click',()=>setHeroPauseReason('user',!heroCarouselState.pauses.has('user')));
   document.addEventListener('visibilitychange',()=>setHeroPauseReason('hidden',document.hidden));
-  heroCarouselState.media=window.matchMedia('(prefers-reduced-motion: reduce)');
-  const syncReducedMotion=event=>setHeroPauseReason('reduced-motion',event.matches);
-  heroCarouselState.media.addEventListener?.('change',syncReducedMotion);
-  heroCarouselState.media.addListener?.(syncReducedMotion);
+  heroCarouselState.media={matches:false,addEventListener:()=>{},addListener:()=>{},removeEventListener:()=>{}};
   heroCarouselState.bound=true;
 }
 function renderHeroCarousel(){
@@ -326,7 +323,7 @@ function setCassetteSide(side){
 let cassetteLastFocus=null;
 let cassetteCloseTimer=0;
 let cassetteOpenToken=0;
-const cassetteReducedMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)');
+const cassetteReducedMotion={matches:false,addEventListener:()=>{},removeEventListener:()=>{}};
 function openCassetteStage(){
   const stage=$('#cassetteStage'); if(!stage)return;
   const opener=$('#cassetteOpen');

@@ -107,7 +107,3 @@ body{
   .fad-board{padding:16px}
 }
 
-/* Reduced motion */
-@media(prefers-reduced-motion:reduce){
-  *{transition-duration:0s !important;animation-duration:0s !important}
-}

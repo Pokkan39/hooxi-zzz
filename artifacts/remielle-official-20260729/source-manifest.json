@@ -1,0 +1,193 @@
+{
+  "characterId": "remielle",
+  "sourcePage": "https://baike.mihoyo.com/zzz/wiki/content/2076/detail?mhy_presentation_style=fullscreen",
+  "checkedAt": "2026-07-29",
+  "assets": [
+    {
+      "file": "hero.png",
+      "url": "https://act-upload.mihoyo.com/nap-obc-indep/2026/07/22/15559334/9a7f9e783be2279e026e8d6358942d16_8868901248011836016.png",
+      "contentType": "image/png",
+      "bytes": 633916,
+      "sha256": "c15d068d9c84421610de2d4cef4b1b883083de0a248d9a3898fbebc9cbf81422",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 760,
+      "height": 760,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBBox": [
+        59,
+        64,
+        728,
+        699
+      ]
+    },
+    {
+      "file": "faction.png",
+      "url": "https://act-upload.mihoyo.com/nap-obc-indep/2026/07/22/15559334/299478a0ed06ec799a465ad2487b4e5d_2844220404539584154.png",
+      "contentType": "image/png",
+      "bytes": 69014,
+      "sha256": "3dd4e8b68ee47d546e20932918f07b6de77927ccac2b7e245108d9c16e63f34f",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 220,
+      "height": 220,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBBox": [
+        11,
+        2,
+        209,
+        216
+      ]
+    },
+    {
+      "file": "mindscape-1.png",
+      "url": "https://act-upload.mihoyo.com/nap-obc-indep/2026/07/29/71319299/af7afc5a763a30d882b57f60404ea963_1839644649078809127.png",
+      "contentType": "image/png",
+      "bytes": 1660629,
+      "sha256": "0e572e3019f59ee5fe7ac4990567621ba6adf875ab064b07da4b14545987f92c",
+      "format": "PNG",
+      "mode": "RGB",
+      "width": 2112,
+      "height": 1163,
+      "alphaExtrema": null,
+      "alphaBBox": null
+    },
+    {
+      "file": "mindscape-2.png",
+      "url": "https://act-upload.mihoyo.com/nap-obc-indep/2026/07/29/71319299/f545057ce54af3eaa43562c77a92a27e_2688996149089548061.png",
+      "contentType": "image/png",
+      "bytes": 1100583,
+      "sha256": "1dffb06927b92f425ba8e8628b58d2881acdd904ba96e013b69257f45d6d85d1",
+      "format": "PNG",
+      "mode": "RGB",
+      "width": 2114,
+      "height": 1162,
+      "alphaExtrema": null,
+      "alphaBBox": null
+    },
+    {
+      "file": "mindscape-3.png",
+      "url": "https://act-upload.mihoyo.com/nap-obc-indep/2026/07/29/71319299/021fcee0948bf9f95d46322aa436693d_3115366706395102010.png",
+      "contentType": "image/png",
+      "bytes": 1591206,
+      "sha256": "6d2fc42f3e4883a1aad831f8450a028bf629706f3150c4cbb132f50b81597dc3",
+      "format": "PNG",
+      "mode": "RGB",
+      "width": 2108,
+      "height": 1166,
+      "alphaExtrema": null,
+      "alphaBBox": null
+    },
+    {
+      "file": "display-1.png",
+      "url": "https://act-upload.mihoyo.com/nap-obc-indep/2026/07/23/15559334/9004fd5d455c82bc20247eb0f6891050_1725964822439510660.png",
+      "contentType": "image/png",
+      "bytes": 1325525,
+      "sha256": "2acb13fc026f9e6d524386ecfa8e4f1ea3bb30f1cc6c2f1937651b498aa082cf",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 1580,
+      "height": 2028,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBBox": [
+        2,
+        1,
+        1578,
+        2026
+      ]
+    },
+    {
+      "file": "display-2.png",
+      "url": "https://act-upload.mihoyo.com/nap-obc-indep/2026/07/23/15559334/bb235961456f126a15dfcf1eacf00872_6858611267353372673.png",
+      "contentType": "image/png",
+      "bytes": 2947364,
+      "sha256": "c96bcd07bdbc2ff1d5185bbd5ed4ed8b13a945cdb0dd09da46b6f146daba56a5",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 3284,
+      "height": 2052,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBBox": [
+        0,
+        0,
+        3284,
+        2052
+      ]
+    },
+    {
+      "file": "display-3.png",
+      "url": "https://act-upload.mihoyo.com/nap-obc-indep/2026/07/23/15559334/05bf66439cd1ffdbfae0499176de4fcc_5275083046828855001.png",
+      "contentType": "image/png",
+      "bytes": 1471403,
+      "sha256": "eb170028a7a75fc9de3266f0ec516a1e01a013c6d4a64de563c6e249852cc1d5",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 2128,
+      "height": 1332,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBBox": [
+        0,
+        1,
+        2127,
+        1331
+      ]
+    },
+    {
+      "file": "display-4.png",
+      "url": "https://act-upload.mihoyo.com/nap-obc-indep/2026/07/23/15559334/059ce39a43bb52de48d650690f797027_6904262200026245306.png",
+      "contentType": "image/png",
+      "bytes": 1370966,
+      "sha256": "62897a6585a3617e0b5aa3a5ecd63e3bbe0a6ebfd2e49b72c8a73ce2de18ec89",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 2128,
+      "height": 1324,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBBox": [
+        0,
+        0,
+        2128,
+        1323
+      ]
+    },
+    {
+      "file": "media.png",
+      "url": "https://act-upload.mihoyo.com/nap-obc-indep/2026/07/23/15559334/5c2c14a4dc312f27633c41b610f97085_5414228083807512486.png",
+      "contentType": "image/png",
+      "bytes": 11482760,
+      "sha256": "0b1c1a8137e1be4766ea919906c5ebcd585e6f683feacce6113f1a34bf78a3b4",
+      "format": "PNG",
+      "mode": "RGBA",
+      "width": 1440,
+      "height": 5112,
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "alphaBBox": [
+        0,
+        0,
+        1440,
+        5112
+      ]
+    }
+  ]
+}

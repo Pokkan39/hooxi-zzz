@@ -539,12 +539,4 @@ html body.home-page .music-player.cassette-dock .deck-vol input[type=range]{
 
 /* 无障碍：尊重减少动效。卷轴无限旋转是典型装饰性动画，必须停；
    进度与状态仍照常更新，功能不受影响。 */
-@media(prefers-reduced-motion:reduce){
-  .floating-cassette,
-  .fc-key,
-  .fc-hotline,
-  .fc-mini{transition:none!important}
-  .floating-cassette.is-playing .fc-hub{animation:none!important}
-  .fc-wound{transition:none!important}
-  .floating-cassette.needs-gesture .fc-key--play{animation:none!important}
-}
+

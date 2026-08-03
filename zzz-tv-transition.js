@@ -4,9 +4,7 @@
 (function(){
   'use strict';
 
-  var nativeReduce=window.matchMedia('(prefers-reduced-motion: reduce)');
-  var forced=new URLSearchParams(location.search).get('motion')==='force';
-  var reduced=function(){return nativeReduce.matches&&!forced;};
+  var reduced=function(){return false;};
 
   // 规范 4.8 时序表数值，直接照用
   var SWAP=380;   // 雪花最浓、执行跳转的时刻

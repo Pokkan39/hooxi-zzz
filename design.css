@@ -255,7 +255,7 @@
     0deg,transparent 0 3px,rgba(0,0,0,.16) 3px 4px);
 }
 /* 无精确指针或减动效：直接显示彩色，不做交互 */
-@media (hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){
+@media (hover:none),(pointer:coarse){
   .d-xray-veil{display:none}
 }
 
@@ -353,6 +353,26 @@ body.archive-character{
   filter:none;
   opacity:1;
 }
+/* X-ray 双层：彩色版默认隐藏，鼠标位置径向遮罩透出 */
+.d-keyart[data-xray-pair] .d-keyart-color{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:var(--character-hero-art-position,50% 50%);
+  pointer-events:none;
+  opacity:0;
+  -webkit-mask-image:radial-gradient(circle 0px at var(--ax,50%) var(--ay,50%),#000 60%,transparent 100%);
+          mask-image:radial-gradient(circle 0px at var(--ax,50%) var(--ay,50%),#000 60%,transparent 100%);
+  transition:opacity .25s ease;
+}
+.d-keyart[data-xray-pair].is-live .d-keyart-color{
+  opacity:1;
+  -webkit-mask-image:radial-gradient(circle 180px at var(--ax,50%) var(--ay,50%),#000 60%,transparent 100%);
+          mask-image:radial-gradient(circle 180px at var(--ax,50%) var(--ay,50%),#000 60%,transparent 100%);
+}
 .archive-character .character-hero-portrait{
   position:absolute;
   z-index:2;
@@ -382,8 +402,15 @@ body.archive-character{
 }
 
 .d-keyart.is-live::before{opacity:.62}
-@media (hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){
+@media (hover:none),(pointer:coarse){
   .archive-character .d-keyart::before{transition-duration:1ms}
+  /* 触屏无跟踪：直接显示彩色版 */
+  .d-keyart[data-xray-pair] .d-keyart-image{display:none}
+  .d-keyart[data-xray-pair] .d-keyart-color{
+    opacity:1;
+    -webkit-mask-image:none;
+    mask-image:none;
+  }
 }
 
 /* ---------- 9. 页脚 ---------- */
@@ -783,13 +810,6 @@ body.archive-character{
   outline-offset:-2px;
 }
 /* 减动效：直接呈现终态 */
-@media (prefers-reduced-motion:reduce){
-  .archive-character .zzz-watermark,
-  .archive-character .character-portrait,
-  .archive-character .zzz-idcard,
-  .archive-character .zzz-roster,
-  .zzz-card{opacity:1;transform:none;animation:none}
-}
 
 /* ---------- 12h. 批次 1：停用旧 ZZZ 角色舞台 ---------- */
 .archive-character :is(.zzz-watermark,.zzz-roster,.zzz-catalog-screen,.zzz-idcard,.zzz-edge,.zzz-edge-badge,.zzz-kv-brand,.zzz-sticker-stack){
@@ -1245,19 +1265,6 @@ body.archive-character{
     transform:translateY(7px);
   }
 }
-@media (prefers-reduced-motion:reduce){
-  .archive-character .character-screen[data-character-text-motion="enter"] :is(.character-hero-english,.character-hero-copy h1,.character-identity div,.character-dossier-link),
-  .archive-character .character-module-nav a.is-active > span{
-    opacity:1!important;
-    transform:none!important;
-    animation:none!important;
-  }
-  .archive-character .character-module-head > :is(span,h2){
-    opacity:1!important;
-    transform:none!important;
-    transition:none!important;
-  }
-}
 
 @media(max-width:720px){
   .subpage.archive-character .character-screen{
@@ -1328,117 +1335,227 @@ body.archive-character{
   .archive-character .character-media-slot-frame{min-height:160px}
   .archive-character footer{display:grid}
 }
-@media (hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){
+@media (hover:none),(pointer:coarse){
   .archive-character .d-keyart::before,
   .archive-character .character-module[role="tabpanel"]{transition-duration:1ms}
   .archive-character .wiki-gallery-track{transition:none}
 }
 
-/* ===== 技能模块（talent-*）游戏 HUD 风格 ===== */
+/* ===== 技能模块（talent-*）ZZZ 官方风格 ===== */
+/* 外层 disclosure 深色覆盖：消除父级 --character-surface-strong 的米白色 */
+.archive-character .character-disclosure[data-archive-disclosure="talent"]{
+  background:#181c1a;
+  border-color:rgba(216,250,0,.18);
+}
+.archive-character .character-disclosure[data-archive-disclosure="talent"] > :not(summary){
+  margin:0;
+}
+/* 整体面板：深色窄框 + 左绿色装饰条 */
 .archive-character .talent-module{
-  border:1px solid var(--zzz-lime-line,rgba(216,250,0,.42));
-  background:var(--bg-2,#1a222d);
+  border:1px solid rgba(255,255,255,.08);
+  border-left:3px solid rgba(216,250,0,.5);
+  background:#1a1e1c;
   border-radius:2px;
   overflow:hidden;
 }
-.archive-character .talent-tabs{
+/* 顶部图标行（水平滑动，紧凑） */
+.archive-character .talent-icon-row{
   display:flex;
-  flex-wrap:wrap;
-  gap:2px;
-  padding:6px 6px 0;
-  background:var(--bg-1,#121820);
-  border-bottom:1px solid var(--zzz-lime-line,rgba(216,250,0,.42));
+  overflow-x:auto;
+  overflow-y:hidden;
+  gap:8px;
+  padding:10px 14px;
+  background:rgba(20,24,22,.6);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
 }
-.archive-character .talent-tab{
+.archive-character .talent-icon-row::-webkit-scrollbar{display:none}
+.archive-character .talent-icon-tab{
   flex:0 0 auto;
-  width:52px;height:52px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-  background:var(--bg-2,#1a222d);
+  display:flex;flex-direction:column;align-items:center;
+  gap:4px;
+  background:transparent;
   border:1px solid transparent;
-  border-bottom:none;
-  border-radius:2px 2px 0 0;
+  border-radius:2px;
+  padding:4px 6px;
   cursor:pointer;
-  transition:background .15s,border-color .15s;
-  padding:4px;
+  transition:border-color .15s,background .15s;
+  width:56px;height:60px;
 }
-.archive-character .talent-tab:hover{
-  background:var(--bg-3,#243041);
-  border-color:var(--zzz-lime-line,rgba(216,250,0,.42));
+.archive-character .talent-icon-tab:hover{
+  background:rgba(20,24,22,.4);
 }
-.archive-character .talent-tab.is-active{
-  background:var(--bg-3,#243041);
-  border-color:var(--zzz-lime-line,rgba(216,250,0,.42));
-  box-shadow:0 0 10px var(--zzz-lime-dim,rgba(216,250,0,.14));
-  position:relative;
+.archive-character .talent-icon-tab.is-active{
+  background:#181c1a;
+  border-color:rgba(216,250,0,.5);
 }
-.archive-character .talent-tab.is-active::after{
-  content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;
-  background:var(--zzz-lime,#d8fa00);
+.archive-character .talent-icon-circle{
+  width:40px;height:40px;
+  border-radius:2px;
+  background:#181c1a;
+  border:1px solid rgba(216,250,0,.4);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
 }
-.archive-character .talent-tab img{
-  width:36px;height:36px;object-fit:contain;
-  image-rendering:auto;
+.archive-character .talent-icon-tab.is-active .talent-icon-circle{
+  border-color:rgba(216,250,0,.7);
 }
-.archive-character .talent-tab-fallback{
-  font-size:10px;font-family:var(--font-display,sans-serif);font-weight:700;
-  color:var(--signal,#3ec7d6);text-align:center;letter-spacing:.04em;
-  line-height:1.2;word-break:break-all;
+.archive-character .talent-icon-circle img{
+  width:40px;height:40px;
+  object-fit:cover;
+  object-position:center;
 }
-.archive-character .talent-panels{
-  padding:0;
+.archive-character .talent-icon-no-img{
+  font-family:var(--font-display,sans-serif);
+  font-size:.65rem;font-weight:700;
+  color:var(--accent-hot);
+  letter-spacing:.06em;
+  line-height:1;
 }
+.archive-character .talent-icon-label{
+  font-size:.62rem;font-weight:600;
+  color:#d5ccb8;
+  letter-spacing:.03em;
+  line-height:1.2;
+  white-space:nowrap;
+  opacity:.6;
+}
+.archive-character .talent-icon-tab.is-active .talent-icon-label{
+  opacity:1;color:rgba(216,250,0,.9);
+}
+/* 详情面板 */
+.archive-character .talent-panels{padding:0;}
 .archive-character .talent-panel{
-  display:none;padding:16px 18px 18px;
+  display:none;
+  padding:14px 16px 16px;
 }
 .archive-character .talent-panel.is-active{display:block;}
-.archive-character .talent-panel-copy h4{
+/* 详情区：左侧大图 + 名称，右侧描述 */
+.archive-character .talent-detail{
+  display:flex;
+  gap:16px;
+  margin-bottom:12px;
+}
+.archive-character .talent-detail-left{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  flex:0 0 auto;
+}
+.archive-character .talent-detail-left .talent-icon-circle{
+  width:100px;height:100px;
+  border:2px solid rgba(216,250,0,.55);
+}
+.archive-character .talent-detail-left .talent-icon-circle img{
+  width:100px;height:100px;
+}
+.archive-character .talent-detail-left .talent-icon-no-img{
+  font-size:1.3rem;
+}
+.archive-character .talent-detail-name{
+  display:flex;flex-direction:column;align-items:flex-start;
+  gap:4px;
+  padding-left:4px;
+}
+.archive-character .talent-detail-type{
+  font-size:.62rem;font-family:var(--font-display,sans-serif);font-weight:700;
+  color:rgba(216,250,0,.85);
+  letter-spacing:.1em;text-transform:uppercase;
+}
+.archive-character .talent-detail-name h3{
+  margin:0;
   font-family:var(--font-display,sans-serif);
-  font-size:1rem;font-weight:700;
-  color:var(--text,#e8ecf1);
-  letter-spacing:.06em;text-transform:uppercase;
-  margin:0 0 8px;
+  font-size:.95rem;font-weight:700;
+  color:#d5ccb8;
+  letter-spacing:.04em;
+}
+.archive-character .talent-detail-sub{
+  font-size:.72rem;color:#d5ccb8;opacity:.6;
+  line-height:1.4;
+}
+.archive-character .talent-detail-right{
+  flex:1 1 auto;
+  display:flex;flex-direction:column;justify-content:center;
+  min-width:0;
 }
 .archive-character .talent-desc{
-  font-size:.875rem;color:var(--text-dim,#8c9ab0);
+  font-size:.78rem;color:#d5ccb8;opacity:.75;
   line-height:1.7;white-space:pre-line;
-  margin:0 0 12px;
-}
-.archive-character .talent-growth{
-  border-top:1px solid var(--bg-3,#243041);
-  padding-top:12px;margin-top:4px;
-}
-.archive-character .talent-growth h4{
-  font-size:.72rem;font-family:var(--font-display,sans-serif);font-weight:600;
-  color:var(--signal,#3ec7d6);text-transform:uppercase;letter-spacing:.1em;
-  margin:0 0 8px;
-}
-.archive-character .talent-growth-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
-  gap:8px;
-}
-.archive-character .talent-growth-stage{
-  background:var(--bg-1,#121820);
-  border:1px solid var(--bg-3,#243041);
-  border-radius:2px;padding:8px 10px;
-}
-.archive-character .talent-growth-stage b{
-  display:block;
-  font-size:.78rem;color:var(--amber,#e0b41c);
-  font-family:var(--font-display,sans-serif);font-weight:700;
-  letter-spacing:.06em;margin-bottom:6px;
-}
-.archive-character .talent-growth-stage ul{
-  list-style:none;padding:0;margin:0;
-  font-size:.74rem;color:var(--text-dim,#8c9ab0);line-height:1.6;
-}
-.archive-character .talent-module .character-wiki-note{
-  font-size:.72rem;color:var(--text-dim,#8c9ab0);
-  padding:8px 18px 14px;border-top:1px solid var(--bg-3,#243041);
   margin:0;
 }
-@media(max-width:600px){
-  .archive-character .talent-tab{width:44px;height:44px;}
-  .archive-character .talent-tab img{width:28px;height:28px;}
-  .archive-character .talent-growth-grid{grid-template-columns:1fr 1fr;}
+/* 水平滑动升级表（紧凑卡片） */
+.archive-character .talent-growth-scroll{
+  display:block;
+  border-top:1px solid rgba(255,255,255,.06);
+  padding-top:10px;
+  margin-top:2px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
 }
+.archive-character .talent-growth-track{
+  display:flex;
+  gap:8px;
+  padding:4px 2px 6px;
+  width:max-content;
+}
+.archive-character .talent-stage-card{
+  flex:0 0 auto;
+  width:130px;
+  background:rgba(20,24,22,.5);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:2px;
+  padding:8px 10px;
+  display:flex;flex-direction:column;
+  gap:6px;
+}
+.archive-character .talent-stage-num{
+  display:inline-block;
+  font-family:var(--font-display,sans-serif);font-weight:800;
+  font-size:.95rem;
+  color:rgba(216,250,0,.85);
+  letter-spacing:.04em;
+  align-self:flex-start;
+}
+.archive-character .talent-stage-num.is-core{
+  color:var(--accent-hot);
+}
+.archive-character .talent-stage-rows{
+  list-style:none;padding:0;margin:0;
+  font-size:.68rem;color:#d5ccb8;opacity:.7;
+  line-height:1.5;
+}
+.archive-character .talent-stage-rows li{
+  white-space:pre-line;
+}
+.archive-character .talent-growth-tip{
+  font-size:.6rem;
+  color:#d5ccb8;opacity:.5;
+  text-align:center;
+  margin:0;
+  padding:2px 0 4px;
+}
+.archive-character .talent-module .character-wiki-note{
+  font-size:.62rem;color:#d5ccb8;opacity:.4;
+  padding:8px 16px 12px;
+  border-top:1px solid rgba(255,255,255,.06);
+  margin:0;
+}
+/* 移动端适配 */
+@media(max-width:600px){
+  .archive-character .talent-icon-tab{width:48px;height:52px;}
+  .archive-character .talent-icon-tab .talent-icon-circle{width:34px;height:34px;}
+  .archive-character .talent-icon-tab .talent-icon-circle img{width:34px;height:34px;}
+  .archive-character .talent-icon-label{font-size:.55rem;}
+  .archive-character .talent-detail{flex-direction:column;align-items:center;text-align:center;}
+  .archive-character .talent-detail-left{flex-direction:row;align-items:center;gap:12px;}
+  .archive-character .talent-detail-left .talent-icon-circle{width:70px;height:70px;}
+  .archive-character .talent-detail-left .talent-icon-circle img{width:70px;height:70px;}
+  .archive-character .talent-detail-name{align-items:center;}
+  .archive-character .talent-stage-card{width:120px;}
+  .archive-character .talent-panel{padding:12px;}
+}
+

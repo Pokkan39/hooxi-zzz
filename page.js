@@ -362,7 +362,7 @@ function renderPageBanner(){
   rank();
   dots.forEach(d=>d.onclick=()=>show(+d.dataset.dot));
   const interval=pageKey==='behind-scenes'?3000:5000;
-  const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
+  const reducedMotion={matches:false,addEventListener:()=>{}};
   let timer=0,hovered=false,focused=wrap.contains(document.activeElement);
   function syncTimer(){
     const paused=reducedMotion.matches||hovered||focused||document.hidden;

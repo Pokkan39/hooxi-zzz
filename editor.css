@@ -125,9 +125,9 @@ label input:focus{outline:none;border-color:#58a6ff;box-shadow:0 0 0 2px rgba(88
 .guide-steps span{color:#8b949e;font-size:.75rem;line-height:1.45}
 
 /* === Toast === */
-.toast{position:fixed;bottom:1.5rem;right:1.5rem;padding:.75rem 1rem;background:#238636;color:#fff;border-radius:6px;font-size:.8125rem;z-index:100;opacity:0;transform:translateY(.5rem);transition:opacity .2s,transform .2s;pointer-events:none}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;padding:.75rem 1rem;background:var(--signal);color:var(--text-1);border-radius:6px;font-size:.8125rem;z-index:100;opacity:0;transform:translateY(.5rem);transition:opacity .2s,transform .2s;pointer-events:none}
 .toast.show{opacity:1;transform:translateY(0)}
-.toast.error{background:#da3633}
+.toast.error{background:var(--coral)}
 
 /* === Responsive === */
 @media(max-width:768px){

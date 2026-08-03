@@ -186,16 +186,29 @@
   const talentRecord=(window.agentTalents?.agents||{})[character.id];
   const talentSkills=(talentRecord?.skills||[]).filter(skill=>skill&&skill.name);
   const talentId=`character-talent-${String(character.id).replace(/[^a-z0-9_-]/gi,'-')}`;
+  const talentTabs=talentSkills.map((skill,index)=>{
+    const shortLabel=skill.name.split('：')[0]||skill.name.slice(0,4);
+    return `<button id="${talentId}-tab-${index}" type="button" role="tab" aria-controls="${talentId}-panel-${index}" aria-selected="${index===0?'true':'false'}" tabindex="${index===0?'0':'-1'}" class="talent-icon-tab${index===0?' is-active':''}" data-talent-tab="${index}" title="${esc(skill.name)}"><span class="talent-icon-circle talent-icon-no-img" aria-hidden="true">${esc(shortLabel.slice(0,2))}</span><span class="talent-icon-label">${esc(shortLabel)}</span></button>`;
+  }).join('');
   const talentPanels=talentSkills.map((skill,index)=>{
     const growth=(skill.growth||[]).filter(stage=>stage.rows?.length);
-    const growthHtml=growth.length
-      ?`<div class="talent-growth"><h4>等级成长</h4><div class="talent-growth-grid">${growth.slice(0,4).map(stage=>`<div class="talent-growth-stage"><b>Lv.${esc(stage.name)}</b><ul>${stage.rows.map(row=>`<li>${esc(row)}</li>`).join('')}</ul></div>`).join('')}</div></div>`
-      :'';
-    return `<div id="${talentId}-panel-${index}" class="talent-panel${index===0?' is-active':''}" role="tabpanel" aria-labelledby="${talentId}-tab-${index}" aria-hidden="${index===0?'false':'true'}" ${index===0?'':'hidden inert'} data-talent-panel="${index}"><div class="talent-panel-copy"><h4>${esc(skill.name)}</h4><p class="talent-desc">${esc(skill.desc)}</p></div>${growthHtml}</div>`;
+    const shortLabel=skill.name.split('：')[0]||skill.name;
+    const nameSuffix=skill.name.includes('：')?skill.name.slice(skill.name.indexOf('：')+1):'';
+    const hasIcon=!!skill.icon;
+    // 滑动升级表：每个 growth stage 做成一个水平卡片
+    let growthHtml='';
+    if(growth.length){
+      const stageCircles=growth.map(stage=>{
+        const stageChar=esc(stage.name);
+        const isCore=stage.name.match(/^[A-F]$/);
+        return `<div class="talent-stage-card"><span class="talent-stage-num${isCore?' is-core':''}">${isCore?`S${stageChar}`:`${stageChar}`}</span><ul class="talent-stage-rows">${stage.rows.map(row=>`<li>${esc(row)}</li>`).join('')}</ul></div>`;
+      }).join('');
+      growthHtml=`<div class="talent-growth-scroll" aria-label="技能升级"><div class="talent-growth-track">${stageCircles}</div></div><p class="talent-growth-tip">← 左右滑动查看升级 →</p>`;
+    }
+    return `<div id="${talentId}-panel-${index}" class="talent-panel${index===0?' is-active':''}" role="tabpanel" aria-labelledby="${talentId}-tab-${index}" aria-hidden="${index===0?'false':'true'}" ${index===0?'':'hidden inert'} data-talent-panel="${index}"><div class="talent-detail"><div class="talent-detail-left"><span class="talent-big-icon">${hasIcon?`<span class="talent-icon-circle"><img src="${esc(skill.icon)}" alt="" width="120" height="120" loading="lazy" decoding="async"/></span>`:`<span class="talent-icon-circle talent-icon-no-img" aria-hidden="true">${esc(shortLabel.slice(0,2))}</span>`}</span><div class="talent-detail-name"><span class="talent-detail-type">${esc(shortLabel)}</span><h3>${esc(skill.name)}</h3>${nameSuffix?`<span class="talent-detail-sub">${esc(nameSuffix)}</span>`:''}</div></div><div class="talent-detail-right"><p class="talent-desc">${esc(skill.desc)}</p></div></div>${growthHtml}</div>`;
   }).join('');
-  const talentTabs=talentSkills.map((skill,index)=>`<button id="${talentId}-tab-${index}" type="button" role="tab" aria-controls="${talentId}-panel-${index}" aria-selected="${index===0?'true':'false'}" tabindex="${index===0?'0':'-1'}" class="talent-tab${index===0?' is-active':''}" data-talent-tab="${index}">${skill.icon?`<img src="${esc(skill.icon)}" alt="" width="36" height="36" loading="lazy" decoding="async"/>`:`<span class="talent-tab-fallback" aria-hidden="true">${esc(skill.name.slice(0,2))}</span>`}<span class="sr-only">${esc(skill.name)}</span></button>`).join('');
   const talentBody=talentSkills.length
-    ?`<div class="talent-module" data-talent-module><div class="talent-tabs" role="tablist" aria-label="技能列表">${talentTabs}</div><div class="talent-panels">${talentPanels}</div><p class="character-wiki-note">技能文案与成长数值来自米哈游绝区零百科快照；实际效果请以游戏内当前版本为准。</p></div>`
+    ?`<div class="talent-module" data-talent-module><div class="talent-icon-row" role="tablist" aria-label="技能列表">${talentTabs}</div><div class="talent-panels">${talentPanels}</div><p class="character-wiki-note">技能文案与成长数值来自米哈游绝区零百科快照；实际效果请以游戏内当前版本为准。</p></div>`
     :'';
   const talentDisclosure=talentBody?`<details class="character-disclosure" data-archive-disclosure="talent"><summary>技能 · 官方 Wiki 快照</summary>${talentBody}</details>`:'';
   const growthDisclosure=`<details class="character-disclosure" data-archive-disclosure="growth"><summary>成长 · 职级晋升</summary>${growthBody}</details>`;
@@ -297,7 +310,7 @@
       if(focus)tabs[index]?.focus();
     };
     tabs.forEach(tab=>tab.addEventListener('click',()=>go(+tab.dataset.talentTab)));
-    root.querySelector('.talent-tabs')?.addEventListener('keydown',event=>{
+    root.querySelector('[role="tablist"]')?.addEventListener('keydown',event=>{
       const next={ArrowRight:index+1,ArrowDown:index+1,ArrowLeft:index-1,ArrowUp:index-1,Home:0,End:tabs.length-1}[event.key];
       if(next===undefined)return;
       event.preventDefault();

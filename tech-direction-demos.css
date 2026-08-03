@@ -256,11 +256,3 @@ meter{display:block;width:min(420px,80vw);height:4px;margin:28px 0 12px}
   .click-copy .action,.click-copy .action.ghost{display:inline-flex}
   .footnote{bottom:16px}
 }
-@media (prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  .screen img,.giant-video,.click-poster,.click-video,.click-end,.matrix-card{
-    transition:none !important;
-  }
-  .scan,.crt-glow{display:none !important}
-  .sticky img{mix-blend-mode:normal;filter:brightness(1.05) contrast(1.05);opacity:1}
-}

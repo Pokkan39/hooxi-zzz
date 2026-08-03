@@ -59,10 +59,6 @@ body:not(.home-page) .home-archive-card:hover:after{transform:translateX(280%) s
   .episode:after,.page-card:after,.home-archive-card:after,.kingkong-item:after{display:none}
   .music-player:hover{transform:translateX(-50%)}
 }
-@media (prefers-reduced-motion:reduce){
-  *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
-  .episode,.page-card,.home-archive-card,.home-agent-card,.kingkong-item{transform:none!important}
-}
 
 /* Shared archive signal field and route handoff status */
 body{
@@ -214,14 +210,6 @@ body{
   .hooxi-route-loader__frame{width:100%;padding:16px;box-shadow:5px 5px 0 #000}
   .hooxi-route-loader__head{align-items:center}
   .hooxi-route-loader__frame>p{font-size:9px}
-}
-@media (prefers-reduced-motion:reduce){
-  .hooxi-signal-field:before{transform:none;opacity:.28}
-  .hooxi-signal-field:after{transform:perspective(640px) rotateX(62deg);opacity:.2}
-  .hooxi-route-loader:before,
-  .hooxi-route-loader.is-leaving:before,
-  .hooxi-route-loader__frame{transform:none}
-  .hooxi-route-loader__track i{transition:none}
 }
 
 /* ===== FINAL MOTION PASS // hard-edge signal workbench ===== */
@@ -602,56 +590,3 @@ html body .hooxi-route-loader__frame{z-index:1}
   html body.archive-character :is(.character-media-cover,.character-gallery-item):hover img{transform:none!important}
 }
 
-@media (prefers-reduced-motion:reduce){
-  @view-transition{navigation:none}
-  ::view-transition-group(root),
-  ::view-transition-old(root),
-  ::view-transition-new(root){animation:none!important}
-  html{scroll-behavior:auto!important}
-  html.motion-ready [data-motion-reveal],
-  html.motion-ready [data-motion-reveal].is-revealed{
-    opacity:1!important;
-    clip-path:none!important;
-    filter:none!important;
-    transform:none!important;
-    transition:none!important;
-  }
-  html body.home-page .hero-copy>.home-act-label,
-  html body.home-page .hero-copy>.eyebrow,
-  html body.home-page .hero-copy>h1,
-  html body.home-page .hero-copy>.intro,
-  html body.home-page .hero-copy>.hero-actions,
-  html body.home-page .hero.hero-has-star .hero__curtain,
-  html body.home-page .hero.hero-has-star .hero-art,
-  html body.subpage .page-hero .hero-copy-panel,
-  html body.subpage .page-hero .hero-hud,
-  html body.subpage .timeline-toolbar,
-  html body .section-plate,
-  html body footer,
-  html body .hooxi-route-loader:after,
-  html body :is(.cassette-playlist,.playlist-popover) .playlist-item{
-    animation:none!important;
-    opacity:1!important;
-    clip-path:none!important;
-    filter:none!important;
-    transform:none!important;
-  }
-  html body .topbar,
-  html body .chapter-head,
-  html body .chapter-arrow,
-  html body .chapter-track,
-  html body .cassette-stage,
-  html body .cassette-stage-scrim,
-  html body .cassette-deck,
-  html body .music-player,
-  html body .music-player .deck-right>*,
-  html body :is(.path-card,.home-agent-card,.chapter,.episode,.page-card,.agent-entry,.faction-entry,.character-content-card,.character-gallery-item,.related-record),
-  html body :is(.button,.icon-button,.player-control,.playlist-button,.play-button,.lane-chip,.deck-btn,.side-btn,.cassette-close,.cassette-mini,.agent-orbit-button,.agent-clear-button){transition:none!important}
-  html body :is(.button,.icon-button,.player-control,.playlist-button,.play-button,.lane-chip,.deck-btn,.side-btn,.cassette-close,.cassette-mini,.agent-orbit-button,.agent-clear-button){--motion-control-y:0px;--motion-control-scale:1}
-  html body .cassette-shell.is-playing .reel,
-  html body .cassette-shell.is-playing .reel i,
-  html body .cassette-shell.is-playing .tape-sheen,
-  html body .music-player.is-playing .cassette-mini .reel{animation:none!important}
-  html body .hooxi-signal-field:before{transform:none!important}
-  html body .hooxi-signal-field:after{transform:perspective(640px) rotateX(62deg)!important}
-}

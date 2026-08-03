@@ -2,10 +2,9 @@
   'use strict';
   if(!document.body.classList.contains('home-page'))return;
 
-  const nativeReduce=window.matchMedia('(prefers-reduced-motion: reduce)');
   const forced=new URLSearchParams(location.search).get('motion')==='force';
   const isForced=(()=>{if(forced)return true;try{return localStorage.getItem('zzzMotionForce')==='1';}catch(e){return false;}})();
-  const reduced=()=>nativeReduce.matches&&!isForced;
+  const reduced=()=>false;
   const fineQuery=window.matchMedia('(hover:hover) and (pointer:fine)');
 
   // 影画视差参数：2880px 宽图在 ~1280px 视口有充足横向空间
@@ -92,7 +91,6 @@
     };
 
     fineQuery.addEventListener('change',sync);
-    nativeReduce.addEventListener('change',sync);
     document.addEventListener('visibilitychange',()=>{if(document.hidden)home();});
     // slide 切换时刷新 img 绑定
     const track=art.querySelector('.hero-carousel-track');

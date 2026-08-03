@@ -12,9 +12,6 @@ html{scroll-behavior:smooth}
    平滑滚动会让聚焦被后续滚动打断（实测 deep-link-contract 失败），
    故该页保持即时锚点滚动。 */
 html:has(body.archive-stories){scroll-behavior:auto}
-@media(prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-}
 
 /* ---------- 14 噪点扫描线 ---------- */
 /* 首页已有 .noise 层（home-neon.css，opacity:.032）。此处只在其上叠加
@@ -82,52 +79,16 @@ body.home-page #heroTitle .zzz-char{
   letter-spacing:inherit!important;
   will-change:transform,opacity,filter;
 }
-@media(prefers-reduced-motion:reduce){
-  body.home-page:not(.zzz-motion-forced) #heroTitle .zzz-char{
-    transform:none!important;
-    opacity:1!important;
-    filter:none!important;
-  }
-}
 
 /* ---------- 10 磁吸鼠标 ---------- */
-/* 只用 transform 与 box-shadow，位移 6px 量级；不改宽高、不推开邻居。 */
-body.home-page .is-magnet{
-  transform:translate3d(var(--zzz-magnet-x,0),var(--zzz-magnet-y,0),0);
-  box-shadow:0 0 0 1px var(--home-cyan,#3ec7d6),0 8px 26px rgba(0,0,0,.42);
-}
-body.home-page .path-card.is-magnet,
-body.home-page .hero-primary-action.is-magnet,
-body.home-page .hero-play-action.is-magnet{
-  transition:transform 180ms var(--home-ease,cubic-bezier(.22,.61,.36,1)),box-shadow 180ms ease;
-}
+/* 已禁用：按钮跟鼠标飘移干扰正常操作。JS 不再添加 is-magnet 类。 */
 
 /* ---------- 12 自定义光标 ---------- */
-/* 由 JS 加的 .zzz-cursor-on 标记类控制，不再限定首页 */
-body.zzz-cursor-on{cursor:none}
-/* 输入、文本区与播放器控件保留原生光标语义，绝不吞掉文字光标与选择 */
-body.zzz-cursor-on :is(input,textarea,select,[contenteditable="true"]){cursor:auto}
-body.zzz-cursor-on :is(input[type="range"],#musicPlayer input,#musicPlayer button){cursor:pointer}
-.zzz-cursor{
-  position:fixed;
-  top:0;
-  left:0;
-  z-index:120;
-  width:12px;
-  height:12px;
-  pointer-events:none;
-  background:var(--home-lime,#d8fa00);
-  opacity:.9;
-  transition:width 140ms ease,height 140ms ease,background-color 140ms ease,border-radius 140ms ease,opacity 140ms ease;
-}
-.zzz-cursor.is-ring{
-  width:30px;
-  height:30px;
-  border:2px solid var(--home-lime,#d8fa00);
-  border-radius:50%;
-  background:transparent;
-}
-.zzz-cursor.is-hidden{opacity:0}
+/* 自定义光标+磁吸已禁用（体感卡顿且干扰正常操作）。保留选择器避免残留样式闪烁。 */
+body.zzz-cursor-on{cursor:auto}
+.zzz-cursor{display:none}
+.zzz-cursor.is-ring{display:none}
+.zzz-cursor.is-hidden{display:none}
 
 @media(hover:none),(pointer:coarse){
   body.zzz-cursor-on{cursor:auto}
@@ -135,15 +96,6 @@ body.zzz-cursor-on :is(input[type="range"],#musicPlayer input,#musicPlayer butto
   .is-magnet{transform:none;box-shadow:none}
 }
 
-@media(prefers-reduced-motion:reduce){
-  body:not(.zzz-motion-forced) .zzz-scanlines{background-position:0 0!important}
-  body:not(.zzz-motion-forced) [data-zzz-lock]{color:inherit!important}
-  body:not(.zzz-motion-forced) [data-zzz-lock]::before,
-  body:not(.zzz-motion-forced) [data-zzz-lock]::after{content:none!important}
-  body:not(.zzz-motion-forced).zzz-cursor-on{cursor:auto!important}
-  body:not(.zzz-motion-forced) .zzz-cursor{display:none!important}
-  body:not(.zzz-motion-forced) .is-magnet{transform:none!important;box-shadow:none!important;transition:none!important}
-}
 /* 动效降级提示：仅在系统开启减少动效时由 zzz-motion-notice.js 注入。
    固定在右下角，不遮挡主内容；文字用正文色，不用荧光绿（规范 9.4）。 */
 .zzz-motion-notice{
@@ -248,7 +200,4 @@ body.home-page .zzz-rail .zzz-rail__item:focus-visible{
 /* 小屏隐藏：实测会压住「开始查档」主按钮与楼层标题 */
 @media(max-width:640px){
   body.home-page .zzz-rail{display:none}
-}
-@media(prefers-reduced-motion:reduce){
-  html:not(.zzz-motion-forced) body.home-page .zzz-rail{transition:none}
 }

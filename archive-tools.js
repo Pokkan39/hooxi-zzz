@@ -304,8 +304,7 @@
   ];
 
   function canHoverXray() {
-    return window.matchMedia('(hover:hover) and (pointer:fine)').matches
-      && !window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    return window.matchMedia('(hover:hover) and (pointer:fine)').matches;
   }
 
   function mountXray(host, zoneSel) {
@@ -496,17 +495,31 @@
     art.dataset.characterArtPath = resolved.path;
     art.setAttribute('aria-hidden', 'true');
     art.style.setProperty('--acc', rec && validRgb(rec.c) ? rec.c.join(',') : '200,60,80');
+
+    // X-ray 双层：am(单色)为底层常驻，ac(彩色)为上层跟随鼠标透出
+    var hasXrayPair = rec && rec.am && rec.ac;
     var image = document.createElement('img');
     image.className = 'd-keyart-image';
-    image.src = resolved.path;
+    image.src = hasXrayPair ? rec.am : resolved.path;
     image.alt = '';
     image.decoding = 'async';
     image.fetchPriority = 'high';
     art.appendChild(image);
+
+    if (hasXrayPair) {
+      art.dataset.xrayPair = '1';
+      var color = document.createElement('img');
+      color.className = 'd-keyart-color';
+      color.src = rec.ac;
+      color.alt = '';
+      color.decoding = 'async';
+      color.loading = 'lazy';
+      art.appendChild(color);
+    }
+
     screen.insertBefore(art, screen.firstChild);
 
-    if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches
-      || window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
     var frame = null, point = null;
     function paint() {
       frame = null;

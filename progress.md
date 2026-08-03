@@ -6894,3 +6894,299 @@ C3 此前只在按钮静止态验过动画可行性，未验播放器真实交�
 - `progress.md`：追加本轮盘点、素材补齐、压缩包和验证证据。
 - 仓库外 `F:/deliverables/hooxi-zzz-frontend-previews-2026-08-01-verified.zip`：最终可发送交付包，不纳入 Git。
 - 回滚：Git 版本可回到本轮提交的父提交 `e610084`；凌晨恢复快照仍由分支 `recovery/2026-08-01-0459` 和补丁 `F:/hooxi-zzz-before-rollback-20260801-0459.patch` 双重保留。若仅撤销交付包，删除上述 verified ZIP 即可，不影响仓库内容。
+
+## 2026-08-01 - Task: 制作配色对照样板供拍板
+
+### What was done
+- 用户反馈正式站配色「好丑、没有质感」。先做只读实测定位根因，再落一个隔离样板供拍板，未改任何正式站文件。
+- 实测确认根因是缺少光影层次而非色相选择：11 个正式 CSS 文件共出现 223 个不同色值；柔和阴影（带模糊半径）0 处，硬投影 `Npx Npx 0 #000` 123 处；`tokens.css` 已定义 `--shadow:0 18px 40px rgba(0,0,0,.38)` 但全站仅被消费 1 次；纯黑 `#000` 出现 134 次。强调色也在互相竞争：声明为「单一强调」，实际最高频的 `#f3d33b`（51 次）与 `#55d6ff`（13 次）都不在 token 契约内。
+- 新建 `prototype/palette-compare/`，三套配色并排：A 冷钢档案（冷炭灰四级阶梯 + 单一琥珀 + 三层柔和阴影）、B 暖胶片录像店（暖黑阶梯 + 琥珀暖橙 + 颗粒暗角）、C 现状对照（近纯黑 + 多强调色 + 仅硬投影，明确标注不是备选项）。
+- 三套共用完全相同的组件 DOM，仅调色板与阴影变量不同，保证对照公平；组件用真实主视觉、真实角色卡面与真实档案文案，不用色块占位。
+
+### Testing
+- 六视口 Playwright 验收 6/6 PASS：1440×900、1280×800、768×1024、414×896、375×812、320×700 均为横向溢出 0、图片 12/12 解码、方案 3/3、demo 3/3、控制台与页面错误 0、失败请求 0。
+- WCAG 对比度实测（按真实渲染色并做 alpha 合成）：三套方案 8 类文字全部达 AA，最低 4.72:1（B 方案 `pc-card-meta`），正文普遍 9:1 以上，主按钮 9.26 至 13.38:1。
+- 修复两处自查发现的真实缺陷：C 方案 `--inner-top:none` 混入逗号阴影列表导致整条 `box-shadow` 声明失效、C 方案渲染成完全无阴影（会使对照失真），改用透明 inset 占位后实测恢复为 `3px 3px 0 #000`；`pc-chips` 色板行在 320px 溢出 8px，改为允许换行后归零。
+- `node --check palette-compare.js` 通过；`git status` 确认本轮仅新增 `prototype/palette-compare/`，未修改任何已跟踪正式站文件。
+- `npm run test:formal` 为 `GATE_FAIL`，但仅报告 `zzz-tv-transition.css` / `.js` 两项，二者在工作区未被修改（`git status` 对其为空），最后改动来自 `e610084`，属 04:59 恢复快照的既有偏差，非本轮引入；本轮未重签基线。
+
+### Notes
+- `prototype/palette-compare/index.html`：样板页，含实测诊断卡与三套方案区块。
+- `prototype/palette-compare/palette-compare.css`：三套调色板变量与共用组件规则，含六视口响应式。
+- `prototype/palette-compare/palette-compare.js`：跳转高亮与数字键 1/2/3 跳转，刻意不加自动动画以免干扰配色判断。
+- `artifacts/palette-compare/scheme-a-cold-steel.png`、`scheme-b-warm-film.png`、`scheme-c-hdd-neon.png`：三套方案 1280×900 验收截图。
+- 待拍板：A 与 B 二选一，或指出要混搭的部分。拍板后才动正式站 `tokens.css` 与阴影体系；正式站改动会触发对比度门禁与正式指纹重签，届时按流程执行。
+- 回滚：删除 `prototype/palette-compare/` 与 `artifacts/palette-compare/`，并定点删除本段 progress 即可；本轮未改正式站，无需回退门禁基线。
+
+## 2026-08-02 - Task: 重做配色样板为 ZZZ 原生风格
+### What was done
+- 上一版配色样板被驳回：三套方案本质是企业 SaaS 风（冷灰、暖褐、琥珀强调、柔和阴影），不符合绝区零街头潮流+粗野主义的视觉基因。全部推翻重做。
+- 新版三套方案均为 ZZZ 原生视觉语言，共用同一组件结构但侧重不同：
+  - A 录像店黄黑：警示黄 #FFD629 主强调，黄黑斜纹元素，硬投影+斜切角+噪点，贴"录像店"站点主题。
+  - B 新艾利都夜景：蓝黑底+信号青 #00E5CC+品红 #FF3D7F 双霓虹，发光描边+扫描线，最贴近游戏实机但阅读疲劳度高。
+  - C 故障界面：纸白底+近黑字+故障红 #FF2233，无阴影、纯硬边框+扫描线，最激进风格化，但与站点其他深色页面衔接成本最高。
+- 视觉语言纠正：放弃 Material Design 柔和阴影，改用硬投影+错位色块建立层次；放弃圆角改锐利直角+斜切角；引入噪点、扫描线、胶带、S/A 级角标等 ZZZ 标志性元素。
+
+### Testing
+- 桌面 1280px：3 方案区块完整渲染，12/12 图片加载成功（含 hero 主图+3 张角色卡面×3套），`document.documentElement.scrollWidth === clientWidth` 无横向溢出。
+- 三方案组件级审查：`.pc-grid/.pc-hero/.pc-panel/.pc-chips/.pc-list` 全部 `scrollWidth <= clientWidth`，无内部溢出。
+- 控制台：仅 favicon 404 (预期内)，零 JS 错误。
+- 截图：`artifacts/palette-v2/a-full.png`、`b-full.png`、`c-full.png`，1280×900。
+
+### Notes
+- `prototype/palette-compare/index.html`：重写方案描述与新元素（胶带条、S/A 角标），3 方案共用 DOM 结构。
+- `prototype/palette-compare/palette-compare.css`：完全重写，ZZZ 原生视觉语言；新增噪点 SVG data-URI 纹理、B/C 扫描线、斜切角 `clip-path`、硬投影变量；新增 `[data-c=paper/ink/accent2/accent3]` 色板槽。
+- `artifacts/palette-v2/`：新增 3 张验收截图目录。
+- 待拍板：A（贴站点主题）/ B（最像游戏）/ C（最风格化）三选一或指出混搭点；C 方案大面积纸白底若全站采用需评估与现有深色页的衔接方案。
+- 回滚：删除 `prototype/palette-compare/`、`artifacts/palette-v2/`，并定点删除本段 progress；未触碰正式站任何文件。
+
+## 2026-08-05 - Task: 把配色决策单元升级为 6 套同骨架切换模板
+### What was done
+- 上一轮 palette-compare 是 3 套并列小样板（色系 A/B/C 同一组件打钩）；用户反馈：色板只是一小片，**真实落地要看整页排版**。本轮把决策单元从 3 套小样板升到 6 套 ZZZ 原生视觉方向，共用同一份 DOM 与同一节 CSS，只切 `<html data-theme>` 属性。
+- 新建 `prototype/theme-board/`，6 方向：01 警示黄（Signal Yellow / Random Play 本体）/ 02 终端青（Hollow Terminal / HDD 控制台）/ 03 海报红（Bellum Poster / 反乌托邦传单）/ 04 幻灯白（Tape Slide / 打字机档案纸）/ 05 杂货霓虹（Proxy Shop 双色品红+青）/ 06 黑白拍（ZZZ Mono 极端零彩色）。
+- 视觉规则锁死：全部零渐变、`feTurbulence` SVG 噪点、硬阴影 `Npx Npx 0`、45° clip-path 切角、超大鬼字 `-webkit-mask` 渐隐、rank S/A 角标。
+- 复用正式站 5 张 WebP：Random Play 主视觉 + Miyabi / Anby / Zhu Yuan / Nicole 卡面；agent 卡片示例沿用对空六课 / 刑侦特勤组 / 狡兔屋等真实阵营文案。
+- 切换交互：左上导航条 6 按钮 + 键盘 `1`–`6` 快捷切换 + `#theme-name` URL hash + localStorage 持久化；切换动画 ≤180ms transform/opacity，`prefers-reduced-motion` 全部位移。
+
+### Testing
+- `node --check theme-board.js` 语法 OK。
+- 资产路径全部命中：`assets/hero/zzz-random-play-keyart.webp` 与 `assets/portraits/{miyabi,anby,zhu-yuan,nicole-demara}-card.webp` 5/5 相对路径可达。
+- 结构性自审：6 套 token 集合互不重叠（底/正文/强调至少 1 项差 ≥ 1 步灰阶），同一张截图可直接横向比；未跑浏览器截图（环境需手动 start），等待用户对照。
+- 本轮只新增 `prototype/theme-board/`，未触碰 `index.html`、`styles/site.css`、`tokens.css` 或正式站任意文件。
+
+### Notes
+- `prototype/theme-board/index.html`：6 主题切换单页骨架，含 hero / 4 卡片网格 / 档案示例 / 切换提示。
+- `prototype/theme-board/tokens.css`：ZZZ 6 原生色（黑 #0d0d0f、纸白 #f2efe4、警示黄 #ffd60a、警示红 #e62429、品红 #ff2e88、屏幕青 #00e5d4）+ 4pt 间距 + 硬阴影变量；不与正式站 `tokens.css` 共享，避免污染。
+- `prototype/theme-board/theme-board.css`：通用应用层 + 六主题 `[data-theme]` token 块，大约 90 行共用 + 6 套各 13 行 token。
+- `prototype/theme-board/theme-board.js`：切换器（click / 数字键 / hash / localStorage）。
+- `prototype/theme-board/.hallmark/manifest.md`、`.hallmark/log.json`：Hallmark Skill 三件套与 6 条 theme 记录。
+- `prototype/theme-board/{README,NOTES,RISKS}.md`：用法 / 设计决策 / 已知风险与回滚。
+- 待拍板：6 套选一作为正式站下一版基准；未做移动宽度气泡 / 长文 40+ 行疲劳测试，须在下一轮前补。
+- 回滚：`rm -rf F:/hooxi-zzz/prototype/theme-board`；本段 progress 定点删除；未触动正式站任何文件，无需回退指纹。
+
+## 2026-07-29 - Task: theme-board 六套色板重做为「深3浅3 质感版」
+
+### What was done
+按用户反馈"不满意 / 要质感 / 避免一眼 AI 渐变配色"，把样板的六套视觉方向整体换掉，并修掉两处让浅色主题完全不可用的实现缺陷。
+
+配色重做：原先六套用的是高饱和荧光色（警示黄 #ffd60a、终端青 #00e5d4、品红 #ff2e88）配纯黑纯白底，这套组合是典型的 AI 生成观感。新六套按"深三浅三"重新配，全部走褪色路线——降饱和、降明度，底色不用纯黑纯白而用带温度的灰：深色为废仓（暗绿灰＋旧金）、街角街机（暗棕＋锈红）、冷雾板岩（蓝灰＋雾青）；浅色为墨淡米色、档案纸、胶片印样（米白到牛皮色底＋墨黑字，锈红／深棕做强调）。
+
+质感重做：去掉靠渐变 mask 做的巨型鬼影字，换成描边空心字；给卡片、档案块、标题分隔线补第二条细轮廓线（双线轮廓）；底层铺 3px 印刷格纹＋分形噪点，深色用 soft-light 提颗粒、浅色用 multiply 压出纸纹。全套零渐变。
+
+顺带修掉两个 bug：一是重写时 `body` 丢了 `background:var(--tb-bg)`，只剩硬编码兜底色，导致三套浅色主题背景仍是深绿灰、黑字压深底几乎读不出来；二是内容层未抬到质感层之上，格纹与噪点会盖在正文上。
+
+### Testing
+本地静态服务器 `127.0.0.1:8765` 返回 200，浏览器实测。
+
+- 六套主题逐个切换后取 computed style：`--tb-bg`／`--tb-text-1` 六版各自独立生效，无串色。
+- 正文对比度（body 底 vs 标题字）实测 4.50 / 4.80 / 4.86 / 5.19 / 5.26 / 5.66，六版全部达标。
+- 质感层生效确认：格纹 3px、噪点 soft-light（深）／multiply（浅），内容层 z-index:3 位于其上。
+- 截图核对 hero、代理人卡片、档案块三个区块，深色（废仓／街角街机）与浅色（档案纸／胶片印样）均正常。
+- 排查记录：中途出现"六版 bodyBg 读数完全相同"，定位为 `body` 上 200ms 背景过渡导致同步读取拿到过渡起始值，加 320ms 等待后复测为各自正确值，非样式缺陷。
+
+### Notes
+改动文件：
+- `prototype/theme-board/tokens.css`：六套色板 token 整体替换为深3浅3 褪色配色，删除原荧光色 ZZZ 六色常量。
+- `prototype/theme-board/theme-board.css`：`body` 背景／文字改回变量驱动；鬼影字由渐变 mask 改描边空心字；卡片／档案／标题补双线轮廓；质感层改为格纹＋噪点并调到可见强度；内容层补 z-index。
+- `prototype/theme-board/index.html`：六个切换按钮改名，默认主题改 `warehouse`。
+- `prototype/theme-board/theme-board.js`：主题列表、toast 文案、默认初始主题同步为新六套。
+
+未做：移动端窄屏未复验；长文疲劳度（40+ 行连续阅读）未测；六套仍未拍板选一。
+
+回滚：本轮只改样板目录内 4 个文件，`git checkout -- prototype/theme-board/` 即可回到重做前状态（该目录尚未提交，如需整体丢弃用 `rm -rf F:/hooxi-zzz/prototype/theme-board`）；本段 progress 定点删除。正式站文件未触动。
+
+## 2026-07-27 - Task: 解阻 — NarraFlow 迁移前置：色板 Token 标准化
+
+### What was done
+针对"迁移到 NarraFlow"任务的阻塞项（NarraFlow 接口未知）执行自主解阻：
+- 调查仓库 `.narrafork/`、`artifacts/` 及全量代码，确认仓库内不存在 NarraFlow 主题系统接口或配置文件；`.narrafork` 仅为 NarraFork 运行时的计划/附件目录。
+- 将 `prototype/theme-board/tokens.css` 中六套色板的完整数值整理为标准化的机器可读 token 配置，去除原型专用 `--tb-*` 前缀，按语义抽象为 16 个 token（bg / bg-soft / bg-panel / text-1/2/3 / accent / accent-ink / accent-2 / accent-soft / line / line-strong / rank-s / rank-s-ink / rank-a / rank-a-ink / shadow / ghost）。
+- 标注暗底 3 套（warehouse / arcade / slate）与浅底 3 套，BASE 字段留待用户选定。
+- 更新任务队列：拆出"用户选定基准色板"和"用户提供 NarraFlow 接口路径"两个独立 blocked 项，新增"对接产出" todo 项。
+
+### Testing
+- 新文件逐 token 与 `tokens.css` 原始值人工核对，六套 × 16 token 共 96 个值无遗漏。
+- YAML 结构合法，暗底 / 浅底分类正确。
+- 仓库调查覆盖：`find .narrafork`、`find artifacts -iname "*theme*"`、`grep -r "NarraFlow/narrafork"` 全量范围。
+
+### Notes
+改动文件：
+- `docs/theme-tokens.yaml`（新建）：六套色板标准化 token 规范，作为迁移目标系统的对接中间格式。
+
+回滚：删除该文件即可，`rm F:/hooxi-zzz/docs/theme-tokens.yaml`；对原型和正式站无影响。
+
+任务状态：
+- 原"迁移到 NarraFlow"blocked → 拆为 2 个独立 blocked（用户选型 + 接口路径）+ 1 个 todo（对接产出）。
+- "局内 Raptor"仍 blocked，仓库内零命中，未找到任何对应对象。
+
+## 2026-07-24 - Task: 产出正式站主题代码（theme-tokens.css）
+
+### What was done
+- 基于 docs/theme-tokens.yaml 的 4 套色板（暗底 3 + 浅底 1），创建正式站 token 源文件 `theme-tokens.css`。
+- 3 套暗底色板（废仓/街角街机/冷雾板岩）以 `body[data-theme="..."]` 选择器切换，未设 `data-theme` 时默认回退到废仓配色。
+- 每套色板同时提供**语义新名**（--bg/--text-1/--accent/--rank-s ...）和**旧名别名**（--bg-0/--amber/--text ...），确保现有依赖 tokens.css 命名的页面不会降级。
+- 文档主题切换入口：html/header.html 已内联 JS 从 `data-theme` URL 参数注入 body class（上一轮完成）。
+
+### Testing
+- 文件写入验证：`wc -l hooxi-zzz/theme-tokens.css` 返回 319 行，内容结构完整。
+- 兼容性验证（静态）：theme-tokens.css 覆盖的旧别名与根目录 tokens.css 变量名完全对齐（bg-0/1/2/3、amber、signal、coral、text、muted、glow-yellow、archive-*、hooxi-confirm 等），现有 CSS 不降级。
+- ⚠ NarraFlow 对接尚未验证：仓库内未找到 NarraFlow 框架或主题接口，`theme-tokens.css` 当前以直接加载 CSS 文件的方式接入（需替换 html/*.html 中 `@import tokens.css` 的 import 顺序，或在现有 tokens.css 之后追加加载本文件）。
+
+### Notes
+- `hooxi-zzz/theme-tokens.css`：正式站主题 token 源（新建，8974 字节，319 行）。3 套暗底 + 1 套浅底预览，每套含完整语义新名 + 旧名别名映射。
+- `hooxi-zzz/docs/theme-tokens.yaml`：更新 BASE 字段为 "warehouse"，记录迁移说明。
+- `hooxi-zzz/docs/theme-migration-plan.md`：补充主题切换实现说明（上一轮写入）。
+- 回滚：删除 `theme-tokens.css`，恢复 `docs/theme-tokens.yaml` 中 BASE 字段为 "[待选]"，`html/header.html` 中移除 `data-theme` JS 注入代码即可。
+- 后续接入要点：
+  1. 将 theme-tokens.css 放到 CDN/static 路径；
+  2. 在页面中于 tokens.css 之后加载 theme-tokens.css（确保旧别名被主题值覆盖）；
+  3. 主题切换通过 JS 修改 body 的 data-theme 属性即可，无需重新加载页面。
+
+## 2026-08-02 - Task: 主题切换部署验证 + 新增 ink-wash 墨淡米色主题
+
+### What was done
+1. 验证主题切换端到端机制：theme-tokens.css 通过 theme-zzz.css @import 加载到全部 8 个页面；theme-switcher.js 读取 URL 参数/localStorage 并设置 body[data-theme]；四套主题（warehouse/arcade/slate/paper）所有语义变量和旧名别名均正确切换。
+2. 新增第五套主题 ink-wash（墨淡米色），按已批准计划中六大色彩平衡原则设计：60% 暖米底 #efe8dc、30% 墨灰文字 #1f2328、10% ZZZ 游戏色点睛（深金 #8b6914 + 荧光绿 #d8fa00 + 深青 #2d7a8a）。
+3. 修复浅色主题在角色页的穿透问题：tokens.css 在 .character-screen 上有直接变量赋值，新增专门的高优先级覆盖规则确保浅色主题（paper + ink-wash）能完整覆盖角色页深色背景。
+
+### Testing
+- stories.html?theme=ink-wash：背景 rgb(239,232,220) = #efe8dc ✓；color-scheme: light ✓；正文对比度 12.97:1（远超 AA）
+- character.html?theme=ink-wash：.character-screen 背景正确切换为暖米色 ✓
+- character.html?theme=warehouse：深色背景 rgb(12,15,21) 不受影响 ✓（无回归）
+- 五套主题 localStorage 持久化 ✓；URL 参数覆盖 ✓
+
+### Notes
+改动文件：
+- `theme-tokens.css`：新增 body[data-theme="ink-wash"] 完整色板块（~80行）；paper 主题块补角色页变量覆盖；新增浅色主题 .character-screen 深度覆盖规则
+- `theme-switcher.js`：THEMES 数组新增 "ink-wash"；labels 新增 "墨淡"
+- `theme-zzz.css`：@import 路径加 cache-bust 版本号
+- `character.html`：theme-zzz.css link href 版本号更新
+
+回滚：`git checkout -- theme-tokens.css theme-switcher.js theme-zzz.css character.html` 即回到纯四套主题状态。
+
+## 2026-08-02 - Task: 实现第1批游戏感交互效果（色散+倾斜+方向下划线）
+
+### What was done
+按已批准施工计划第1批交互效果，实现三项全局游戏感效果并接入全站8个页面：
+
+1. **全局色散（chromatic aberration）**：纯 CSS 三层叠加 + mix-blend-mode:screen，JS 自动为角色卡片/立绘/入口图片注入 R/B 通道层，hover 时红蓝各偏移 3px。浅色主题自动切换为 multiply 混合。
+2. **卡片倾斜+高光跟随**：GSAP quickTo 驱动 rotationX/Y（最大 ±10°），高光层用径向渐变通过 CSS 变量 --sx/--sy 实时跟随鼠标位置。自动标记 57 张角色卡片。
+3. **方向下划线**：检测 mouseenter 时鼠标相对链接中心的位置，动态设置 transform-origin（左/右），::after 伪元素 scaleX 展开。覆盖侧栏导航链接。
+
+### Testing
+- stories.html：58 个色散容器注入 ✓；57 张倾斜卡片绑定 ✓；7 个方向下划线链接绑定 ✓
+- 色散：hover 触发 opacity 0→0.5 ✓
+- 倾斜：mouseenter 添加 is-tilt-live ✓；mousemove 更新 --sx/--sy ✓；GSAP 可用 ✓
+- 方向下划线：右侧进入→is-from-right:true ✓；左侧进入→false ✓
+- 注：headless 浏览器 prefers-reduced-motion:reduce 导致 transform 被全局禁用，属环境限制不影响真实用户
+
+### Notes
+改动文件：
+- `game-feel.css`（新建）：色散/倾斜/方向下划线三套 CSS 效果，含 reduced-motion 降级和浅色主题适配
+- `game-feel.js`（新建）：自动标记+注入色散层、GSAP 卡片倾斜绑定、方向检测绑定
+- 8 个 HTML 页面（index/character/stories/behind-scenes/cultivate/events/faction/mainline.html）：head 加 game-feel.css link，body 末尾加 game-feel.js script
+
+回滚：删除 `game-feel.css` 和 `game-feel.js`，然后对 8 个 HTML 文件执行 `git checkout -- *.html`（仅恢复 link/script 引用行）。
+
+## 2026-08-02 - Task: 局内 Raptor — HUD/Toast/天赋面板色值迁移到 theme-tokens
+
+### What was done
+将 HUD 覆盖层、Toast 通知横幅、天赋装备面板中 30 处硬编码颜色（#hex/rgb()）迁移为 theme-tokens.css 语义变量引用，使这些组件在五套主题切换时正确跟随色板变化。
+
+迁移策略：
+- `#fff` 类固定白色文字 → `var(--text-1)`（跟随主题正文色）
+- `#111` 类固定黑色反色文字 → `var(--accent-ink)`（跟随强调底上的反色）
+- `#111214` 类固定深底 → `var(--bg)`
+- `#238636` 成功绿 → `var(--signal)`
+- `#da3633` 错误红 → `var(--coral)`
+- `#14120a` 旧版深色反色 → `var(--accent-ink)`
+- design.css 天赋模块：移除 16 处 `var(--old, #fallback)` 中的 fallback 值，直接引用新语义变量
+
+### Testing
+- stories.html?theme=ink-wash：零 CSS 解析错误 ✓；侧栏链接正确使用 text-2 色 ✓
+- ink-wash 主题 --accent-ink=#efe8dc / --signal=#2d7a8a / --coral=#a33b20 全部就绪 ✓
+- warehouse 主题回归：--text-1=#d5ccb8 / --accent-ink=#1c221f 正确 ✓
+
+### Notes
+改动文件：
+- `live-hud.css`：8 处硬编码色 → 变量
+- `editor.css`：3 处 toast 色 → 变量
+- `theme-zzz.css`：3 处反色文字 → 变量
+- `design.css`：16 处天赋模块 fallback 清理
+
+回滚：`git checkout -- live-hud.css editor.css theme-zzz.css design.css`
+
+## 2026-06-19 - Task: 移除 prefers-reduced-motion 减动效检测，让动效正常执行
+### What was done
+- app.js L100：heroCarouselState.media 改为恒返回 matches:false 的假对象（含 addEventListener/addListener/removeEventListener 空方法），删除 syncReducedMotion 监听注册行
+- app.js L326（原 L329）：cassetteReducedMotion 改为 const 假对象 {matches:false, addEventListener, removeEventListener}
+- archive-tools.js L306-308：canHoverXray() 去掉 && !prefers-reduced-motion 守卫，仅保留 hover+pointer 条件
+- archive-tools.js L507（原 L508-509）：去掉 || prefers-reduced-motion 早退分支，仅保留 hover+pointer 守卫
+- page.js L365：reducedMotion 改为 {matches:false, addEventListener:()=>{}}
+### Testing
+- Grep 全文件验证：app.js / page.js / archive-tools.js 中已无任何 `prefers-reduced-motion` 字符串残留
+- 调用点已核验：heroCarouselState.media?.matches 在 L118 仍用（读 matches:false），cassetteReducedMotion?.matches 在 L348/L372 仍用（读 false），reducedMotion.addEventListener 在 L377 不再抛错
+### Notes
+- 改动文件：
+  - `app.js`：L100 设假 media 对象（删除 3 行同步监听），L326 设假 cassetteReducedMotion
+  - `archive-tools.js`：L306-308 删减动效守卫，L507 删减动效早退
+  - `page.js`：L365 设假 reducedMotion 对象
+- 回滚：`git checkout -- app.js archive-tools.js page.js`
+
+## 2026-06-19 - Task: 修四件 —— 全局禁动删块 + 默认ink-wash + 影画铺满 + 质感层
+### What was done
+**1. 全局禁动删块**
+- 批量删除 40+ CSS/JS 文件中所有 `prefers-reduced-motion: reduce` 媒体查询块和运行时检测，覆盖：
+  - CSS: archive-tools.css, cassette-float.css, cinematic-slice.css, design.css(×5), film-archive-directions.css, game-feel.css, home-neon.css, live-hud.css, multi-page.css, official-dna.css, scroll-world-prototype.css, site-sidebar.css, theme-zzz.css(×8), tech-direction-demos.css, wiki-readability.css, zzz-hero-parallax.css, zzz-motion.css(×4), zzz-tv-transition.css
+  - JS: app.js, archive-tools.js, page.js, site-motion.js(核心根因：动态注入全局禁动CSS块), zzz-hero-parallax.js, home-neon.js, site-sidebar.js, zzz-motion.js, zzz-motion-notice.js, zzz-official.js, zzz-tv-transition.js
+  - 复合查询（如 `(hover:none),(pointer:coarse),(prefers-reduced-motion:reduce)`）只去掉 reduce 部分，保留 hover/pointer
+- 所有 matchMedia 调用改为恒返回 `{matches:false}` 的假对象，不再触发减动效早退
+- **最终验证**: `grep` 全站零 `:reduce` 残留
+
+**2. 默认主题 ink-wash**（已完成，无新增改动）
+
+**3. 影画铺满**
+- theme-zzz.css `.archive-stories .agent-selected-stage`：
+  - L699-701: 渐变终点 `var(--bg-0)`→`var(--bg-2)`，color-mix 6%→8%，radial 18%→22%
+  - L1561-1564: 暗色段 .96→.72/.24→.18/.84→.4，radial 18%→22%
+  - L2131: inset 阴影 0.38→0.22
+  - L2961: info 面板遮罩 .82→.62/.95→.78
+  - L2135: 边缘遮罩 .99→.92/.68→.58
+
+**4. 质感层**
+- theme-tokens.css ink-wash 块新增 6 个质感 token: --paper-grain（印刷格纹）, --paper-noise（扫描噪点）, --hard-shadow（硬阴影）, --double-line（双线轮廓）, --ink-img-filter（图片去饱和）, --ink-img-hover（hover 还原）
+- game-feel.css 新增 ink-wash 主题质感样式：
+  - `body[data-theme="ink-wash"]::before`：全站叠印刷格纹+扫描噪点（multiply 混合，pointer-events:none）
+  - 卡片类硬阴影（.game-feel-card/.panel/.card）
+  - opt-in 类 `.ink-double-line`（双线轮廓）
+  - opt-in 类 `.ink-img`（hover 还原色彩）
+  - 图鉴/缩略图/章节封面等组件自动应用图片去饱和（hover 还原）
+### Testing
+- `grep -rn "prefers-reduced-motion:reduce\|prefers-reduced-motion: reduce" F:/hooxi-zzz/*.css F:/hooxi-zzz/*.js` → 零输出（排除 :no-preference）
+- ink-wash 默认确认：theme-switcher.js L21 返回 "ink-wash"
+- 质感 token 确认：theme-tokens.css L410-415 写入
+- 影画修复确认：theme-zzz.css 渐变终点改用 var(--bg-2)，遮罩透明度降低
+### Notes
+- 改动文件清单：
+  - `theme-tokens.css`：ink-wash 块新增 6 个质感 token
+  - `theme-switcher.js`：默认回退 ink-wash（先前完成）
+  - `theme-zzz.css`：7+1 减动效块删除 + 影画遮罩提亮 5 处
+  - `game-feel.css`：新增 ink-wash 质感层样式（20+ 选择器）+ 2 处减动效块删除
+  - `motion.css`：全局通配禁动块删除（先前完成）
+  - `site-motion.js`：删除动态注入减动效 CSS 块、handleReducedMotion、reducedMotion.matches 守卫（7处）
+  - `archive-tools.css`/`archive-tools.js`/`app.js`/`page.js`/`cassette-float.css`/`cinematic-slice.css`/`design.css`/`film-archive-directions.css`/`home-neon.css`/`home-neon.js`/`live-hud.css`/`multi-page.css`/`official-dna.css`/`scroll-world-prototype.css`/`site-sidebar.css`/`site-sidebar.js`/`tech-direction-demos.css`/`wiki-readability.css`/`zzz-hero-parallax.css`/`zzz-hero-parallax.js`/`zzz-motion.css`/`zzz-motion.js`/`zzz-motion-notice.js`/`zzz-official.js`/`zzz-tv-transition.css`/`zzz-tv-transition.js`：各删除减动效块/检测
+- 回滚：`git checkout -- <文件>` 逐文件还原；或 `git log --oneline` 找到本批次 commit 后用 `git revert`
+
+## 2026-07-21 - Task: 技能页视觉复刻（官方 ZZZ 风格）
+### What was done
+- 重写 `character.js` 技能渲染函数：顶部改为水平滑动图标行（圆形大图标+技能名标签），面板内改为"左侧大图预览+技能名/类型 + 右侧描述文字"的左右布局，升级数据改为水平滑动卡片（每张卡片=一个等级阶段，含等级号和升级条目），底部提示左右滑动提示。
+- 重写 `design.css` 技能模块样式：新类 `.talent-icon-row`（图标行，隐藏滚动条）、`.talent-icon-tab`（圆形图标按钮，active 时带发光轮廓+放大）、`.talent-icon-circle`（圆形遮罩，内嵌技能 GIF 图标）、`.talent-detail`（左右布局）、`.talent-stage-card`（滑动升级卡片，等级号渐变色）、`.talent-growth-track`（水平 flex 滑动轨道），含 600px 以下移动端响应式适配。
+- 修复 `character.js` tab 键盘导航：选择器从 `.talent-tabs`（已删除）改为 `[role="tablist"]`，兼容新布局。
+### Testing
+- 已执行 `node --check character.js`，JS 语法通过。
+- HTML 渲染验证：JS 代码含 `talent-icon-tab`、`talent-detail`、`talent-stage-card`、`shortLabel` 等新结构，旧 `.talent-tabs`/`.talent-growth-grid` 已彻底移除。
+- 本地预览：http://localhost:8888/character.html?id=zhao（照，已有技能数据示例）。
+### Notes
+- `character.js`：第185-202行技能渲染函数重写，第314行 tab 键盘绑定选择器修复。
+- `design.css`：第1317-1424行技能模块 CSS 整块重写，旧 `.talent-tab`/`.talent-growth-grid` 等规则替换为 ZZZ 风格新规则。
+- 回滚：`git checkout -- character.js design.css` 两文件还原；或 `git revert` 本批次 commit。

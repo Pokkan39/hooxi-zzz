@@ -2,9 +2,7 @@
   'use strict';
   /* 官方镜像复刻交互层：楼层导航三行编号补全 + 角色页斜切缩略图条 + 琴键邻近缩放。
      遵守 zzz-motion.js 同一套减少动效判定；不接管滚动、不新建轮询。 */
-  const nativeReduceQuery=window.matchMedia('(prefers-reduced-motion: reduce)');
-  const forcedPreview=new URLSearchParams(location.search).get('motion')==='force';
-  const reduceMotion=()=>nativeReduceQuery.matches&&!forcedPreview;
+  const reduceMotion=()=>false;
   const isHome=document.body.classList.contains('home-page');
   const isCharacter=document.body.classList.contains('archive-character');
 

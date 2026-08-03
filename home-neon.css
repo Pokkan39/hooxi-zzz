@@ -789,15 +789,7 @@ body.home-page [data-neon-reveal].is-in{opacity:1;transform:none}
   body.home-page footer{margin-right:-12px!important;margin-left:-12px!important;padding-right:12px!important;padding-left:12px!important}
 }
 
-@media(prefers-reduced-motion:reduce){
-  body.home-page{--home-bg-x:0px!important;--home-bg-y:0px!important;--home-glow-x:0px!important;--home-glow-y:0px!important;--home-copy-x:0px!important;--home-copy-y:0px!important;--home-num-x:0px!important;--home-num-y:0px!important}
-  body.home-page [data-neon-reveal]{opacity:1!important;transform:none!important;transition:none!important}
-  body.home-page .hero-carousel-slide{transition:none!important}
-  body.home-page :is(.hero-star,.hero__projector-light,.hero-art-veil,.hero-copy),
-  body.home-page .hero::before{transform:none!important;transition:none!important}
-  body.home-page :is(.path-card,.home-agent-card,.home-reel-card,.hero-primary-action,.hero-play-action,.archive-reel-links a,#heroCarouselPause,#musicPlayer button){transition:none!important}
-  body.home-page :is(.path-card,.home-agent-card,.home-reel-card,.hero-primary-action,.hero-play-action,.archive-reel-links a,#heroCarouselPause,#musicPlayer button):is(:hover,:focus-visible){transform:none!important}
-}
+
 
 /* C3 播放中状态心跳（参考 DNA 第 7 节 BGM 按钮 heartbeat）
    app.js 的 syncCassettePlaying() 已在 .music-player 上维护 is-playing，
@@ -819,9 +811,162 @@ body.home-page #musicPlayer.is-playing .play-button::before{
   50%{transform:scale(1.06);opacity:.18}
 }
 /* 规范 9.1：律动静止但播放功能仍可用。光环保留以继续指示「正在播放」。 */
-@media(prefers-reduced-motion:reduce){
-  html:not(.zzz-motion-forced) body.home-page #musicPlayer.is-playing .play-button::before{
-    animation:none;
-    opacity:.42;
-  }
+
+/* =========================================================
+   色板下拉菜单（默认深色）
+   ========================================================= */
+body.home-page .theme-palette{position:relative;display:inline-flex;align-items:center;gap:6px;cursor:pointer;margin-left:12px}
+body.home-page .theme-palette-trigger{position:relative;display:inline-flex;align-items:center;gap:4px;min-height:28px;padding:4px 8px;border:1px solid var(--home-line-strong);background:rgba(5,7,10,.6);color:var(--home-muted);font:700 10px/1 var(--font-mono);letter-spacing:.08em;clip-path:polygon(0 0,100% 0,calc(100% - 6px) 100%,0 100%);transition:transform 140ms var(--home-ease),opacity 140ms ease}
+body.home-page .theme-palette-trigger:hover{color:var(--home-ink);border-color:var(--home-cyan)}
+body.home-page .theme-palette-trigger .theme-palette-badge{margin-left:2px;color:var(--home-ink);min-width:20px}
+body.home-page .theme-palette-arrow{font-size:9px;opacity:.6}
+body.home-page .theme-palette-list{position:absolute;top:calc(100% + 8px);right:0;display:none;min-width:120px;border:1px solid var(--home-line-strong);background:rgba(11,14,19,.96);box-shadow:4px 4px 0 #000;color:var(--home-ink);clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);z-index:50}
+body.home-page .theme-palette.is-open .theme-palette-list{display:block}
+body.home-page .theme-palette-item{display:block;width:100%;min-height:34px;padding:6px 12px;border:0;border-bottom:1px solid var(--home-line);background:transparent;color:var(--home-muted);font:700 12px/1 var(--font-mono);text-align:left;letter-spacing:.08em;cursor:pointer;transition:transform 120ms var(--home-ease),opacity 120ms ease}
+body.home-page .theme-palette-item:last-child{border-bottom:0}
+body.home-page .theme-palette-item:hover{background:rgba(62,199,214,.10);color:var(--home-ink)}
+body.home-page .theme-palette-item[data-selected="true"]{color:var(--home-amber);background:rgba(232,180,28,.10)}
+body.home-page .theme-palette-trigger[aria-expanded="true"] .theme-palette-arrow{opacity:1;transform:rotate(180deg)}
+
+/* 色板下拉菜单（浅色主题）
+   ========================================================= */
+body.home-page[data-theme="ink-wash"] .theme-palette-trigger{background:var(--bg-panel)!important;border-color:var(--line-strong)!important;color:var(--text-2);box-shadow:2px 2px 0 rgba(31,35,40,.16)}
+body.home-page[data-theme="ink-wash"] .theme-palette-trigger:hover{color:var(--accent);border-color:var(--accent-line)}
+body.home-page[data-theme="ink-wash"] .theme-palette-trigger .theme-palette-badge{color:var(--text-1)}
+body.home-page[data-theme="ink-wash"] .theme-palette-list{background:var(--bg-panel);border-color:var(--line);box-shadow:4px 4px 0 rgba(31,35,40,.18)}
+body.home-page[data-theme="ink-wash"] .theme-palette-item{color:var(--text-2);border-bottom-color:var(--line)}
+body.home-page[data-theme="ink-wash"] .theme-palette-item:hover{background:rgba(122,72,52,.10);color:var(--text-1)}
+body.home-page[data-theme="ink-wash"] .theme-palette-item[data-selected="true"]{color:var(--accent);background:rgba(122,72,52,.12)}
+
+/* =========================================================
+   ink-wash（墨淡）浅色主题 — 首页专用覆盖
+   home-neon.css 在 theme-tokens.css 之后加载，且
+   body.home-page 选择器特异性不低于 body[data-theme="ink-wash"]，
+   因此本页所有背景必须在此处用浅色 token 覆盖，
+   否则首页永远显示 dark 风格。
+   ========================================================= */
+body.home-page[data-theme="ink-wash"]{
+  color-scheme:light;
+
+  --home-stage:var(--bg);
+  --home-panel:var(--bg-panel);
+  --home-panel-2:var(--bg-soft);
+  --home-panel-3:var(--bg);
+  --home-ink:var(--text-1);
+  --home-muted:var(--text-2);
+  --home-faint:var(--text-3);
+  --home-line:var(--line);
+  --home-line-strong:var(--line-strong);
+
+  background:
+    radial-gradient(rgba(31,35,40,.022) .6px,transparent .7px) 0 0/3px 3px,
+    radial-gradient(rgba(31,35,40,.016) .5px,transparent .6px) 1px 2px/7px 7px,
+    radial-gradient(120% 80% at 78% 0%,rgba(31,35,40,.04),transparent 60%),
+    radial-gradient(100% 70% at 10% 100%,rgba(122,72,52,.05),transparent 62%),
+    var(--home-stage);
 }
+
+body.home-page[data-theme="ink-wash"] .topbar{background:var(--bg-panel)!important;border-bottom:1px solid var(--line)!important}
+body.home-page[data-theme="ink-wash"] .topbar .brand strong{color:var(--text-1)!important}
+body.home-page[data-theme="ink-wash"] .topbar .brand small{color:var(--text-3)!important}
+body.home-page[data-theme="ink-wash"] .topbar .top-meta{color:var(--text-3)}
+body.home-page[data-theme="ink-wash"] .topbar nav a{color:var(--text-2)!important;background:transparent}
+body.home-page[data-theme="ink-wash"] .topbar nav a:is(:hover,:focus-visible){background:rgba(122,72,52,.08);color:var(--accent)!important;border-color:var(--accent-line)}
+body.home-page[data-theme="ink-wash"] .topbar nav a.is-active,
+body.home-page[data-theme="ink-wash"] .topbar nav a[aria-current="page"]{background:var(--accent)!important;color:var(--accent-ink)!important;border-color:var(--accent)!important;box-shadow:none}
+body.home-page[data-theme="ink-wash"] .topbar nav a.nav-search{background:rgba(62,199,214,.08)!important;color:var(--teal)!important;border-color:var(--signal-line)!important}
+body.home-page[data-theme="ink-wash"] .topbar nav a.bili{background:var(--amber)!important;color:#11140f!important}
+body.home-page[data-theme="ink-wash"] .topbar .icon-button,
+body.home-page[data-theme="ink-wash"] .home-nav-toggle{background:var(--bg-panel)!important;color:var(--accent)!important;border-color:var(--accent-line)!important}
+body.home-page[data-theme="ink-wash"] .topbar .icon-button:is(:hover,:focus-visible),
+body.home-page[data-theme="ink-wash"] .home-nav-toggle:is(:hover,:focus-visible){color:var(--accent-hot)!important;border-color:var(--accent)!important}
+
+body.home-page[data-theme="ink-wash"] .hero{
+  background:
+    linear-gradient(106deg,rgba(239,232,220,.96) 0 38%,rgba(239,232,220,.72) 55%,rgba(239,232,220,.94) 100%),
+    radial-gradient(circle at 72% 38%,rgba(62,199,214,.10),transparent 36%),
+    var(--home-stage);
+}
+body.home-page[data-theme="ink-wash"] .hero::after{opacity:.025;background:repeating-linear-gradient(0deg,transparent 0 5px,rgba(31,35,40,.85) 5px 6px)}
+body.home-page[data-theme="ink-wash"] .hero-copy>.eyebrow{background:rgba(239,232,220,.92)!important;color:var(--teal)!important}
+body.home-page[data-theme="ink-wash"] .hero-primary-action{background:var(--accent)!important;color:var(--accent-ink)!important;box-shadow:5px 5px 0 rgba(31,35,40,.4)!important}
+body.home-page[data-theme="ink-wash"] .hero-primary-action:is(:hover,:focus-visible)::after{background:rgba(255,255,255,.32)}
+body.home-page[data-theme="ink-wash"] .hero-play-action{color:var(--text-2);border-bottom-color:var(--line-strong)}
+body.home-page[data-theme="ink-wash"] .hero-play-action:is(:hover,:focus-visible){color:var(--teal)}
+body.home-page[data-theme="ink-wash"] .hero-index{background:var(--bg-panel)!important;border-color:var(--line)!important;color:var(--text-2)!important}
+body.home-page[data-theme="ink-wash"] .hero-index b{color:var(--text-1)}
+body.home-page[data-theme="ink-wash"] .hero-index small{color:var(--text-3)!important}
+body.home-page[data-theme="ink-wash"] .hero-art{background:var(--bg-panel)!important;box-shadow:0 26px 60px -18px rgba(31,35,40,.25),0 6px 18px -8px rgba(31,35,40,.16),inset 0 1px 0 rgba(255,255,255,.5)!important}
+body.home-page[data-theme="ink-wash"] .hero-art::before{opacity:.7}
+body.home-page[data-theme="ink-wash"] .hero-art::after{background:rgba(239,232,220,.9)!important;color:var(--text-2)}
+body.home-page[data-theme="ink-wash"] .hero-art-veil{background:linear-gradient(90deg,rgba(239,232,220,.7),transparent 38%),linear-gradient(180deg,transparent 54%,rgba(239,232,220,.7)),radial-gradient(circle at 72% 38%,rgba(62,199,214,.08),transparent 34%)}
+body.home-page[data-theme="ink-wash"] #heroCarouselIndex{background:var(--bg-panel)!important;color:var(--text-1)!important;border-color:var(--line)!important}
+body.home-page[data-theme="ink-wash"] #heroCarouselPause{background:var(--bg-panel)!important;color:var(--accent)!important;border-color:var(--accent)!important}
+body.home-page[data-theme="ink-wash"] #heroCarouselPause:is(:hover,:focus-visible),
+body.home-page[data-theme="ink-wash"] #heroCarouselPause[aria-pressed="true"]{background:var(--accent)!important;color:var(--accent-ink)!important}
+
+body.home-page[data-theme="ink-wash"] .route-section,
+body.home-page[data-theme="ink-wash"] .about{border-top-color:var(--line)}
+body.home-page[data-theme="ink-wash"] .route-section::before,
+body.home-page[data-theme="ink-wash"] .about::before{color:rgba(31,35,40,.05)}
+body.home-page[data-theme="ink-wash"] .section-head{border-bottom-color:var(--line-strong)!important}
+body.home-page[data-theme="ink-wash"] .section-nav-en{color:var(--teal)}
+body.home-page[data-theme="ink-wash"] .section-nav-num{color:rgba(122,72,52,.46)}
+body.home-page[data-theme="ink-wash"] .section-head h2,
+body.home-page[data-theme="ink-wash"] .about h2{color:var(--text-1)!important}
+body.home-page[data-theme="ink-wash"] .section-note{color:var(--text-2)!important}
+body.home-page[data-theme="ink-wash"] .section-note a{color:var(--teal)!important}
+
+body.home-page[data-theme="ink-wash"] #finder{background:linear-gradient(150deg,var(--bg-soft) 0 58%,var(--bg) 58%)}
+body.home-page[data-theme="ink-wash"] #featured-agents{background:linear-gradient(180deg,var(--bg),var(--bg-soft))}
+body.home-page[data-theme="ink-wash"] #archive-reels{background:linear-gradient(145deg,var(--bg-soft) 0 52%,var(--bg) 52%)}
+body.home-page[data-theme="ink-wash"] #sources{background:var(--bg-soft)}
+
+body.home-page[data-theme="ink-wash"] .path-card{background:linear-gradient(145deg,var(--bg-panel),var(--bg-soft))!important;color:var(--text-1)!important;border-color:var(--line-strong)!important}
+body.home-page[data-theme="ink-wash"] .path-card:nth-child(2){background:linear-gradient(145deg,var(--bg-soft),var(--bg))!important}
+body.home-page[data-theme="ink-wash"] .path-card::before{color:rgba(31,35,40,.07)}
+body.home-page[data-theme="ink-wash"] .path-card p{color:var(--text-2)!important}
+body.home-page[data-theme="ink-wash"] .path-card .path-meta{color:var(--text-3)!important;border-top-color:var(--line)!important}
+body.home-page[data-theme="ink-wash"] .path-card:is(:hover,:focus-visible){transform:translate3d(0,-6px,0)}
+
+body.home-page[data-theme="ink-wash"] .home-agent-card{background:var(--bg-panel)!important;border-color:var(--line)!important;color:var(--text-1)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 14px 28px -16px rgba(31,35,40,.25)}
+body.home-page[data-theme="ink-wash"] .home-agent-card::before{background:var(--bg-panel);color:var(--accent)}
+body.home-page[data-theme="ink-wash"] .home-agent-card::after{color:var(--text-2)}
+body.home-page[data-theme="ink-wash"] .home-agent-avatar{background:var(--bg-soft)!important;border-bottom-color:var(--line)!important}
+body.home-page[data-theme="ink-wash"] .home-agent-avatar::after{background:linear-gradient(180deg,transparent 58%,rgba(31,35,40,.5)),linear-gradient(105deg,rgba(62,199,214,.10),transparent 42%)}
+body.home-page[data-theme="ink-wash"] .home-agent-faction{background:var(--bg-panel);border-color:var(--line)}
+body.home-page[data-theme="ink-wash"] .home-agent-copy{background:linear-gradient(180deg,var(--bg-soft),var(--bg-panel))}
+body.home-page[data-theme="ink-wash"] .home-agent-copy b{color:var(--text-1)!important}
+body.home-page[data-theme="ink-wash"] .home-agent-copy em{color:var(--text-3)!important}
+
+body.home-page[data-theme="ink-wash"] .archive-reel-links a{background:var(--bg-panel);color:var(--teal)!important;border-color:var(--line)}
+body.home-page[data-theme="ink-wash"] .archive-reel-links a:is(:hover,:focus-visible){border-color:var(--teal)}
+body.home-page[data-theme="ink-wash"] .home-reel-card{background:var(--bg-panel);border-color:var(--line)!important;color:var(--text-1)!important}
+body.home-page[data-theme="ink-wash"] .home-reel-card::before{background:var(--bg-panel);color:var(--accent)}
+body.home-page[data-theme="ink-wash"] .home-reel-cover{border-block-color:var(--bg-soft);background:var(--bg-soft)!important}
+body.home-page[data-theme="ink-wash"] .home-reel-cover::before,
+body.home-page[data-theme="ink-wash"] .home-reel-cover::after{background:repeating-linear-gradient(90deg,transparent 0 10px,rgba(31,35,40,.5) 10px 18px,transparent 18px 28px)}
+body.home-page[data-theme="ink-wash"] .home-reel-copy{background:linear-gradient(145deg,var(--bg-panel),var(--bg-soft))}
+body.home-page[data-theme="ink-wash"] .home-reel-copy b{color:var(--text-1)!important}
+body.home-page[data-theme="ink-wash"] .home-reel-copy em{color:var(--text-3)!important}
+body.home-page[data-theme="ink-wash"] .home-reel-copy small{color:var(--teal)!important}
+body.home-page[data-theme="ink-wash"] .home-empty{background:var(--bg-soft);color:var(--text-2)}
+
+body.home-page[data-theme="ink-wash"] .about-heading{border-bottom-color:var(--line-strong)}
+body.home-page[data-theme="ink-wash"] .about-intro{color:var(--text-2)!important}
+body.home-page[data-theme="ink-wash"] .about-column{background:linear-gradient(155deg,var(--bg-panel),var(--bg-soft));border-color:var(--line)!important}
+body.home-page[data-theme="ink-wash"] .about-column h3{color:var(--text-1)!important}
+body.home-page[data-theme="ink-wash"] .about-column p{color:var(--text-2)!important}
+body.home-page[data-theme="ink-wash"] .about-link{color:var(--teal)!important}
+body.home-page[data-theme="ink-wash"] footer{background:var(--bg-soft)!important;color:var(--text-3)!important;border-top-color:var(--line)!important}
+body.home-page[data-theme="ink-wash"] footer .footer-disclaimer{color:var(--text-2)!important}
+
+body.home-page[data-theme="ink-wash"] .skip-link{background:var(--accent);color:var(--accent-ink)}
+
+body.home-page[data-theme="ink-wash"] #musicPlayer.cassette-dock{color:var(--text-1)!important}
+body.home-page[data-theme="ink-wash"] #musicPlayer .track-info{background:linear-gradient(180deg,var(--bg-panel),var(--bg-soft))}
+body.home-page[data-theme="ink-wash"] #musicPlayer .track-info b{color:var(--text-1)!important}
+body.home-page[data-theme="ink-wash"] #musicPlayer .playlist-popover{background:var(--bg-panel)!important;color:var(--text-1)!important;border-color:var(--line)!important;box-shadow:6px 6px 0 rgba(31,35,40,.18)!important}
+body.home-page[data-theme="ink-wash"] #musicPlayer .playlist-item{border-bottom-color:var(--line)}
+body.home-page[data-theme="ink-wash"] #musicPlayer .playlist-item.selected{background:rgba(122,72,52,.12)!important;color:var(--accent)!important}
+

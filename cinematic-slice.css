@@ -149,9 +149,4 @@ body{font-family:"Space Grotesk",system-ui,"PingFang SC","Microsoft YaHei",sans-
   .hud-bottom{flex-direction:column;align-items:flex-start;gap:16px}
   .scroll-hint{display:none}
 }
-@media(prefers-reduced-motion:reduce){
-  .title .line,.lede,.actions{animation:none;opacity:1;transform:none}
-  .dot{animation:none}
-  .scroll-hint i{animation:none}
-}
 

@@ -1,0 +1,299 @@
+{
+  "characterId": "remielle",
+  "conversionDate": "2026-07-29",
+  "sourceManifest": "artifacts/remielle-official-20260729/source-manifest.json",
+  "officialPageUrl": "https://baike.mihoyo.com/zzz/wiki/content/2076/detail?mhy_presentation_style=fullscreen",
+  "tool": {
+    "name": "Pillow",
+    "version": "12.2.0"
+  },
+  "outputs": [
+    {
+      "outputFile": "assets/portraits/remielle-portrait.webp",
+      "sourceFile": "artifacts/remielle-official-20260729/display-1.png",
+      "officialPageUrl": "https://baike.mihoyo.com/zzz/wiki/content/2076/detail?mhy_presentation_style=fullscreen",
+      "directUrl": "https://act-upload.mihoyo.com/nap-obc-indep/2026/07/23/15559334/9004fd5d455c82bc20247eb0f6891050_1725964822439510660.png",
+      "sourceSha256": "2acb13fc026f9e6d524386ecfa8e4f1ea3bb30f1cc6c2f1937651b498aa082cf",
+      "sourceBytes": 1325525,
+      "sourceMode": "RGBA",
+      "sourceAlphaExtrema": [
+        0,
+        255
+      ],
+      "outputSha256": "3f1c2089ef629613d8d039445254808348b16763106c42e8f902aa73b80460c5",
+      "outputBytes": 767004,
+      "outputMode": "RGBA",
+      "outputAlphaExtrema": [
+        0,
+        255
+      ],
+      "sourceDimensions": [
+        1580,
+        2028
+      ],
+      "outputDimensions": [
+        1600,
+        1800
+      ],
+      "sourceAlphaBBox": [
+        2,
+        1,
+        1578,
+        2026
+      ],
+      "outputAlphaBBox": [
+        99,
+        0,
+        1501,
+        1800
+      ],
+      "scale": {
+        "rule": "fit height 1800; preserve aspect ratio; no crop",
+        "resizedDimensions": [
+          1402,
+          1800
+        ],
+        "actual": [
+          0.8873417721518987,
+          0.8875739644970414
+        ]
+      },
+      "canvas": [
+        1600,
+        1800
+      ],
+      "placement": {
+        "x": 99,
+        "y": 0,
+        "horizontal": "center",
+        "vertical": "bottom"
+      },
+      "crop": false,
+      "upscale": false,
+      "aiUpscale": false,
+      "stretch": false,
+      "backgroundRemoval": false,
+      "encoding": {
+        "format": "WebP",
+        "mode": "RGBA",
+        "lossless": true,
+        "quality": 100,
+        "method": 6,
+        "exact": true,
+        "resampling": "LANCZOS"
+      }
+    },
+    {
+      "outputFile": "assets/portraits/remielle-card.webp",
+      "sourceFile": "artifacts/remielle-official-20260729/display-1.png",
+      "officialPageUrl": "https://baike.mihoyo.com/zzz/wiki/content/2076/detail?mhy_presentation_style=fullscreen",
+      "directUrl": "https://act-upload.mihoyo.com/nap-obc-indep/2026/07/23/15559334/9004fd5d455c82bc20247eb0f6891050_1725964822439510660.png",
+      "sourceSha256": "2acb13fc026f9e6d524386ecfa8e4f1ea3bb30f1cc6c2f1937651b498aa082cf",
+      "sourceBytes": 1325525,
+      "sourceMode": "RGBA",
+      "sourceAlphaExtrema": [
+        0,
+        255
+      ],
+      "outputSha256": "2390bcc00f1f97e36218ed28d9f3b6cc5df48e67e7614bbdb2517f46780c8e1f",
+      "outputBytes": 96798,
+      "outputMode": "RGBA",
+      "outputAlphaExtrema": [
+        0,
+        255
+      ],
+      "sourceDimensions": [
+        1580,
+        2028
+      ],
+      "outputDimensions": [
+        374,
+        512
+      ],
+      "sourceAlphaBBox": [
+        2,
+        1,
+        1578,
+        2026
+      ],
+      "outputAlphaBBox": [
+        0,
+        32,
+        374,
+        512
+      ],
+      "scale": {
+        "rule": "contain within 374x512; preserve aspect ratio; no crop",
+        "resizedDimensions": [
+          374,
+          480
+        ],
+        "actual": [
+          0.23670886075949368,
+          0.23668639053254437
+        ]
+      },
+      "canvas": [
+        374,
+        512
+      ],
+      "placement": {
+        "x": 0,
+        "y": 32,
+        "horizontal": "center",
+        "vertical": "bottom"
+      },
+      "crop": false,
+      "upscale": false,
+      "aiUpscale": false,
+      "stretch": false,
+      "backgroundRemoval": false,
+      "encoding": {
+        "format": "WebP",
+        "mode": "RGBA",
+        "lossless": true,
+        "quality": 100,
+        "method": 6,
+        "exact": true,
+        "resampling": "LANCZOS"
+      }
+    },
+    {
+      "outputFile": "assets/mindscape/default/remielle.webp",
+      "sourceFile": "artifacts/remielle-official-20260729/mindscape-1.png",
+      "officialPageUrl": "https://baike.mihoyo.com/zzz/wiki/content/2076/detail?mhy_presentation_style=fullscreen",
+      "directUrl": "https://act-upload.mihoyo.com/nap-obc-indep/2026/07/29/71319299/af7afc5a763a30d882b57f60404ea963_1839644649078809127.png",
+      "sourceSha256": "0e572e3019f59ee5fe7ac4990567621ba6adf875ab064b07da4b14545987f92c",
+      "sourceBytes": 1660629,
+      "sourceMode": "RGB",
+      "sourceAlphaExtrema": null,
+      "outputSha256": "1aaef504d5bada8c98e2787c5f4b04b30ecbcc5a06b93c195092374975e4d262",
+      "outputBytes": 1055842,
+      "outputMode": "RGBA",
+      "outputAlphaExtrema": [
+        0,
+        255
+      ],
+      "sourceDimensions": [
+        2112,
+        1163
+      ],
+      "outputDimensions": [
+        2880,
+        1080
+      ],
+      "sourceAlphaBBox": null,
+      "outputAlphaBBox": [
+        459,
+        0,
+        2420,
+        1080
+      ],
+      "scale": {
+        "rule": "fit height 1080; preserve aspect ratio; no crop",
+        "resizedDimensions": [
+          1961,
+          1080
+        ],
+        "actual": [
+          0.9285037878787878,
+          0.9286328460877042
+        ]
+      },
+      "canvas": [
+        2880,
+        1080
+      ],
+      "placement": {
+        "x": 459,
+        "y": 0,
+        "horizontal": "center",
+        "vertical": "bottom"
+      },
+      "crop": false,
+      "upscale": false,
+      "aiUpscale": false,
+      "stretch": false,
+      "backgroundRemoval": false,
+      "encoding": {
+        "format": "WebP",
+        "mode": "RGBA",
+        "lossless": true,
+        "quality": 100,
+        "method": 6,
+        "exact": true,
+        "resampling": "LANCZOS"
+      }
+    },
+    {
+      "outputFile": "assets/icons/covenant-of-dayat.png",
+      "sourceFile": "artifacts/remielle-official-20260729/faction.png",
+      "officialPageUrl": "https://baike.mihoyo.com/zzz/wiki/content/2076/detail?mhy_presentation_style=fullscreen",
+      "directUrl": "https://act-upload.mihoyo.com/nap-obc-indep/2026/07/22/15559334/299478a0ed06ec799a465ad2487b4e5d_2844220404539584154.png",
+      "sourceSha256": "3dd4e8b68ee47d546e20932918f07b6de77927ccac2b7e245108d9c16e63f34f",
+      "sourceBytes": 69014,
+      "sourceMode": "RGBA",
+      "sourceAlphaExtrema": [
+        0,
+        255
+      ],
+      "outputSha256": "3dd4e8b68ee47d546e20932918f07b6de77927ccac2b7e245108d9c16e63f34f",
+      "outputBytes": 69014,
+      "outputMode": "RGBA",
+      "outputAlphaExtrema": [
+        0,
+        255
+      ],
+      "sourceDimensions": [
+        220,
+        220
+      ],
+      "outputDimensions": [
+        220,
+        220
+      ],
+      "sourceAlphaBBox": [
+        11,
+        2,
+        209,
+        216
+      ],
+      "outputAlphaBBox": [
+        11,
+        2,
+        209,
+        216
+      ],
+      "scale": {
+        "rule": "byte-for-byte copy",
+        "resizedDimensions": [
+          220,
+          220
+        ],
+        "actual": [
+          1,
+          1
+        ]
+      },
+      "canvas": [
+        220,
+        220
+      ],
+      "placement": {
+        "x": 0,
+        "y": 0,
+        "horizontal": "original",
+        "vertical": "original"
+      },
+      "crop": false,
+      "upscale": false,
+      "aiUpscale": false,
+      "stretch": false,
+      "backgroundRemoval": false,
+      "encoding": {
+        "format": "PNG",
+        "operation": "byte-for-byte copy"
+      }
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "entries": [
+    {
+      "mode": "theme",
+      "aesthetic": "dark",
+      "theme": {
+        "name": "Signal Yellow / Random Play 本体",
+        "base": "dark",
+        "mood": "街头指示牌 + 黑胶带海报",
+        "bg": "#0d0d0f",
+        "ink": "#f2efe4",
+        "accent": "#ffd60a",
+        "accent_ink": "#0d0d0f",
+        "surface_2": "#1f1f26",
+        "signature": "硬阴影 + 黄色大角标 + 噪音浮率"
+      }
+    },
+    {
+      "mode": "theme",
+      "aesthetic": "dark",
+      "theme": {
+        "name": "Hollow Terminal / HDD 控制台",
+        "base": "dark",
+        "mood": "赛博终端 · 屏幕发光",
+        "bg": "#041014",
+        "ink": "#e8fff9",
+        "accent": "#00e5d4",
+        "accent_ink": "#041014",
+        "surface_2": "#0f2a30",
+        "signature": "细边框 + 冷青扫描感 + 排版偏窄"
+      }
+    },
+    {
+      "mode": "theme",
+      "aesthetic": "dark",
+      "theme": {
+        "name": "Bellum Poster / 反乌托邦传单",
+        "base": "dark",
+        "mood": "警示红 · 危险通告",
+        "bg": "#0e0808",
+        "ink": "#f6ebe0",
+        "accent": "#e62429",
+        "accent_ink": "#f6ebe0",
+        "surface_2": "#241010",
+        "signature": "反bai红块 + 超长标题 + 硬割裂边框"
+      }
+    },
+    {
+      "mode": "theme",
+      "aesthetic": "light",
+      "theme": {
+        "name": "Tape Slide / 打字机档案纸",
+        "base": "light",
+        "mood": "微黄档案纸张 + 红章",
+        "bg": "#f2efe4",
+        "ink": "#0d0d0f",
+        "accent": "#e62429",
+        "accent_ink": "#f2efe4",
+        "surface_2": "#ffffff",
+        "signature": "黑字白场 + 红色眉条 + 边缘软角"
+      }
+    },
+    {
+      "mode": "theme",
+      "aesthetic": "dark",
+      "theme": {
+        "name": "Proxy Shop / 杂货霓虹",
+        "base": "dark",
+        "mood": "录像店隔壁杂货铺霓虹窗",
+        "bg": "#08040d",
+        "ink": "#f8f3ea",
+        "accent": "#ff2e88",
+        "accent_2": "#00e5d4",
+        "accent_ink": "#08040d",
+        "surface_2": "#1c1030",
+        "signature": "品红 + 青双色拼贴 + rank 双色体系"
+      }
+    },
+    {
+      "mode": "theme",
+      "aesthetic": "light",
+      "theme": {
+        "name": "ZZZ Mono / 极端黑白拍",
+        "base": "light",
+        "mood": "黑白印刷 · 打印友好 · 色弱 fallback",
+        "bg": "#ffffff",
+        "ink": "#0d0d0f",
+        "accent": "#0d0d0f",
+        "accent_ink": "#ffffff",
+        "surface_2": "#ffffff",
+        "signature": "零彩色 · 硬阴影最重 · 纯白场"
+      }
+    }
+  ]
+}

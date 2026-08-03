@@ -8,7 +8,6 @@
   const EXPANDED_KEY='hooxi:sidebar-expanded';
   const TRAIL_KEY='hooxi:nav-trail';
   const MOBILE_MQ=window.matchMedia('(max-width:760px)');
-  const REDUCED_MQ=window.matchMedia('(prefers-reduced-motion: reduce)');
 
   const LANES=[
     {id:'home',href:'index.html',label:'总览',short:'总'},
@@ -287,7 +286,4 @@
     recordTrailVisit();
     syncHistoryButtons();
   });
-
-  // Expose reduced-motion flag for CSS class consumers if needed later.
-  if(REDUCED_MQ.matches)body.classList.add('sidebar-reduced-motion');
 })();

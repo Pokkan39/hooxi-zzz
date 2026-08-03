@@ -1,5 +1,14 @@
 [
   {
+    "date": "2026-07-28",
+    "scope": "archive/character-detail",
+    "macrostructure": "Restrained HUD Text Cadence",
+    "theme": "custom",
+    "enrichment": "layered character text entrance + finite English-name breath + panel title confirmation",
+    "brief": "为角色名、真实英文名、身份字段、四个档案 Tab 与活动 Panel 标题增加克制的一次性 HUD 文字节奏。",
+    "critique": "只借用游戏 HUD 的信息确认节奏，保留 HOOXI 档案排版、Hash/History/键盘/移动端/无障碍与来源合同；拒绝官方 UI 复刻、逐字拆分、发光闪烁和永久循环。Pre-emit critique: P5 H5 E5 S5 R5 V4。"
+  },
+  {
     "date": "2026-07-25",
     "scope": "home",
     "macrostructure": "Seven-Act Midnight Screening Scroll",

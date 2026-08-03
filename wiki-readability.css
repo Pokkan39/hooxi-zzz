@@ -287,9 +287,7 @@ html{scroll-padding-top:88px}
 @media(max-width:640px){
   .archive-events .wiki-page-toc>ol{grid-template-columns:1fr}
 }
-@media(prefers-reduced-motion:reduce){
-  .archive-character .wiki-gallery-track{transition:none}
-}
+
 
 /* ===== Cold-gray archive expansion: all formal subpages ===== */
 .subpage,
@@ -1422,10 +1420,7 @@ body.cassette-open{overflow:hidden}
   .deck-volume{width:100%;margin-left:0}
   .deck-volume input{flex:1}
 }
-@media(prefers-reduced-motion:reduce){
-  .music-player.is-playing .cassette-mini .reel,
-  .cassette-shell.is-playing .reel i{animation:none}
-}
+
 
 
 /* cassette polish: readable titles + playlist rows */
@@ -1695,10 +1690,7 @@ body.cassette-open{overflow:hidden}
 .home-page .legend-dot.white{background:var(--signal)!important}
 .home-page .legend-dot.orange{background:var(--coral)!important}
 
-@media(prefers-reduced-motion:reduce){
-  .cassette-shell.is-playing .tape-sheen,
-  .cassette-shell.is-playing .reel i{animation:none!important}
-}
+
 
 
 /* ===== visible cassette dock (always findable) ===== */

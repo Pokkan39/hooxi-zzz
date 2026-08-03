@@ -1,0 +1,156 @@
+# ZZZ Theme Board — 色板 Token 规范
+# 来源：prototype/theme-board/tokens.css
+# 6 套方向（深 3 / 浅 3），每套含 16 个语义 token。
+# 当前基准（BASE）：待用户选定。
+# 迁移目标：待用户提供 NarraFlow 接口路径。
+#
+# Token 命名约定（已按语义抽象，非原型专用 --tb-* 前缀）：
+#   bg / bg-soft / bg-panel       背景三层
+#   text-1 / text-2 / text-3     文字主 / 次 / 三级
+#   accent / accent-2 / accent-soft  强调色 / 次要强调 / 强调底色
+#   line / line-strong             分隔线弱 / 强
+#   rank-s / rank-a                稀有度 S / A 标记
+#   shadow / ghost                 硬阴影 / 幽灵底色
+
+BASE: "warehouse"   # 默认基准（废仓，暗底柔和方向）；正式站 theme-tokens.css 已采用该色板为默认回退
+MIGRATION_NOTE: "正式站主题代码已产出为根目录 theme-tokens.css；data-theme 切换由 body class 驱动，暂无需 NarraFlow 接口"
+
+PALETTES:
+
+  warehouse:
+    name: 废仓
+    mode: dark
+    bg:        "#1c221f"
+    bg-soft:   "#242b28"
+    bg-panel:  "#2c332f"
+    text-1:    "#d5ccb8"
+    text-2:    "rgba(213,204,184,0.78)"
+    text-3:    "rgba(213,204,184,0.55)"
+    accent:    "#c9ad5f"
+    accent-ink: "#1c221f"
+    accent-2:  "#5e6b4a"
+    accent-soft: "rgba(201,173,95,0.15)"
+    line:      "rgba(213,204,184,0.13)"
+    line-strong: "rgba(213,204,184,0.28)"
+    rank-s:    "#c9ad5f"
+    rank-s-ink: "#1c221f"
+    rank-a:    "#d5ccb8"
+    rank-a-ink: "#1c221f"
+    shadow:    "#0e1110"
+    ghost:     "#222826"
+
+  arcade:
+    name: 街角街机
+    mode: dark
+    bg:        "#221a1f"
+    bg-soft:   "#2c2328"
+    bg-panel:  "#362b30"
+    text-1:    "#d8c7bf"
+    text-2:    "rgba(216,199,191,0.78)"
+    text-3:    "rgba(216,199,191,0.55)"
+    accent:    "#c46b52"
+    accent-ink: "#221a1f"
+    accent-2:  "#7d918a"
+    accent-soft: "rgba(196,107,82,0.16)"
+    line:      "rgba(216,199,191,0.13)"
+    line-strong: "rgba(216,199,191,0.28)"
+    rank-s:    "#c46b52"
+    rank-s-ink: "#221a1f"
+    rank-a:    "#d8c7bf"
+    rank-a-ink: "#221a1f"
+    shadow:    "#140d11"
+    ghost:     "#2c2328"
+
+  slate:
+    name: 冷雾板岩
+    mode: dark
+    bg:        "#182027"
+    bg-soft:   "#1e2830"
+    bg-panel:  "#253038"
+    text-1:    "#c2c8cc"
+    text-2:    "rgba(194,200,204,0.78)"
+    text-3:    "rgba(194,200,204,0.55)"
+    accent:    "#92aeb4"
+    accent-ink: "#182027"
+    accent-2:  "#8a6044"
+    accent-soft: "rgba(146,174,180,0.16)"
+    line:      "rgba(194,200,204,0.13)"
+    line-strong: "rgba(194,200,204,0.28)"
+    rank-s:    "#92aeb4"
+    rank-s-ink: "#182027"
+    rank-a:    "#c2c8cc"
+    rank-a-ink: "#182027"
+    shadow:    "#0c0f13"
+    ghost:     "#1e2830"
+
+  ink-wash:
+    name: 墨淡米色
+    mode: light
+    bg:        "#efe8dc"
+    bg-soft:   "#e6ddc9"
+    bg-panel:  "#f7f2e8"
+    text-1:    "#1f2328"
+    text-2:    "rgba(31,35,40,0.78)"
+    text-3:    "rgba(31,35,40,0.55)"
+    accent:    "#6f5c2e"
+    accent-ink: "#efe8dc"
+    accent-2:  "#3d4a35"
+    accent-soft: "rgba(111,92,46,0.12)"
+    line:      "rgba(31,35,40,0.13)"
+    line-strong: "rgba(31,35,40,0.28)"
+    rank-s:    "#6f5c2e"
+    rank-s-ink: "#efe8dc"
+    rank-a:    "#1f2328"
+    rank-a-ink: "#efe8dc"
+    shadow:    "#1f2328"
+    ghost:     "#e3d9c3"
+
+  archive-paper:
+    name: 档案纸
+    mode: light
+    bg:        "#d8d0c0"
+    bg-soft:   "#cec6b2"
+    bg-panel:  "#e4dcc8"
+    text-1:    "#212529"
+    text-2:    "rgba(33,37,41,0.78)"
+    text-3:    "rgba(33,37,41,0.55)"
+    accent:    "#7a4834"
+    accent-ink: "#f2ecde"
+    accent-2:  "#3f4635"
+    accent-soft: "rgba(122,72,52,0.14)"
+    line:      "rgba(33,37,41,0.14)"
+    line-strong: "rgba(33,37,41,0.30)"
+    rank-s:    "#7a4834"
+    rank-s-ink: "#f2ecde"
+    rank-a:    "#212529"
+    rank-a-ink: "#e4dcc8"
+    shadow:    "#212529"
+    ghost:     "#c9c0ae"
+
+  film-print:
+    name: 胶片印样
+    mode: light
+    bg:        "#ece4d4"
+    bg-soft:   "#e3dac6"
+    bg-panel:  "#f5efe2"
+    text-1:    "#1e1e1c"
+    text-2:    "rgba(30,30,28,0.78)"
+    text-3:    "rgba(30,30,28,0.55)"
+    accent:    "#b03a1e"
+    accent-ink: "#ece4d4"
+    accent-2:  "#3a4a35"
+    accent-soft: "rgba(176,58,30,0.12)"
+    line:      "rgba(30,30,28,0.14)"
+    line-strong: "rgba(30,30,28,0.30)"
+    rank-s:    "#b03a1e"
+    rank-s-ink: "#ece4d4"
+    rank-a:    "#1e1e1c"
+    rank-a-ink: "#ece4d4"
+    shadow:    "#1e1e1c"
+    ghost:     "#dfcfb8"
+
+# 暗底方向（mode: dark）——任务 2 仅迁移这 3 套
+DARK_ONLY:
+  - warehouse
+  - arcade
+  - slate

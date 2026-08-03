@@ -2,7 +2,6 @@
   if(window.__hooxiMotionEngine)return;
 
   const root=document.documentElement;
-  const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer=matchMedia('(hover: hover) and (pointer: fine)');
   const revealSelector='.path-card,.home-agent-card,.home-lane-card,.chapter,.archive-group,.page-timeline-item,.page-card,.agent-roster-card,.agent-file-card,.agent-entry,.faction-entry,.faction-card,.faction-story-card,.faction-member,.faction-relationship,.faction-project-card,.character-hero-main,.character-media-cover,.character-content-card,.character-gallery-item,.related-record,.section-plate';
   const magnetSelector='.button,.icon-button,.player-control,.playlist-button,.play-button,.lane-chip,.deck-btn,.side-btn,.cassette-close,.cassette-mini,.agent-orbit-button,.agent-clear-button';
@@ -47,10 +46,6 @@
       html.motion-ready :is(.character-content-card,.character-gallery-item,.related-record)[data-motion-surface]:hover{
         transform:translate3d(0,-5px,0);
       }
-    }
-    @media (prefers-reduced-motion:reduce){
-      html.motion-ready .topbar .brand{translate:none}
-      html.motion-ready .is-pressed{scale:none;filter:none}
     }
   `;
   document.head.append(engineStyles);
@@ -102,7 +97,7 @@
   };
 
   const ensureRevealObserver=()=>{
-    if(reducedMotion.matches||revealObserver||!('IntersectionObserver' in window))return;
+    if(!('IntersectionObserver' in window)||revealObserver)return;
     revealObserver=new IntersectionObserver(entries=>{
       entries.forEach(entry=>{
         if(entry.isIntersecting||entry.intersectionRatio>0)revealElement(entry.target);
@@ -119,7 +114,7 @@
       if(element.hasAttribute('data-motion-reveal'))return;
       element.setAttribute('data-motion-reveal','once');
       element.style.setProperty('--motion-i',String(revealIndex++%8));
-      if(reducedMotion.matches||!('IntersectionObserver' in window))revealElement(element);
+      if(!('IntersectionObserver' in window))revealElement(element);
       else{
         ensureRevealObserver();
         revealObserver.observe(element);
@@ -180,7 +175,7 @@
 
   const applyPointer=()=>{
     pointerFrame=0;
-    if(!latestPointer||reducedMotion.matches||latestPointer.pointerType==='touch')return;
+    if(!latestPointer||latestPointer.pointerType==='touch')return;
     const x=Math.max(0,Math.min(1,latestPointer.x/Math.max(innerWidth,1)));
     const y=Math.max(0,Math.min(1,latestPointer.y/Math.max(innerHeight,1)));
     root.style.setProperty('--hooxi-signal-x',`${((x-.5)*8).toFixed(2)}px`);
@@ -218,7 +213,7 @@
 
   const updateScroll=()=>{
     if(scrollFrame)return;
-    scrollFrame=requestAnimationFrame(()=>applyScroll(!reducedMotion.matches));
+    scrollFrame=requestAnimationFrame(()=>applyScroll(true));
   };
 
   addEventListener('scroll',updateScroll,{passive:true});
@@ -253,7 +248,7 @@
   };
 
   const enableMotionFeatures=()=>{
-    if(motionFeaturesBound||reducedMotion.matches)return;
+    if(motionFeaturesBound)return;
     motionFeaturesBound=true;
     addEventListener('pointermove',updatePointer,{passive:true});
     addEventListener('blur',clearPressed);
@@ -282,35 +277,12 @@
     resetMagnet();
   };
 
-  const handleReducedMotion=()=>{
-    if(reducedMotion.matches){
-      disableMotionFeatures();
-      revealObserver?.disconnect();
-      revealObserver=null;
-      document.querySelectorAll('[data-motion-reveal]:not(.is-revealed)').forEach(revealElement);
-      root.style.setProperty('--hooxi-signal-x','0px');
-      root.style.setProperty('--hooxi-signal-y','0px');
-      root.style.setProperty('--hooxi-signal-scroll','0px');
-      root.style.setProperty('--hooxi-signal-depth','1');
-      applyScroll(false);
-      return;
-    }
-    ensureRevealObserver();
-    enableMotionFeatures();
-  };
-
   window.__hooxiMotionEngine=true;
 
   refresh(document);
-  if(reducedMotion.matches)handleReducedMotion();
-  else{
-    ensureRevealObserver();
-    enableMotionFeatures();
-    applyScroll(true);
-  }
-
-  if(typeof reducedMotion.addEventListener==='function')reducedMotion.addEventListener('change',handleReducedMotion);
-  else reducedMotion.addListener(handleReducedMotion);
+  ensureRevealObserver();
+  enableMotionFeatures();
+  applyScroll(true);
 
   document.addEventListener('click',event=>{
     if(navigating||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
@@ -323,7 +295,7 @@
     const pageName=target.pathname.split('/').pop()||'';
     if(pageName.includes('.')&&!pageName.endsWith('.html'))return;
     const sameDocument=target.pathname===location.pathname&&target.search===location.search;
-    if((sameDocument&&target.hash)||target.href===location.href||reducedMotion.matches||nativePageTransitions)return;
+    if((sameDocument&&target.hash)||target.href===location.href||nativePageTransitions)return;
 
     event.preventDefault();
     navigating=true;
@@ -333,7 +305,6 @@
 
   addEventListener('pageshow',event=>{
     if(event.persisted||routeLoader.dataset.state==='leaving')hideLoader();
-    if(reducedMotion.matches)applyScroll(false);
-    else updateScroll();
+    updateScroll();
   });
 })();

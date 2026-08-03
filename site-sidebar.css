@@ -254,9 +254,4 @@ body.subpage.has-site-sidebar .character-left-rail{
   }
 }
 
-@media (prefers-reduced-motion: reduce){
-  .site-sidebar,
-  .site-sidebar-backdrop{
-    transition:none;
-  }
-}
+

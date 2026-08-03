@@ -2,6 +2,7 @@
    Depends on tokens.css. Keeps archive readable; kills fake module walls. */
 
 @import url("tokens.css");
+@import url("theme-tokens.css?v=ink-wash-1");
 @import url("wiki-readability.css");
 
 
@@ -458,8 +459,8 @@ footer{
 }
 .playlist-popover strong{border-bottom-color:var(--line);color:var(--amber)}
 .playlist-item{color:var(--text)}
-.playlist-item.selected{background:var(--amber);color:#14120a}
-.toast{background:var(--amber);color:#14120a;border-color:#000}
+.playlist-item.selected{background:var(--amber);color:var(--accent-ink)}
+.toast{background:var(--amber);color:var(--accent-ink);border-color:#000}
 
 /* pressed */
 [data-fx="press"].is-pressed,
@@ -607,7 +608,7 @@ footer{
 .sticker,
 .page-node,
 .version-rail button.active{
-  color:#14120a !important;
+  color:var(--accent-ink) !important;
 }
 
 .route-section .section-head,
@@ -696,8 +697,8 @@ footer{
   display:grid;
   grid-template-rows:minmax(0,1fr) auto;
   background:
-    radial-gradient(ellipse at calc(40% + var(--bg-drift-x)) calc(60% + var(--bg-drift-y)),color-mix(in srgb,var(--selected-agent-theme) 18%,transparent),transparent 55%),
-    linear-gradient(180deg,color-mix(in srgb,var(--selected-agent-theme) 6%,var(--bg-2)),var(--bg-0));
+    radial-gradient(ellipse at calc(40% + var(--bg-drift-x)) calc(60% + var(--bg-drift-y)),color-mix(in srgb,var(--selected-agent-theme) 38%,transparent),transparent 55%),
+    linear-gradient(180deg,color-mix(in srgb,var(--selected-agent-theme) 14%,var(--bg-2)),var(--bg-2));
   transition:background 420ms var(--ease-out);
 }
 .archive-stories .agent-roster-panel{
@@ -1147,6 +1148,7 @@ footer{
 .archive-stories .agent-roster-card:hover,
 .archive-stories .agent-roster-card:focus-visible{
   transform:translate3d(var(--track-x-active,var(--track-x,0px)),calc(var(--track-y,0px) + var(--card-base-lift,0px) + var(--card-interaction-lift,0px)),0);
+  border-color:color-mix(in srgb,var(--agent-card-theme,var(--line-strong)) 45%,var(--line-strong));
 }
 .archive-stories .agent-roster-card:focus-visible{
   outline:2px solid var(--amber);
@@ -1155,11 +1157,11 @@ footer{
 .archive-stories .agent-roster-card.is-selected:before{
   border-left-color:var(--agent-card-theme);
   border-bottom-color:var(--agent-card-theme);
-  box-shadow:inset 0 0 0 1px var(--text);
+  box-shadow:inset 0 0 0 1px var(--text),0 0 14px color-mix(in srgb,var(--agent-card-theme) 40%,transparent);
 }
 .archive-stories .agent-roster-card.is-selected{
   background:
-    linear-gradient(145deg,color-mix(in srgb,var(--agent-card-theme) 18%,var(--bg-2)),var(--bg-0));
+    linear-gradient(145deg,color-mix(in srgb,var(--agent-card-theme) 24%,var(--bg-2)),var(--bg-0));
 }
 .archive-stories .agent-roster-index{
   position:absolute;
@@ -1168,11 +1170,12 @@ footer{
   left:6px;
   min-width:22px;
   padding:3px 4px;
-  border:1px solid var(--line-strong);
-  background:color-mix(in srgb,var(--bg-0) 82%,transparent);
+  border:1px solid color-mix(in srgb,var(--agent-card-theme,var(--line-strong)) 50%,var(--line-strong));
+  background:color-mix(in srgb,var(--bg-0) 88%,transparent);
   color:var(--text-2);
   font:700 8px var(--font-mono);
   text-align:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.3);
 }
 .archive-stories .agent-card-image{
   position:relative;
@@ -1181,8 +1184,8 @@ footer{
   min-height:0;
   overflow:hidden;
   background:
-    radial-gradient(circle at 50% 72%,color-mix(in srgb,var(--agent-card-theme) 24%,transparent),transparent 55%),
-    var(--bg-2);
+    radial-gradient(circle at 50% 72%,color-mix(in srgb,var(--agent-card-theme) 32%,transparent),transparent 55%),
+    linear-gradient(180deg,var(--bg-2) 0%,color-mix(in srgb,var(--agent-card-theme) 8%,var(--bg-2)) 100%);
 }
 .archive-stories .agent-card-image:after{
   content:"";
@@ -1190,7 +1193,8 @@ footer{
   inset:auto 8% 9% 8%;
   height:1px;
   background:var(--agent-card-theme);
-  opacity:.48;
+  opacity:.55;
+  box-shadow:0 0 6px color-mix(in srgb,var(--agent-card-theme) 50%,transparent);
 }
 .archive-stories .agent-card-image img{
   display:block;
@@ -1198,12 +1202,13 @@ footer{
   height:100%;
   object-fit:cover;
   object-position:center top;
-  transition:transform 200ms var(--ease-out),opacity 160ms var(--ease-out);
+  transition:transform 200ms var(--ease-out),opacity 160ms var(--ease-out),filter 200ms var(--ease-out);
 }
 .archive-stories .agent-roster-card:hover .agent-card-image img,
 .archive-stories .agent-roster-card:focus-visible .agent-card-image img,
 .archive-stories .agent-roster-card.is-selected .agent-card-image img{
   transform:translate3d(var(--card-pan-x,0px),calc(var(--card-pan-y,0px) - 3%),0) scale(calc(var(--card-base-scale,1) + var(--card-interaction-scale,0)));
+  filter:brightness(1.08) saturate(1.1);
 }
 .archive-stories .agent-card-image .agent-image-fallback{
   align-self:center;
@@ -1219,8 +1224,9 @@ footer{
   min-width:0;
   min-height:82px;
   padding:9px 8px 10px;
-  border-top:1px solid var(--line);
-  background:color-mix(in srgb,var(--bg-0) 94%,transparent);
+  border-top:1px solid color-mix(in srgb,var(--agent-card-theme,var(--line)) 28%,var(--line));
+  background:
+    linear-gradient(180deg,color-mix(in srgb,var(--bg-0) 94%,transparent),color-mix(in srgb,var(--bg-0) 98%,transparent));
 }
 .archive-stories .agent-card-copy b,
 .archive-stories .agent-card-copy small,
@@ -1532,35 +1538,7 @@ footer{
   }
 }
 
-@media (prefers-reduced-motion:reduce){
-  .archive-stories .agent-stage-backdrop-name{
-    animation:none;
-  }
-  .archive-stories .agent-stage-portrait img,
-  .archive-stories .agent-stage-portrait .agent-image-fallback{
-    animation:archive-stories-fade-in 160ms linear both;
-  }
-  .archive-stories .agent-wipe-overlay.is-wiping{
-    animation:none;
-    opacity:0;
-  }
-  .archive-stories .agent-roster-card,
-  .archive-stories .agent-card-image img,
-  .archive-stories .agent-card-selected-mark,
-  .archive-stories .agent-deep-links a,
-  .archive-stories .agent-search-form .button{
-    transition:opacity 160ms linear;
-  }
-  .archive-stories .agent-roster-card:hover,
-  .archive-stories .agent-roster-card:focus-visible,
-  .archive-stories .agent-roster-card:hover .agent-card-image img,
-  .archive-stories .agent-roster-card:focus-visible .agent-card-image img,
-  .archive-stories .agent-roster-card.is-selected .agent-card-image img,
-  .archive-stories .agent-deep-links a:hover,
-  .archive-stories .agent-deep-links a:focus-visible{
-    transform:none;
-  }
-}
+
 
 /* Hallmark · genre: cinematic archive utility · macrostructure: Skew Roster Stage · design-system: design.md · designed-as-app */
 /* S1.7: parallel cut-card tracks, selected-agent colour rail, input-driven motion */
@@ -1587,8 +1565,8 @@ footer{
 }
 .archive-stories .agent-selected-stage{
   background:
-    linear-gradient(102deg,rgba(17,19,20,.96) 0 55%,rgba(17,19,20,.24) 55% 72%,rgba(0,0,0,.84) 72%),
-    radial-gradient(circle at 28% 54%,color-mix(in srgb,var(--selected-agent-theme) 18%,transparent),transparent 44%);
+    linear-gradient(102deg,rgba(17,19,20,.72) 0 45%,rgba(17,19,20,.18) 45% 70%,rgba(0,0,0,.4) 70%),
+    radial-gradient(circle at 28% 54%,color-mix(in srgb,var(--selected-agent-theme) 22%,transparent),transparent 44%);
 }
 .archive-stories .agent-stage-visual:before{
   content:"";
@@ -2020,53 +1998,6 @@ footer{
   .archive-stories .agent-mode-tabs a{font-size:12px}
   .archive-stories .agent-card-level{font-size:14px}
 }
-@media (prefers-reduced-motion:reduce){
-  .archive-stories{
-    --stage-grid-x:0px;
-    --stage-grid-y:0px;
-    --stage-copy-x:0px;
-    --stage-copy-y:0px;
-    --stage-deco-x:0px;
-    --stage-deco-y:0px;
-    --portrait-x:0px;
-    --portrait-y:0px;
-  }
-  .archive-stories .agent-roster-card,
-  .archive-stories .agent-roster-card:hover,
-  .archive-stories .agent-roster-card:focus-visible,
-  .archive-stories .agent-roster-card.is-selected,
-  .archive-stories .agent-roster-card:active{
-    --card-base-lift:0px;
-    --card-interaction-lift:0px;
-    --card-pan-x:0px;
-    --card-pan-y:0px;
-    --card-base-scale:1.14;
-    --card-interaction-scale:0;
-    transform:translate3d(var(--track-x-active,var(--track-x,0px)),var(--track-y),0);
-  }
-  .archive-stories .agent-stage-backdrop-name{
-    transform:translateX(-1%);
-  }
-  .archive-stories .agent-stage-visual:after{
-    transform:translateX(20%) skewX(-12deg);
-  }
-  .archive-stories .agent-stage-portrait img{
-    transform:scale(1.48);
-  }
-  .archive-stories .agent-stage-portrait[data-stage-agent-id="anby"] img{
-    transform:translateY(-25px) scale(1.48);
-  }
-  .archive-stories .agent-stage-portrait.is-compact-card img{
-    transform:translateX(-50%);
-  }
-}
-@media (max-width:880px) and (prefers-reduced-motion:reduce){
-  .archive-stories .agent-stage-portrait img{transform:scale(1.62)}
-  .archive-stories .agent-stage-portrait[data-stage-agent-id="anby"] img{transform:translateY(-44px) scale(1.62)}
-  .archive-stories .agent-card-image img{
-    transform:translate3d(0,-3%,0) scale(calc(var(--card-base-scale) + var(--card-interaction-scale)));
-  }
-}
 
 /* React game-client controls */
 .archive-stories .agent-category-menu{
@@ -2203,10 +2134,10 @@ footer{
 
 /* Stories workbench: clearer information stage / roster separation */
 .archive-stories .agent-selected-stage{
-  box-shadow:inset -24px 0 42px rgba(0,0,0,.38);
+  box-shadow:inset -24px 0 42px rgba(0,0,0,.22);
 }
 .archive-stories .agent-stage-info{
-  background:linear-gradient(90deg,rgba(8,10,14,.99),rgba(18,23,32,.96) 78%,rgba(18,23,32,.68));
+  background:linear-gradient(90deg,rgba(8,10,14,.92),rgba(18,23,32,.86) 78%,rgba(18,23,32,.58));
   border-top-color:color-mix(in srgb,var(--selected-agent-theme) 64%,var(--line));
 }
 .archive-stories .agent-stage-heading{
@@ -2281,10 +2212,7 @@ footer{
 .archive-character .character-growth-icon{object-fit:contain;padding:4px}
 .archive-character .character-growth-material span:not(.character-growth-grade){display:grid;min-width:0}.archive-character .character-growth-material b,.archive-character .character-growth-material small{overflow-wrap:anywhere}.archive-character .character-growth-material small{color:var(--text-2)}
 @media(max-width:420px){.archive-character .character-growth-section{padding:12px}.archive-character .character-growth-materials{grid-template-columns:minmax(0,1fr)}}
-@media(prefers-reduced-motion:reduce){
-  .archive-character .related-record:hover,
-  .archive-character .related-record:focus-visible{transform:none}
-}
+
 
 /*
   HALLMARK // 2026-07-22 // archive/character-directory
@@ -2453,21 +2381,7 @@ footer{
   .archive-stories .agent-roster-ticker-secondary{display:none}
   .archive-stories footer{padding-block:8px}
 }
-@media(prefers-reduced-motion:reduce){
-  .archive-stories .agent-roster-ticker{animation:none;transform:none;will-change:auto}
-  .archive-stories .agent-deep-links a,
-  .archive-stories .agent-category-menu a,
-  .archive-stories .agent-orbit-button,
-  .archive-stories .agent-clear-button{transition:opacity 160ms linear}
-  .archive-stories .agent-deep-links a:hover,
-  .archive-stories .agent-category-menu a:hover,
-  .archive-stories .agent-orbit-button:hover,
-  .archive-stories .agent-clear-button:hover,
-  .archive-stories .agent-deep-links a:active,
-  .archive-stories .agent-category-menu a:active,
-  .archive-stories .agent-orbit-button:active,
-  .archive-stories .agent-clear-button:active{transform:none}
-}
+
 
 /* 2026-07-22 visual acceptance repair: readable roster and precision controls */
 .archive-stories .agent-workbench,
@@ -2957,7 +2871,7 @@ footer{
   .home-page .hero-index{grid-template-columns:minmax(0,1fr);width:100%;min-width:0;max-width:100%}
   .home-page .hero-index>*{min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere;word-break:normal}
 }
-@media(prefers-reduced-motion:reduce){.home-page .hero-carousel-slide{transition:none}}
+
 
 /* Page banner carousel — subpages (mainline, events, behind-scenes) */
 .page-banner-carousel{
@@ -3049,7 +2963,7 @@ footer{
   left:0;
   right:0;
   bottom:0;
-  background:linear-gradient(180deg,transparent,rgba(6,8,12,.82) 42%,rgba(6,8,12,.95));
+  background:linear-gradient(180deg,transparent,rgba(6,8,12,.62) 42%,rgba(6,8,12,.78));
 }
 .archive-stories .agent-category-menu{
   z-index:6;
@@ -3507,9 +3421,7 @@ footer{
   .archive-stories .stories-filter-form label{margin-top:4px}
   .archive-stories .stories-filter-form button{width:100%}
 }
-@media(prefers-reduced-motion:reduce){
-  .archive-stories .stories-roster-card{transition:none}
-}
+
 
 /* Batch 4: lightweight Faction Record Stack. This block is intentionally page-scoped. */
 body.archive-faction{
@@ -4321,8 +4233,8 @@ body.archive-faction{
   position:absolute;
   inset:0;
   background:
-    linear-gradient(90deg,rgba(7,10,15,.96) 0%,rgba(7,10,15,.54) 44%,rgba(7,10,15,.16) 76%,rgba(7,10,15,.66) 100%),
-    linear-gradient(0deg,rgba(7,10,15,.96) 0%,transparent 56%,rgba(7,10,15,.42) 100%),
+    linear-gradient(90deg,rgba(7,10,15,.82) 0%,rgba(7,10,15,.28) 38%,rgba(7,10,15,.08) 62%,rgba(7,10,15,.52) 100%),
+    linear-gradient(0deg,rgba(7,10,15,.88) 0%,transparent 48%,rgba(7,10,15,.32) 100%),
     radial-gradient(circle at 38% 46%,var(--character-ambient),transparent 58%);
 }
 .archive-stories .agent-stage-art img{
@@ -4331,8 +4243,8 @@ body.archive-faction{
   height:100%;
   object-fit:cover;
   object-position:center;
-  filter:saturate(.56) contrast(1.08);
-  opacity:.46;
+  filter:saturate(1.5) contrast(1.12) brightness(.72);
+  opacity:.7;
 }
 .archive-stories .agent-stage-visual{
   position:relative;
@@ -4345,11 +4257,14 @@ body.archive-faction{
 .archive-stories .agent-stage-visual:before{
   content:"";
   position:absolute;
-  z-index:-1;
+  z-index:6;
   inset:0;
-  background:repeating-linear-gradient(-16deg,rgba(255,255,255,.035) 0 3px,transparent 3px 22px);
-  opacity:.28;
-  mask-image:linear-gradient(90deg,#000,transparent 86%);
+  background:
+    repeating-linear-gradient(0deg,transparent 0,transparent 2px,rgba(0,0,0,.12) 2px,rgba(0,0,0,.12) 4px),
+    repeating-linear-gradient(-16deg,rgba(255,255,255,.025) 0 3px,transparent 3px 22px);
+  opacity:.6;
+  pointer-events:none;
+  mix-blend-mode:multiply;
 }
 .archive-stories .agent-stage-visual:after{
   content:"";
@@ -4891,15 +4806,4 @@ body.archive-stories.has-site-sidebar:not(.is-sidebar-expanded) .site-sidebar-to
   .archive-stories .agent-roster-index{top:5px;left:5px}
   .archive-stories .agent-card-selected-mark{top:5px;right:5px;padding-inline:4px;font-size:7px}
 }
-@media(prefers-reduced-motion:reduce){
-  .archive-stories .agent-wipe-overlay.is-wiping{animation:none;opacity:0;transform:none}
-  .archive-stories .agent-roster-card,
-  .archive-stories .agent-card-image img,
-  .archive-stories .agent-stage-favorite,
-  .archive-stories .agent-deep-links a,
-  .archive-stories .agent-orbit-button,
-  .archive-stories .agent-clear-button{animation:none;transition:none;transform:none}
-  .archive-stories .agent-roster-card:hover,
-  .archive-stories .agent-roster-card:focus-visible,
-  .archive-stories .agent-card-image img:hover{transform:none}
-}
+

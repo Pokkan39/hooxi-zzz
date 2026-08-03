@@ -42,6 +42,3 @@ body.home-page .zzz-hero-swiper :is(.swiper-button-next,.swiper-button-prev,.swi
 @media(hover:none),(pointer:coarse){
   body.home-page :is(.hero-carousel-slide .hero-star,.zzz-hero-glow,.hero-copy){transform:none!important}
 }
-@media(prefers-reduced-motion:reduce){
-  body.home-page:not(.zzz-motion-forced) :is(.hero-carousel-slide .hero-star,.zzz-hero-glow,.hero-copy){transform:none!important}
-}

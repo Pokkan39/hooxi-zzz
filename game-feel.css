@@ -1,0 +1,190 @@
+/* game-feel.css — 全局游戏感交互效果
+   依赖：theme-tokens.css（--ease-out 变量）
+   效果清单：色散(chromatic aberration)、卡片倾斜（后续）、方向下划线（后续）
+*/
+
+/* ═══════ 01. Chromatic Aberration（色散） ═══════ */
+
+/* 容器：任何有 [data-disperse] 的父级（排除已绝对定位的 .d-keyart） */
+[data-disperse]:not(.d-keyart) { position: relative }
+
+/* R / B 通道层 */
+.gf-chr-r,
+.gf-chr-b {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: inherit;
+  opacity: 0;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  transition: opacity .22s linear, transform .22s cubic-bezier(.4,0,.2,1);
+}
+
+/* 染色 */
+.gf-chr-r { filter: brightness(.95) sepia(1) saturate(7) hue-rotate(-42deg) }
+.gf-chr-b { filter: brightness(.95) sepia(1) saturate(7) hue-rotate(165deg) }
+
+/* hover / focus-visible 触发 */
+[data-disperse]:hover .gf-chr-r,
+[data-disperse]:focus-visible .gf-chr-r {
+  opacity: .5; transform: translate3d(-3px, 0, 0);
+}
+[data-disperse]:hover .gf-chr-b,
+[data-disperse]:focus-visible .gf-chr-b {
+  opacity: .5; transform: translate3d(3px, 0, 0);
+}
+
+/* 浅色主题用 multiply 混合而非 screen */
+[data-theme="paper"] [data-disperse] .gf-chr-r,
+[data-theme="paper"] [data-disperse] .gf-chr-b,
+[data-theme="ink-wash"] [data-disperse] .gf-chr-r,
+[data-theme="ink-wash"] [data-disperse] .gf-chr-b {
+  mix-blend-mode: multiply;
+}
+
+/* ═══════ 02. Card Tilt + Highlight Follow（卡片倾斜+高光跟随） ═══════ */
+
+/* 容器：[data-tilt-card] */
+[data-tilt-card] {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* 高光层：径向渐变跟随鼠标 */
+.gf-sheen {
+  position: absolute; inset: 0;
+  pointer-events: none; opacity: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    220px 220px at var(--sx, 50%) var(--sy, 50%),
+    rgba(255,255,255,0.18),
+    rgba(255,255,255,0.05) 42%,
+    transparent 70%
+  );
+  transition: opacity .3s linear;
+  z-index: 10;
+}
+[data-tilt-card].is-tilt-live .gf-sheen { opacity: 1 }
+
+/* 浅色主题高光用暗色 */
+[data-theme="paper"] .gf-sheen,
+[data-theme="ink-wash"] .gf-sheen {
+  background: radial-gradient(
+    220px 220px at var(--sx, 50%) var(--sy, 50%),
+    rgba(0,0,0,0.08),
+    rgba(0,0,0,0.03) 42%,
+    transparent 70%
+  );
+}
+
+/* perspective 容器 */
+.gf-perspective { perspective: 800px }
+
+
+/* ═══════ 03. Directional Underline（方向下划线） ═══════ */
+
+/* 标记了 data-dir-link 的链接 */
+[data-dir-link] {
+  position: relative;
+  text-decoration: none !important;
+}
+[data-dir-link]::after {
+  content: '';
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 2px;
+  background: var(--accent, currentColor);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform .32s cubic-bezier(.4,0,.2,1);
+}
+[data-dir-link].is-from-right::after {
+  transform-origin: right center;
+}
+[data-dir-link]:hover::after,
+[data-dir-link]:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* 自动标记的导航链接也获得方向下划线 */
+.topbar nav a,
+.site-sidebar-link,
+.path-card a {
+  position: relative;
+}
+.topbar nav a::after,
+.site-sidebar-link::after {
+  content: '';
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 2px;
+  background: var(--accent, currentColor);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform .32s cubic-bezier(.4,0,.2,1);
+}
+.topbar nav a.is-from-right::after,
+.site-sidebar-link.is-from-right::after {
+  transform-origin: right center;
+}
+.topbar nav a:hover::after,
+.topbar nav a:focus-visible::after,
+.site-sidebar-link:hover::after,
+.site-sidebar-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* ============================================================
+   墨淡米色质感层（ink-wash 主题专属）
+   印刷格纹 + 扫描噪点 + 硬阴影 + 双线轮廓 + 图片去饱和
+   ============================================================ */
+
+/* 全站背景叠印刷格纹 + 扫描噪点（ink-wash 主题） */
+body[data-theme="ink-wash"]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: var(--paper-grain), var(--paper-noise);
+  background-size: 3px 3px, auto;
+  background-position: 0 0, 0 0;
+  mix-blend-mode: multiply;
+}
+
+/* 面板/卡片硬阴影（ink-wash 主题，提升印刷触感） */
+body[data-theme="ink-wash"] .game-feel-card,
+body[data-theme="ink-wash"] .panel,
+body[data-theme="ink-wash"] .card {
+  box-shadow: var(--hard-shadow, 5px 5px 0 rgba(31,35,40,0.22)), var(--shadow, 0 8px 20px rgba(31,35,40,0.12));
+}
+
+/* 双线轮廓类（opt-in，手动加 .ink-double-line 使用） */
+body[data-theme="ink-wash"] .ink-double-line {
+  box-shadow: var(--double-line, 0 0 0 1px rgba(31,35,40,0.32), 0 0 0 4px rgba(31,35,40,0.18));
+}
+
+/* 图片去饱和类（opt-in，手动加 .ink-img 使用；hover 还原色彩） */
+body[data-theme="ink-wash"] .ink-img {
+  filter: var(--ink-img-filter);
+  transition: filter .4s cubic-bezier(.4,0,.2,1);
+}
+body[data-theme="ink-wash"] .ink-img:hover {
+  filter: var(--ink-img-hover);
+}
+
+/* 全局图片（非 logo/icon/emoji）的浅去饱和：只对角色图鉴、装备、章节封面类图片生效 */
+body[data-theme="ink-wash"] .archive-card img,
+body[data-theme="ink-wash"] .agent-thumb img,
+body[data-theme="ink-wash"] .chapter-cover img,
+body[data-theme="ink-wash"] .wiki-card img,
+body[data-theme="ink-wash"] .gallery-item img {
+  filter: var(--ink-img-filter);
+  transition: filter .4s cubic-bezier(.4,0,.2,1);
+}
+body[data-theme="ink-wash"] .archive-card:hover img,
+body[data-theme="ink-wash"] .agent-thumb:hover img,
+body[data-theme="ink-wash"] .chapter-cover:hover img,
+body[data-theme="ink-wash"] .wiki-card:hover img,
+body[data-theme="ink-wash"] .gallery-item:hover img {
+  filter: var(--ink-img-hover);
+}

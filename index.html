@@ -13,6 +13,7 @@
   <meta name="twitter:description" content="Hooxi 的《绝区零》剧情视频档案。粉丝非官方，与米哈游无隶属。"/>
   <title>Hooxi // 绝区零剧情档案</title>
   <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="theme-tokens.css?v=ink-wash-1"/>
   <link rel="stylesheet" href="assets/vendor/swiper/swiper-bundle.min.css?v=swiper-11-2-10"/>
   <link rel="stylesheet" href="motion.css?v=signal-field-stack-r1"/>
   <link rel="stylesheet" href="theme-zzz.css?v=home-carousel-r2"/>
@@ -21,6 +22,7 @@
   <link rel="stylesheet" href="official-dna.css?v=official-dna-r1"/>
   <link rel="stylesheet" href="zzz-hero-parallax.css?v=zzz-parallax-r2"/>
   <link rel="stylesheet" href="zzz-tv-transition.css?v=zzz-tv-r1"/>
+  <link rel="stylesheet" href="game-feel.css?v=gf-1"/>
   <meta name="theme-color" content="#18171A"/>
   <meta name="author" content="Hooxi"/>
   <meta name="robots" content="index,follow"/>
@@ -36,7 +38,22 @@
       <span class="brand-mark">H</span>
       <span><strong>HOOXI<span class="accent"> //</span></strong><small>ZENLESS ARCHIVE</small></span>
     </a>
-    <div class="top-meta"><span class="signal-dot"></span> ARCHIVE INDEX <span class="slash">/</span> <span id="statusText">S01</span></div>
+    <div class="top-meta">
+      <span class="signal-dot"></span> ARCHIVE INDEX <span class="slash">/</span> <span id="statusText">S01</span>
+      <div class="theme-palette">
+        <button class="theme-palette-trigger" id="themePaletteTrigger" type="button" aria-haspopup="listbox" aria-controls="themePaletteList" aria-label="切换主题色板">
+          <span class="theme-palette-badge" id="themeBadge"></span>
+          <span class="theme-palette-arrow" aria-hidden="true">▾</span>
+        </button>
+        <div class="theme-palette-list" id="themePaletteList" role="listbox" aria-label="主题色板">
+          <button class="theme-palette-item" role="option" data-theme-name="warehouse">仓库</button>
+          <button class="theme-palette-item" role="option" data-theme-name="arcade">街机</button>
+          <button class="theme-palette-item" role="option" data-theme-name="slate">板岩</button>
+          <button class="theme-palette-item" role="option" data-theme-name="paper">纸样</button>
+          <button class="theme-palette-item" role="option" data-theme-name="ink-wash">墨淡</button>
+        </div>
+      </div>
+    </div>
     <button class="home-nav-toggle" id="homeNavToggle" type="button" aria-controls="homeNav" aria-expanded="false" aria-label="打开主导航菜单">菜单</button>
     <nav id="homeNav" aria-label="主导航">
       <a href="mainline.html">主线</a>
@@ -202,5 +219,41 @@
   <script src="zzz-hero-parallax.js?v=zzz-parallax-r1"></script>
   <script src="zzz-hero-swiper.js?v=zzz-hero-swiper-r1"></script>
   <script src="zzz-tv-transition.js?v=zzz-tv-r1"></script>
+  <script src="theme-switcher.js?v=theme-switcher-r1"></script>
+  <script>
+  (function(){
+    var trigger = document.getElementById("themePaletteTrigger");
+    var list = document.getElementById("themePaletteList");
+    if (!trigger || !list) return;
+    var items = list.querySelectorAll(".theme-palette-item");
+    var parent = trigger.parentElement;
+    function setSelected(name){
+      for (var i=0;i<items.length;i++){items[i].removeAttribute("data-selected");}
+      var it = list.querySelector('[data-theme-name="'+name+'"]');
+      if (it) it.setAttribute("data-selected","true");
+    }
+    function close(){ parent.classList.remove("is-open"); trigger.setAttribute("aria-expanded","false"); }
+    function open(){ parent.classList.add("is-open"); trigger.setAttribute("aria-expanded","true"); }
+    function toggle(){ parent.classList.contains("is-open") ? close() : open(); }
+    trigger.addEventListener("click", function(e){ e.stopPropagation(); toggle(); });
+    for (var i=0;i<items.length;i++){
+      (function(it){
+        it.addEventListener("click", function(e){
+          e.stopPropagation();
+          var name = it.getAttribute("data-theme-name");
+          if (typeof window.__setTheme === "function") window.__setTheme(name);
+          setSelected(name);
+          close();
+        });
+      })(items[i]);
+    }
+    document.addEventListener("click", function(e){ if (!parent.contains(e.target)) close(); });
+    document.addEventListener("keydown", function(e){
+      if (e.key === "Escape") close();
+    });
+    if (typeof window.__theme === "string") setSelected(window.__theme);
+  })();
+  </script>
+  <script src="game-feel.js?v=gf-1"></script>
 </body>
 </html>

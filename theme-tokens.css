@@ -1,0 +1,441 @@
+/* ===========================================================
+   theme-tokens.css — ZZZ 色板 token 源（正式站）
+   来源：prototype/theme-board 6 套色板
+   模式：3 套暗底（废仓/街角街机/冷雾板岩）+ 1 套浅底预览
+   ===========================================================
+   用法：将数据 class 写入 body（由 NarraFlow / JS 注入）
+     <body data-theme="warehouse">   废仓（柔和暗底，默认）
+     <body data-theme="arcade">      街角街机（戏剧暗底）
+     <body data-theme="slate">       冷雾板岩（克制暗底）
+     <body data-theme="paper">       档案纸（浅底预览）
+   未设 data-theme 时自动回退到仓库现有 tokens.css 配色。
+   ===========================================================
+   与旧 tokens.css 的关系：
+     本文件提供两套别名，保证现有 CSS 不降级：
+       --bg-0 / --bg-1 / --bg-2 ...   （旧名）
+       --amber / --signal / --coral    （旧名）
+     组件应优先使用语义新名（bg / accent / text-1 ...），
+     旧名仅作为过渡兼容，待全量迁移后移除。
+   =========================================================== */
+
+/* ---- 默认（废仓）+ 兼容旧 tokens.css 命名 ---- */
+:root{
+  color-scheme: dark;
+
+  /* — 背景 — */
+  --bg:        #1c221f;
+  --bg-soft:   #242b28;
+  --bg-panel:  #2c332f;
+  --bg-elev:   #2c332f;
+
+  /* — 文字 — */
+  --text-1:    #d5ccb8;
+  --text-2:    rgba(213,204,184,0.78);
+  --text-3:    rgba(213,204,184,0.55);
+  --text-4:    rgba(213,204,184,0.34);
+
+  /* — 强调色 — */
+  --accent:        #c9ad5f;
+  --accent-ink:    #1c221f;
+  --accent-2:      #5e6b4a;
+  --accent-soft:   rgba(201,173,95,0.15);
+  --accent-hot:    #d9bf72;
+  --accent-dim:    rgba(201,173,95,0.15);
+  --accent-line:   rgba(201,173,95,0.42);
+
+  /* — 次要强调（青）— */
+  --signal:      #5e6b4a;
+  --signal-dim:  rgba(94,107,74,0.16);
+  --signal-line: rgba(94,107,74,0.42);
+
+  /* — 危险/暖 — */
+  --coral:  #a67452;
+  --teal:   var(--signal);
+
+  /* — 分隔线 — */
+  --line:         rgba(213,204,184,0.13);
+  --line-strong:  rgba(213,204,184,0.28);
+
+  /* — 阴影 — */
+  --shadow:       0 18px 40px rgba(14,17,16,0.42);
+  --shadow-hard:  4px 4px 0 rgba(14,17,16,0.72);
+
+  /* — 稀有度 S / A — */
+  --rank-s:       #c9ad5f;
+  --rank-s-ink:   #1c221f;
+  --rank-a:       #d5ccb8;
+  --rank-a-ink:   #1c221f;
+
+  /* — 幽灵底色 — */
+  --ghost:     #222826;
+
+  /* —— 旧 tokens.css 别名（过渡兼容）—— */
+  --bg-0:       var(--bg);
+  --bg-1:       var(--bg-soft);
+  --bg-2:       var(--bg-panel);
+  --bg-3:       var(--bg-elev);
+  --panel:      rgba(44,51,47,0.94);
+  --panel-solid:var(--bg-elev);
+  --text:       var(--text-1);
+  --ink:        var(--bg);
+  --paper:      var(--bg-soft);
+  --paper-2:    var(--bg-panel);
+  --yellow:     var(--accent);
+  --yellow-hot: var(--accent-hot);
+  --orange:     var(--accent);
+  --amber:      var(--accent);
+  --amber-hot:  var(--accent-hot);
+  --amber-dim:  var(--accent-dim);
+  --amber-line: var(--accent-line);
+  --archive-accent:     var(--accent);
+  --archive-secondary:  var(--accent-hot);
+  --muted:      var(--text-3);
+  --text-dim:   var(--text-2);
+  --text-faint: var(--text-3);
+  --line-soft:  var(--line);
+  --glow-yellow:0 0 22px rgba(201,173,95,0.18);
+  --hooxi-confirm: var(--accent);
+}
+
+
+/* ===========================================================
+   街角街机 —— 戏剧暗底（暖红主调）
+   =========================================================== */
+body[data-theme="arcade"]{
+  color-scheme: dark;
+
+  --bg:        #221a1f;
+  --bg-soft:   #2c2328;
+  --bg-panel:  #362b30;
+  --bg-elev:   #362b30;
+
+  --text-1:    #d8c7bf;
+  --text-2:    rgba(216,199,191,0.78);
+  --text-3:    rgba(216,199,191,0.55);
+  --text-4:    rgba(216,199,191,0.34);
+
+  --accent:        #c46b52;
+  --accent-ink:    #221a1f;
+  --accent-2:      #7d918a;
+  --accent-soft:   rgba(196,107,82,0.16);
+  --accent-hot:    #d37e66;
+  --accent-dim:    rgba(196,107,82,0.16);
+  --accent-line:   rgba(196,107,82,0.48);
+
+  --signal:      #7d918a;
+  --signal-dim:  rgba(125,145,138,0.16);
+  --signal-line: rgba(125,145,138,0.42);
+
+  --coral:  #c46b52;
+  --teal:   var(--signal);
+
+  --line:         rgba(216,199,191,0.13);
+  --line-strong:  rgba(216,199,191,0.28);
+
+  --shadow:       0 18px 40px rgba(20,13,17,0.42);
+  --shadow-hard:  4px 4px 0 rgba(20,13,17,0.72);
+
+  --rank-s:       #c46b52;
+  --rank-s-ink:   #221a1f;
+  --rank-a:       #d8c7bf;
+  --rank-a-ink:   #221a1f;
+
+  --ghost:     #2c2328;
+
+  /* 旧别名 */
+  --bg-0:       var(--bg);
+  --bg-1:       var(--bg-soft);
+  --bg-2:       var(--bg-panel);
+  --bg-3:       var(--bg-elev);
+  --panel:      rgba(54,43,48,0.94);
+  --panel-solid:var(--bg-elev);
+  --text:       var(--text-1);
+  --ink:        var(--bg);
+  --paper:      var(--bg-soft);
+  --paper-2:    var(--bg-panel);
+  --yellow:     var(--accent);
+  --yellow-hot: var(--accent-hot);
+  --orange:     var(--accent);
+  --amber:      var(--accent);
+  --amber-hot:  var(--accent-hot);
+  --amber-dim:  var(--accent-dim);
+  --amber-line: var(--accent-line);
+  --archive-accent:     var(--accent);
+  --archive-secondary:  var(--accent-hot);
+  --muted:      var(--text-3);
+  --text-dim:   var(--text-2);
+  --text-faint: var(--text-3);
+  --line-soft:  var(--line);
+  --glow-yellow:0 0 22px rgba(196,107,82,0.22);
+  --hooxi-confirm: var(--accent);
+}
+
+
+/* ===========================================================
+   冷雾板岩 —— 克制暗底（青蓝主调）
+   =========================================================== */
+body[data-theme="slate"]{
+  color-scheme: dark;
+
+  --bg:        #182027;
+  --bg-soft:   #1e2830;
+  --bg-panel:  #253038;
+  --bg-elev:   #253038;
+
+  --text-1:    #c2c8cc;
+  --text-2:    rgba(194,200,204,0.78);
+  --text-3:    rgba(194,200,204,0.55);
+  --text-4:    rgba(194,200,204,0.34);
+
+  --accent:        #92aeb4;
+  --accent-ink:    #182027;
+  --accent-2:      #8a6044;
+  --accent-soft:   rgba(146,174,180,0.16);
+  --accent-hot:    #a3bcc3;
+  --accent-dim:    rgba(146,174,180,0.16);
+  --accent-line:   rgba(146,174,180,0.42);
+
+  --signal:      #8a6044;
+  --signal-dim:  rgba(138,96,68,0.16);
+  --signal-line: rgba(138,96,68,0.42);
+
+  --coral:  #8a6044;
+  --teal:   var(--signal);
+
+  --line:         rgba(194,200,204,0.13);
+  --line-strong:  rgba(194,200,204,0.28);
+
+  --shadow:       0 18px 40px rgba(12,15,19,0.42);
+  --shadow-hard:  4px 4px 0 rgba(12,15,19,0.72);
+
+  --rank-s:       #92aeb4;
+  --rank-s-ink:   #182027;
+  --rank-a:       #c2c8cc;
+  --rank-a-ink:   #182027;
+
+  --ghost:     #1e2830;
+
+  /* 旧别名 */
+  --bg-0:       var(--bg);
+  --bg-1:       var(--bg-soft);
+  --bg-2:       var(--bg-panel);
+  --bg-3:       var(--bg-elev);
+  --panel:      rgba(37,48,56,0.94);
+  --panel-solid:var(--bg-elev);
+  --text:       var(--text-1);
+  --ink:        var(--bg);
+  --paper:      var(--bg-soft);
+  --paper-2:    var(--bg-panel);
+  --yellow:     var(--accent);
+  --yellow-hot: var(--accent-hot);
+  --orange:     var(--accent);
+  --amber:      var(--accent);
+  --amber-hot:  var(--accent-hot);
+  --amber-dim:  var(--accent-dim);
+  --amber-line: var(--accent-line);
+  --archive-accent:     var(--accent);
+  --archive-secondary:  var(--accent-hot);
+  --muted:      var(--text-3);
+  --text-dim:   var(--text-2);
+  --text-faint: var(--text-3);
+  --line-soft:  var(--line);
+  --glow-yellow:0 0 22px rgba(146,174,180,0.18);
+  --hooxi-confirm: var(--accent);
+}
+
+
+/* ===========================================================
+   档案纸 —— 浅底预览（仅作对照，非正式站生产色板）
+   =========================================================== */
+body[data-theme="paper"]{
+  color-scheme: light;
+
+  --bg:        #d8d0c0;
+  --bg-soft:   #cec6b2;
+  --bg-panel:  #e4dcc8;
+  --bg-elev:   #e4dcc8;
+
+  --text-1:    #212529;
+  --text-2:    rgba(33,37,41,0.78);
+  --text-3:    rgba(33,37,41,0.55);
+  --text-4:    rgba(33,37,41,0.34);
+
+  --accent:        #7a4834;
+  --accent-ink:    #f2ecde;
+  --accent-2:      #3f4635;
+  --accent-soft:   rgba(122,72,52,0.14);
+  --accent-hot:    #8f5742;
+  --accent-dim:    rgba(122,72,52,0.14);
+  --accent-line:   rgba(122,72,52,0.50);
+
+  --signal:      #3f4635;
+  --signal-dim:  rgba(63,70,53,0.16);
+  --signal-line: rgba(63,70,53,0.42);
+
+  --coral:  #7a4834;
+  --teal:   var(--signal);
+
+  --line:         rgba(33,37,41,0.14);
+  --line-strong:  rgba(33,37,41,0.30);
+
+  --shadow:       0 18px 40px rgba(33,37,41,0.18);
+  --shadow-hard:  4px 4px 0 rgba(33,37,41,0.42);
+
+  --rank-s:       #7a4834;
+  --rank-s-ink:   #f2ecde;
+  --rank-a:       #212529;
+  --rank-a-ink:   #e4dcc8;
+
+  --ghost:     #c9c0ae;
+
+  /* 旧别名 */
+  --bg-0:       var(--bg);
+  --bg-1:       var(--bg-soft);
+  --bg-2:       var(--bg-panel);
+  --bg-3:       var(--bg-elev);
+  --panel:      rgba(228,220,200,0.96);
+  --panel-solid:var(--bg-elev);
+  --text:       var(--text-1);
+  --ink:        var(--bg);
+  --paper:      var(--bg-soft);
+  --paper-2:    var(--bg-panel);
+  --yellow:     var(--accent);
+  --yellow-hot: var(--accent-hot);
+  --orange:     var(--accent);
+  --amber:      var(--accent);
+  --amber-hot:  var(--accent-hot);
+  --amber-dim:  var(--accent-dim);
+  --amber-line: var(--accent-line);
+  --archive-accent:     var(--accent);
+  --archive-secondary:  var(--accent-hot);
+  --muted:      var(--text-3);
+  --text-dim:   var(--text-2);
+  --text-faint: var(--text-3);
+  --line-soft:  var(--line);
+  --glow-yellow:0 0 22px rgba(122,72,52,0.16);
+  --hooxi-confirm: var(--accent);
+
+  /* — 角色页覆盖（浅底适配）— */
+  --character-page-bg:  var(--bg);
+  --character-accent:   var(--accent);
+  --character-accent-rgb:122,72,52;
+  --character-ambient:  rgba(122,72,52,0.18);
+  --character-on-accent:var(--bg-panel);
+  --character-surface:  rgba(206,198,178,0.94);
+  --character-surface-strong:rgba(206,198,178,0.98);
+}
+
+/* ═══════════════════════════════════════════════════
+   ink-wash · 墨淡米色 — 六大色彩平衡浅底主题
+   60% 暖米底 / 30% 墨灰文字 / 10% ZZZ游戏色点睛
+   ═══════════════════════════════════════════════════ */
+body[data-theme="ink-wash"] {
+  color-scheme: light;
+
+  /* — 背景层 (60% 暖米) — */
+  --bg:         #efe8dc;
+  --bg-soft:    #e6ddc9;
+  --bg-panel:   #f7f2e8;
+  --bg-elev:    #f7f2e8;
+
+  /* — 文字层 (30% 墨灰) — */
+  --text-1:     #1f2328;
+  --text-2:     rgba(31,35,40,0.78);
+  --text-3:     rgba(31,35,40,0.55);
+  --text-4:     rgba(31,35,40,0.34);
+
+  /* — 强调色 (10% ZZZ游戏色) — */
+  --accent:     #8b6914;
+  --accent-ink: #efe8dc;
+  --accent-2:   #2d7a8a;
+  --accent-soft:rgba(139,105,20,0.12);
+  --accent-hot: #d8fa00;
+  --accent-dim: rgba(139,105,20,0.38);
+  --accent-line:rgba(139,105,20,0.22);
+
+  /* — 信号色（冷暖平衡：深青） — */
+  --signal:     #2d7a8a;
+  --signal-dim: rgba(45,122,138,0.32);
+  --signal-line:rgba(45,122,138,0.18);
+
+  /* — 危险/暖色 — */
+  --coral:      #a33b20;
+  --teal:       #2d7a8a;
+
+  /* — 分隔线 — */
+  --line:       rgba(31,35,40,0.13);
+  --line-strong:rgba(31,35,40,0.28);
+
+  /* — 阴影 — */
+  --shadow:     0 18px 40px rgba(31,35,40,0.12);
+  --shadow-hard:4px 4px 0 rgba(31,35,40,0.18);
+
+  /* — 稀有度 — */
+  --rank-s:     #8b6914;
+  --rank-s-ink: #efe8dc;
+  --rank-a:     #1f2328;
+  --rank-a-ink: #efe8dc;
+
+  /* — 幽灵底色 — */
+  --ghost:      #e3d9c3;
+
+  /* —— 旧 tokens.css 别名 —— */
+  --bg-0:       var(--bg);
+  --bg-1:       var(--bg-soft);
+  --bg-2:       var(--bg-panel);
+  --bg-3:       var(--bg-elev);
+  --panel:      rgba(247,242,232,0.94);
+  --panel-solid:var(--bg-elev);
+  --text:       var(--text-1);
+  --ink:        var(--bg);
+  --paper:      var(--bg-soft);
+  --paper-2:    var(--bg-panel);
+  --yellow:     var(--accent);
+  --yellow-hot: var(--accent-hot);
+  --orange:     var(--accent);
+  --amber:      var(--accent);
+  --amber-hot:  var(--accent-hot);
+  --amber-dim:  var(--accent-dim);
+  --amber-line: var(--accent-line);
+  --archive-accent:     var(--accent);
+  --archive-secondary:  var(--accent-hot);
+  --muted:      var(--text-3);
+  --text-dim:   var(--text-2);
+  --text-faint: var(--text-3);
+  --line-soft:  var(--line);
+  --glow-yellow:0 0 22px rgba(139,105,20,0.14);
+  --hooxi-confirm: var(--accent);
+
+  /* — 质感层（墨淡米色专属） — */
+  --paper-grain:    repeating-radial-gradient(circle at 1px 1px, rgba(31,35,40,0.06) 0.6px, transparent 1px) 0 0/3px 3px;
+  --paper-noise:    repeating-linear-gradient(180deg, rgba(31,35,40,0.035) 0 1px, transparent 1px 3px);
+  --hard-shadow:    5px 5px 0 rgba(31,35,40,0.22);
+  --double-line:    0 0 0 1px rgba(31,35,40,0.32), 0 0 0 4px rgba(31,35,40,0.18);
+  --ink-img-filter: grayscale(0.45) sepia(0.18) contrast(1.05) brightness(0.95);
+  --ink-img-hover:  grayscale(0.2) sepia(0.05) contrast(1.0) brightness(1.0);
+
+  /* — 角色页覆盖（浅底适配）— */
+  --character-page-bg:  var(--bg);
+  --character-accent:   var(--accent);
+  --character-accent-rgb:139,105,20;
+  --character-ambient:  rgba(139,105,20,0.16);
+  --character-on-accent:var(--bg-panel);
+  --character-surface:  rgba(230,221,201,0.94);
+  --character-surface-strong:rgba(230,221,201,0.98);
+}
+
+/* — 浅色主题：角色页深度覆盖（tokens.css 在 .character-screen 上有直接赋值）— */
+body[data-theme="paper"].archive-character .character-screen,
+body[data-theme="paper"].archive-character,
+body[data-theme="ink-wash"].archive-character .character-screen,
+body[data-theme="ink-wash"].archive-character {
+  --character-page-bg:  var(--bg);
+  --character-accent:   var(--accent);
+  --character-ambient:  rgba(var(--character-accent-rgb) / 0.16);
+  --character-on-accent:var(--bg-panel);
+  --character-surface:  var(--bg-soft);
+  --character-surface-strong:var(--bg-panel);
+  --character-text:     var(--text-1);
+  --character-text-muted:var(--text-2);
+  --character-line:     var(--line);
+}

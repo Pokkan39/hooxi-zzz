@@ -1,0 +1,151 @@
+/* HOOXI Theme Board — 6 套 ZZZ 原生色板 v2.
+   重做规则：
+   · 深3 + 浅3
+   · 颜色全部"褪色"：降饱和 + 降明度，模拟印刷/老化
+   · 不用纯黑/纯白做底，用"有温度的灰"
+   · 零荧光色、零AI渐变配色
+   · 质感靠：噪点 + 双线轮廓 + 印刷格纹（非渐变）
+*/
+
+:root {
+  /* 字体（不变） */
+  --font-display: "Arial Black","HelveticaNeue-CondensedBlack","Impact",
+                  "PingFang SC","Microsoft YaHei UI",sans-serif;
+  --font-mono: "Consolas","SFMono-Regular","Menlo",monospace;
+  --font-body: "Segoe UI","PingFang SC","Microsoft YaHei UI",sans-serif;
+
+  /* 间距（不变） */
+  --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;
+  --sp-6:24px;--sp-8:32px;--sp-12:48px;--sp-16:64px;--sp-20:80px;
+
+  --shadow-hard:4px 4px 0 currentColor;
+  --shadow-hard-lg:6px 6px 0 currentColor;
+
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --dur-fast:140ms;
+  --dur-med:180ms;
+}
+
+/* ============================================================
+   6 套色板 tokens
+   ============================================================ */
+
+/* ─── 深 1 · warehouse（废仓）─── */
+[data-theme="warehouse"]{
+  --tb-bg:#1c221f;
+  --tb-bg-soft:#242b28;
+  --tb-bg-panel:#2c332f;
+  --tb-text-1:#d5ccb8;
+  --tb-text-2:rgba(213,204,184,.78);
+  --tb-text-3:rgba(213,204,184,.55);
+  --tb-accent:#c9ad5f;
+  --tb-accent-ink:#1c221f;
+  --tb-accent-2:#5e6b4a;
+  --tb-accent-soft:rgba(201,173,95,.15);
+  --tb-line:rgba(213,204,184,.13);
+  --tb-line-strong:rgba(213,204,184,.28);
+  --tb-rank-s:#c9ad5f;--tb-rank-s-ink:#1c221f;
+  --tb-rank-a:#d5ccb8;--tb-rank-a-ink:#1c221f;
+  --tb-shadow:#0e1110;
+  --tb-ghost:#222826;
+}
+
+/* ─── 深 2 · arcade（街角街机）─── */
+[data-theme="arcade"]{
+  --tb-bg:#221a1f;
+  --tb-bg-soft:#2c2328;
+  --tb-bg-panel:#362b30;
+  --tb-text-1:#d8c7bf;
+  --tb-text-2:rgba(216,199,191,.78);
+  --tb-text-3:rgba(216,199,191,.55);
+  --tb-accent:#c46b52;
+  --tb-accent-ink:#221a1f;
+  --tb-accent-2:#7d918a;
+  --tb-accent-soft:rgba(196,107,82,.16);
+  --tb-line:rgba(216,199,191,.13);
+  --tb-line-strong:rgba(216,199,191,.28);
+  --tb-rank-s:#c46b52;--tb-rank-s-ink:#221a1f;
+  --tb-rank-a:#d8c7bf;--tb-rank-a-ink:#221a1f;
+  --tb-shadow:#140d11;
+  --tb-ghost:#2c2328;
+}
+
+/* ─── 深 3 · slate（冷雾板岩）─── */
+[data-theme="slate"]{
+  --tb-bg:#182027;
+  --tb-bg-soft:#1e2830;
+  --tb-bg-panel:#253038;
+  --tb-text-1:#c2c8cc;
+  --tb-text-2:rgba(194,200,204,.78);
+  --tb-text-3:rgba(194,200,204,.55);
+  --tb-accent:#92aeb4;
+  --tb-accent-ink:#182027;
+  --tb-accent-2:#8a6044;
+  --tb-accent-soft:rgba(146,174,180,.16);
+  --tb-line:rgba(194,200,204,.13);
+  --tb-line-strong:rgba(194,200,204,.28);
+  --tb-rank-s:#92aeb4;--tb-rank-s-ink:#182027;
+  --tb-rank-a:#c2c8cc;--tb-rank-a-ink:#182027;
+  --tb-shadow:#0c0f13;
+  --tb-ghost:#1e2830;
+}
+
+/* ─── 浅 4 · ink-wash（墨淡米色）─── */
+[data-theme="ink-wash"]{
+  --tb-bg:#efe8dc;
+  --tb-bg-soft:#e6ddc9;
+  --tb-bg-panel:#f7f2e8;
+  --tb-text-1:#1f2328;
+  --tb-text-2:rgba(31,35,40,.78);
+  --tb-text-3:rgba(31,35,40,.55);
+  --tb-accent:#6f5c2e;
+  --tb-accent-ink:#efe8dc;
+  --tb-accent-2:#3d4a35;
+  --tb-accent-soft:rgba(111,92,46,.12);
+  --tb-line:rgba(31,35,40,.13);
+  --tb-line-strong:rgba(31,35,40,.28);
+  --tb-rank-s:#6f5c2e;--tb-rank-s-ink:#efe8dc;
+  --tb-rank-a:#1f2328;--tb-rank-a-ink:#efe8dc;
+  --tb-shadow:#1f2328;
+  --tb-ghost:#e3d9c3;
+}
+
+/* ─── 浅 5 · archive-paper（档案纸）─── */
+[data-theme="archive-paper"]{
+  --tb-bg:#d8d0c0;
+  --tb-bg-soft:#cec6b2;
+  --tb-bg-panel:#e4dcc8;
+  --tb-text-1:#212529;
+  --tb-text-2:rgba(33,37,41,.78);
+  --tb-text-3:rgba(33,37,41,.55);
+  --tb-accent:#7a4834;
+  --tb-accent-ink:#f2ecde;
+  --tb-accent-2:#3f4635;
+  --tb-accent-soft:rgba(122,72,52,.14);
+  --tb-line:rgba(33,37,41,.14);
+  --tb-line-strong:rgba(33,37,41,.30);
+  --tb-rank-s:#7a4834;--tb-rank-s-ink:#f2ecde;
+  --tb-rank-a:#212529;--tb-rank-a-ink:#e4dcc8;
+  --tb-shadow:#212529;
+  --tb-ghost:#c9c0ae;
+}
+
+/* ─── 浅 6 · film-print（胶片印样）─── */
+[data-theme="film-print"]{
+  --tb-bg:#ece4d4;
+  --tb-bg-soft:#e3dac6;
+  --tb-bg-panel:#f5efe2;
+  --tb-text-1:#1e1e1c;
+  --tb-text-2:rgba(30,30,28,.78);
+  --tb-text-3:rgba(30,30,28,.55);
+  --tb-accent:#b03a1e;
+  --tb-accent-ink:#ece4d4;
+  --tb-accent-2:#3a4a35;
+  --tb-accent-soft:rgba(176,58,30,.12);
+  --tb-line:rgba(30,30,28,.14);
+  --tb-line-strong:rgba(30,30,28,.30);
+  --tb-rank-s:#b03a1e;--tb-rank-s-ink:#ece4d4;
+  --tb-rank-a:#1e1e1c;--tb-rank-a-ink:#ece4d4;
+  --tb-shadow:#1e1e1c;
+  --tb-ghost:#dfcfb8;
+}

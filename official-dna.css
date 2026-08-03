@@ -89,10 +89,7 @@ body.official-dna .section-nav-num{
 .o-skew{transform:skewX(var(--o-skew))}
 .o-skew>.o-skew-inner{transform:skewX(var(--o-skew-back))}
 
-@media(prefers-reduced-motion:reduce){
-  body.official-chrome .topbar nav a{transition:none}
-  body.official-chrome .topbar nav a:hover{transform:none}
-}
+
 
 /* ---------- 17 琴键式邻近缩放（规范 4.7，transform-only，不推邻居） ---------- */
 .zzz-key{
@@ -265,12 +262,4 @@ body.archive-character .character-module-nav.zzz-o-nav .zzz-o-nav-item:focus-vis
   .talent-tab{width:48px;height:48px}
 }
 
-@media(prefers-reduced-motion:reduce){
-  html:not(.zzz-motion-forced) .zzz-key,
-  html:not(.zzz-motion-forced) .zzz-tilt,
-  html:not(.zzz-motion-forced) .talent-tab,
-  html:not(.zzz-motion-forced) body.archive-character .character-module-nav.zzz-o-nav .zzz-o-nav-item{transition:none}
-  html:not(.zzz-motion-forced) .zzz-key{transform:none!important;filter:none!important}
-  html:not(.zzz-motion-forced) .zzz-tilt{transform:none!important}
-  html:not(.zzz-motion-forced) .zzz-tilt::after{opacity:0!important}
-}
+

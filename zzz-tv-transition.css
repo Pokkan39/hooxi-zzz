@@ -57,6 +57,3 @@
 }
 
 /* 减动效：转场整体不出现，直接跳转 */
-@media (prefers-reduced-motion:reduce){
-  .zzz-tv{display:none!important}
-}

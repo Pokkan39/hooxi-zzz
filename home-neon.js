@@ -8,12 +8,11 @@
 
   if(!document.body.classList.contains('home-page'))return;
 
-  const reduceQuery=window.matchMedia('(prefers-reduced-motion: reduce)');
-  const reduce=reduceQuery.matches;
+  const reduce=false;
   const selectors='.hero-copy>*,.section-head,.path-card,.home-agent-card,.home-reel-card,.about-column';
   const reveal=root=>{
     const nodes=(root||document).querySelectorAll(selectors);
-    if(reduce||!('IntersectionObserver' in window)){
+    if(!('IntersectionObserver' in window)){
       nodes.forEach(node=>{node.dataset.neonReveal='';node.classList.add('is-in');});
       return;
     }
@@ -80,7 +79,7 @@
       if(!frame)frame=requestAnimationFrame(render);
     };
     const sync=()=>{
-      const shouldEnable=finePointerQuery.matches&&!reduceQuery.matches;
+      const shouldEnable=finePointerQuery.matches;
       if(shouldEnable===enabled){
         if(!shouldEnable)reset();
         return;
@@ -102,7 +101,6 @@
       if(document.hidden)reset();
     });
     finePointerQuery.addEventListener('change',sync);
-    reduceQuery.addEventListener('change',sync);
     if(track&&'MutationObserver' in window){
       new MutationObserver(reset).observe(track,{attributes:true,attributeFilter:['class'],subtree:true});
     }

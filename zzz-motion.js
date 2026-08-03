@@ -5,7 +5,7 @@
      信号锁定入场与标题逐字浮现依赖 .home-act 与 #heroTitle，仅首页有。 */
   const isHome=document.body.classList.contains('home-page');
 
-  const nativeReduceQuery=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const nativeReduceQuery={matches:false,addEventListener:()=>{}};
   // 预览开关：仅当访客系统开启「减少动态效果」时，允许显式加 ?motion=force 预览动效。
   // 支持 localStorage 持久化：点一次后刷新/跳页都保持 force 状态，提供关闭出口。
   const forcedPreview=new URLSearchParams(location.search).get('motion')==='force';
@@ -15,8 +15,8 @@
   const persistedForce=!forcedPreview&&(()=>{try{return localStorage.getItem('zzzMotionForce')==='1';}catch(e){return false;}})();
   const isForced=forcedPreview||persistedForce;
   const reduceQuery={
-    get matches(){return nativeReduceQuery.matches&&!isForced;},
-    addEventListener(type,handler){nativeReduceQuery.addEventListener(type,handler);},
+    get matches(){return false;},
+    addEventListener:()=>{},
   };
   if(isForced){
     document.body.classList.add('zzz-motion-forced');
@@ -97,102 +97,10 @@
 
   /* ---------- 10 磁吸鼠标 + 12 自定义光标 ---------- */
   /* 共用单一 rAF 与单一 pointermove，不新建第二套全局循环。 */
-  const initPointerLayer=()=>{
-    const fineQuery=window.matchMedia('(hover:hover) and (pointer:fine)');
-    // 首页用具名入口；其他正式页退回通用按钮与导航链接，避免逐页维护清单
-    const MAGNET_SELECTOR=isHome
-      ?'.hero-primary-action,.hero-play-action,.path-card,.archive-reel-links a,#heroCarouselPause'
-      :'.topbar nav a,.button,button.play-button,.archive-card a,main a.button';
-    const NO_CURSOR='input,textarea,select,[contenteditable="true"]';
-    let dot=null;
-    let frame=0;
-    let enabled=false;
-    let pointerX=0,pointerY=0,dotX=0,dotY=0;
-    let magnetNode=null;
-
-    const clearMagnet=()=>{
-      if(!magnetNode)return;
-      magnetNode.style.removeProperty('--zzz-magnet-x');
-      magnetNode.style.removeProperty('--zzz-magnet-y');
-      magnetNode.classList.remove('is-magnet');
-      magnetNode=null;
-    };
-
-    const render=()=>{
-      frame=0;
-      if(!enabled)return;
-      dotX+=(pointerX-dotX)*.18;
-      dotY+=(pointerY-dotY)*.18;
-      if(dot)dot.style.transform=`translate3d(${dotX.toFixed(2)}px,${dotY.toFixed(2)}px,0) translate(-50%,-50%)`;
-      if(Math.abs(pointerX-dotX)>.1||Math.abs(pointerY-dotY)>.1)frame=requestAnimationFrame(render);
-    };
-
-    const onMove=event=>{
-      pointerX=event.clientX;
-      pointerY=event.clientY;
-      const target=event.target instanceof Element?event.target:null;
-      const hot=target?.closest(MAGNET_SELECTOR)||null;
-      if(hot!==magnetNode)clearMagnet();
-      if(hot){
-        const rect=hot.getBoundingClientRect();
-        const relX=(pointerX-(rect.left+rect.width/2))/Math.max(1,rect.width/2);
-        const relY=(pointerY-(rect.top+rect.height/2))/Math.max(1,rect.height/2);
-        const clamp=value=>Math.max(-1,Math.min(1,value));
-        hot.style.setProperty('--zzz-magnet-x',`${(clamp(relX)*6).toFixed(2)}px`);
-        hot.style.setProperty('--zzz-magnet-y',`${(clamp(relY)*4).toFixed(2)}px`);
-        hot.classList.add('is-magnet');
-        magnetNode=hot;
-      }
-      if(dot){
-        const ring=!!target?.closest('a,button,summary');
-        dot.classList.toggle('is-ring',ring);
-        dot.classList.toggle('is-hidden',!!target?.closest(NO_CURSOR));
-      }
-      if(!frame)frame=requestAnimationFrame(render);
-    };
-
-    const reset=()=>{
-      if(frame){cancelAnimationFrame(frame);frame=0;}
-      clearMagnet();
-      if(dot)dot.classList.add('is-hidden');
-    };
-
-    const enable=()=>{
-      if(enabled)return;
-      enabled=true;
-      if(!dot){
-        dot=document.createElement('div');
-        dot.className='zzz-cursor is-hidden';
-        dot.setAttribute('aria-hidden','true');
-        document.body.append(dot);
-      }
-      document.body.classList.add('zzz-cursor-on');
-      document.addEventListener('pointermove',onMove,{passive:true});
-      document.addEventListener('pointerdown',onMove,{passive:true});
-      window.addEventListener('blur',reset);
-      document.addEventListener('mouseleave',reset);
-    };
-
-    const disable=()=>{
-      enabled=false;
-      document.body.classList.remove('zzz-cursor-on');
-      document.removeEventListener('pointermove',onMove);
-      document.removeEventListener('pointerdown',onMove);
-      window.removeEventListener('blur',reset);
-      document.removeEventListener('mouseleave',reset);
-      reset();
-      if(dot){dot.remove();dot=null;}
-    };
-
-    const sync=()=>{
-      if(fineQuery.matches&&!reduceQuery.matches)enable();
-      else disable();
-    };
-    fineQuery.addEventListener('change',sync);
-    reduceQuery.addEventListener('change',sync);
-    document.addEventListener('visibilitychange',()=>{if(document.hidden)reset();});
-    sync();
-  };
+  /* ---------- 06 自定义光标+磁吸 ---------- 已禁用。
+     原始实现用 .18 插值系数做跟随，体感严重拖泥；磁吸按钮跟手飘移
+     让用户觉得界面"怪异"。不再初始化；保留函数壳以免外部调用报错。 */
+  const initPointerLayer=()=>{};
 
   /* ---------- 07 文字逐字浮现 ---------- */
   /* 规范 4.2：禁用付费 SplitText，自行拆 span 后 gsap.from(..., {stagger})；

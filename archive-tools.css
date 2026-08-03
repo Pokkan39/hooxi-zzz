@@ -4,6 +4,28 @@
    角色关联、stories 车道入口。删除引用即可回滚。
    ============================================================ */
 
+/* ---------- Skip Link（仅键盘聚焦时可见） ---------- */
+.archive-skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 9999;
+  padding: 8px 18px;
+  background: var(--bg-1, #1a1a2e);
+  color: var(--paper, #fff);
+  font: 700 13px/1.4 var(--font-mono, monospace);
+  border-radius: 0 0 6px 6px;
+  text-decoration: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: top .2s, opacity .2s;
+}
+.archive-skip-link:focus {
+  top: 0;
+  opacity: 1;
+  pointer-events: auto;
+}
+
 /* ---------- 通用面板外观 ---------- */
 .archive-finder,
 .event-filters,
@@ -79,11 +101,7 @@
   cursor:pointer;
   transition:border-color 160ms ease,background 160ms ease;
 }
-.archive-finder__random:is(:hover,:focus-visible),
-.event-filters button:is(:hover,:focus-visible){
-  border-color:var(--archive-accent,#e0b41c);
-  background:rgba(0,0,0,.7);
-}
+
 
 .archive-finder__results{display:none}
 .archive-finder__results.is-open{
@@ -277,11 +295,6 @@
   .archive-finder__hit small{grid-column:1}
 }
 
-@media (prefers-reduced-motion:reduce){
-  .story-lane-entry__go:is(:hover,:focus-visible){transform:none}
-  .archive-finder__random,.event-filters button,
-  .archive-finder__hit,.char-related__list a{transition:none}
-}
 
 /* 工具面板锚点避让固定顶栏，避免滚动定位时被压住 */
 .archive-finder,
@@ -353,89 +366,10 @@
   /* 竖向立绘按 3:4 预留，避免拉伸 */
   .subpage :is(.video-cover-wrap,.cover-link):has(>img.portrait-image){
     aspect-ratio:3/4;
-  }
-  .subpage :is(.video-cover-wrap,.cover-link)>img.portrait-image{
-    object-fit:contain;
-  }
-  /* 占位框与失败态同样占位，不塌陷 */
-  .subpage .cover-placeholder{
-    display:grid;
-    place-items:center;
-    width:100%;
-    aspect-ratio:16/9;
-    background:rgba(255,255,255,.04);
-    color:rgba(255,255,255,.45);
-    font-size:12px;
-  }
-}
-
-/* 轮播图容器已由 .banner-track 控高，此处不再叠加比例 */
-.page-banner-carousel .banner-slide{aspect-ratio:auto}
-
-/* banner 容器在图片解码前即占位，避免整页下移 */
-.page-banner-carousel{min-height:calc(190px + 24px)}
-.page-banner-carousel .banner-dots{min-height:20px}
-/* 指示点是 button 且无左右翻页按钮可替代，须自行满足 WCAG 2.2 SC 2.5.8。
-   实测原中心距 22px，差 2px 既不达 24x24 也用不上间距例外。这里只补水平
-   外边距把中心距抬到 24px，不动 theme-zzz.css 里的圆点尺寸与配色。 */
-.page-banner-carousel .banner-dot{margin-left:1px;margin-right:1px}
-
-/* 屏幕外记录不参与布局与绘制：既降低首屏成本，也避免逐条注入引发的累计位移。
-   contain-intrinsic-size 给出高度估值，滚动条不会跳。 */
-.subpage .page-timeline-item{
-  content-visibility:auto;
-  contain-intrinsic-size:auto 420px;
-}
-
-
-/* 预留底部安全区，避免固定播放器压住页尾内容 */
-
-/* 记录卡片在窄屏改自适应列：原为 42px + 368px 固定宽，
-   在 390px 视口下超出容器 291px 造成横向溢出。 */
-@media(max-width:640px){
-  .subpage .page-timeline-item{
-    grid-template-columns:32px minmax(0,1fr)!important;
-    gap:8px!important;
-  }
-  .subpage .archive-group-body{grid-template-columns:minmax(0,1fr)!important}
-  .subpage .page-card{min-width:0!important;max-width:100%!important}
-  .subpage .wiki-events-shell{grid-template-columns:minmax(0,1fr)!important}
-}
-
-/* ============================================================
-   子页 skip link：默认藏在视口外，聚焦时滑入
-   侧栏有 15+ 可聚焦项，无此入口键盘需 Tab 十余次才能进正文。
-   ============================================================ */
-.archive-skip-link{
-  position:fixed;
-  top:8px;
-  left:8px;
-  z-index:200;
-  display:inline-flex;
-  align-items:center;
-  min-height:44px;
-  padding:10px 16px;
-  transform:translateY(-160%);
-  border:2px solid #111;
-  background:var(--archive-accent,#e0b41c);
-  color:#111;
-  font:800 13px/1.2 var(--font-body,sans-serif);
-  text-decoration:none;
-  transition:transform 160ms ease;
-}
-body .archive-skip-link:focus,
-body .archive-skip-link:focus-visible,
-body .archive-skip-link:active{
-  transform:translateY(0)!important;
-  outline:3px solid #fff;
-  outline-offset:2px;
 }
 /* main 作为焦点目标时不显示默认轮廓，避免整块高亮 */
 .subpage main:focus{outline:none}
 .subpage main:focus-visible{outline:2px solid var(--archive-accent,#e0b41c);outline-offset:-2px}
-@media (prefers-reduced-motion:reduce){
-  .archive-skip-link{transition:none}
-}
 
 /* 手机端选中角色的立绘完全不可见：舞台 min-height 为 0，被压到 79px，
    而其内容需 610px，溢出后被名录面板整块覆盖（9 个采样点全被遮挡）。
