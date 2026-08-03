@@ -18,7 +18,7 @@
     }
     var stored = localStorage.getItem(LS_KEY);
     if (stored && THEMES.indexOf(stored) >= 0) return stored;
-    return "ink-wash";
+    return "warehouse";
   }
 
   function apply(t) {
