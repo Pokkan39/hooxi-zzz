@@ -61,16 +61,14 @@ body.official-chrome .topbar nav a:focus-visible{
 }
 body.official-chrome main{padding-top:var(--o-topbar-h)}
 
-/* ---------- 楼层导航三行（官方 .section-nav：中文 + EN + 两位编号） ---------- */
+/* ---------- 楼层导航两行（官方 .section-nav：EN + 两位编号） ----------
+   原为三行（中文 + EN + 编号），中文那行由 zzz-official.js 复制 h2 文字生成。
+   因本站每个楼层的 h2 本身即以 64px 显示同一句中文，该行为纯重复，已移除注入，
+   对应的 .section-nav-label 样式随之删除。 */
 body.official-dna .section-nav{
   display:grid;
   gap:2px;
   justify-items:start;
-}
-body.official-dna .section-nav-label{
-  font-family:var(--o-font-hm);
-  font-weight:700;
-  letter-spacing:.08em;
 }
 body.official-dna .section-nav-en{
   text-transform:uppercase;

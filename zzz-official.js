@@ -1,12 +1,16 @@
 (function(){
   'use strict';
-  /* 官方镜像复刻交互层：楼层导航三行编号补全 + 角色页斜切缩略图条 + 琴键邻近缩放。
+  /* 官方镜像复刻交互层：楼层导航两位编号补全 + 角色页斜切缩略图条 + 琴键邻近缩放。
      遵守 zzz-motion.js 同一套减少动效判定；不接管滚动、不新建轮询。 */
   const reduceMotion=()=>false;
   const isHome=document.body.classList.contains('home-page');
   const isCharacter=document.body.classList.contains('archive-character');
 
-  /* ---------- 首页：楼层导航补三行结构 + 两位编号 ---------- */
+  /* ---------- 首页：楼层导航补两位编号 ----------
+     原先还会把 h2 文字复制成一个小号 .section-nav-label 追加到导航块，
+     意图是复刻官方站的「中文 + EN + 编号」三行。但本站每个楼层的 h2
+     本身就以 64px 显示同一句中文，小标签成为纯重复（实测 4/4 楼层文字
+     完全相同且 h2 全部可见），故移除标签注入，只保留 EN + 编号两行。 */
   const pad=n=>String(n).padStart(2,'0');
   const FLOOR_NUMS={marquee:'01',finder:'02',agents:'03',reels:'04',sources:'05'};
 
@@ -15,8 +19,6 @@
     document.querySelectorAll('.home-act').forEach(act=>{
       const nav=act.querySelector('.section-nav');
       if(!nav)return;
-      const head=act.querySelector('h2,h1');
-      const label=(head?.textContent||'').trim();
       const num=FLOOR_NUMS[act.dataset.homeAct]||'';
       if(num&&!nav.querySelector('.section-nav-num')){
         const el=document.createElement('span');
@@ -24,12 +26,6 @@
         el.textContent=num;
         el.setAttribute('aria-hidden','true');
         nav.prepend(el);
-      }
-      if(label&&!nav.querySelector('.section-nav-label')){
-        const el=document.createElement('span');
-        el.className='section-nav-label';
-        el.textContent=label;
-        nav.append(el);
       }
     });
   };
