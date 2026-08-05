@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Hero Cinematic Demo — 21:9 拆层视差</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:#0a0a0f;font-family:system-ui,sans-serif}
+
+.hero-cinematic{
+  position:relative;
+  width:100%;height:100vh;
+  overflow:hidden;
+  /* 21:9 aspect enforced via object-fit on images */
+}
+
+/* 所有层共享基础 */
+.hero-cinematic__layer{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  will-change:transform;
+}
+.hero-cinematic__layer img{
+  width:100%;height:100%;
+  object-fit:cover;
+  object-position:center;
+}
+
+/* L0 远景：轻微放大+模糊，制造景深 */
+.layer--bg{z-index:0}
+.layer--bg img{
+  transform:scale(1.08);
+  filter:blur(2.5px) brightness(.7);
+}
+
+/* L1 中景：角色区，clip中央区域 */
+.layer--mid{z-index:1}
+.layer--mid img{
+  clip-path:ellipse(38% 48% at 50% 50%);
+  transform:scale(1.02);
+}
+
+/* L2 前景：边缘碎片，反转clip（只留边缘） */
+.layer--fg{z-index:2}
+.layer--fg img{
+  clip-path:polygon(0 0,30% 0,18% 35%,0 50%,0 100%,25% 100%,35% 70%,100% 100%,100% 72%,78% 55%,100% 30%,100% 0,72% 0,65% 25%,45% 8%,30% 0);
+  transform:scale(1.03);
+  filter:brightness(1.1);
+}
+
+/* L3 光效层：纯CSS */
+/* L3 光效层 */
+.layer--fx{z-index:3}
+.fx-flares{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(2px 2px at 22% 18%,rgba(255,255,255,.9),transparent 4px),
+    radial-gradient(3px 3px at 65% 28%,rgba(180,220,255,.8),transparent 6px),
+    radial-gradient(2px 2px at 78% 62%,rgba(255,255,255,.7),transparent 4px),
+    radial-gradient(4px 4px at 35% 72%,rgba(200,230,255,.6),transparent 8px),
+    radial-gradient(2px 2px at 50% 45%,rgba(255,255,255,.5),transparent 3px),
+    radial-gradient(3px 3px at 88% 35%,rgba(180,200,255,.7),transparent 5px),
+    radial-gradient(2px 2px at 12% 68%,rgba(255,255,255,.6),transparent 4px);
+  animation:fx-pulse 4s ease-in-out infinite alternate;
+}
+@keyframes fx-pulse{
+  0%{opacity:.6;filter:blur(0px)}
+  100%{opacity:1;filter:blur(.5px)}
+}
+
+/* 暗角 vignette */
+.hero-cinematic__vignette{
+  position:absolute;inset:0;z-index:4;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 70% at 50% 50%,transparent 40%,rgba(5,5,12,.7) 100%),
+    linear-gradient(to top,rgba(5,5,12,.85) 0%,transparent 35%),
+    linear-gradient(to right,rgba(5,5,12,.6) 0%,transparent 25%);
+}
+
+/* 文字覆叠 */
+.hero-cinematic__copy{
+  position:absolute;z-index:5;
+  left:clamp(32px,5vw,80px);
+  bottom:clamp(48px,8vh,120px);
+  color:#fff;
+  will-change:transform;
+}
+.hero-cinematic__copy .eyebrow{
+  font:700 11px/1.4 monospace;
+  letter-spacing:.14em;
+  color:rgba(216,250,0,.9);
+  margin-bottom:12px;
+}
+.hero-cinematic__copy h1{
+  font:900 clamp(36px,5vw,72px)/1.1 system-ui,sans-serif;
+  letter-spacing:-.02em;
+  text-shadow:0 2px 20px rgba(0,0,0,.6);
+}
+.hero-cinematic__copy .sub{
+  margin-top:8px;
+  font:300 clamp(14px,1.6vw,20px)/1.4 system-ui,sans-serif;
+  color:rgba(255,255,255,.6);
+  letter-spacing:.06em;
+}
+
+/* 扫描线 */
+.hero-cinematic__scanlines{
+  position:absolute;inset:0;z-index:6;
+  pointer-events:none;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent 0 2px,
+    rgba(0,0,0,.04) 2px 4px
+  );
+  mix-blend-mode:multiply;
+}
+</style>
+</head>
+<body>
+<div class="hero-cinematic" id="heroScene">
+  <!-- L0 远景 -->
+  <div class="hero-cinematic__layer layer--bg" data-parallax="0.08">
+    <img src="assets/hero/preview-21-9.jpg" alt="" draggable="false"/>
+  </div>
+  <!-- L1 中景（角色） -->
+  <div class="hero-cinematic__layer layer--mid" data-parallax="0.25">
+    <img src="assets/hero/preview-21-9.jpg" alt="" draggable="false"/>
+  </div>
+  <!-- L2 前景（花瓣/碎片） -->
+  <div class="hero-cinematic__layer layer--fg" data-parallax="0.55">
+    <img src="assets/hero/preview-21-9.jpg" alt="" draggable="false"/>
+  </div>
+  <!-- L3 光效 -->
+  <div class="hero-cinematic__layer layer--fx" data-parallax="0.7">
+    <div class="fx-flares"></div>
+  </div>
+  <!-- 暗角 vignette -->
+  <div class="hero-cinematic__vignette"></div>
+  <!-- 文字覆叠 -->
+  <div class="hero-cinematic__copy" data-parallax="-0.18">
+    <p class="eyebrow">VERSION PREVIEW // 版本前瞻活动</p>
+    <h1>某个梦游者的自白</h1>
+    <p class="sub">A Sleepwalker's Confession</p>
+  </div>
+  <!-- 扫描线 -->
+  <div class="hero-cinematic__scanlines"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script>
+(function(){
+  const scene = document.getElementById('heroScene');
+  if (!scene || !window.gsap) return;
+
+  const PX_X = 60;  // max horizontal px shift
+  const PX_Y = 24;  // max vertical px shift
+
+  // Collect all parallax layers
+  const layers = scene.querySelectorAll('[data-parallax]');
+  const movers = Array.from(layers).map(el => {
+    const rate = parseFloat(el.dataset.parallax);
+    return {
+      el,
+      rate,
+      qx: gsap.quickTo(el, 'x', { duration: 0.6, ease: 'power2.out', overwrite: 'auto' }),
+      qy: gsap.quickTo(el, 'y', { duration: 0.6, ease: 'power2.out', overwrite: 'auto' })
+    };
+  });
+
+  function apply(nx, ny) {
+    movers.forEach(m => {
+      m.qx(nx * PX_X * m.rate);
+      m.qy(ny * PX_Y * m.rate);
+    });
+  }
+
+  function home() {
+    movers.forEach(m => { m.qx(0); m.qy(0); });
+  }
+
+  scene.addEventListener('pointermove', e => {
+    const rect = scene.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+    apply(
+      Math.max(-1, Math.min(1, nx)),
+      Math.max(-1, Math.min(1, ny))
+    );
+  }, { passive: true });
+
+  scene.addEventListener('pointerleave', home, { passive: true });
+
+  // Entry animation: stagger layers in
+  gsap.from('.hero-cinematic__layer', {
+    opacity: 0,
+    scale: 1.06,
+    duration: 1.2,
+    stagger: 0.15,
+    ease: 'power3.out'
+  });
+  gsap.from('.hero-cinematic__copy', {
+    opacity: 0,
+    y: 30,
+    duration: 0.8,
+    delay: 0.6,
+    ease: 'power2.out'
+  });
+})();
+</script>
+</body>
+</html>

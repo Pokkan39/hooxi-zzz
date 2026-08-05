@@ -18,63 +18,67 @@
      旧名仅作为过渡兼容，待全量迁移后移除。
    =========================================================== */
 
-/* ---- 默认（废仓）+ 兼容旧 tokens.css 命名 ---- */
+/* ---- 默认（ZZZ DNA 暗底）+ 兼容旧 tokens.css 命名 ---- */
 :root{
   color-scheme: dark;
 
-  /* — 背景 — */
-  --bg:        #1c221f;
-  --bg-soft:   #242b28;
-  --bg-panel:  #2c332f;
-  --bg-elev:   #2c332f;
+  /* — 背景（近黑 + 冷紫调） — */
+  --bg:        #0a0a0f;
+  --bg-soft:   #12121a;
+  --bg-panel:  #181820;
+  --bg-elev:   #1e1e28;
 
-  /* — 文字 — */
-  --text-1:    #d5ccb8;
-  --text-2:    rgba(213,204,184,0.78);
-  --text-3:    rgba(213,204,184,0.55);
-  --text-4:    rgba(213,204,184,0.34);
+  /* — 文字（近白不纯白） — */
+  --text-1:    #f0f0f5;
+  --text-2:    rgba(240,240,245,0.72);
+  --text-3:    rgba(240,240,245,0.48);
+  --text-4:    rgba(240,240,245,0.28);
 
-  /* — 强调色 — */
-  --accent:        #c9ad5f;
-  --accent-ink:    #1c221f;
-  --accent-2:      #5e6b4a;
-  --accent-soft:   rgba(201,173,95,0.15);
-  --accent-hot:    #d9bf72;
-  --accent-dim:    rgba(201,173,95,0.15);
-  --accent-line:   rgba(201,173,95,0.42);
+  /* — 强调色（ZZZ 荧光黄绿） — */
+  --accent:        #d8fa00;
+  --accent-ink:    #0a0a0f;
+  --accent-2:      #00e5ff;
+  --accent-soft:   rgba(216,250,0,0.12);
+  --accent-hot:    #ffe600;
+  --accent-dim:    rgba(216,250,0,0.18);
+  --accent-line:   rgba(216,250,0,0.38);
 
-  /* — 次要强调（青）— */
-  --signal:      #5e6b4a;
-  --signal-dim:  rgba(94,107,74,0.16);
-  --signal-line: rgba(94,107,74,0.42);
+  /* — 信号色（霓虹青） — */
+  --signal:      #00e5ff;
+  --signal-dim:  rgba(0,229,255,0.14);
+  --signal-line: rgba(0,229,255,0.36);
 
-  /* — 危险/暖 — */
-  --coral:  #a67452;
+  /* — 危险/暖（火元素红） — */
+  --coral:  #ff4d3a;
   --teal:   var(--signal);
 
-  /* — 分隔线 — */
-  --line:         rgba(213,204,184,0.13);
-  --line-strong:  rgba(213,204,184,0.28);
+  /* — 以太紫 — */
+  --ether:       #a855f7;
+  --ether-dim:   rgba(168,85,247,0.14);
+
+  /* — 分隔线（带品牌色倾向） — */
+  --line:         rgba(216,250,0,0.10);
+  --line-strong:  rgba(216,250,0,0.24);
 
   /* — 阴影 — */
-  --shadow:       0 18px 40px rgba(14,17,16,0.42);
-  --shadow-hard:  4px 4px 0 rgba(14,17,16,0.72);
+  --shadow:       0 18px 40px rgba(0,0,0,0.55);
+  --shadow-hard:  4px 4px 0 rgba(216,250,0,0.22);
 
   /* — 稀有度 S / A — */
-  --rank-s:       #c9ad5f;
-  --rank-s-ink:   #1c221f;
-  --rank-a:       #d5ccb8;
-  --rank-a-ink:   #1c221f;
+  --rank-s:       #ffe600;
+  --rank-s-ink:   #0a0a0f;
+  --rank-a:       #a855f7;
+  --rank-a-ink:   #0a0a0f;
 
   /* — 幽灵底色 — */
-  --ghost:     #222826;
+  --ghost:     #14141c;
 
   /* —— 旧 tokens.css 别名（过渡兼容）—— */
   --bg-0:       var(--bg);
   --bg-1:       var(--bg-soft);
   --bg-2:       var(--bg-panel);
   --bg-3:       var(--bg-elev);
-  --panel:      rgba(44,51,47,0.94);
+  --panel:      rgba(24,24,32,0.94);
   --panel-solid:var(--bg-elev);
   --text:       var(--text-1);
   --ink:        var(--bg);
@@ -93,7 +97,7 @@
   --text-dim:   var(--text-2);
   --text-faint: var(--text-3);
   --line-soft:  var(--line);
-  --glow-yellow:0 0 22px rgba(201,173,95,0.18);
+  --glow-yellow:0 0 22px rgba(216,250,0,0.22);
   --hooxi-confirm: var(--accent);
 }
 
@@ -326,65 +330,65 @@ body[data-theme="paper"]{
 }
 
 /* ═══════════════════════════════════════════════════
-   ink-wash · 墨淡米色 — 六大色彩平衡浅底主题
-   60% 暖米底 / 30% 墨灰文字 / 10% ZZZ游戏色点睛
+   ink-wash · 冷灰白 — ZZZ 科技感浅底主题
+   冷灰白底 / 深灰文字 / 荧光黄绿 darken 版点睛
    ═══════════════════════════════════════════════════ */
 body[data-theme="ink-wash"] {
   color-scheme: light;
 
-  /* — 背景层 (60% 暖米) — */
-  --bg:         #efe8dc;
-  --bg-soft:    #e6ddc9;
-  --bg-panel:   #f7f2e8;
-  --bg-elev:    #f7f2e8;
+  /* — 背景层（冷灰白） — */
+  --bg:         #f2f0f5;
+  --bg-soft:    #e8e6ee;
+  --bg-panel:   #fafafc;
+  --bg-elev:    #ffffff;
 
-  /* — 文字层 (30% 墨灰) — */
-  --text-1:     #1f2328;
-  --text-2:     rgba(31,35,40,0.78);
-  --text-3:     rgba(31,35,40,0.55);
-  --text-4:     rgba(31,35,40,0.34);
+  /* — 文字层 — */
+  --text-1:     #1a1a2e;
+  --text-2:     rgba(26,26,46,0.74);
+  --text-3:     rgba(26,26,46,0.50);
+  --text-4:     rgba(26,26,46,0.30);
 
-  /* — 强调色 (10% ZZZ游戏色) — */
-  --accent:     #8b6914;
-  --accent-ink: #efe8dc;
-  --accent-2:   #2d7a8a;
-  --accent-soft:rgba(139,105,20,0.12);
+  /* — 强调色（荧光黄绿 darken 版） — */
+  --accent:     #5c7a00;
+  --accent-ink: #f2f0f5;
+  --accent-2:   #0088a3;
+  --accent-soft:rgba(92,122,0,0.10);
   --accent-hot: #d8fa00;
-  --accent-dim: rgba(139,105,20,0.38);
-  --accent-line:rgba(139,105,20,0.22);
+  --accent-dim: rgba(92,122,0,0.14);
+  --accent-line:rgba(92,122,0,0.28);
 
-  /* — 信号色（冷暖平衡：深青） — */
-  --signal:     #2d7a8a;
-  --signal-dim: rgba(45,122,138,0.32);
-  --signal-line:rgba(45,122,138,0.18);
+  /* — 信号色 — */
+  --signal:     #0088a3;
+  --signal-dim: rgba(0,136,163,0.12);
+  --signal-line:rgba(0,136,163,0.24);
 
-  /* — 危险/暖色 — */
-  --coral:      #a33b20;
-  --teal:       #2d7a8a;
+  /* — 危险 — */
+  --coral:      #cc2e1a;
+  --teal:       #0088a3;
 
   /* — 分隔线 — */
-  --line:       rgba(31,35,40,0.13);
-  --line-strong:rgba(31,35,40,0.28);
+  --line:       rgba(26,26,46,0.10);
+  --line-strong:rgba(26,26,46,0.22);
 
   /* — 阴影 — */
-  --shadow:     0 18px 40px rgba(31,35,40,0.12);
-  --shadow-hard:4px 4px 0 rgba(31,35,40,0.18);
+  --shadow:     0 18px 40px rgba(26,26,46,0.10);
+  --shadow-hard:4px 4px 0 rgba(92,122,0,0.18);
 
   /* — 稀有度 — */
-  --rank-s:     #8b6914;
-  --rank-s-ink: #efe8dc;
-  --rank-a:     #1f2328;
-  --rank-a-ink: #efe8dc;
+  --rank-s:     #5c7a00;
+  --rank-s-ink: #f2f0f5;
+  --rank-a:     #1a1a2e;
+  --rank-a-ink: #f2f0f5;
 
   /* — 幽灵底色 — */
-  --ghost:      #e3d9c3;
+  --ghost:      #e4e2ea;
 
   /* —— 旧 tokens.css 别名 —— */
   --bg-0:       var(--bg);
   --bg-1:       var(--bg-soft);
   --bg-2:       var(--bg-panel);
   --bg-3:       var(--bg-elev);
-  --panel:      rgba(247,242,232,0.94);
+  --panel:      rgba(250,250,252,0.94);
   --panel-solid:var(--bg-elev);
   --text:       var(--text-1);
   --ink:        var(--bg);
@@ -425,17 +429,4 @@ body[data-theme="ink-wash"] {
 }
 
 /* — 浅色主题：角色页深度覆盖（tokens.css 在 .character-screen 上有直接赋值）— */
-body[data-theme="paper"].archive-character .character-screen,
-body[data-theme="paper"].archive-character,
-body[data-theme="ink-wash"].archive-character .character-screen,
-body[data-theme="ink-wash"].archive-character {
-  --character-page-bg:  var(--bg);
-  --character-accent:   var(--accent);
-  --character-ambient:  rgba(var(--character-accent-rgb) / 0.16);
-  --character-on-accent:var(--bg-panel);
-  --character-surface:  var(--bg-soft);
-  --character-surface-strong:var(--bg-panel);
-  --character-text:     var(--text-1);
-  --character-text-muted:var(--text-2);
-  --character-line:     var(--line);
-}
+/* 角色页是独立视觉体系，不受浅底主题覆盖；颜色由 archive-tools.js 动态注入 */

@@ -1,0 +1,262 @@
+/* 整页缝合层样板 v2 —— 独立预览，不参与正式站构建
+ *
+ * v1 失败复盘：33px 小字均匀平铺 370 次，每个词完整可读 → 读成墙纸，无尺度落差、无深度、无动效。
+ * v2 三条修正：
+ *   1 尺度落差 —— 超大字被视口裁切，只露笔画，读成纹理而非词；配少量中号字建立层级。
+ *   2 深度分层 —— 三层不同尺度/明度/视差速率，产生纵深而非平面贴图。
+ *   3 动效绑定任务 —— 入场错开揭示（L3）+ 滚动视差表达纵深。无循环漂移、无闪烁、无扫光（design.md 第 6 节禁止项）。
+ *
+ * token 全部引用 tokens.css；斜切引用 --zzz-skew（第 14 节：全站统一）；缓动引用 --ease-out（第 6 节）。
+ */
+
+.sample-body{
+  margin:0;
+  background:var(--bg-0);
+  color:var(--text);
+  font-family:var(--font-body);
+  min-height:100vh;
+  position:relative;
+  overflow-x:hidden;
+}
+
+/* ── 缝合层容器 ───────────────────────────────────────────
+   单一固定层跨全部版块连续。滚动时底层不动、内容动，这是"页面之间不像各做各的"的结构性解法。 */
+.stitch{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  pointer-events:none;
+  z-index:0;
+  /* 纵向渐隐：顶部实、底部虚。用遮罩而非 PNG 内嵌，可随 token 调 */
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.55) 46%,rgba(0,0,0,.16) 74%,transparent 94%);
+          mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.55) 46%,rgba(0,0,0,.16) 74%,transparent 94%);
+}
+
+/* ── 字层通用 ─────────────────────────────────────────────
+   每层一个词，超大、被视口裁切。--depth 由各层指定，驱动视差位移量。 */
+.stitch__word{
+  position:absolute;
+  font-family:var(--font-display);
+  font-weight:700;
+  line-height:.74;
+  letter-spacing:-.03em;
+  white-space:nowrap;
+  user-select:none;
+  transform:rotate(var(--zzz-skew)) translate3d(0,calc(var(--site-progress,0) * var(--depth,0) * 1px),0);
+  will-change:transform;
+}
+
+/* 远层 —— 最大、最暗、视差最慢。被裁切后只剩笔画，是纹理的主体 */
+.stitch__word--far{
+  --depth:-46;
+  top:-6vh;
+  left:-14vw;
+  font-size:clamp(130px,19vw,280px);
+  color:rgba(232,236,241,.058);
+}
+
+/* 中层 —— 琥珀色，唯一带色的一层。用量克制（第 4 节单强调色纪律） */
+.stitch__word--mid{
+  --depth:-92;
+  top:38vh;
+  right:-22vw;
+  font-size:clamp(92px,13vw,190px);
+  color:rgba(224,180,28,.062);
+}
+
+/* 近层 —— 最小、最亮、视差最快。建立尺度落差的下限 */
+.stitch__word--near{
+  --depth:-150;
+  bottom:-4vh;
+  left:6vw;
+  font-size:clamp(58px,8vw,116px);
+  color:rgba(232,236,241,.085);
+}
+
+/* ── 细线层 ───────────────────────────────────────────────
+   两条与斜切同角度的细线，把三层字在构图上串起来。
+   没有它，三个词读成三个孤立元素而不是一张底。 */
+.stitch__rule{
+  position:absolute;
+  left:-20vw;
+  width:150vw;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--line-strong) 22%,var(--line-strong) 74%,transparent);
+  opacity:.5;
+  transform:rotate(var(--zzz-skew)) translate3d(0,calc(var(--site-progress,0) * var(--depth,0) * 1px),0);
+}
+.stitch__rule--a{--depth:-64;top:30vh;}
+.stitch__rule--b{--depth:-118;top:72vh;}
+
+/* ── 入场揭示（L3 叙事过场 600–1200ms）──────────────────
+   页面就绪后各层错开进入。一次性，不循环。
+
+   这里必须用长写法而不是 transition 简写。简写会把 transform 一起纳入过渡，
+   下面的 transition-delay 就会连视差位移一起延迟（实测 near 层要等 480ms 才开始跟随滚动），
+   底层滞后于内容，纵深读成拖影。限定 transition-property:opacity 后，
+   视差 transform 无过渡、直接跟随滚动，错开只作用于淡入。 */
+.stitch__word,
+.stitch__rule{
+  opacity:0;
+  transition-property:opacity;
+  transition-duration:900ms;
+  transition-timing-function:var(--ease-out);
+}
+.stitch.is-revealed .stitch__word{opacity:1;}
+/* 细线的最终态不是全不透明。入场规则不能假定所有层目标都是 1，
+   否则会覆盖掉细线自己的设计明度（上一版实测被拉到 1，线过硬）。 */
+.stitch.is-revealed .stitch__rule{opacity:.62;}
+.stitch.is-revealed .stitch__word--far{transition-delay:0ms;}
+.stitch.is-revealed .stitch__rule--a{transition-delay:140ms;}
+.stitch.is-revealed .stitch__word--mid{transition-delay:260ms;}
+.stitch.is-revealed .stitch__rule--b{transition-delay:380ms;}
+.stitch.is-revealed .stitch__word--near{transition-delay:480ms;}
+
+/* 关掉缝合层用于对照 */
+.no-stitch .stitch{display:none;}
+
+/* ── 降级（design.md 第 6 节 + 第 11 节）──────────────────
+   L3 直接抵达结果、无视差、无位移。内容可读性不依赖动画完成。 */
+@media (prefers-reduced-motion:reduce){
+  .stitch__word,
+  .stitch__rule{
+    opacity:1;
+    transition:none;
+    transform:rotate(var(--zzz-skew));
+  }
+  .stitch__word--far{transition:none;}
+
+  /* 动效预览逃生舱 —— 仅样板页存在，正式站不得引入。
+     本机系统级关闭了动画（ClientAreaAnimation=0），Chrome 据此上报 reduce，
+     动效会被上面的降级块整个剥掉，导致无法目视评判动效设计本身。
+     该覆盖只在用户显式点击预览开关后生效，默认态仍然遵守系统设置。 */
+  body.force-motion .stitch__word,
+  body.force-motion .stitch__rule{
+    /* 只让 opacity 参与过渡；transform 直接跟随滚动，不设过渡也不受错开延迟影响 */
+    transition-property:opacity;
+    transition-duration:900ms;
+    transition-timing-function:var(--ease-out);
+    transform:rotate(var(--zzz-skew)) translate3d(0,calc(var(--site-progress,0) * var(--depth,0) * 1px),0);
+  }
+  body.force-motion .stitch:not(.is-revealed) .stitch__word,
+  body.force-motion .stitch:not(.is-revealed) .stitch__rule{opacity:0;}
+}
+
+/* ── 以下为样板演示内容，仅用于展示缝合层跨版块效果 ────── */
+
+.sample-bar{
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  gap:var(--s-4);
+  padding:var(--s-3) var(--s-5);
+  background:rgba(11,14,19,.86);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+  font-size:13px;
+}
+.sample-bar__title{font-family:var(--font-display);font-weight:700;letter-spacing:.06em;}
+.sample-bar__hint{color:var(--text-3);flex:1;}
+
+.toggle{
+  font:inherit;
+  color:var(--bg-0);
+  background:var(--amber);
+  border:0;
+  padding:7px 16px;
+  cursor:pointer;
+  clip-path:var(--clip-button);
+  transition:background var(--motion-fast) var(--ease-out);
+}
+.toggle:hover{background:var(--amber-hot);}
+.toggle:focus-visible{outline:2px solid var(--color-focus);outline-offset:2px;}
+
+.sample-main{
+  position:relative;
+  z-index:1;
+  max-width:var(--max);
+  margin:0 auto;
+  padding:0 var(--s-5);
+}
+
+.hero{padding:26vh 0 18vh;}
+.hero__kicker{
+  font-family:var(--font-mono);
+  font-size:12px;
+  letter-spacing:.22em;
+  color:var(--amber);
+  margin:0 0 var(--s-4);
+}
+.hero__title{
+  font-family:var(--font-cn-display);
+  font-size:clamp(38px,5.6vw,78px);
+  line-height:1.04;
+  margin:0 0 var(--s-5);
+  max-width:15em;
+}
+.hero__lede{
+  color:var(--text-2);
+  font-size:17px;
+  line-height:1.75;
+  max-width:38em;
+  margin:0;
+}
+
+.sect{padding:14vh 0;border-top:1px solid var(--line);}
+.sect__kicker{
+  font-family:var(--font-mono);
+  font-size:12px;
+  letter-spacing:.22em;
+  color:var(--text-3);
+  margin:0 0 var(--s-3);
+}
+.sect__title{
+  font-family:var(--font-cn-display);
+  font-size:clamp(24px,3vw,38px);
+  margin:0 0 var(--s-5);
+}
+.sect__body{color:var(--text-2);line-height:1.8;max-width:36em;margin:0 0 var(--s-6);}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  gap:var(--s-4);
+}
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  padding:var(--s-5);
+  clip-path:var(--clip-card);
+  transition:border-color var(--motion-fast) var(--ease-out),transform var(--motion-fast) var(--ease-out);
+}
+.card:hover{border-color:var(--amber-line);transform:translateY(-2px);}
+.card__n{
+  font-family:var(--font-display);
+  font-size:var(--zzz-num-md);
+  line-height:1;
+  color:var(--amber);
+  opacity:.5;
+}
+.card__t{font-weight:600;margin:var(--s-3) 0 var(--s-2);}
+.card__d{color:var(--text-3);font-size:14px;line-height:1.6;margin:0;}
+
+.sample-foot{
+  position:relative;
+  z-index:1;
+  max-width:var(--max);
+  margin:0 auto;
+  padding:var(--s-7) var(--s-5) var(--s-8);
+  border-top:1px solid var(--line);
+  color:var(--text-3);
+  font-size:13px;
+  line-height:1.7;
+}
+.sample-foot p{margin:0 0 var(--s-3);}
+.sample-foot code{font-family:var(--font-mono);color:var(--text-2);}
+
+@media (max-width:720px){
+  .sample-bar__hint{display:none;}
+  .hero{padding:22vh 0 14vh;}
+}

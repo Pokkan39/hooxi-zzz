@@ -67,3 +67,7 @@ html:has(body.home-page){scroll-padding-bottom:0}
 body.home-page{padding-bottom:0}
 body.home-page .topbar{position:static}
 body.home-page #musicPlayer.cassette-dock{position:static;inset:auto;transform:none}
+
+/* — ink-wash 浅色覆盖（非首页硬编码深色）— */
+body[data-theme="ink-wash"] .home-agent-avatar{background:var(--bg-soft)!important}
+body[data-theme="ink-wash"] .play-experiment-banner{background:var(--bg-panel)!important;color:var(--accent)!important;border-bottom-color:var(--accent)!important}

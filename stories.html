@@ -16,18 +16,421 @@
   <link rel="stylesheet" href="theme-tokens.css?v=ink-wash-1"/>
   <link rel="stylesheet" href="multi-page.css?v=cold-gray-2"/>
   <link rel="stylesheet" href="motion.css?v=signal-ui-r3"/>
-  <link rel="stylesheet" href="theme-zzz.css?v=agent-workbench-6"/>
+  <link rel="stylesheet" href="theme-zzz.css?v=phase1-3"/>
   <link rel="stylesheet" href="site-sidebar.css?v=rail-1"/>
   <link rel="stylesheet" href="live-hud.css?v=hud-1"/>
-  <link rel="stylesheet" href="zzz-motion.css?v=zzz-motion-r6"/>
+  <link rel="stylesheet" href="zzz-motion.css?v=phase4-1"/>
   <link rel="stylesheet" href="zzz-tv-transition.css?v=zzz-tv-r1"/>
-  <link rel="stylesheet" href="game-feel.css?v=gf-1"/>
-  <meta name="theme-color" content="#0e1014"/>
+  <link rel="stylesheet" href="game-feel.css?v=chr-persist-2"/>
+  <meta name="theme-color" content="#08080c"/>
   <meta name="author" content="Hooxi"/>
   <meta name="robots" content="index,follow"/>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
+  <style>
+/* ══ HOOXI Cyberpunk Override — stories.html ══ */
+
+/* --- Base & Body --- */
+.archive-stories{
+  background:#08080c !important;
+}
+.archive-stories main{
+  background:transparent;
+}
+body.archive-stories{
+  --bg-0:#08080c;
+  --bg-1:#0c1018;
+  --bg-2:#0f1420;
+  --bg-soft:#0e1219;
+  --bg-panel:rgba(18,22,30,.7);
+  --text-1:#f0f2f4;
+  --text-2:rgba(240,245,250,.6);
+  --text-3:rgba(240,245,250,.38);
+  --text:#f0f2f4;
+  --accent:#d8fa00;
+  --accent-ink:#08080c;
+  --accent-2:#00e5ff;
+  --accent-hot:#ffe600;
+  --amber:#d8fa00;
+  --amber-hot:#ffe600;
+  --amber-line:rgba(216,250,0,.38);
+  --signal:#00e5ff;
+  --signal-dim:rgba(0,229,255,.12);
+  --line:rgba(255,255,255,.06);
+  --line-strong:rgba(255,255,255,.1);
+  --hooxi-confirm:#d8fa00;
+  --selected-agent-theme:#d8fa00;
+  --character-theme-rgb:216 250 0;
+  transition:--selected-agent-theme .5s ease;
+}
+
+/* --- Topbar --- */
+.archive-stories .topbar{
+  background:rgba(8,8,12,.92) !important;
+  border-bottom:1px solid rgb(var(--character-theme-rgb,216 250 0) / .2) !important;
+  box-shadow:0 1px 24px rgba(0,0,0,.6),0 0 1px rgb(var(--character-theme-rgb,216 250 0) / .15) !important;
+  backdrop-filter:blur(14px) saturate(1.3);
+  transition:border-color .5s ease, box-shadow .5s ease;
+}
+.archive-stories .topbar:before{
+  background:var(--selected-agent-theme,#d8fa00) !important;
+  color:#08080c !important;
+  transition:background .5s ease;
+}
+.archive-stories .brand strong{color:#f0f2f4 !important}
+.archive-stories .brand .accent{color:var(--selected-agent-theme,#d8fa00) !important;transition:color .4s ease}
+.archive-stories .brand small{color:rgba(240,245,250,.5) !important}
+.archive-stories .top-meta{color:#00e5ff !important}
+.archive-stories .signal-dot{
+  background:#00e5ff !important;
+  box-shadow:0 0 6px #00e5ff !important;
+}
+
+/* --- Stories Workbench Bar (Title) --- */
+.archive-stories .stories-workbench-bar{
+  position:relative;
+  background:linear-gradient(135deg,#08080c 0%,#0c1220 50%,#08080c 100%) !important;
+  border-bottom:2px solid rgb(var(--character-theme-rgb,216 250 0) / .3) !important;
+  padding:28px clamp(20px,4vw,52px) !important;
+  min-height:auto !important;
+  overflow:hidden;
+  transition:border-color .5s ease;
+}
+.archive-stories .stories-workbench-bar::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse 600px 300px at 10% 80%,rgb(var(--character-theme-rgb,216 250 0) / .08),transparent),
+    radial-gradient(ellipse 400px 250px at 90% 20%,rgba(0,229,255,.06),transparent);
+  pointer-events:none;
+  transition:background .6s ease;
+}
+.archive-stories .stories-workbench-bar::after{
+  content:'AGENT DATABASE // HOOXI';
+  position:absolute;
+  right:clamp(20px,4vw,52px);
+  bottom:8px;
+  color:rgba(0,229,255,.25);
+  font:700 9px/1 var(--font-mono,'Courier New',monospace);
+  letter-spacing:.15em;
+  pointer-events:none;
+}
+.archive-stories .stories-workbench-context .eyebrow{
+  color:#00e5ff !important;
+  text-shadow:0 0 8px rgba(0,229,255,.4);
+}
+.archive-stories .stories-workbench-context h1{
+  color:#f0f2f4 !important;
+  font-size:clamp(28px,3vw,42px) !important;
+  text-shadow:0 0 20px rgb(var(--character-theme-rgb,216 250 0) / .15);
+  transition:text-shadow .5s ease;
+}
+.archive-stories .stories-workbench-context>p:last-child{
+  color:rgba(240,245,250,.55) !important;
+}
+.archive-stories .stories-lane-action{
+  background:transparent !important;
+  border:1px solid var(--selected-agent-theme,#d8fa00) !important;
+  color:var(--selected-agent-theme,#d8fa00) !important;
+  clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%) !important;
+  transition:all .2s ease !important;
+}
+.archive-stories .stories-lane-action:hover{
+  background:rgb(var(--character-theme-rgb,216 250 0) / .1) !important;
+  box-shadow:0 0 16px rgb(var(--character-theme-rgb,216 250 0) / .25);
+  transform:translateY(-1px);
+}
+/* PLACEHOLDER_STYLE_CHUNK2 */
+
+/* --- Workbench Shell & Stage --- */
+.archive-stories .agent-workbench-shell{
+  background:#08080c !important;
+}
+.archive-stories .agent-workbench{
+  background:
+    radial-gradient(circle at 14% 22%,rgb(var(--character-theme-rgb,216 250 0) / .05),transparent 34%),
+    linear-gradient(135deg,#0a0e14,#08080c) !important;
+  transition:background .6s ease;
+}
+.archive-stories .agent-selected-stage{
+  background:
+    radial-gradient(ellipse at calc(40% + var(--bg-drift-x,0)) calc(60% + var(--bg-drift-y,0)),rgb(var(--character-theme-rgb,216 250 0) / .12),transparent 55%),
+    linear-gradient(180deg,rgba(12,16,24,.9),#08080c) !important;
+  transition:background .6s ease;
+}
+.archive-stories .agent-stage-grid{
+  opacity:.08 !important;
+  background-image:
+    linear-gradient(rgb(var(--character-theme-rgb,216 250 0) / .15) 1px,transparent 1px),
+    linear-gradient(90deg,rgb(var(--character-theme-rgb,216 250 0) / .15) 1px,transparent 1px) !important;
+  transition:background-image .6s ease;
+}
+
+/* --- Agent Stage Info Panel --- */
+.archive-stories .agent-stage-info{
+  background:rgba(8,8,12,.95) !important;
+  border-top:1px solid rgb(var(--character-theme-rgb,216 250 0) / .12) !important;
+  transition:border-color .5s ease;
+}
+.archive-stories .agent-stage-info .eyebrow{
+  color:#00e5ff !important;
+}
+.archive-stories .agent-stage-info h2{
+  color:#f0f2f4 !important;
+}
+.archive-stories .agent-selected-meta{
+  border-color:rgba(255,255,255,.06) !important;
+  background:rgba(255,255,255,.06) !important;
+}
+.archive-stories .agent-selected-meta span{
+  background:rgba(18,22,30,.7) !important;
+}
+.archive-stories .agent-selected-meta small{
+  color:rgba(240,245,250,.4) !important;
+}
+.archive-stories .agent-selected-meta b{
+  color:#f0f2f4 !important;
+}
+.archive-stories .agent-selected-meta a{
+  color:var(--selected-agent-theme,#d8fa00) !important;
+  text-decoration-color:rgb(var(--character-theme-rgb,216 250 0) / .3) !important;
+  transition:color .4s ease, text-decoration-color .4s ease;
+}
+.archive-stories .agent-selected-meta a:hover{
+  color:#ffe600 !important;
+  text-shadow:0 0 8px rgb(var(--character-theme-rgb,216 250 0) / .3);
+}
+.archive-stories .agent-selected-summary{
+  color:rgba(240,245,250,.6) !important;
+}
+.archive-stories .agent-deep-links a{
+  border:1px solid rgba(255,255,255,.1) !important;
+  background:rgba(18,22,30,.7) !important;
+  color:rgba(240,245,250,.7) !important;
+  transition:all .2s ease !important;
+}
+.archive-stories .agent-deep-links a:hover{
+  border-color:rgb(var(--character-theme-rgb,216 250 0) / .3) !important;
+  background:rgb(var(--character-theme-rgb,216 250 0) / .06) !important;
+  color:var(--selected-agent-theme,#d8fa00) !important;
+  box-shadow:0 0 12px rgb(var(--character-theme-rgb,216 250 0) / .1);
+}
+.archive-stories .agent-deep-links a:first-child{
+  background:var(--selected-agent-theme,#d8fa00) !important;
+  border-color:var(--selected-agent-theme,#d8fa00) !important;
+  color:#08080c !important;
+  transition:background .4s ease, border-color .4s ease, box-shadow .3s ease;
+}
+.archive-stories .agent-deep-links a:first-child:hover{
+  filter:brightness(1.15);
+  box-shadow:0 4px 16px rgb(var(--character-theme-rgb,216 250 0) / .3);
+}
+/* PLACEHOLDER_STYLE_CHUNK3 */
+
+/* --- Roster Panel --- */
+.archive-stories .agent-roster-panel{
+  background:linear-gradient(180deg,rgba(12,16,24,.97),rgba(8,8,12,.98)) !important;
+  border-left:1px solid rgb(var(--character-theme-rgb,216 250 0) / .1) !important;
+  box-shadow:-12px 0 48px rgba(0,0,0,.5) !important;
+  transition:border-color .5s ease;
+}
+.archive-stories .agent-roster-panel:before{
+  background:linear-gradient(180deg,var(--selected-agent-theme,#d8fa00),rgb(var(--character-theme-rgb,216 250 0) / .3)) !important;
+  filter:drop-shadow(0 0 10px rgb(var(--character-theme-rgb,216 250 0) / .4)) !important;
+  transition:background .5s ease, filter .5s ease;
+}
+.archive-stories .agent-roster-panel:after{
+  color:rgb(var(--character-theme-rgb,216 250 0) / .5) !important;
+  transition:color .5s ease;
+}
+.archive-stories .agent-roster-heading .eyebrow{
+  color:#00e5ff !important;
+}
+.archive-stories .agent-roster-heading h2{
+  color:#f0f2f4 !important;
+}
+.archive-stories .agent-result-count{
+  color:rgba(240,245,250,.4) !important;
+}
+.archive-stories .agent-result-count b{
+  color:var(--selected-agent-theme,#d8fa00) !important;
+  transition:color .4s ease;
+}
+
+/* --- Search Form --- */
+.archive-stories .agent-search-form{
+  border:1px solid rgba(255,255,255,.08) !important;
+  background:rgba(8,8,12,.6) !important;
+}
+.archive-stories .agent-search-form input,
+.archive-stories .agent-search-form select{
+  border:1px solid rgba(255,255,255,.1) !important;
+  background:rgba(12,16,24,.8) !important;
+  color:#f0f2f4 !important;
+}
+.archive-stories .agent-search-form input:focus-visible,
+.archive-stories .agent-search-form select:focus-visible{
+  outline:2px solid var(--selected-agent-theme,#d8fa00) !important;
+  border-color:rgb(var(--character-theme-rgb,216 250 0) / .3) !important;
+}
+.archive-stories .agent-search-form label{
+  color:rgba(240,245,250,.4) !important;
+}
+
+/* --- Roster Cards --- */
+.archive-stories .agent-roster-card{
+  border:1px solid rgba(255,255,255,.06) !important;
+  background:rgba(18,22,30,.7) !important;
+  transition:all .22s ease !important;
+}
+.archive-stories .agent-roster-card:hover,
+.archive-stories .agent-roster-card:focus-visible{
+  border-color:rgb(var(--character-theme-rgb,216 250 0) / .25) !important;
+  box-shadow:0 0 16px rgb(var(--character-theme-rgb,216 250 0) / .08),inset 0 0 0 1px rgb(var(--character-theme-rgb,216 250 0) / .06);
+}
+.archive-stories .agent-roster-card:hover:before,
+.archive-stories .agent-roster-card:focus-visible:before{
+  border-left-color:var(--selected-agent-theme,#d8fa00) !important;
+}
+.archive-stories .agent-roster-card.is-selected{
+  border-color:rgb(var(--character-theme-rgb,216 250 0) / .4) !important;
+  background:linear-gradient(145deg,rgb(var(--character-theme-rgb,216 250 0) / .08),rgba(18,22,30,.85)) !important;
+  box-shadow:0 0 20px rgb(var(--character-theme-rgb,216 250 0) / .12),inset 0 0 0 1px rgb(var(--character-theme-rgb,216 250 0) / .1) !important;
+}
+.archive-stories .agent-card-image{
+  background:
+    radial-gradient(circle at 50% 72%,rgb(var(--character-theme-rgb,216 250 0) / .1),transparent 55%),
+    linear-gradient(180deg,#0f1420,rgb(var(--character-theme-rgb,216 250 0) / .03)) !important;
+}
+.archive-stories .agent-roster-index{
+  border-color:rgba(255,255,255,.1) !important;
+  background:rgba(8,8,12,.85) !important;
+  color:rgba(240,245,250,.5) !important;
+}
+.archive-stories .agent-card-footer{
+  background:rgba(8,8,12,.9) !important;
+  border-top:1px solid rgba(255,255,255,.04);
+}
+.archive-stories .agent-card-name{
+  color:#f0f2f4 !important;
+}
+.archive-stories .agent-card-faction{
+  color:rgba(240,245,250,.45) !important;
+}
+/* PLACEHOLDER_STYLE_CHUNK4 */
+
+/* --- Stage Portrait & Signal --- */
+.archive-stories .agent-stage-portrait img{
+  filter:drop-shadow(0 20px 40px rgba(0,0,0,.6)) drop-shadow(0 0 30px rgb(var(--character-theme-rgb,216 250 0) / .08)) !important;
+  transition:filter .5s ease;
+}
+.archive-stories .agent-stage-signal{
+  color:rgba(240,245,250,.4) !important;
+}
+.archive-stories .agent-stage-signal i{
+  background:var(--selected-agent-theme,#d8fa00) !important;
+  box-shadow:38px 0 0 rgb(var(--character-theme-rgb,216 250 0) / .3),0 0 6px rgb(var(--character-theme-rgb,216 250 0) / .4) !important;
+  transition:background .4s ease, box-shadow .4s ease;
+}
+.archive-stories .agent-stage-heading{
+  color:rgba(240,245,250,.35) !important;
+}
+.archive-stories .agent-stage-heading b{
+  border-color:rgb(var(--character-theme-rgb,216 250 0) / .2) !important;
+  background:rgba(8,8,12,.7) !important;
+  color:#f0f2f4 !important;
+  transition:border-color .4s ease;
+}
+.archive-stories .agent-stage-backdrop-name{
+  color:rgb(var(--character-theme-rgb,216 250 0) / .08) !important;
+  transition:color .5s ease;
+}
+
+/* --- Footer --- */
+.archive-stories .archive-footer{
+  background:rgba(8,8,12,.95) !important;
+  border-top:1px solid rgba(255,255,255,.06) !important;
+  color:rgba(240,245,250,.4) !important;
+}
+
+/* --- Scrollbar --- */
+.archive-stories .agent-roster-scroll{
+  scrollbar-color:var(--selected-agent-theme,#d8fa00) #0c1018 !important;
+}
+
+/* --- Halftone & Glitch layers --- */
+.archive-stories .zzz-halftone{
+  opacity:.015 !important;
+}
+.archive-stories .zzz-glitch-layer{
+  mix-blend-mode:screen;
+  opacity:.03 !important;
+}
+
+/* --- Responsive adjustments --- */
+@media(max-width:900px){
+  .archive-stories .stories-workbench-bar{
+    padding:22px 20px !important;
+  }
+  .archive-stories .stories-workbench-bar::after{
+    display:none;
+  }
+}
+@media(max-width:760px){
+  .archive-stories .stories-workbench-context h1{
+    font-size:24px !important;
+  }
+  .archive-stories .stories-workbench-bar{
+    padding:18px 14px !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    gap:14px !important;
+  }
+  .archive-stories .agent-roster-panel{
+    position:relative !important;
+    width:100% !important;
+    clip-path:none !important;
+    padding:18px 16px !important;
+  }
+  .archive-stories .agent-roster-panel:before{
+    display:none !important;
+  }
+  .archive-stories .agent-stage-info{
+    padding-right:clamp(16px,4vw,28px) !important;
+  }
+}
+
+/* --- Ambient Lighting & Character Color Transition --- */
+.archive-stories .agent-selected-stage::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:radial-gradient(ellipse 70% 60% at 50% 55%,rgb(var(--character-theme-rgb,216 250 0) / .06),transparent 70%);
+  pointer-events:none;
+  transition:background .7s ease;
+  mix-blend-mode:screen;
+}
+.archive-stories .agent-workbench-shell::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:radial-gradient(ellipse 50% 70% at 30% 50%,rgb(var(--character-theme-rgb,216 250 0) / .03),transparent 60%);
+  pointer-events:none;
+  transition:background .7s ease;
+  opacity:.8;
+}
+/* 角色切换整体色调过渡 */
+.archive-stories .agent-workbench-shell{
+  position:relative;
+  transition:background .6s ease;
+}
+  </style>
 </head>
 <body class="subpage archive-stories character-directory-page">
+  <div class="zzz-halftone" aria-hidden="true"></div>
+  <div class="zzz-glitch-layer" aria-hidden="true"></div>
   <a class="skip-link" href="#mainContent">跳至主要内容</a>
   <header class="topbar topbar-slim">
     <a class="brand" href="index.html" aria-label="HOOXI 首页"><span class="brand-mark" aria-hidden="true">H</span><span><strong>HOOXI<span class="accent"> //</span></strong><small>ZENLESS ARCHIVE</small></span></a>
@@ -43,20 +446,6 @@
       <a class="stories-lane-action" href="mainline.html">进入角色剧情车道 <span aria-hidden="true">→</span></a>
     </section>
     <div id="storiesRoot"></div>
-    <section id="sources" class="archive-sources" data-source-section aria-labelledby="sourcesTitle">
-      <h2 id="sourcesTitle">来源与使用说明</h2>
-      <p>名录字段沿用站内已核验的角色目录快照；舞台和卡片仅使用站内本地角色立绘、卡图与已记录来源边界的影画，不会批量加载影画作为缩略图。</p>
-      <ul>
-        <li><span>角色立绘与选择卡图</span><span>站内本地 portraits；当前 57 人主舞台均使用完整透明 portrait，右侧 roster/avatar/headshot 仍独立使用 card，不与舞台立绘链混用。</span></li>
-        <li><span>53 张 Toastertjie 许可图包 Default</span><span>Toastertjie · Steam Workshop 3491187965；项目方确认已获许可。</span></li>
-        <li><span>蕾米埃尔 1 张官方 Wiki 素材转换 Default</span><span>来自米哈游官方绝区零百科角色页，不计入 Toastertjie 许可范围；与前述 53 张合计 54 张正式 Default。</span></li>
-        <li><span>norma、pyrois、velina 影画</span><span>站内本地 gallery 回退；角色美术版权归米哈游。</span></li>
-        <li><a data-source-action href="https://zenless.hoyoverse.com/" rel="noreferrer">《绝区零》官方网站</a><span>官方公开资料入口</span></li>
-        <li><a data-source-action href="https://baike.mihoyo.com/zzz/wiki/" rel="noreferrer">米哈游《绝区零》百科</a><span>角色与阵营资料汇总</span></li>
-        <li><a data-source-action href="https://www.prydwen.gg/zenless/characters" rel="noreferrer">Prydwen 角色目录</a><span>第三方交叉核对入口</span></li>
-      </ul>
-      <p>HOOXI 为粉丝非官方档案，与米哈游/HoYoverse 无隶属；相关游戏设定与角色内容版权归米哈游所有。</p>
-    </section>
   </main>
   <footer class="archive-footer"><span class="footer-disclaimer" data-unofficial-boundary>HOOXI 为粉丝非官方档案，与米哈游/HoYoverse 无隶属；本页为角色目录索引，相关游戏设定与角色内容版权归米哈游所有。</span><span>HOOXI // ZZZ AGENT ARCHIVE</span></footer>
   <script src="site-sidebar.js?v=rail-1"></script>
@@ -66,10 +455,10 @@
   <script src="agent-xray.js?v=archive-3"></script>
   <script src="stories.js?v=sunna-portrait-1"></script>
   <script src="assets/vendor/gsap/gsap.min.js?v=gsap-3-15-0"></script>
-  <script src="zzz-motion.js?v=zzz-motion-r6"></script>
+  <script src="zzz-motion.js?v=zzz-motion-r7"></script>
   <script src="zzz-motion-notice.js?v=zzz-motion-notice-r1"></script>
   <script src="zzz-tv-transition.js?v=zzz-tv-r1"></script>
   <script src="theme-switcher.js?v=theme-switcher-r1"></script>
-  <script src="game-feel.js?v=gf-1"></script>
+  <script src="game-feel.js?v=parallax-1"></script>
 </body>
 </html>

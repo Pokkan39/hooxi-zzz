@@ -1,0 +1,202 @@
+/* subpage-enhance.css — 子页共享视觉增强层
+   背景质感 · 卡片深度 · 几何装饰 · 布局节奏
+   依赖：theme-tokens.css, theme-zzz.css（变量）  */
+
+/* ═══════ 01. 背景纹理与大气 ═══════ */
+
+/* 工程图纸网格 */
+.archive-shell::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  opacity:.018;
+  background:
+    linear-gradient(rgba(216,250,0,.1) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(216,250,0,.1) 1px,transparent 1px);
+  background-size:72px 72px;
+}
+
+/* 大气光斑 */
+.archive-shell::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 700px 500px at 85% -5%,rgba(0,229,255,.06),transparent 60%),
+    radial-gradient(ellipse 500px 600px at -5% 70%,rgba(216,250,0,.04),transparent 55%),
+    radial-gradient(ellipse 400px 300px at 50% 120%,rgba(180,120,255,.03),transparent 50%);
+}
+
+/* 噪点层（SVG noise） */
+.archive-shell .noise,
+.archive-shell > .noise-layer{
+  position:fixed;inset:0;
+  z-index:1;pointer-events:none;
+  opacity:.035;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode:overlay;
+}
+
+/* 扫描线微层 — 更具设计感的质感 */
+.archive-shell .scan-line-layer{
+  position:fixed;inset:0;
+  z-index:1;pointer-events:none;
+  opacity:.012;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent,transparent 2px,
+    rgba(216,250,0,.15) 2px,rgba(216,250,0,.15) 3px
+  );
+  background-size:100% 4px;
+}
+
+/* ═══════ 02. 卡片玻璃质感 ═══════ */
+
+/* 通用卡片增强 */
+.archive-shell .page-timeline .record,
+.archive-shell .page-timeline > div,
+.archive-shell .archive-record,
+.archive-shell .archive-group,
+.archive-shell .cultivate-mat-card,
+.archive-shell .cultivate-faq-item,
+.archive-shell .page-timeline-item .page-card{
+  background:rgba(14,18,26,.75)!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  backdrop-filter:blur(6px) saturate(1.2);
+  box-shadow:
+    0 2px 8px rgba(0,0,0,.3),
+    inset 0 1px 0 rgba(255,255,255,.04);
+  transition:transform .25s cubic-bezier(.22,1,.36,1),
+             border-color .25s ease,
+             box-shadow .25s ease!important;
+}
+.archive-shell .page-timeline .record:hover,
+.archive-shell .page-timeline > div:hover,
+.archive-shell .archive-record:hover,
+.archive-shell .cultivate-mat-card:hover,
+.archive-shell .page-timeline-item .page-card:hover{
+  transform:translateY(-3px)!important;
+  border-color:rgba(216,250,0,.2)!important;
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.4),
+    0 0 16px rgba(216,250,0,.06),
+    inset 0 1px 0 rgba(255,255,255,.06)!important;
+}
+
+/* ═══════ 03. Hero 区增强 ═══════ */
+
+.archive-shell .archive-hero{
+  position:relative;
+  padding:clamp(80px,12vh,140px) max(24px,calc((100vw - 1100px)/2)) clamp(60px,8vh,100px)!important;
+  overflow:hidden;
+}
+
+/* Hero 装饰 — 不对称光柱（非居中偏移、手工比例） */
+.archive-shell .archive-hero::before{
+  content:'';
+  position:absolute;
+  top:0;right:7%;
+  width:1px;height:65%;
+  background:linear-gradient(180deg,transparent 0%,rgba(216,250,0,.18) 30%,rgba(216,250,0,.06) 70%,transparent 100%);
+  pointer-events:none;
+  opacity:.7;
+}
+.archive-shell .archive-hero::after{
+  content:'';
+  position:absolute;
+  bottom:0;left:max(24px,calc((100vw - 1100px)/2));
+  right:max(24px,calc((100vw - 1100px)/2));
+  height:1px;
+  background:linear-gradient(90deg,rgba(216,250,0,.25),rgba(0,229,255,.12) 60%,transparent);
+  pointer-events:none;
+}
+
+/* Hero 标题强化 */
+.archive-shell .archive-hero h1{
+  font-size:clamp(42px,7vw,72px)!important;
+  font-weight:800!important;
+  letter-spacing:-.03em!important;
+  color:#f0f2f4!important;
+  -webkit-text-fill-color:unset;
+  background:none;
+  line-height:1.05!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.5);
+}
+
+/* ═══════ 04. Section 分割装饰 ═══════ */
+
+.archive-shell .archive-content{
+  position:relative;
+  z-index:2;
+}
+.archive-shell .archive-content::before{
+  content:'';
+  position:absolute;
+  top:0;left:max(24px,calc((100vw - 1100px)/2));right:max(24px,calc((100vw - 1100px)/2));
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(216,250,0,.2) 20%,rgba(0,229,255,.15) 80%,transparent);
+}
+
+/* Section 标题前缀斜线 */
+.archive-shell .section-head h2{
+  position:relative;
+  padding-left:16px!important;
+}
+.archive-shell .section-head h2::before{
+  content:'';
+  position:absolute;
+  left:0;top:.15em;bottom:.15em;
+  width:3px;
+  background:linear-gradient(180deg,#d8fa00,#00e5ff);
+  transform:skewX(-8deg);
+  box-shadow:0 0 8px rgba(216,250,0,.3);
+}
+
+/* ═══════ 05. 滚动入场占位 ═══════ */
+
+/* 初始态：透明 + 下移（JS 将在入场时移除此 class） */
+.sp-reveal{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity .6s cubic-bezier(.22,1,.36,1),
+             transform .6s cubic-bezier(.22,1,.36,1);
+}
+.sp-reveal.is-visible{
+  opacity:1;
+  transform:none;
+}
+/* Stagger 延迟通过 --sp-delay 变量驱动 */
+.sp-reveal[style*="--sp-delay"]{
+  transition-delay:var(--sp-delay,0ms);
+}
+
+/* Section 标题闪烁入场 */
+.archive-shell .section-head h2{
+  text-shadow:0 0 0 transparent;
+}
+.archive-shell .section-head h2.sp-heading-flash{
+  animation:sp-heading-flash 0.7s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes sp-heading-flash{
+  0%{text-shadow:0 0 0 rgba(216,250,0,0);opacity:0}
+  40%{text-shadow:0 0 18px rgba(216,250,0,.6);opacity:.6}
+  100%{text-shadow:0 1px 4px rgba(0,0,0,.5);opacity:1}
+}
+
+/* Hero 鼠标视差变量绑定 */
+.archive-shell .archive-hero{
+  --hero-dx:0px;
+  --hero-dy:0px;
+  transform:translate3d(var(--hero-dx),var(--hero-dy),0);
+  transition:transform .8s cubic-bezier(.22,1,.36,1);
+}
+
+/* ═══════ 06. 响应式 ═══════ */
+@media(max-width:760px){
+  .archive-shell .archive-hero::before{opacity:.4}
+  .archive-shell .archive-hero h1{font-size:clamp(32px,8vw,48px)!important}
+}

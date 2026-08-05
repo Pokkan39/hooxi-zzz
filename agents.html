@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>代理人档案 // Hooxi 绝区零</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--bg-soft:#12121a;--bg-panel:#181820;--bg-elev:#1e1e28;
+  --text-1:#f0f0f5;--text-2:rgba(240,240,245,.72);--text-3:rgba(240,240,245,.48);
+  --accent:#d8fa00;--accent-2:#00e5ff;--line:rgba(216,250,0,.10);
+  --fire:#ff4d3a;--ice:#6ee7ff;--electric:#c084fc;--physical:#f5a623;
+  --ether:#a855f7;--frost:#6ee7ff;--wind:#34d399;--honed_edge:#f43f5e;--auricink:#fbbf24;
+}
+body{background:var(--bg);color:var(--text-1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;overflow-x:hidden}
+.noise{position:fixed;inset:0;pointer-events:none;opacity:.03;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.page-header{text-align:center;padding:3rem 1rem 2rem;border-bottom:1px solid var(--line)}
+.back-link{color:var(--accent);text-decoration:none;font-size:.85rem;display:inline-block;margin-bottom:1rem}
+.back-link:hover{text-decoration:underline}
+.page-title{font-size:2.4rem;font-weight:700;letter-spacing:.05em;background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-subtitle{color:var(--text-3);font-size:.9rem;letter-spacing:.3em;margin-top:.3rem}
+.filters{max-width:1200px;margin:2rem auto;padding:0 1.5rem;display:flex;flex-wrap:wrap;gap:1.2rem}
+.filter-group{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.filter-group label{color:var(--text-3);font-size:.8rem;min-width:2.5em}
+.filter-btns{display:flex;gap:.3rem;flex-wrap:wrap}
+.filter-btns button{background:var(--bg-panel);border:1px solid var(--line);color:var(--text-2);padding:.3rem .7rem;border-radius:4px;font-size:.78rem;cursor:pointer;transition:all .15s}
+.filter-btns button:hover{border-color:var(--accent);color:var(--text-1)}
+.filter-btns button.active{background:var(--accent);color:#0a0a0f;border-color:var(--accent);font-weight:600}
+.agent-grid{max-width:1400px;margin:2rem auto;padding:0 1.5rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.2rem}
+.agent-card{position:relative;background:var(--bg-panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;cursor:pointer;transition:all .2s;display:flex;flex-direction:column}
+.agent-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 8px 32px rgba(216,250,0,.08)}
+.card-img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:top;background:var(--bg-soft)}
+.card-grade{position:absolute;top:.5rem;right:.5rem;font-size:.75rem;font-weight:700;padding:.2rem .5rem;border-radius:3px;background:rgba(10,10,15,.7);backdrop-filter:blur(4px)}
+.card-grade.S{color:var(--accent)}
+.card-grade.A{color:var(--accent-2)}
+.card-info{padding:.8rem;flex:1;display:flex;flex-direction:column;gap:.3rem}
+.card-name{font-size:.95rem;font-weight:600;color:var(--text-1)}
+.card-en{font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-tags{display:flex;gap:.3rem;flex-wrap:wrap;margin-top:auto;padding-top:.4rem}
+.tag{font-size:.65rem;padding:.15rem .4rem;border-radius:3px;background:var(--bg-elev);color:var(--text-2);border:1px solid transparent}
+.tag.attr{border-color:var(--tag-color,var(--line));color:var(--tag-color,var(--text-2))}
+.card-faction{font-size:.65rem;color:var(--text-3);margin-top:.2rem}
+.modal-overlay{position:fixed;inset:0;background:rgba(10,10,15,.85);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:2rem}
+.modal-overlay[hidden]{display:none}
+.modal{background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;max-width:700px;width:100%;max-height:85vh;overflow-y:auto;position:relative;padding:2rem}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--text-2);font-size:1.4rem;cursor:pointer;width:2rem;height:2rem;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all .15s}
+.modal-close:hover{color:var(--accent);background:var(--bg-elev)}
+.modal-header{display:flex;gap:1.5rem;margin-bottom:1.5rem}
+.modal-tachie{width:180px;height:240px;object-fit:cover;object-position:top;border-radius:8px;background:var(--bg-panel);flex-shrink:0}
+.modal-info{flex:1;display:flex;flex-direction:column;gap:.5rem}
+.modal-name{font-size:1.5rem;font-weight:700;color:var(--text-1)}
+.modal-en{font-size:.85rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em}
+.modal-meta{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
+.modal-meta .tag{font-size:.75rem;padding:.25rem .6rem}
+.modal-section{margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid var(--line)}
+.modal-section h3{font-size:.85rem;color:var(--accent);margin-bottom:.6rem;letter-spacing:.05em}
+.empty-state{grid-column:1/-1;text-align:center;padding:4rem 1rem;color:var(--text-3)}
+@media(max-width:640px){
+  .agent-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.8rem}
+  .filters{flex-direction:column;gap:.8rem}
+  .modal-header{flex-direction:column;align-items:center;text-align:center}
+  .modal-tachie{width:140px;height:190px}
+}
+  </style>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="page-header">
+    <a href="index.html" class="back-link">← 返回首页</a>
+    <h1 class="page-title">代理人档案</h1>
+    <p class="page-subtitle">AGENT FILES</p>
+  </header>
+
+  <section class="filters" aria-label="筛选器">
+    <div class="filter-group">
+      <label>属性</label>
+      <div class="filter-btns" data-filter="attribute">
+        <button class="active" data-value="all">全部</button>
+        <button data-value="fire">火</button>
+        <button data-value="ice">冰</button>
+        <button data-value="electric">电</button>
+        <button data-value="physical">物理</button>
+        <button data-value="ether">以太</button>
+        <button data-value="frost">霜</button>
+        <button data-value="wind">风</button>
+        <button data-value="honed_edge">侵蚀</button>
+        <button data-value="auricink">金墨</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <label>职业</label>
+      <div class="filter-btns" data-filter="profession">
+        <button class="active" data-value="all">全部</button>
+        <button data-value="strike">强攻</button>
+        <button data-value="pierce">突破</button>
+        <button data-value="rupture">击破</button>
+        <button data-value="support">支援</button>
+        <button data-value="guard">防护</button>
+        <button data-value="abnormal">异常</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <label>等级</label>
+      <div class="filter-btns" data-filter="grade">
+        <button class="active" data-value="all">全部</button>
+        <button data-value="S">S级</button>
+        <button data-value="A">A级</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <label>阵营</label>
+      <div class="filter-btns" data-filter="faction">
+        <button class="active" data-value="all">全部</button>
+      </div>
+    </div>
+  </section>
+
+  <main class="agent-grid" id="agentGrid"></main>
+
+  <div class="modal-overlay" id="modalOverlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true">
+      <button class="modal-close" aria-label="关闭">✕</button>
+      <div class="modal-content" id="modalContent"></div>
+    </div>
+  </div>
+
+  <script>
+const ATTR_LABELS={fire:'火',ice:'冰',electric:'电',physical:'物理',ether:'以太',frost:'霜',wind:'风',honed_edge:'侵蚀',auricink:'金墨'};
+const PROF_LABELS={strike:'强攻',pierce:'突破',rupture:'击破',support:'支援',guard:'防护',abnormal:'异常'};
+const ATTR_COLORS={fire:'#ff4d3a',ice:'#6ee7ff',electric:'#c084fc',physical:'#f5a623',ether:'#a855f7',frost:'#6ee7ff',wind:'#34d399',honed_edge:'#f43f5e',auricink:'#fbbf24'};
+
+let agents=[];
+let filters={attribute:'all',profession:'all',grade:'all',faction:'all'};
+
+async function init(){
+  const res=await fetch('assets/data/agents.json');
+  agents=await res.json();
+  buildFactionFilter();
+  render();
+  bindFilters();
+}
+
+function buildFactionFilter(){
+  const factions=[...new Set(agents.map(a=>a.faction).filter(Boolean))].sort();
+  const container=document.querySelector('[data-filter="faction"]');
+  factions.forEach(f=>{
+    const btn=document.createElement('button');
+    btn.dataset.value=f;
+    btn.textContent=f;
+    container.appendChild(btn);
+  });
+}
+
+function render(){
+  const grid=document.getElementById('agentGrid');
+  const filtered=agents.filter(a=>{
+    if(filters.attribute!=='all'&&a.attribute!==filters.attribute)return false;
+    if(filters.profession!=='all'&&a.profession!==filters.profession)return false;
+    if(filters.grade!=='all'&&a.grade!==filters.grade)return false;
+    if(filters.faction!=='all'&&a.faction!==filters.faction)return false;
+    return true;
+  });
+  if(!filtered.length){
+    grid.innerHTML='<div class="empty-state">没有符合条件的代理人</div>';
+    return;
+  }
+  grid.innerHTML=filtered.map(a=>`
+    <div class="agent-card" data-id="${a.id}">
+      <img class="card-img" src="${a.tachie_pc||a.icon_url}" alt="${a.name}" loading="lazy" onerror="this.src='${a.icon_url||''}'"/>
+      <span class="card-grade ${a.grade}">${a.grade}</span>
+      <div class="card-info">
+        <div class="card-name">${a.name}</div>
+        <div class="card-en">${a.en_name}</div>
+        <div class="card-tags">
+          <span class="tag attr" style="--tag-color:${ATTR_COLORS[a.attribute]||'#888'}">${ATTR_LABELS[a.attribute]||a.attribute}</span>
+          <span class="tag">${PROF_LABELS[a.profession]||a.profession}</span>
+        </div>
+        ${a.faction?`<div class="card-faction">${a.faction}</div>`:''}
+      </div>
+    </div>
+  `).join('');
+  grid.querySelectorAll('.agent-card').forEach(card=>{
+    card.addEventListener('click',()=>openModal(card.dataset.id));
+  });
+}
+
+function bindFilters(){
+  document.querySelectorAll('.filter-btns').forEach(group=>{
+    const key=group.dataset.filter;
+    group.querySelectorAll('button').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        group.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        filters[key]=btn.dataset.value;
+        render();
+      });
+    });
+  });
+}
+
+function openModal(id){
+  const a=agents.find(x=>x.id===id);
+  if(!a)return;
+  const overlay=document.getElementById('modalOverlay');
+  const content=document.getElementById('modalContent');
+  content.innerHTML=`
+    <div class="modal-header">
+      <img class="modal-tachie" src="${a.tachie_pc||a.icon_url}" alt="${a.name}" onerror="this.src='${a.icon_url||''}'"/>
+      <div class="modal-info">
+        <div class="modal-name">${a.name}</div>
+        <div class="modal-en">${a.en_name}</div>
+        <div class="modal-meta">
+          <span class="tag card-grade ${a.grade}">${a.grade}级</span>
+          <span class="tag attr" style="--tag-color:${ATTR_COLORS[a.attribute]||'#888'}">${ATTR_LABELS[a.attribute]||a.attribute}</span>
+          <span class="tag">${PROF_LABELS[a.profession]||a.profession}</span>
+        </div>
+        ${a.faction?`<div class="modal-section"><h3>所属阵营</h3><p style="color:var(--text-2)">${a.faction}</p></div>`:''}
+      </div>
+    </div>
+  `;
+  overlay.hidden=false;
+  document.body.style.overflow='hidden';
+}
+
+document.getElementById('modalOverlay').addEventListener('click',e=>{
+  if(e.target===e.currentTarget)closeModal();
+});
+document.querySelector('.modal-close').addEventListener('click',closeModal);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+function closeModal(){
+  document.getElementById('modalOverlay').hidden=true;
+  document.body.style.overflow='';
+}
+
+init();
+  </script>
+</body>
+</html>

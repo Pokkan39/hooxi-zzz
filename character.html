@@ -13,11 +13,11 @@
   <meta name="twitter:description" content="代理人影画与个人档案。粉丝非官方，与米哈游、HoYoverse 无隶属。"/>
   <title>角色档案 // Hooxi</title>
   <link rel="stylesheet" href="tokens.css?v=character-theme-1"/>
-  <link rel="stylesheet" href="theme-tokens.css?v=ink-wash-1"/>
+  <link rel="stylesheet" href="theme-tokens.css?v=char-indep-1"/>
   <link rel="stylesheet" href="styles.css"/>
-  <link rel="stylesheet" href="multi-page.css?v=cold-gray-2"/>
+  <link rel="stylesheet" href="multi-page.css?v=char-indep-1"/>
   <link rel="stylesheet" href="motion.css?v=signal-ui-r3"/>
-  <link rel="stylesheet" href="theme-zzz.css?v=ink-wash-1"/>
+  <link rel="stylesheet" href="theme-zzz.css?v=char-indep-3"/>
   <meta name="theme-color" content="#0e1014"/>
   <meta name="author" content="Hooxi"/>
   <meta name="robots" content="index,follow"/>
@@ -25,13 +25,341 @@
   <link rel="stylesheet" href="site-sidebar.css?v=rail-1"/>
   <link rel="stylesheet" href="live-hud.css?v=hud-1"/>
   <link rel="stylesheet" href="archive-tools.css?v=character-dossier-2"/>
-  <link rel="stylesheet" href="design.css?v=character-hero-cover-1"/>
-  <link rel="stylesheet" href="zzz-motion.css?v=zzz-motion-r6"/>
+  <link rel="stylesheet" href="design.css?v=char-anim-3"/>
+  <link rel="stylesheet" href="zzz-motion.css?v=cursor-slash-1"/>
   <link rel="stylesheet" href="official-dna.css?v=official-dna-r1"/>
   <link rel="stylesheet" href="zzz-tv-transition.css?v=zzz-tv-r1"/>
   <link rel="stylesheet" href="game-feel.css?v=gf-1"/>
+  <link rel="stylesheet" href="subpage-enhance.css?v=sp-2"/>
+  <style>
+  /* ══ CYBERPUNK DARK THEME — CHARACTER PAGE ══ */
+  :root {
+    --cyber-bg: #08080c;
+    --cyber-bg2: #0a0e14;
+    --cyber-accent: #d8fa00;
+    --cyber-cyan: #00e5ff;
+    --cyber-text: #f0f2f4;
+    --cyber-text-muted: rgba(240,245,250,.6);
+    --cyber-card-bg: rgba(18,22,30,.7);
+    --cyber-card-border: rgba(255,255,255,.06);
+    --cyber-line: rgba(255,255,255,.08);
+    --cyber-glow: 0 0 12px rgba(216,250,0,.15);
+  }
+  body.archive-character {
+    background: linear-gradient(165deg, var(--cyber-bg) 0%, var(--cyber-bg2) 100%) !important;
+    color: var(--cyber-text) !important;
+  }
+  /* — Character Screen (Hero) — */
+  .archive-character .character-screen {
+    background: radial-gradient(ellipse at 60% 40%, rgba(18,22,30,.95), var(--cyber-bg)) !important;
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+  }
+  .archive-character .character-screen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(216,250,0,.01) 2px, rgba(216,250,0,.01) 3px),
+      radial-gradient(circle at 70% 50%, rgba(216,250,0,.04), transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  /* — Top Nav — */
+  .archive-character .character-topbar {
+    position: relative;
+    z-index: 5;
+    padding: 16px 5vw;
+  }
+  .archive-character .character-back {
+    color: var(--cyber-text-muted) !important;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border: 1px solid rgba(255,255,255,.08);
+    background: rgba(8,8,12,.6);
+    backdrop-filter: blur(8px);
+    transition: color .2s, border-color .2s, box-shadow .2s;
+  }
+  .archive-character .character-back:hover {
+    color: var(--cyber-accent) !important;
+    border-color: var(--cyber-accent);
+    box-shadow: 0 0 8px rgba(216,250,0,.2);
+  }
+  /* — Hero Portrait — */
+  .archive-character .character-hero-portrait {
+    position: absolute;
+    z-index: 2;
+    filter: drop-shadow(0 0 40px rgba(var(--character-accent-rgb, 216,250,0), .2));
+  }
+  /* — Hero Copy — */
+  .archive-character .character-hero-copy {
+    position: relative;
+    z-index: 3;
+  }
+  .archive-character .character-hero-english {
+    color: var(--cyber-cyan) !important;
+    font-size: 13px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    text-shadow: 0 0 6px rgba(0,229,255,.4);
+    margin: 0 0 8px;
+  }
+  .archive-character #characterName {
+    color: var(--cyber-text) !important;
+    text-shadow: 0 0 30px rgba(var(--character-accent-rgb, 216,250,0), .3), 0 3px 6px rgba(0,0,0,.5);
+    font-size: clamp(48px, 8vw, 96px);
+    line-height: .88;
+    margin: 0 0 20px;
+  }
+  /* — Character Identity DL — */
+  .archive-character .character-identity {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    margin: 16px 0;
+    padding: 0;
+  }
+  .archive-character .character-identity dt {
+    color: var(--cyber-text-muted) !important;
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .archive-character .character-identity dd {
+    color: var(--cyber-text) !important;
+    margin: 0;
+    font-weight: 700;
+  }
+  /* — Attribute Tags (属性标签) — */
+  .archive-character .character-identity dd[data-attribute],
+  .archive-character .character-identity dd {
+    position: relative;
+    padding: 3px 10px;
+    background: rgba(0,229,255,.06);
+    border: 1px solid rgba(0,229,255,.2);
+    font-size: 13px;
+    color: var(--cyber-cyan) !important;
+  }
+  .archive-character .character-identity dd[data-rank],
+  .archive-character .character-identity dd:first-of-type {
+    background: rgba(216,250,0,.08);
+    border-color: rgba(216,250,0,.25);
+    color: var(--cyber-accent) !important;
+    text-shadow: 0 0 6px rgba(216,250,0,.3);
+  }
+  /* — Dossier Link — */
+  .archive-character .character-dossier-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: 1px solid var(--cyber-accent);
+    color: var(--cyber-accent) !important;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: .04em;
+    transition: background .2s, color .2s, box-shadow .2s;
+  }
+  .archive-character .character-dossier-link:hover {
+    background: var(--cyber-accent);
+    color: #08080c !important;
+    box-shadow: 0 0 16px rgba(216,250,0,.4);
+  }
+  /* — Detail Page / Tabs — */
+  .archive-character .character-detail-page {
+    background: var(--cyber-bg2) !important;
+    padding-top: 0;
+  }
+  .archive-character .character-module-nav {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--cyber-line);
+    background: rgba(10,14,20,.8);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    overflow-x: auto;
+  }
+  .archive-character .character-module-nav a[role="tab"] {
+    flex: 1;
+    text-align: center;
+    padding: 14px 20px;
+    color: var(--cyber-text-muted) !important;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: .04em;
+    border-bottom: 2px solid transparent;
+    transition: color .2s, border-color .2s, background .2s;
+    white-space: nowrap;
+  }
+  .archive-character .character-module-nav a[aria-selected="true"] {
+    color: var(--cyber-accent) !important;
+    border-bottom-color: var(--cyber-accent) !important;
+    background: rgba(216,250,0,.03);
+    text-shadow: 0 0 8px rgba(216,250,0,.2);
+  }
+  .archive-character .character-module-nav a:hover {
+    color: var(--cyber-text) !important;
+    background: rgba(255,255,255,.02);
+  }
+  /* — Module Content — */
+  .archive-character .character-content {
+    padding: 32px 5vw;
+  }
+  .archive-character .character-module {
+    background: var(--cyber-card-bg);
+    border: 1px solid var(--cyber-card-border);
+    padding: 28px 24px;
+    margin-bottom: 24px;
+  }
+  .archive-character .character-module-head {
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--cyber-line);
+  }
+  .archive-character .character-module-head span {
+    display: block;
+    color: var(--cyber-cyan) !important;
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .archive-character .character-module-head h2 {
+    color: var(--cyber-text) !important;
+    margin: 0;
+    font-size: 28px;
+    position: relative;
+    padding-left: 14px;
+  }
+  .archive-character .character-module-head h2::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 4px; bottom: 4px;
+    width: 3px;
+    background: var(--cyber-accent);
+    box-shadow: 0 0 6px var(--cyber-accent);
+  }
+  .archive-character .character-module p {
+    color: var(--cyber-text-muted) !important;
+    line-height: 1.65;
+  }
+  .archive-character .character-empty {
+    color: var(--cyber-text-muted) !important;
+    font-style: italic;
+    opacity: .7;
+  }
+  /* — Wiki List (技能/材料列表) — */
+  .archive-character .character-wiki-list {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 0;
+    display: grid;
+    gap: 8px;
+  }
+  .archive-character .character-wiki-list li {
+    padding: 10px 14px;
+    background: rgba(10,14,20,.5);
+    border: 1px solid var(--cyber-card-border);
+    border-left: 2px solid var(--cyber-cyan);
+    color: var(--cyber-text) !important;
+    font-size: 14px;
+    transition: border-color .2s, background .2s;
+  }
+  .archive-character .character-wiki-list li:hover {
+    border-left-color: var(--cyber-accent);
+    background: rgba(216,250,0,.02);
+  }
+  .archive-character .character-wiki-list li b {
+    color: var(--cyber-accent) !important;
+    margin-left: 6px;
+  }
+  /* — Art Credit / Source — */
+  .archive-character .character-art-credit {
+    background: rgba(14,18,26,.8) !important;
+    border-top: 1px solid var(--cyber-line) !important;
+    padding: 24px 5vw;
+  }
+  .archive-character .character-art-credit h2 {
+    color: var(--cyber-text) !important;
+    font-size: 18px;
+    margin: 0 0 8px;
+  }
+  .archive-character .character-art-credit p {
+    color: var(--cyber-text-muted) !important;
+    font-size: 13px;
+    margin: 4px 0;
+  }
+  .archive-character .character-art-credit a {
+    color: var(--cyber-accent) !important;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(216,250,0,.3);
+    transition: border-color .2s;
+  }
+  .archive-character .character-art-credit a:hover {
+    border-color: var(--cyber-accent);
+    text-shadow: 0 0 4px rgba(216,250,0,.3);
+  }
+  /* — Footer — */
+  .archive-character footer {
+    background: rgba(8,8,12,.95) !important;
+    border-top: 1px solid var(--cyber-line) !important;
+    padding: 18px 5vw;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    align-items: center;
+  }
+  .archive-character footer span,
+  .archive-character footer .footer-disclaimer {
+    color: var(--cyber-text-muted) !important;
+    font-size: 11px;
+  }
+  /* — Ambient override — */
+  .archive-character .ambient i {
+    border-color: rgba(216,250,0,.3) !important;
+    background: rgba(216,250,0,.4) !important;
+  }
+  .archive-character .noise {
+    opacity: .04 !important;
+    mix-blend-mode: overlay !important;
+  }
+  /* — Scanline overlay — */
+  body.archive-character::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,.03) 1px, rgba(0,0,0,.03) 2px);
+    opacity: .5;
+  }
+  /* — Responsive — */
+  @media (max-width: 768px) {
+    .archive-character .character-module-nav a[role="tab"] {
+      padding: 12px 14px;
+      font-size: 12px;
+    }
+    .archive-character .character-content { padding: 20px 4vw; }
+    .archive-character .character-module { padding: 20px 16px; }
+    .archive-character #characterName { font-size: clamp(36px, 10vw, 64px); }
+  }
+  @media (max-width: 480px) {
+    .archive-character .character-topbar { padding: 12px 4vw; }
+    .archive-character .character-identity { gap: 6px 10px; }
+    .archive-character .character-module-nav { gap: 0; }
+    .archive-character .character-module-nav a[role="tab"] { padding: 10px 8px; font-size: 11px; }
+  }
+  </style>
 </head>
-<body class="subpage archive-character">
+<body class="subpage archive-character archive-shell">
   <div class="ambient" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
   <div class="noise" aria-hidden="true"></div>
   <main id="mainContent" tabindex="-1">
@@ -97,16 +425,17 @@
   <script src="agent-catalog.js?v=remielle-1"></script>
   <script src="layout-data.js?v=s1-1"></script>
   <script src="image-webp.js?v=webp-4"></script>
-  <script src="character.js?v=character-hero-cover-1"></script>
+  <script src="character.js?v=char-indep-1"></script>
   <script src="live-hud.js?v=hud-1"></script>
   <script src="layout-editor.js?v=1"></script>
-  <script src="archive-tools.js?v=remielle-1"></script>
+  <script src="archive-tools.js?v=char-anim-2"></script>
   <script src="assets/vendor/gsap/gsap.min.js?v=gsap-3-15-0"></script>
-  <script src="zzz-motion.js?v=zzz-motion-r6"></script>
+  <script src="zzz-motion.js?v=zzz-motion-r7"></script>
   <script src="zzz-official.js?v=zzz-official-r1"></script>
   <script src="zzz-motion-notice.js?v=zzz-motion-notice-r1"></script>
   <script src="zzz-tv-transition.js?v=zzz-tv-r1"></script>
   <script src="theme-switcher.js?v=theme-switcher-r1"></script>
   <script src="game-feel.js?v=gf-1"></script>
+  <script src="subpage-motion.js?v=sp-2"></script>
 </body>
 </html>

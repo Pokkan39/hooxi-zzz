@@ -4,9 +4,56 @@ import { createRoot } from "react-dom/client";
 const FAVORITES_KEY = "hooxi:favorite-agents";
 const DEFAULT_ART_ROOT = "assets/mindscape/default";
 const GALLERY_FALLBACKS = Object.freeze({
-  norma: "assets/gallery/norma/05.png",
-  pyrois: "assets/gallery/pyrois/05.png",
-  velina: "assets/gallery/velina/06.png",
+  "alice": "assets/gallery/alice/08.webp",
+  "anby": "assets/gallery/anby/01.webp",
+  "anton": "assets/gallery/anton/04.webp",
+  "aria": "assets/gallery/aria/01.webp",
+  "astra-yao": "assets/gallery/astra-yao/03.webp",
+  "banyue": "assets/gallery/banyue/06.webp",
+  "ben": "assets/gallery/ben/03.webp",
+  "billy-kid": "assets/gallery/billy-kid/01.webp",
+  "burnice": "assets/gallery/burnice/04.webp",
+  "caesar": "assets/gallery/caesar/03.webp",
+  "cissia": "assets/gallery/cissia/04.webp",
+  "corin": "assets/gallery/corin/01.webp",
+  "dialyn": "assets/gallery/dialyn/04.webp",
+  "ellen": "assets/gallery/ellen/02.webp",
+  "evelyn": "assets/gallery/evelyn/01.webp",
+  "grace-howard": "assets/gallery/grace-howard/02.webp",
+  "harumasa": "assets/gallery/harumasa/05.webp",
+  "hugo": "assets/gallery/hugo/04.webp",
+  "jane-doe": "assets/gallery/jane-doe/07.webp",
+  "koleda": "assets/gallery/koleda/02.webp",
+  "lighter": "assets/gallery/lighter/04.webp",
+  "lucia": "assets/gallery/lucia/04.webp",
+  "lucy": "assets/gallery/lucy/01.webp",
+  "lycaon": "assets/gallery/lycaon/03.webp",
+  "manato": "assets/gallery/manato/04.webp",
+  "miyabi": "assets/gallery/miyabi/05.webp",
+  "nekomata": "assets/gallery/nekomata/02.webp",
+  "nicole-demara": "assets/gallery/nicole-demara/05.webp",
+  "norma": "assets/gallery/norma/05.webp",
+  "orphie-and-magus": "assets/gallery/orphie-and-magus/05.webp",
+  "piper": "assets/gallery/piper/01.webp",
+  "promeia": "assets/gallery/promeia/04.webp",
+  "pulchra": "assets/gallery/pulchra/02.webp",
+  "pyrois": "assets/gallery/pyrois/05.webp",
+  "qingyi": "assets/gallery/qingyi/03.webp",
+  "rina": "assets/gallery/rina/02.webp",
+  "seed": "assets/gallery/seed/06.webp",
+  "soldier-11": "assets/gallery/soldier-11/01.webp",
+  "soukaku": "assets/gallery/soukaku/02.webp",
+  "starlight-billy": "assets/gallery/starlight-billy/04.webp",
+  "sunna": "assets/gallery/sunna/01.webp",
+  "trigger": "assets/gallery/trigger/01.webp",
+  "ukinami-yuzuha": "assets/gallery/ukinami-yuzuha/07.webp",
+  "velina": "assets/gallery/velina/05.webp",
+  "vivian": "assets/gallery/vivian/08.webp",
+  "yanagi": "assets/gallery/yanagi/03.webp",
+  "ye-shunguang": "assets/gallery/ye-shunguang/08.webp",
+  "yidhari": "assets/gallery/yidhari/05.webp",
+  "zhao": "assets/gallery/zhao/04.webp",
+  "zhu-yuan": "assets/gallery/zhu-yuan/03.webp",
 });
 const SAFE_THEME = [224, 180, 28];
 const CATEGORY_LINKS = [
@@ -79,6 +126,73 @@ function useReducedMotion() {
     };
   }, []);
   return reduced;
+}
+
+// Characters with pre-split parallax layers
+const PARALLAX_CHARS = new Set([
+  "miyabi","burnice","ellen","jane-doe","anby",
+  "nicole-demara","lighter","caesar","lycaon","koleda"
+]);
+
+function ParallaxArt({ character }) {
+  const containerRef = useRef(null);
+  const id = character?.id;
+  const hasLayers = id && PARALLAX_CHARS.has(id);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || !hasLayers) return;
+    const bg = el.querySelector('.parallax-bg');
+    const fg = el.querySelector('.parallax-fg');
+    if (!bg || !fg) return;
+
+    let rafId = 0;
+    let mx = 0, my = 0;
+
+    function tick() {
+      bg.style.transform = `translate3d(${mx * -8}px, ${my * -6}px, 0) scale(1.04)`;
+      fg.style.transform = `translate3d(${mx * 16}px, ${my * 12}px, 0) scale(1.01)`;
+      rafId = 0;
+    }
+    function onMove(e) {
+      const rect = el.getBoundingClientRect();
+      mx = (e.clientX - rect.left) / rect.width - 0.5;
+      my = (e.clientY - rect.top) / rect.height - 0.5;
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    }
+    function onLeave() {
+      mx = 0; my = 0;
+      if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+      bg.style.transform = 'translate3d(0,0,0) scale(1.04)';
+      fg.style.transform = 'translate3d(0,0,0) scale(1.01)';
+    }
+    el.addEventListener('mousemove', onMove, { passive: true });
+    el.addEventListener('mouseleave', onLeave);
+    return () => {
+      el.removeEventListener('mousemove', onMove);
+      el.removeEventListener('mouseleave', onLeave);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [hasLayers, id]);
+
+  if (!character) return null;
+
+  if (hasLayers) {
+    const base = `assets/gallery/${id}/layers`;
+    return (
+      <div className="agent-stage-art agent-stage-art--parallax" ref={containerRef} aria-hidden="true">
+        <img className="parallax-bg" src={`${base}/bg.webp`} alt="" />
+        <img className="parallax-fg" src={`${base}/fg.webp`} alt="" />
+      </div>
+    );
+  }
+
+  // Fallback: single image
+  return (
+    <div className="agent-stage-art" aria-hidden="true">
+      <AgentImage character={character} kind="art" decorative />
+    </div>
+  );
 }
 
 function AgentImage({ character, kind, decorative = false }) {
@@ -221,10 +335,10 @@ function CharacterPreview({ character, faction, index, favorite, onToggleFavorit
       data-character-art-path={art.path || undefined}
       data-portrait-source={portrait.source}
     >
-      {character ? <div className="agent-stage-art" aria-hidden="true"><AgentImage character={character} kind="art" decorative /></div> : null}
+      {character ? <ParallaxArt character={character} key={`art-${character.id}`} /> : null}
       <div className="agent-stage-visual">
         <BackgroundHUD character={character} index={index} artSource={art.source} />
-        <div className={`agent-stage-portrait${compact ? " is-compact-card" : ""}`} id="selectedAgentPortrait" data-stage-agent-id={character?.id || undefined} data-portrait-mode={compact ? "card-fallback" : "portrait"}>
+        <div className={`agent-stage-portrait${compact ? " is-compact-card" : ""}`} key={`portrait-${character?.id}`} id="selectedAgentPortrait" data-stage-agent-id={character?.id || undefined} data-portrait-mode={compact ? "card-fallback" : "portrait"}>
           {character ? <AgentImage character={character} kind="portrait" decorative /> : <span className="agent-empty-mark">NO SIGNAL</span>}
         </div>
         <div className="agent-stage-signal" aria-hidden="true">
@@ -393,6 +507,34 @@ function StoriesApp() {
     "--character-ambient": `rgb(${theme.css} / .22)`,
     "--character-line": `rgb(${theme.css} / .42)`,
   };
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const body = document.body;
+    root.style.setProperty('--character-theme-rgb', theme.css);
+    root.style.setProperty('--selected-agent-theme', `rgb(${theme.css})`);
+    // Override accent system on BODY to beat data-theme specificity
+    body.style.setProperty('--accent', `rgb(${theme.css})`);
+    body.style.setProperty('--accent-soft', `rgb(${theme.css} / .12)`);
+    body.style.setProperty('--accent-dim', `rgb(${theme.css} / .18)`);
+    body.style.setProperty('--accent-line', `rgb(${theme.css} / .38)`);
+    body.style.setProperty('--amber', `rgb(${theme.css})`);
+    body.style.setProperty('--amber-dim', `rgb(${theme.css} / .18)`);
+    body.style.setProperty('--amber-line', `rgb(${theme.css} / .38)`);
+    body.style.setProperty('--hooxi-confirm', `rgb(${theme.css})`);
+    return () => {
+      root.style.removeProperty('--character-theme-rgb');
+      root.style.removeProperty('--selected-agent-theme');
+      body.style.removeProperty('--accent');
+      body.style.removeProperty('--accent-soft');
+      body.style.removeProperty('--accent-dim');
+      body.style.removeProperty('--accent-line');
+      body.style.removeProperty('--amber');
+      body.style.removeProperty('--amber-dim');
+      body.style.removeProperty('--amber-line');
+      body.style.removeProperty('--hooxi-confirm');
+    };
+  }, [theme.css]);
 
   useEffect(() => {
     if (visibleCharacters.some((character) => character.id === selectedId)) return;

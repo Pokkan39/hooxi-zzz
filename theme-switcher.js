@@ -17,8 +17,10 @@
       return p;
     }
     var stored = localStorage.getItem(LS_KEY);
+    // 迁移：旧默认 warehouse → 新默认 ink-wash
+    if (stored === "warehouse") { localStorage.removeItem(LS_KEY); stored = null; }
     if (stored && THEMES.indexOf(stored) >= 0) return stored;
-    return "warehouse";
+    return "ink-wash";
   }
 
   function apply(t) {

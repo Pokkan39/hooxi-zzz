@@ -32,7 +32,7 @@
           version: x.version || '', type: x.routeType || x.type || '',
           chapter: x.chapter || '', faction: x.faction || '',
           characters: Array.isArray(x.characters) ? x.characters : [],
-          cover: x.cover || '', lane
+          cover: x.cover || '', lane: lane
         });
       }
     }
@@ -334,15 +334,20 @@
       raf = null;
     }
     var zone = (zoneSel && host.closest(zoneSel)) || host;
+    var radius = 200;
     zone.addEventListener('pointermove', function (e) {
       var r = host.getBoundingClientRect();
       px = ((e.clientX - r.left) / r.width * 100).toFixed(1);
       py = ((e.clientY - r.top) / r.height * 100).toFixed(1);
-      host.classList.add('is-live');
+      if (!host.classList.contains('is-live')) {
+        host.style.setProperty('--r', radius + 'px');
+        host.classList.add('is-live');
+      }
       if (!raf) raf = requestAnimationFrame(paint);
     }, { passive: true });
     zone.addEventListener('pointerleave', function () {
       host.classList.remove('is-live');
+      host.style.removeProperty('--r');
     }, { passive: true });
   }
 
@@ -432,27 +437,92 @@
     if (!raw) raw = [224, 180, 28];
     if (!source) source = faction && hexToRgb(faction.theme) ? 'faction' : 'fallback';
 
+    // 提取多色用于渐变
+    var colorL = rec && validRgb(rec.l) ? rec.l : raw;
+    var colorC = rec && validRgb(rec.c) ? rec.c : raw;
+    var colorI = rec && validRgb(rec.i) ? rec.i : colorL;
+
     var accent = liftAccent(raw);
     var dark = [15, 18, 22], light = [245, 246, 242];
     var onAccent = contrastRatio(dark, accent) >= contrastRatio(light, accent) ? dark : light;
+
+    // 渐变色：将影画色混入深色基底
+    var grad1 = mixRgb([6, 8, 12], colorL, 0.18);
+    var grad2 = mixRgb([10, 12, 18], colorC, 0.14);
+    var grad3 = mixRgb([5, 6, 10], colorI, 0.10);
+    var pageBg = 'rgb(' + mixRgb([8, 10, 15], raw, 0.14).join(' ') + ')';
+
+    var gradient = 'radial-gradient(ellipse 120% 80% at 70% 15%,' +
+      'rgb(' + mixRgb([12, 14, 20], colorL, 0.22).join(' ') + ' / .6),' +
+      'transparent 60%),' +
+      'radial-gradient(ellipse 90% 60% at 20% 80%,' +
+      'rgb(' + mixRgb([10, 12, 16], colorC, 0.18).join(' ') + ' / .5),' +
+      'transparent 50%),' +
+      'linear-gradient(160deg,' +
+      'rgb(' + grad1.join(' ') + ') 0%,' +
+      'rgb(' + grad2.join(' ') + ') 50%,' +
+      'rgb(' + grad3.join(' ') + ') 100%)';
+
     var values = {
       '--character-accent': 'rgb(' + accent.join(' ') + ')',
       '--character-accent-rgb': accent.join(','),
       '--character-ambient': 'rgb(' + raw.join(' ') + ' / .28)',
       '--character-on-accent': 'rgb(' + onAccent.join(' ') + ')',
-      '--character-page-bg': 'rgb(' + mixRgb([8, 10, 15], raw, 0.14).join(' ') + ')',
-      '--character-surface': 'rgb(' + mixRgb([15, 19, 27], raw, 0.11).join(' ') + ' / .92)',
-      '--character-surface-strong': 'rgb(' + mixRgb([21, 26, 36], raw, 0.15).join(' ') + ' / .96)',
+      '--character-page-bg': pageBg,
+      '--character-surface': 'rgb(' + mixRgb([15, 19, 27], raw, 0.11).join(' ') + ' / .68)',
+      '--character-surface-strong': 'rgb(' + mixRgb([21, 26, 36], raw, 0.15).join(' ') + ' / .76)',
       '--character-line': 'rgb(' + accent.join(' ') + ' / .38)',
       '--character-text': 'rgb(238 241 245)',
       '--character-text-muted': 'rgb(190 198 210)',
       '--character-theme': 'rgb(' + accent.join(' ') + ')',
-      '--archive-accent': 'rgb(' + accent.join(' ') + ')'
+      '--archive-accent': 'rgb(' + accent.join(' ') + ')',
+      '--char-glow-a': 'rgb(' + accent[0] + ' ' + accent[1] + ' ' + accent[2] + ' / .50)',
+      '--char-glow-b': 'rgb(' + colorC[0] + ' ' + colorC[1] + ' ' + colorC[2] + ' / .38)',
+      '--char-glow-c': 'rgb(' + colorL[0] + ' ' + colorL[1] + ' ' + colorL[2] + ' / .30)',
+      '--char-glow-d': 'rgb(' + colorI[0] + ' ' + colorI[1] + ' ' + colorI[2] + ' / .25)'
     };
     [document.body, screen].forEach(function (target) {
       Object.keys(values).forEach(function (name) { target.style.setProperty(name, values[name]); });
+      target.style.setProperty('background', gradient, 'important');
       target.dataset.characterColorSource = source;
     });
+    // 内容区：顶部从角色色渐变过渡到深色，消除与 hero 的割裂
+    var detailPage = document.querySelector('.character-detail-page');
+    if (detailPage) {
+      var topFade = mixRgb([12, 14, 20], raw, 0.32);
+      var midFade = mixRgb([10, 12, 18], raw, 0.16);
+      var detailGrad = 'linear-gradient(180deg,' +
+        'rgb(' + topFade.join(' ') + ') 0%,' +
+        'rgb(' + midFade.join(' ') + ') 180px,' +
+        'transparent 400px)';
+      detailPage.style.setProperty('background', detailGrad, 'important');
+    }
+    // 导航按钮可见性：inline style 强制覆盖所有 CSS 级联冲突
+    document.querySelectorAll('.zzz-o-nav-item').forEach(function (item) {
+      if (item.classList.contains('is-active')) {
+        item.style.setProperty('color', 'rgb(' + onAccent.join(' ') + ')', 'important');
+        item.style.setProperty('background', 'rgb(' + accent.join(' ') + ')', 'important');
+      } else {
+        item.style.setProperty('color', 'rgb(238 241 245)', 'important');
+        item.style.setProperty('background', 'rgba(10,10,10,.78)', 'important');
+      }
+    });
+    // 动态光效 DOM 注入
+    if (!document.querySelector('.char-glow-a')) {
+      var glowA = document.createElement('div');
+      glowA.className = 'char-glow char-glow-a';
+      var glowB = document.createElement('div');
+      glowB.className = 'char-glow char-glow-b';
+      var glowC = document.createElement('div');
+      glowC.className = 'char-glow char-glow-c';
+      document.body.prepend(glowC, glowB, glowA);
+    }
+    var ga = document.querySelector('.char-glow-a');
+    var gb = document.querySelector('.char-glow-b');
+    var gc = document.querySelector('.char-glow-c');
+    if (ga) ga.style.background = 'radial-gradient(ellipse 80% 65% at 75% 15%,' + values['--char-glow-a'] + ',transparent 65%),radial-gradient(ellipse 60% 70% at 10% 80%,' + values['--char-glow-b'] + ',transparent 60%)';
+    if (gb) gb.style.background = 'radial-gradient(ellipse 70% 55% at 25% 35%,' + values['--char-glow-c'] + ',transparent 55%),radial-gradient(ellipse 50% 65% at 85% 65%,' + values['--char-glow-d'] + ',transparent 55%)';
+    if (gc) gc.style.background = 'radial-gradient(ellipse 90% 80% at 50% 45%,' + values['--char-glow-b'] + ',transparent 75%)';
   }
 
   function updateCharacterArtCredits(resolved) {

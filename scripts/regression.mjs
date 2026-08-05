@@ -1693,234 +1693,108 @@ for (const representative of characterRepresentatives) {
   await context.close();
 }
 
-const approvedHomeHeroSources = [
-  'assets/hero/zzz-random-play-keyart.webp',
-  'assets/gallery/miyabi/05.webp',
-  'assets/gallery/harumasa/04.webp',
-  'assets/gallery/aria/01.webp',
+const approvedHomeHeroActs = [
+  'amusement-island-rescue','angel-muse-delusion','art-is-bangboo','artist-profile-book',
+  'bangboo-genius-chip','beyond-sight','blade-shadow-coop','delusion-resonance',
+  'extreme-judgment-trial','hollow-hunt-coronation','lame-crow-chronicle','lido-strange-tales',
+  'mock-exam-comeback','old-dream-encore','silver-revival','simulated-annihilation',
+  'sleepwalker-confession','tianshu-intel-atlas','wish-proxy-station',
 ];
 {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion:'no-preference' });
   const page = await context.newPage();
   await page.goto(`${base}/index.html`, { waitUntil:'networkidle' });
-  const structure = await page.evaluate(({ approvedSources }) => {
-    const slides = [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')];
-    const pause = document.querySelector('#heroCarouselPause');
-    const pauseBox = pause?.getBoundingClientRect();
-    const indexBox = document.querySelector('#heroCarouselIndex');
-    const sources = slides.map(slide => slide.querySelector('img')?.getAttribute('src') || '');
-    const sourcePolicies = sources.map((source, index) => {
-      try {
-        const url = new URL(source, location.href);
-        const assetPath = url.pathname.replace(/^\/+/, '');
-        return {
-          source,
-          assetPath,
-          sameOrigin:url.origin === location.origin,
-          insideAssets:url.pathname.startsWith('/assets/'),
-          registeredPath:assetPath === approvedSources[index],
-          resolved:url.href,
-        };
-      } catch {
-        return { source, assetPath:'', sameOrigin:false, insideAssets:false, registeredPath:false, resolved:'' };
-      }
-    });
+  const structure = await page.evaluate(({ approvedActs }) => {
+    const art = document.querySelector('#heroActImg');
+    const source = art?.getAttribute('src') || '';
+    let policy = { source, assetPath:'', sameOrigin:false, insideAssets:false, registeredPath:false };
+    try {
+      const url = new URL(source, location.href);
+      const assetPath = url.pathname.replace(/^\/+/, '');
+      const slug = assetPath.split('/').pop().replace(/\.webp$/i, '');
+      policy = {
+        source,
+        assetPath,
+        sameOrigin:url.origin === location.origin,
+        insideAssets:url.pathname.startsWith('/assets/'),
+        registeredPath:assetPath.startsWith('assets/hero/acts/') && approvedActs.includes(slug),
+      };
+    } catch {}
     return {
-      slideCount:slides.length,
-      sources,
-      sourcePolicies,
-      activeCount:slides.filter(slide => slide.classList.contains('is-active')).length,
-      indexCount:document.querySelectorAll('#heroCarouselIndex').length,
-      indexTagName:indexBox?.tagName || '',
-      indexRole:indexBox?.getAttribute('role') || '',
-      indexAriaLabel:indexBox?.getAttribute('aria-label') || '',
-      indexAriaLive:indexBox?.getAttribute('aria-live'),
-      indexNestedLiveCount:indexBox?.querySelectorAll('[aria-live]').length || 0,
+      artCount:document.querySelectorAll('#heroActImg').length,
+      policy,
+      altText:(art?.getAttribute('alt') || '').trim(),
+      captionCount:document.querySelectorAll('#heroActName').length,
+      captionText:(document.querySelector('#heroActName')?.textContent || '').trim(),
       heroLiveCount:document.querySelectorAll('#homeHeroArt [aria-live]').length,
-      pauseCount:document.querySelectorAll('#heroCarouselPause').length,
-      pauseTarget:pauseBox ? { width:pauseBox.width, height:pauseBox.height } : null,
-      pauseName:(pause?.getAttribute('aria-label') || pause?.textContent || '').trim(),
-      legacyControls:['#heroCarouselPrev','#heroCarouselNext','#heroCarouselDots','.hero-carousel-dot'].filter(selector => document.querySelector(selector)),
+      // 轮播合同已废除：不得再出现任何换片控件或分层残留
+      legacyCarousel:[
+        '#heroCarouselTrack','#heroCarouselPause','#heroCarouselIndex','#heroCarouselStatus',
+        '#heroCarouselPrev','#heroCarouselNext','#heroCarouselDots','.hero-carousel-dot',
+        '#heroThumbstrip','.hero-thumb','[data-hero-slide]','#heroLayerBg','#heroLayerFg',
+      ].filter(selector => document.querySelector(selector)),
       laneJumpCount:document.querySelectorAll('.home-lane-jump').length,
       laneMoreCount:document.querySelectorAll('.home-lane-card.more').length,
     };
-  }, { approvedSources:approvedHomeHeroSources });
-  record('home-has-four-local-slides-and-only-index-pause-controls',
-    structure.slideCount === approvedHomeHeroSources.length
-      && structure.sourcePolicies.length === approvedHomeHeroSources.length
-      && structure.sourcePolicies.every(policy => policy.source && policy.sameOrigin && policy.insideAssets && policy.registeredPath)
-      && structure.activeCount === 1
-      && structure.indexCount === 1
-      && structure.pauseCount === 1
-      && structure.pauseTarget?.width >= 44
-      && structure.pauseTarget?.height >= 44
-      && structure.pauseName.length > 0
-      && structure.legacyControls.length === 0
+  }, { approvedActs:approvedHomeHeroActs });
+  record('home-has-single-registered-local-act-banner-and-no-carousel-controls',
+    structure.artCount === 1
+      && structure.policy.source
+      && structure.policy.sameOrigin
+      && structure.policy.insideAssets
+      && structure.policy.registeredPath
+      && structure.altText.length > 0
+      && structure.captionCount === 1
+      && structure.captionText.length > 0
+      && structure.heroLiveCount === 0
+      && structure.legacyCarousel.length === 0
       && structure.laneJumpCount === 0
       && structure.laneMoreCount === 0,
     structure);
 
-  const pauseExists = await page.locator('#heroCarouselPause').count() === 1;
-  const activeIndex = () => page.evaluate(() => [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')].findIndex(slide => slide.classList.contains('is-active')));
-  const carouselChrome = () => page.evaluate(() => {
-    const index = document.querySelector('#heroCarouselIndex');
-    const pause = document.querySelector('#heroCarouselPause');
-    const status = document.querySelector('#heroCarouselStatus');
-    const describedBy = (pause?.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
-    const active = [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')]
-      .findIndex(slide => slide.classList.contains('is-active'));
-    return {
-      active,
-      indexTagName:index?.tagName || '',
-      indexRole:index?.getAttribute('role') || '',
-      indexLabel:index?.getAttribute('aria-label') || '',
-      indexAriaLive:index?.getAttribute('aria-live'),
-      indexNestedLiveCount:index?.querySelectorAll('[aria-live]').length || 0,
-      heroLiveCount:document.querySelectorAll('#homeHeroArt [aria-live]').length,
-      pausePressed:pause?.getAttribute('aria-pressed') || '',
-      pauseDescribesStatus:!!status && describedBy.includes(status.id),
-      statusExposed:!!status && !status.hidden && status.getAttribute('aria-hidden') !== 'true',
-      statusText:(status?.textContent || '').replace(/\s+/g, ' ').trim(),
+  // 单图不再自动换片：等待超过原轮播周期后 src 必须保持不变
+  const currentSrc = () => page.evaluate(() => document.querySelector('#heroActImg')?.getAttribute('src') || '');
+  const srcBefore = await currentSrc();
+  await page.waitForTimeout(8_100);
+  const srcAfter = await currentSrc();
+  record('home-act-banner-does-not-auto-rotate',
+    !!srcBefore && srcBefore === srcAfter,
+    { srcBefore, srcAfter });
+
+  // 文案与活动名角标必须完整落在视口内（视差位移不得把它们推出边界）
+  const layout = await page.evaluate(() => {
+    const box = selector => {
+      const el = document.querySelector(selector);
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { left:Math.round(r.left), right:Math.round(r.right), top:Math.round(r.top) };
     };
+    return { copy:box('.hero-copy'), title:box('#heroTitle'), caption:box('#heroActName'), viewportWidth:window.innerWidth };
   });
-  const matchesCurrentIndexLabel = state => state.active >= 0
-    && new RegExp(`^当前第\\s*${state.active + 1}\\s*张\\D*共\\s*4\\s*张`).test(state.indexLabel);
-  const indexHasNoStatusLiveSemantics = state => !!state.indexTagName
-    && state.indexTagName !== 'OUTPUT'
-    && state.indexRole.toLowerCase() !== 'status'
-    && state.indexAriaLive === null
-    && state.indexNestedLiveCount === 0;
-  const temporaryPauseStatus = (state, reason) => state.pauseDescribesStatus
-    && state.statusExposed
-    && state.statusText.includes(reason)
-    && /暂时暂停/.test(state.statusText)
-    && /自动继续|条件解除/.test(state.statusText);
-  const playingStatus = state => state.pauseDescribesStatus
-    && state.statusExposed
-    && /正在自动播放/.test(state.statusText);
-  if (!pauseExists || structure.slideCount !== 4) {
-    record('home-carousel-index-is-static-and-describes-current-slide', false, { reason:'目标 pause/index/4-slide 结构尚未实现', structure });
-    record('home-pause-reason-matrix-and-stacked-release', false, { reason:'目标 pause/index/4-slide 结构尚未实现', structure });
-  } else {
-    const samples = {};
-    const indexStart = await carouselChrome();
-    let autoAdvanced = false;
-    try {
-      await page.waitForFunction(before => [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')]
-        .findIndex(slide => slide.classList.contains('is-active')) !== before, indexStart.active, { timeout:9_500 });
-      autoAdvanced = true;
-    } catch {}
-    const indexAfterAuto = await carouselChrome();
-    record('home-carousel-index-is-static-and-describes-current-slide',
-      indexHasNoStatusLiveSemantics(structure)
-        && structure.heroLiveCount === 0
-        && indexHasNoStatusLiveSemantics(indexStart)
-        && matchesCurrentIndexLabel(indexStart)
-        && autoAdvanced
-        && indexHasNoStatusLiveSemantics(indexAfterAuto)
-        && indexAfterAuto.heroLiveCount === 0
-        && matchesCurrentIndexLabel(indexAfterAuto),
-      { structure, indexStart, indexAfterAuto, autoAdvanced });
+  record('home-hero-copy-and-act-caption-stay-inside-viewport',
+    !!layout.copy && !!layout.title && !!layout.caption
+      && layout.copy.left >= 0
+      && layout.title.left >= 0
+      && layout.caption.left >= 0
+      && layout.caption.right <= layout.viewportWidth,
+    layout);
 
-    const stayed = async (label, action, release) => {
-      await action();
-      const before = await activeIndex();
-      const chrome = await carouselChrome();
-      await page.waitForTimeout(8_100);
-      const after = await activeIndex();
-      samples[label] = { before, after, chrome };
-      await release?.();
-      return before >= 0 && before === after;
+  // 深色满幅横幅上文案必须为浅色，否则不可读
+  const contrast = await page.evaluate(() => {
+    const lum = selector => {
+      const el = document.querySelector(selector);
+      if (!el) return null;
+      const m = getComputedStyle(el).color.match(/[\d.]+/g);
+      if (!m) return null;
+      const [r, g, b] = m.map(Number);
+      return Math.round(0.2126 * r + 0.7152 * g + 0.0722 * b);
     };
-    const clickPauseWithoutFocus = () => page.evaluate(() => document.querySelector('#heroCarouselPause')?.click());
-    const user = await stayed('user', clickPauseWithoutFocus, clickPauseWithoutFocus);
-    const hover = await stayed('hover', () => page.locator('#homeHeroArt').hover(), () => page.locator('#finder').hover());
-
-    await page.locator('#heroCarouselPause').focus();
-    const focusBefore = await activeIndex();
-    const focusChrome = await carouselChrome();
-    await page.waitForTimeout(8_100);
-    const focusAfter = await activeIndex();
-    await page.keyboard.press('Enter');
-    const userWithFocusChrome = await carouselChrome();
-    await page.keyboard.press('Enter');
-    const userReleasedWhileFocusedChrome = await carouselChrome();
-    await page.locator('#homeHeroArt').hover();
-    const focusOutScrollY = await page.evaluate(() => window.scrollY);
-    const finderControl = page.locator('#finder a[href],#finder button').first();
-    await finderControl.evaluate(element => element.focus({ preventScroll:true }));
-    const focusOutState = await page.evaluate(scrollYBefore => {
-      const hero = document.querySelector('#homeHeroArt');
-      return {
-        heroHovered:hero?.matches(':hover') || false,
-        focusOutsideHero:!!document.activeElement && !hero?.contains(document.activeElement),
-        activeElement:document.activeElement?.outerHTML.slice(0, 160) || '',
-        scrollYBefore,
-        scrollYAfter:window.scrollY,
-      };
-    }, focusOutScrollY);
-    const focusOutChrome = await carouselChrome();
-    const focusOutBefore = await activeIndex();
-    await page.waitForTimeout(8_100);
-    const focusOutAfter = await activeIndex();
-    const focusOutAfterState = await page.evaluate(() => ({
-      heroHovered:document.querySelector('#homeHeroArt')?.matches(':hover') || false,
-      scrollY:window.scrollY,
-    }));
-    await page.locator('#finder').hover();
-    const hoverReleasedChrome = await carouselChrome();
-    const hoverReleasedState = await page.evaluate(() => ({
-      heroHovered:document.querySelector('#homeHeroArt')?.matches(':hover') || false,
-    }));
-    const focus = focusBefore >= 0
-      && focusBefore === focusAfter
-      && temporaryPauseStatus(focusChrome, '焦点位于 Hero')
-      && userWithFocusChrome.pausePressed === 'true'
-      && temporaryPauseStatus(userWithFocusChrome, '焦点位于 Hero')
-      && userReleasedWhileFocusedChrome.pausePressed === 'false'
-      && temporaryPauseStatus(userReleasedWhileFocusedChrome, '焦点位于 Hero')
-      && !playingStatus(userReleasedWhileFocusedChrome)
-      && focusOutState.heroHovered
-      && focusOutState.focusOutsideHero
-      && focusOutState.scrollYAfter === focusOutState.scrollYBefore
-      && focusOutAfterState.heroHovered
-      && focusOutAfterState.scrollY === focusOutState.scrollYBefore
-      && temporaryPauseStatus(focusOutChrome, '指针悬停')
-      && !playingStatus(focusOutChrome)
-      && focusOutBefore >= 0 && focusOutBefore === focusOutAfter
-      && !hoverReleasedState.heroHovered
-      && playingStatus(hoverReleasedChrome);
-    samples.focus = {
-      focusBefore, focusAfter, focusChrome, userWithFocusChrome,
-      userReleasedWhileFocusedChrome, focusOutState, focusOutChrome,
-      focusOutBefore, focusOutAfter, focusOutAfterState,
-      hoverReleasedState, hoverReleasedChrome,
-    };
-
-    const hidden = await stayed('hidden', () => page.evaluate(() => {
-      Object.defineProperty(document, 'hidden', { configurable:true, value:true });
-      document.dispatchEvent(new Event('visibilitychange'));
-    }), () => page.evaluate(() => {
-      Object.defineProperty(document, 'hidden', { configurable:true, value:false });
-      document.dispatchEvent(new Event('visibilitychange'));
-    }));
-    await clickPauseWithoutFocus();
-    await page.locator('#homeHeroArt').hover();
-    const stackedBefore = await activeIndex();
-    await page.locator('#finder').hover({ force:true });
-    await page.waitForTimeout(8_100);
-    const stackedAfterHoverRelease = await activeIndex();
-    await clickPauseWithoutFocus();
-    const resumeBefore = await activeIndex();
-    await page.waitForTimeout(8_100);
-    const resumeAfter = await activeIndex();
-    samples.stacked = { stackedBefore, stackedAfterHoverRelease, resumeBefore, resumeAfter };
-    record('home-pause-reason-matrix-and-stacked-release',
-      user && hover && temporaryPauseStatus(samples.hover.chrome, '指针悬停') && focus && hidden
-        && stackedBefore === stackedAfterHoverRelease
-        && resumeBefore >= 0 && resumeAfter >= 0 && resumeBefore !== resumeAfter,
-      samples);
-  }
+    return { title:lum('#heroTitle'), intro:lum('#heroIntro') };
+  });
+  record('home-hero-copy-is-light-on-dark-full-bleed-art',
+    contrast.title !== null && contrast.intro !== null
+      && contrast.title >= 180 && contrast.intro >= 180,
+    contrast);
   await context.close();
 }
 
@@ -1989,10 +1863,10 @@ const approvedHomeHeroSources = [
   const context = await browser.newContext({ viewport:{ width:1440, height:900 }, reducedMotion:'reduce' });
   const page = await context.newPage();
   await page.goto(`${base}/index.html`, { waitUntil:'networkidle' });
-  const before = await page.evaluate(() => [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')].findIndex(slide => slide.classList.contains('is-active')));
+  const before = await page.evaluate(() => document.querySelector('#heroActImg')?.getAttribute('src') || '');
   await page.waitForTimeout(8_100);
-  const after = await page.evaluate(() => [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')].findIndex(slide => slide.classList.contains('is-active')));
-  record('home-reduced-motion-stays-on-first-keyart', before === 0 && after === 0, { before, after });
+  const after = await page.evaluate(() => document.querySelector('#heroActImg')?.getAttribute('src') || '');
+  record('home-reduced-motion-keeps-single-act-banner', !!before && before === after, { before, after });
   await context.close();
 }
 

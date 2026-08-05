@@ -37,7 +37,6 @@
 
     const finePointerQuery=window.matchMedia('(hover:hover) and (pointer:fine)');
     const root=document.body;
-    const track=hero.querySelector('.hero-carousel-track');
     let enabled=false;
     let frame=0;
     let pointerX=0;
@@ -101,9 +100,6 @@
       if(document.hidden)reset();
     });
     finePointerQuery.addEventListener('change',sync);
-    if(track&&'MutationObserver' in window){
-      new MutationObserver(reset).observe(track,{attributes:true,attributeFilter:['class'],subtree:true});
-    }
     sync();
   };
 

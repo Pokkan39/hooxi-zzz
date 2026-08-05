@@ -15,7 +15,9 @@
     ".agent-entry",           // 角色条目（多页）
     ".path-card figure",      // 路径卡图片区
     ".episode figure",        // 剧集条目图片
-    ".faction-entry"          // 阵营条目
+    ".faction-entry",         // 阵营条目
+    ".character-screen",      // 角色页 hero 立绘区
+    ".character-gallery-item" // 角色页图集项
   ];
 
   function autoTag() {
@@ -53,6 +55,24 @@
   function init() {
     autoTag();
     injectChromatic();
+    // P5: 为角色卡片设置 --card-index 变量，驱动逐个入场延迟
+    document.querySelectorAll('.agent-roster-card').forEach(function(card, i) {
+      card.style.setProperty('--card-index', i);
+    });
+
+    // 背景漂移：鼠标驱动 --bg-drift-x / --bg-drift-y
+    (function initBgDrift() {
+      var stage = document.querySelector('.archive-stories .agent-stage-art');
+      if (!stage) return;
+      var parent = stage.closest('.archive-stories') || document.documentElement;
+
+      document.addEventListener('pointermove', function(e) {
+        var nx = (e.clientX / window.innerWidth) * 2 - 1;
+        var ny = (e.clientY / window.innerHeight) * 2 - 1;
+        parent.style.setProperty('--bg-drift-x', (nx * 12) + 'px');
+        parent.style.setProperty('--bg-drift-y', (ny * 8) + 'px');
+      }, { passive: true });
+    })();
   }
 
   if (document.readyState === "loading") {

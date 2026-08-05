@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>卡雕分层样张 — 拟境湮灭战</title>
+<style>
+*{margin:0;box-sizing:border-box}
+body{background:#0a0a0e;color:#eee;font-family:system-ui;display:flex;flex-direction:column;align-items:center;padding:32px 16px;gap:24px}
+h1{font-size:18px;letter-spacing:.1em;color:#d8fa00}
+.info{font-size:13px;color:#888;max-width:720px;text-align:center;line-height:1.6}
+
+/* 卡雕视差容器 */
+.carve-stage{
+  position:relative;
+  width:min(90vw, 1100px);
+  aspect-ratio:2200/928;
+  overflow:hidden;
+  border:1px solid #333;
+  cursor:crosshair;
+  background:#050508;
+}
+.carve-layer{
+  position:absolute;
+  inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  will-change:transform;
+  transition:transform .15s ease-out;
+}
+/* 远景最慢 */
+.carve-layer--far{z-index:0;scale:1.08}
+/* 中景 */
+.carve-layer--mid{z-index:1;scale:1.05}
+/* 近景最快 */
+.carve-layer--near{z-index:2;scale:1.03}
+
+/* 层间投影（用 drop-shadow 模拟物理间距） */
+.carve-layer--mid{filter:drop-shadow(-4px 4px 8px rgba(0,0,0,.6))}
+.carve-layer--near{filter:drop-shadow(-6px 6px 12px rgba(0,0,0,.7))}
+
+/* 分层展示 */
+.layers-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.layer-card{text-align:center;font-size:11px;color:#aaa}
+.layer-card img{display:block;width:320px;height:auto;border:1px solid #333;background:repeating-conic-gradient(#1a1a1e 0% 25%,#222226 0% 50%) 0 0/16px 16px}
+.layer-card span{display:block;margin-top:6px}
+</style>
+</head>
+<body>
+
+<h1>卡雕分层样张 · 拟境湮灭战</h1>
+<p class="info">鼠标移动查看三层视差景深效果。每层按色彩/亮度深度分割，硬边切割模拟纸雕工艺。</p>
+
+<div class="carve-stage" id="stage">
+  <img class="carve-layer carve-layer--far" src="assets/hero/acts/simulated-annihilation/far.webp" alt="远景：红色漩涡底纹">
+  <img class="carve-layer carve-layer--mid" src="assets/hero/acts/simulated-annihilation/mid.webp" alt="中景：boss剪影与蓝色能量">
+  <img class="carve-layer carve-layer--near" src="assets/hero/acts/simulated-annihilation/near.webp" alt="近景：邦布与激光">
+</div>
+
+<h2 style="font-size:14px;color:#888;margin-top:16px">各层独立展示（棋盘底 = 透明区域）</h2>
+<div class="layers-row">
+  <div class="layer-card">
+    <img src="assets/hero/acts/simulated-annihilation/far.webp" alt="">
+    <span>Layer 0 · 远景 (58%)</span>
+  </div>
+  <div class="layer-card">
+    <img src="assets/hero/acts/simulated-annihilation/mid.webp" alt="">
+    <span>Layer 1 · 中景 (38%)</span>
+  </div>
+  <div class="layer-card">
+    <img src="assets/hero/acts/simulated-annihilation/near.webp" alt="">
+    <span>Layer 2 · 近景 (3%)</span>
+  </div>
+</div>
+
+<script>
+const stage = document.getElementById('stage');
+const layers = stage.querySelectorAll('.carve-layer');
+const rates = [-0.08, 0.14, 0.32]; // 远慢中快近最快
+
+stage.addEventListener('mousemove', e => {
+  const r = stage.getBoundingClientRect();
+  const nx = ((e.clientX - r.left) / r.width) * 2 - 1;
+  const ny = ((e.clientY - r.top) / r.height) * 2 - 1;
+  layers.forEach((layer, i) => {
+    const dx = nx * 40 * rates[i];
+    const dy = ny * 20 * rates[i];
+    layer.style.transform = `translate(${dx}px, ${dy}px)`;
+  });
+});
+
+stage.addEventListener('mouseleave', () => {
+  layers.forEach(layer => { layer.style.transform = 'translate(0,0)'; });
+});
+</script>
+
+</body>
+</html>

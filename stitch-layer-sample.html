@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>整页缝合层 · 样板对照 | HOOXI</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="stitch-layer-sample.css">
+</head>
+<body class="sample-body">
+
+<div class="sample-bar">
+  <span class="sample-bar__title">整页缝合层 · 样板</span>
+  <span class="sample-bar__hint">往下滚。三层字以不同速率视差，底层不动、内容动。</span>
+  <!-- 仅当系统上报 prefers-reduced-motion: reduce 时由脚本显示。
+       系统动画已开时这个按钮没有存在意义。 -->
+  <button class="toggle" id="motion" type="button" aria-pressed="false" hidden>动效预览：关</button>
+  <button class="toggle" id="toggle" type="button" aria-pressed="true">缝合层：开</button>
+</div>
+
+<!-- 缝合层：单一固定层跨全部版块连续。
+     三层字 + 两条细线，尺度落差建立纵深；超大字被视口裁切，只露笔画。 -->
+<div class="stitch" id="stitch" aria-hidden="true">
+  <div class="stitch__word stitch__word--far">HOOXI</div>
+  <div class="stitch__rule stitch__rule--a"></div>
+  <div class="stitch__word stitch__word--mid">ARCHIVE</div>
+  <div class="stitch__rule stitch__rule--b"></div>
+  <div class="stitch__word stitch__word--near">HOOXI</div>
+</div>
+
+<main class="sample-main">
+
+  <section class="hero">
+    <p class="hero__kicker">Section 01 / hero</p>
+    <h1 class="hero__title">四个版块共用同一张底</h1>
+    <p class="hero__lede">缝合层是单一固定背景层，跨全部版块连续。滚动时它不随内容走，三层字以不同速率做视差，产生纵深。这是「页面之间不像各做各的」的结构性解法——不是靠每页各自加装饰，而是靠一张贯穿全站的底。</p>
+  </section>
+
+  <section class="sect">
+    <p class="sect__kicker">Section 02 / grid</p>
+    <h2 class="sect__title">卡片网格不被干扰</h2>
+    <p class="sect__body">缝合层明度压到 6%–8.6%，不与内容争视觉层级。卡片切角引用 <code>--clip-card</code>，与缝合层斜切同源，几何语言统一。</p>
+    <div class="grid">
+      <article class="card"><div class="card__n">01</div><h3 class="card__t">尺度落差</h3><p class="card__d">超大字被视口裁切，只露笔画，读成纹理而非词。</p></article>
+      <article class="card"><div class="card__n">02</div><h3 class="card__t">深度分层</h3><p class="card__d">三层不同尺度与视差速率，产生纵深而非平面贴图。</p></article>
+      <article class="card"><div class="card__n">03</div><h3 class="card__t">动效绑定任务</h3><p class="card__d">入场揭示与滚动视差，无循环漂移、无闪烁、无扫光。</p></article>
+      <article class="card"><div class="card__n">04</div><h3 class="card__t">单强调色</h3><p class="card__d">仅中层带琥珀色，其余为冷白，用量克制。</p></article>
+    </div>
+  </section>
+
+  <section class="sect">
+    <p class="sect__kicker">Section 03 / prose</p>
+    <h2 class="sect__title">长文段落照样可读</h2>
+    <p class="sect__body">缝合层用纵向遮罩向下渐隐，越往下越虚，正文区域几乎不受影响。这条保证了它能铺在长滚页面上而不牺牲可读性——第 11 节无障碍门槛优先于视觉效果。</p>
+    <p class="sect__body">滚动时三层以 <code>-46</code>／<code>-92</code>／<code>-150</code> 三档速率位移，远层慢、近层快，视差方向一致。速率差是纵深的唯一来源，不靠模糊也不靠缩放。</p>
+  </section>
+
+  <section class="sect">
+    <p class="sect__kicker">Section 04 / tail</p>
+    <h2 class="sect__title">滚到底仍是同一张底</h2>
+    <p class="sect__body">从首屏到页尾，背景没有换过。这与「每个版块各自配一张背景图」是两种完全不同的做法——后者版块越多越碎，前者版块越多越整。</p>
+  </section>
+
+</main>
+
+<footer class="sample-foot">
+  <p><strong>这是样板，不是正式站页面。</strong>手法来源：镜像站用倾斜重复大字水印做单一背景层跨版块连续，顶部锚定向下渐隐。</p>
+  <p>本样板差异：字样为 HOOXI 自制（不使用官方 Logo 与品牌文案）；渐隐用 CSS 遮罩而非 PNG 内嵌，可随 token 调整；斜切角度引用 <code>--zzz-skew</code>，缓动引用 <code>--ease-out</code>，与全站同源。</p>
+  <p>v1 已废弃：33px 小字均匀平铺 370 次，每个词完整可读，读成墙纸。v2 改为尺度落差 + 深度分层 + 动效绑定任务。</p>
+  <p>未接入正式站，未改动任何现有页面。<code>prefers-reduced-motion: reduce</code> 下无视差、无入场动画，直接抵达最终状态。</p>
+</footer>
+
+<script>
+/* 滚动进度驱动视差。
+   正式站由 site-motion.js 统一设 --site-progress；样板不引入整套动效系统，用等价的最小实现。
+   rAF 节流，与 site-motion.js 的 updateScroll 同模式。 */
+(function(){
+  var root=document.documentElement;
+  var stitch=document.getElementById('stitch');
+  var btn=document.getElementById('toggle');
+  var motionBtn=document.getElementById('motion');
+  var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var frame=0;
+  var bound=false;
+
+  function applyScroll(){
+    frame=0;
+    var top=Math.max(0,window.scrollY||root.scrollTop||0);
+    var range=Math.max(root.scrollHeight-window.innerHeight,1);
+    var ratio=Math.max(0,Math.min(1,top/range));
+    root.style.setProperty('--site-progress',String(Number(ratio.toFixed(4))));
+  }
+  function onScroll(){ if(!frame)frame=requestAnimationFrame(applyScroll); }
+
+  function bindScroll(){
+    if(bound)return;
+    bound=true;
+    addEventListener('scroll',onScroll,{passive:true});
+    addEventListener('resize',onScroll,{passive:true});
+    applyScroll();
+  }
+
+  applyScroll();
+  if(!reduced)bindScroll();
+
+  /* 动效预览：本机系统已关闭动画（Windows「显示动画」为关），浏览器据此上报
+     prefers-reduced-motion: reduce，页面按第 6 节降级、视差被剥掉。
+     本开关仅用于在样板页里看动效本体，需显式点击，不改变正式站的降级行为。 */
+  if(reduced){
+    motionBtn.hidden=false;
+    motionBtn.addEventListener('click',function(){
+      var on=document.body.classList.toggle('force-motion');
+      motionBtn.textContent='动效预览：'+(on?'开':'关');
+      motionBtn.setAttribute('aria-pressed',String(on));
+      if(on)bindScroll();
+    });
+  }
+
+  /* 入场揭示：L3 一次性，不循环。reduced 下 CSS 已直接给最终态，这里不再触发 */
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){ stitch.classList.add('is-revealed'); });
+  });
+
+  btn.addEventListener('click',function(){
+    var off=document.body.classList.toggle('no-stitch');
+    btn.textContent='缝合层：'+(off?'关':'开');
+    btn.setAttribute('aria-pressed',String(!off));
+  });
+})();
+</script>
+
+</body>
+</html>

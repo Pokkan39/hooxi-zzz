@@ -54,6 +54,43 @@
     return resolved;
   };
 
+  const applyCharacterTheme=(characterId,faction)=>{
+    const theme=(faction?.theme||'#ff9c52').trim();
+    const toRgb=hex=>{
+      const m=hex.replace('#','');
+      if(m.length===3){const r=m[0]+m[0],g=m[1]+m[1],b=m[2]+m[2];return [parseInt(r,16),parseInt(g,16),parseInt(b,16)]}
+      if(m.length===6)return [parseInt(m.slice(0,2),16),parseInt(m.slice(2,4),16),parseInt(m.slice(4,6),16)];
+      return [255,156,82];
+    };
+    const [r,g,b]=toRgb(theme);
+    const darkBg=Math.round(Math.min(55,(r*0.06+g*0.08+b*0.06)));
+    const txtR=Math.min(255,Math.max(r+30,238));
+    const txtG=Math.min(255,Math.max(g+25,241));
+    const txtB=Math.min(255,Math.max(b+25,245));
+    const isLight=r>140&&g>140&&b>140;
+    const onAccent=isLight?'rgb(18 22 28)':'rgb(255 255 255)';
+    const body=document.body;
+    const screen=document.querySelector('.character-screen');
+    const applyTo=el=>{
+      if(!el)return;
+      el.style.setProperty('--character-accent',`rgb(${r} ${g} ${b})`);
+      el.style.setProperty('--character-accent-rgb',`${r},${g},${b}`);
+      el.style.setProperty('--character-ambient',`rgb(${r} ${g} ${b} / .22)`);
+      el.style.setProperty('--character-on-accent',onAccent);
+      el.style.setProperty('--character-page-bg',`rgb(${darkBg} ${Math.round(darkBg*1.08)} ${Math.round(darkBg*1.2)})`);
+      el.style.setProperty('--character-surface',`rgb(20 25 34 / .92)`);
+      el.style.setProperty('--character-surface-strong',`rgb(27 33 44 / .96)`);
+      el.style.setProperty('--character-line',`rgb(${r} ${g} ${b} / .38)`);
+      el.style.setProperty('--character-text',`rgb(${txtR} ${txtG} ${txtB})`);
+      el.style.setProperty('--character-text-muted',`rgb(${Math.round(txtR*0.75)} ${Math.round(txtG*0.78)} ${Math.round(txtB*0.85)})`);
+      el.style.setProperty('background',`rgb(${darkBg} ${Math.round(darkBg*1.08)} ${Math.round(darkBg*1.2)})`,'important');
+    };
+    applyTo(body);
+    applyTo(screen);
+    const dp=document.querySelector('.character-detail-page');
+    if(dp) dp.style.setProperty('background',`rgb(${darkBg} ${Math.round(darkBg*1.08)} ${Math.round(darkBg*1.2)})`,'important');
+  };
+
   const params=new URLSearchParams(location.search);
   const id=params.get('id')||'';
   const data=preview()||window.archiveData||{};
@@ -188,7 +225,11 @@
   const talentId=`character-talent-${String(character.id).replace(/[^a-z0-9_-]/gi,'-')}`;
   const talentTabs=talentSkills.map((skill,index)=>{
     const shortLabel=skill.name.split('：')[0]||skill.name.slice(0,4);
-    return `<button id="${talentId}-tab-${index}" type="button" role="tab" aria-controls="${talentId}-panel-${index}" aria-selected="${index===0?'true':'false'}" tabindex="${index===0?'0':'-1'}" class="talent-icon-tab${index===0?' is-active':''}" data-talent-tab="${index}" title="${esc(skill.name)}"><span class="talent-icon-circle talent-icon-no-img" aria-hidden="true">${esc(shortLabel.slice(0,2))}</span><span class="talent-icon-label">${esc(shortLabel)}</span></button>`;
+    const hasIcon=!!skill.icon;
+    const iconHtml=hasIcon
+      ?`<span class="talent-icon-circle"><img src="${esc(skill.icon)}" alt="" width="48" height="48" loading="lazy" decoding="async"/></span>`
+      :`<span class="talent-icon-circle talent-icon-no-img" aria-hidden="true">${esc(shortLabel.slice(0,2))}</span>`;
+    return `<button id="${talentId}-tab-${index}" type="button" role="tab" aria-controls="${talentId}-panel-${index}" aria-selected="${index===0?'true':'false'}" tabindex="${index===0?'0':'-1'}" class="talent-icon-tab${index===0?' is-active':''}" data-talent-tab="${index}" title="${esc(skill.name)}">${iconHtml}<span class="talent-icon-label">${esc(shortLabel)}</span></button>`;
   }).join('');
   const talentPanels=talentSkills.map((skill,index)=>{
     const growth=(skill.growth||[]).filter(stage=>stage.rows?.length);
@@ -198,12 +239,16 @@
     // 滑动升级表：每个 growth stage 做成一个水平卡片
     let growthHtml='';
     if(growth.length){
-      const stageCircles=growth.map(stage=>{
+      const stageCircles=growth.map((stage,si)=>{
         const stageChar=esc(stage.name);
         const isCore=stage.name.match(/^[A-F]$/);
-        return `<div class="talent-stage-card"><span class="talent-stage-num${isCore?' is-core':''}">${isCore?`S${stageChar}`:`${stageChar}`}</span><ul class="talent-stage-rows">${stage.rows.map(row=>`<li>${esc(row)}</li>`).join('')}</ul></div>`;
+        // 每个 row 可能含 \n，分行渲染
+        const rowsHtml=stage.rows.map(row=>row.split('\n').map(line=>`<li>${esc(line)}</li>`).join('')).join('');
+        return `<div class="talent-stage-card${si===0?' is-active':''}" data-stage="${si}"><span class="talent-stage-num${isCore?' is-core':''}">${isCore?`S${stageChar}`:stageChar}</span><ul class="talent-stage-rows">${rowsHtml}</ul></div>`;
       }).join('');
-      growthHtml=`<div class="talent-growth-scroll" aria-label="技能升级"><div class="talent-growth-track">${stageCircles}</div></div><p class="talent-growth-tip">← 左右滑动查看升级 →</p>`;
+      // 底部等级选择器（点击切换，不用全部滑动看）
+      const stageDots=growth.map((stage,si)=>`<button type="button" class="talent-stage-dot${si===0?' is-active':''}" data-stage-dot="${si}" aria-label="等级 ${esc(stage.name)}">${esc(stage.name)}</button>`).join('');
+      growthHtml=`<div class="talent-growth-scroll" aria-label="技能升级数据"><div class="talent-growth-track">${stageCircles}</div></div><div class="talent-stage-nav">${stageDots}</div><p class="talent-growth-tip">点击等级或左右滑动查看倍率</p>`;
     }
     return `<div id="${talentId}-panel-${index}" class="talent-panel${index===0?' is-active':''}" role="tabpanel" aria-labelledby="${talentId}-tab-${index}" aria-hidden="${index===0?'false':'true'}" ${index===0?'':'hidden inert'} data-talent-panel="${index}"><div class="talent-detail"><div class="talent-detail-left"><span class="talent-big-icon">${hasIcon?`<span class="talent-icon-circle"><img src="${esc(skill.icon)}" alt="" width="120" height="120" loading="lazy" decoding="async"/></span>`:`<span class="talent-icon-circle talent-icon-no-img" aria-hidden="true">${esc(shortLabel.slice(0,2))}</span>`}</span><div class="talent-detail-name"><span class="talent-detail-type">${esc(shortLabel)}</span><h3>${esc(skill.name)}</h3>${nameSuffix?`<span class="talent-detail-sub">${esc(nameSuffix)}</span>`:''}</div></div><div class="talent-detail-right"><p class="talent-desc">${esc(skill.desc)}</p></div></div>${growthHtml}</div>`;
   }).join('');
@@ -224,6 +269,7 @@
     related:section('related','来源与关联','来源核对',`${sourceLinks||'<p class="character-empty">尚未录入角色资料来源。</p>'}${relatedRecords}`,'尚未关联资料来源或其他档案。',{source:true})
   };
   content.innerHTML=[modules.media,modules.lore,modules.profile,modules.talents,modules.related].join('');
+  applyCharacterTheme(character.id,faction);
   if(screen&&!screen.hasAttribute('data-character-text-motion'))screen.dataset.characterTextMotion='enter';
 
   const components=data.site?.pages?.character?.components||[];
@@ -317,6 +363,26 @@
       go(next,{focus:true});
     });
     go(0);
+    // 等级导航：点击 dot 切换显示对应 stage 卡片
+    panels.forEach(panel=>{
+      const dots=[...panel.querySelectorAll('[data-stage-dot]')];
+      const cards=[...panel.querySelectorAll('.talent-stage-card')];
+      if(!dots.length||!cards.length)return;
+      const goStage=(si)=>{
+        dots.forEach((d,i)=>d.classList.toggle('is-active',i===si));
+        cards.forEach((c,i)=>{
+          c.classList.toggle('is-active',i===si);
+          c.dataset.active=String(i===si);
+        });
+        const track=panel.closest('.talent-module')?.querySelector('.talent-growth-track')||panel.querySelector('.talent-growth-track');
+        if(track&&cards[si]){
+          const left=Math.max(0,cards[si].offsetLeft-track.clientWidth/2+cards[si].clientWidth/2);
+          track.scrollTo({left,behavior:'smooth'});
+        }
+      };
+      cards.forEach((c,i)=>c.dataset.active=String(c.classList.contains('is-active')));
+      dots.forEach((dot,i)=>dot.addEventListener('click',()=>goStage(i)));
+    });
   };
 
   const archiveTablist=document.querySelector('.character-module-nav[role="tablist"]');

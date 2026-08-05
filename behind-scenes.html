@@ -13,13 +13,46 @@
   <meta name="twitter:description" content="制作记录与创作对谈。粉丝非官方，与米哈游无隶属。"/>
   <title>幕后与对谈 // HOOXI 绝区零档案</title>
   <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="theme-tokens.css?v=ink-wash-1"/>
   <link rel="stylesheet" href="theme-zzz.css?v=archive-light-3"/>
   <link rel="stylesheet" href="zzz-motion.css?v=zzz-motion-r6"/>
   <link rel="stylesheet" href="zzz-tv-transition.css?v=zzz-tv-r1"/>
   <link rel="stylesheet" href="game-feel.css?v=gf-1"/>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
+<link rel="stylesheet" href="subpage-enhance.css?v=sp-1"/>
+<style>
+/* 深色赛博朋克覆盖 — behind-scenes */
+:root{--cyber-bg:#08080c;--cyber-surface:rgba(18,22,30,.7);--cyber-border:rgba(255,255,255,.06);--cyber-accent:#d8fa00;--cyber-cyan:#00e5ff;--cyber-text:#f0f2f4;--cyber-muted:rgba(240,245,250,.6)}
+body.archive-behind{background:var(--cyber-bg)!important;color:var(--cyber-text)!important}
+.archive-behind .archive-topbar{background:rgba(8,10,14,.85)!important;backdrop-filter:blur(12px)!important;border-bottom:1px solid rgba(216,250,0,.15)!important}
+.archive-behind .archive-topbar,.archive-behind .archive-topbar a,.archive-behind .brand strong,.archive-behind .brand small{color:var(--cyber-text)!important}
+.archive-behind .archive-topbar a[aria-current="page"]{color:var(--cyber-accent)!important}
+.archive-behind .archive-topbar a:hover{color:var(--cyber-accent)!important}
+.archive-behind .brand-mark{background:var(--cyber-accent)!important;color:#111!important}
+.archive-behind .archive-hero{background:linear-gradient(180deg,rgba(216,250,0,.03) 0%,transparent 60%)!important;border-bottom:1px solid var(--cyber-border)!important;padding:80px max(24px,calc((100vw - 1100px)/2)) 60px!important}
+.archive-behind .archive-hero .eyebrow{color:var(--cyber-cyan)!important;font-family:var(--font-mono,monospace)!important;letter-spacing:.12em!important}
+.archive-behind .archive-hero h1{color:var(--cyber-text)!important;font-size:clamp(36px,6vw,64px)!important;font-weight:800!important;letter-spacing:-.02em!important}
+.archive-behind .archive-hero p{color:var(--cyber-muted)!important}
+.archive-behind .archive-primary-action{background:var(--cyber-accent)!important;color:#111!important;border:none!important;font-weight:700!important;padding:12px 20px!important;border-radius:0!important}
+.archive-behind .archive-content{padding:48px max(24px,calc((100vw - 1100px)/2))!important;background:transparent!important}
+.archive-behind .section-head{border-bottom:1px solid var(--cyber-border)!important;padding-bottom:16px!important;margin-bottom:32px!important}
+.archive-behind .section-head h2{color:var(--cyber-text)!important;font-size:24px!important}
+.archive-behind .section-head h2::before{content:'/ ';color:var(--cyber-accent)!important}
+.archive-behind .section-head p{color:var(--cyber-muted)!important}
+.archive-behind .page-timeline .record,.archive-behind .page-timeline>div{background:var(--cyber-surface)!important;border:1px solid var(--cyber-border)!important;border-left:3px solid transparent!important;margin-bottom:16px!important;padding:16px 20px!important;transition:border-color .2s,background .2s!important}
+.archive-behind .page-timeline .record:hover,.archive-behind .page-timeline>div:hover{border-left-color:var(--cyber-accent)!important;background:rgba(18,22,30,.9)!important}
+.archive-behind .page-timeline .record h3,.archive-behind .page-timeline>div h3,.archive-behind .page-timeline .record b,.archive-behind .page-timeline>div b{color:var(--cyber-text)!important}
+.archive-behind .page-timeline .record small,.archive-behind .page-timeline>div small,.archive-behind .page-timeline .record .tag{color:var(--cyber-cyan)!important;font-family:var(--font-mono,monospace)!important}
+.archive-behind .page-timeline a{color:var(--cyber-accent)!important;border-color:var(--cyber-accent)!important}
+.archive-behind .page-timeline img{border-radius:4px!important;border:1px solid var(--cyber-border)!important}
+.archive-behind .archive-sources{padding:48px max(24px,calc((100vw - 1100px)/2))!important;border-top:1px solid var(--cyber-border)!important;background:rgba(5,7,10,.5)!important}
+.archive-behind .archive-sources h2{color:var(--cyber-text)!important}
+.archive-behind .archive-sources p{color:var(--cyber-muted)!important}
+.archive-behind .archive-footer{background:rgba(5,7,10,.8)!important;border-top:1px solid var(--cyber-border)!important;color:var(--cyber-muted)!important;padding:20px!important;text-align:center!important}
+</style>
 </head>
 <body class="subpage archive-behind archive-shell">
+  <div class="noise-layer" aria-hidden="true"></div>
   <a class="skip-link" href="#mainContent">跳至主要内容</a>
   <header class="topbar archive-topbar">
     <a class="brand" href="index.html" aria-label="HOOXI 首页"><span class="brand-mark" aria-hidden="true">H</span><span><strong>HOOXI</strong><small>ZENLESS ARCHIVE</small></span></a>
@@ -63,10 +96,11 @@
   <script src="media-catalog.js?v=media-1"></script>
   <script src="page.js?v=archive-light-3"></script>
   <script src="assets/vendor/gsap/gsap.min.js?v=gsap-3-15-0"></script>
-  <script src="zzz-motion.js?v=zzz-motion-r6"></script>
+  <script src="zzz-motion.js?v=zzz-motion-r7"></script>
   <script src="zzz-motion-notice.js?v=zzz-motion-notice-r1"></script>
   <script src="zzz-tv-transition.js?v=zzz-tv-r1"></script>
   <script src="theme-switcher.js?v=theme-switcher-r1"></script>
   <script src="game-feel.js?v=gf-1"></script>
+  <script src="subpage-motion.js?v=sp-2"></script>
 </body>
 </html>

@@ -52,17 +52,16 @@
     node.classList.add('is-locking');
     const state={noise:1,clear:0};
     const jitter=gsap.timeline({delay});
-    // 逐帧随机写 --sx/--sy：静止颗粒像屏幕脏了，抖起来才像信号没锁住
     jitter.to(state,{
-      duration:.52,
+      duration:.25,
       noise:0,
       clear:1,
       ease:'power2.out',
       onUpdate(){
         node.style.setProperty('--zzz-lock-noise',String(state.noise.toFixed(3)));
         node.style.setProperty('--zzz-lock-clear',String(state.clear.toFixed(3)));
-        node.style.setProperty('--sx',`${(Math.random()*8-4).toFixed(2)}px`);
-        node.style.setProperty('--sy',`${(Math.random()*8-4).toFixed(2)}px`);
+        node.style.setProperty('--sx',`${(Math.random()*3-1.5).toFixed(2)}px`);
+        node.style.setProperty('--sy',`${(Math.random()*3-1.5).toFixed(2)}px`);
       },
       onComplete(){
         node.classList.remove('is-locking');
@@ -95,12 +94,7 @@
     });
   };
 
-  /* ---------- 10 磁吸鼠标 + 12 自定义光标 ---------- */
-  /* 共用单一 rAF 与单一 pointermove，不新建第二套全局循环。 */
-  /* ---------- 06 自定义光标+磁吸 ---------- 已禁用。
-     原始实现用 .18 插值系数做跟随，体感严重拖泥；磁吸按钮跟手飘移
-     让用户觉得界面"怪异"。不再初始化；保留函数壳以免外部调用报错。 */
-  const initPointerLayer=()=>{};
+
 
   /* ---------- 07 文字逐字浮现 ---------- */
   /* 规范 4.2：禁用付费 SplitText，自行拆 span 后 gsap.from(..., {stagger})；
@@ -232,15 +226,207 @@
     paint(0);
   };
 
+  /* ---------- Hero 入场 stagger timeline ---------- */
+  const initHeroEntrance=()=>{
+    if(reduceQuery.matches||!gsap)return;
+    const tl=gsap.timeline();
+    const q=s=>document.querySelectorAll(s);
+    const one=s=>document.querySelector(s);
+
+    const eyebrow=one('.hero .eyebrow');
+    if(eyebrow)tl.from(eyebrow,{y:20,opacity:0,duration:0.6,ease:'power2.out',clearProps:'all'},0);
+
+    const viewport=one('.hero-layered');
+    if(viewport)tl.from(viewport,{opacity:0,scale:0.96,filter:'blur(6px) brightness(1.6) saturate(0.3)',duration:1.0,ease:'power2.out',clearProps:'all'},0.1);
+
+    const intro=one('#heroIntro');
+    if(intro)tl.from(intro,{y:16,opacity:0,duration:0.5,ease:'power2.out',clearProps:'all'},0.4);
+
+    const actions=[...q('.hero-actions > *')];
+    if(actions.length)tl.from(actions,{y:20,opacity:0,stagger:0.12,duration:0.5,ease:'power2.out',clearProps:'all'},0.6);
+
+    const scrollHint=one('.hero-scroll-hint');
+    if(scrollHint)tl.from(scrollHint,{y:10,opacity:0,duration:0.4,ease:'power2.out',clearProps:'all'},1.2);
+  };
+
+  /* ---------- P3: Hero Pinned 段 ---------- */
+  const initHeroPin=()=>{
+    if(!gsap||!ScrollTrigger||!isHome)return;
+    const hero=document.querySelector('.hero');
+    const heroCopy=document.querySelector('.hero-copy');
+    const heroArt=document.querySelector('#homeHeroArt');
+    if(!hero||!heroCopy||!heroArt)return;
+
+    const tl=gsap.timeline({
+      scrollTrigger:{
+        trigger:hero,
+        start:'top top',
+        end:'+=60%',
+        pin:true,
+        scrub:0.5,
+        pinSpacing:true,
+      }
+    });
+    // 标题区：模糊 + 缩小 + 淡出
+    tl.to(heroCopy,{scale:0.9,filter:'blur(8px)',opacity:0,ease:'none'},0);
+    // 影画区：微放大
+    tl.to(heroArt,{scale:1.08,ease:'none'},0);
+    // 整体最终淡出
+    tl.to(hero,{opacity:0,ease:'power1.in'},.7);
+  };
+
+  /* ---------- P4: 辉光文字 ---------- */
+  const initGlowText=()=>{
+    if(!gsap||!ScrollTrigger||!isHome)return;
+    const headings=[...document.querySelectorAll('.home-act h2')];
+    headings.forEach(h2=>{
+      h2.classList.add('zzz-glow-text');
+      ScrollTrigger.create({
+        trigger:h2,
+        start:'top 85%',
+        once:true,
+        onEnter:()=>{
+          h2.classList.add('is-glowing');
+          setTimeout(()=>h2.classList.remove('is-glowing'),500);
+        }
+      });
+    });
+  };
+
+  /* ---------- P4: HUD 角标 ---------- */
+  const initHudFrames=()=>{
+    if(!gsap||!ScrollTrigger||!isHome)return;
+    const heads=[...document.querySelectorAll('.home-act .section-head')];
+    heads.forEach(head=>{
+      if(head.classList.contains('zzz-hud-frame'))return;
+      head.classList.add('zzz-hud-frame');
+      // 注入额外伪元素载体（另两角）
+      const extra=document.createElement('span');
+      extra.className='zzz-hud-frame__extra';
+      extra.setAttribute('aria-hidden','true');
+      head.appendChild(extra);
+      // 注入扫描线
+      const scan=document.createElement('span');
+      scan.className='zzz-hud-scan';
+      scan.setAttribute('aria-hidden','true');
+      head.appendChild(scan);
+      // ScrollTrigger 触发
+      ScrollTrigger.create({
+        trigger:head,
+        start:'top 85%',
+        once:true,
+        onEnter:()=>head.classList.add('is-hud-on')
+      });
+    });
+  };
+
+  /* ---------- P4: 命中反馈 ---------- */
+  const initHitFeedback=()=>{
+    if(!gsap)return;
+    // 全站按钮/链接点击涟漪 + 缩放弹跳
+    document.addEventListener('pointerdown',e=>{
+      const target=e.target instanceof Element?e.target.closest('a,button,[data-fx]'):null;
+      if(!target)return;
+      // 缩放弹跳
+      gsap.fromTo(target,
+        {scale:1},
+        {scale:0.92,duration:0.08,ease:'power2.in',yoyo:true,repeat:1,
+         onComplete:()=>gsap.to(target,{scale:1.04,duration:0.12,ease:'back.out(3)',
+           onComplete:()=>gsap.set(target,{clearProps:'scale'})
+         })
+        }
+      );
+      // 涟漪
+      const rect=target.getBoundingClientRect();
+      const ripple=document.createElement('span');
+      ripple.className='zzz-ripple';
+      ripple.style.left=(e.clientX-rect.left)+'px';
+      ripple.style.top=(e.clientY-rect.top)+'px';
+      target.style.position=target.style.position||'relative';
+      target.style.overflow='hidden';
+      target.appendChild(ripple);
+      setTimeout(()=>ripple.remove(),500);
+    });
+  };
+
+  /* ---------- P4: 能量流 ---------- */
+  const initEnergyFlow=()=>{
+    if(!isHome)return;
+    // 仅 Hero 底部加能量流，不铺全站避免视觉疲劳
+    const hero=document.querySelector('.hero');
+    const addFlow=(el)=>{
+      if(!el||el.classList.contains('zzz-energy-flow'))return;
+      el.classList.add('zzz-energy-flow');
+      const pulse=document.createElement('span');
+      pulse.className='zzz-energy-pulse';
+      pulse.setAttribute('aria-hidden','true');
+      el.appendChild(pulse);
+    };
+    if(hero)addFlow(hero);
+  };
+
+  /* ---------- P2: 全站 stagger 入场 ---------- */
+  const initPageStagger=()=>{
+    if(!gsap||!ScrollTrigger)return;
+    // 首页楼层内容区 stagger 入场
+    const sections=[...document.querySelectorAll('.route-section,.about')];
+    sections.forEach(sec=>{
+      const children=[...sec.querySelectorAll('.start-paths > *,.home-agent-rail > *,.home-lane-grid > *,.about-credits > *,.archive-reel-links > *,.section-note')];
+      if(!children.length)return;
+      gsap.set(children,{opacity:0,y:60,scale:0.92,filter:'blur(4px)'});
+      ScrollTrigger.create({
+        trigger:sec,
+        start:'top 82%',
+        once:true,
+        onEnter:()=>{
+          gsap.to(children,{
+            opacity:1,y:0,scale:1,filter:'blur(0px)',
+            duration:0.6,stagger:0.1,ease:'back.out(1.4)',clearProps:'all'
+          });
+        }
+      });
+    });
+  };
+
+  /* ---------- P2: 背景渐变（分段色带） ---------- */
+  const initBgShift=()=>{
+    if(!gsap||!ScrollTrigger||!isHome)return;
+    const root=document.documentElement;
+    const sections=[...document.querySelectorAll('.route-section,.about')];
+    // 每个楼层进入时加深背景
+    const levels=['var(--bg)','var(--bg-soft)','var(--bg-panel)','var(--bg-soft)','var(--bg)'];
+    sections.forEach((sec,i)=>{
+      const bg=levels[Math.min(i,levels.length-1)];
+      ScrollTrigger.create({
+        trigger:sec,
+        start:'top 60%',
+        end:'bottom 40%',
+        onEnter:()=>gsap.to(document.body,{backgroundColor:bg,duration:0.8,ease:'power1.inOut',overwrite:'auto'}),
+        onLeaveBack:()=>{
+          const prev=levels[Math.max(0,Math.min(i-1,levels.length-1))];
+          gsap.to(document.body,{backgroundColor:prev,duration:0.8,ease:'power1.inOut',overwrite:'auto'});
+        }
+      });
+    });
+  };
+
   const boot=()=>{
-    // 全站底层：扫描线与指针层（自定义光标 + 磁吸）
     mountScanlines();
-    initPointerLayer();
-    // 首页专属：依赖 .home-act 楼层与 #heroTitle
+    initHitFeedback();
     if(isHome){
+      initHeroEntrance();
+      initHeroPin();
       initSignalLock();
       initSplitRevealWhenStable();
       initFloorRail();
+      initPageStagger();
+      initBgShift();
+      initGlowText();
+      initHudFrames();
+      initEnergyFlow();
+    }else{
+      // 非首页也做 stagger 入场
+      initPageStagger();
     }
   };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});

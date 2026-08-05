@@ -108,6 +108,12 @@
   --zzz-num-lg:clamp(96px,12vw,190px);
   --zzz-num-md:clamp(40px,5vw,60px);
 
+  /* 几何切角标准形状库 */
+  --clip-card:polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+  --clip-panel:polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  --clip-button:polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
+  --clip-badge:polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
+
   color-scheme:dark;
 }
 

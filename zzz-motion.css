@@ -80,21 +80,7 @@ body.home-page #heroTitle .zzz-char{
   will-change:transform,opacity,filter;
 }
 
-/* ---------- 10 磁吸鼠标 ---------- */
-/* 已禁用：按钮跟鼠标飘移干扰正常操作。JS 不再添加 is-magnet 类。 */
 
-/* ---------- 12 自定义光标 ---------- */
-/* 自定义光标+磁吸已禁用（体感卡顿且干扰正常操作）。保留选择器避免残留样式闪烁。 */
-body.zzz-cursor-on{cursor:auto}
-.zzz-cursor{display:none}
-.zzz-cursor.is-ring{display:none}
-.zzz-cursor.is-hidden{display:none}
-
-@media(hover:none),(pointer:coarse){
-  body.zzz-cursor-on{cursor:auto}
-  .zzz-cursor{display:none}
-  .is-magnet{transform:none;box-shadow:none}
-}
 
 /* 动效降级提示：仅在系统开启减少动效时由 zzz-motion-notice.js 注入。
    固定在右下角，不遮挡主内容；文字用正文色，不用荧光绿（规范 9.4）。 */
@@ -200,4 +186,282 @@ body.home-page .zzz-rail .zzz-rail__item:focus-visible{
 /* 小屏隐藏：实测会压住「开始查档」主按钮与楼层标题 */
 @media(max-width:640px){
   body.home-page .zzz-rail{display:none}
+}
+
+/* ---------- P3: 出血段（full-bleed sections） ---------- */
+body.home-page .route-section[data-home-act="agents"],
+body.home-page .route-section[data-home-act="reels"]{
+  position:relative;
+  width:100vw;
+  left:50%;
+  margin-left:-50vw;
+  padding-left:max(2rem,calc((100vw - 1200px)/2));
+  padding-right:max(2rem,calc((100vw - 1200px)/2));
+  overflow:hidden;
+}
+/* 出血段背景微分层 */
+body.home-page .route-section[data-home-act="agents"]{
+  background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.15) 50%,transparent 100%);
+}
+body.home-page .route-section[data-home-act="reels"]{
+  background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.1) 50%,transparent 100%);
+  border-top:1px solid var(--accent-line,rgba(216,250,0,.22));
+  border-bottom:1px solid var(--accent-line,rgba(216,250,0,.22));
+}
+/* 出血段内卡片底部留白（原横向滑轨已移除：flex + flex:0 0 auto 让 8 张精选卡
+   按名字长短各自撑开成 316~430px，实测 scrollWidth 3068px 挤在 1100px 容器内，
+   不横滚只有 2 张完整可见；改回 home-neon.css 的 4 列等宽网格，8 张分两行全部可见） */
+body.home-page .home-agent-rail{
+  padding-bottom:12px;
+}
+/* 出血段 parallax hint（卡片比背景慢滚，由 JS 不额外处理） */
+
+/* ---------- P3: 琴键缩放加强 ---------- */
+.zzz-key{
+  transition:transform .25s cubic-bezier(.22,1,.36,1),filter .25s ease;
+}
+.zzz-key.is-key-hot{
+  filter:brightness(1.12);
+  z-index:2;
+}
+.zzz-key.is-key-near{
+  filter:brightness(1.04);
+  z-index:1;
+}
+/* 聚光灯暗化：非活跃卡片 */
+.zzz-key:not(.is-key-hot):not(.is-key-near){
+  filter:brightness(0.82);
+}
+
+@media(max-width:640px){
+  body.home-page .route-section[data-home-act="agents"],
+  body.home-page .route-section[data-home-act="reels"]{
+    padding-left:1rem;
+    padding-right:1rem;
+  }
+}
+
+/* ---------- P4: 辉光文字 ---------- */
+.zzz-glow-text{
+  text-shadow:
+    0 0 10px var(--accent-soft,rgba(216,250,0,.2)),
+    0 0 30px var(--accent-soft,rgba(216,250,0,.15)),
+    0 0 60px var(--accent-soft,rgba(216,250,0,.08));
+  transition:text-shadow .3s ease;
+}
+.zzz-glow-text:hover{
+  text-shadow:
+    0 0 14px var(--accent,#d8fa00),
+    0 0 40px var(--accent-soft,rgba(216,250,0,.3)),
+    0 0 80px var(--accent-soft,rgba(216,250,0,.15));
+}
+/* 入场"通电"闪烁 */
+.zzz-glow-text.is-glowing{
+  animation:zzz-power-on .4s ease-out;
+}
+@keyframes zzz-power-on{
+  0%{opacity:0;text-shadow:0 0 40px var(--accent,#d8fa00),0 0 80px var(--accent,#d8fa00)}
+  30%{opacity:1;text-shadow:0 0 60px var(--accent,#d8fa00),0 0 100px rgba(216,250,0,.5)}
+  60%{opacity:.7;text-shadow:0 0 20px var(--accent-soft,rgba(216,250,0,.3))}
+  100%{opacity:1;text-shadow:0 0 10px var(--accent-soft,rgba(216,250,0,.2)),0 0 30px var(--accent-soft,rgba(216,250,0,.15)),0 0 60px var(--accent-soft,rgba(216,250,0,.08))}
+}
+
+/* ---------- P4: HUD 角标 ---------- */
+.zzz-hud-frame{
+  position:relative;
+}
+.zzz-hud-frame::before,
+.zzz-hud-frame::after{
+  content:'';
+  position:absolute;
+  width:14px;height:14px;
+  border-color:var(--accent-line,rgba(216,250,0,.5));
+  border-style:solid;
+  border-width:0;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .3s;
+}
+.zzz-hud-frame::before{
+  top:-2px;left:-2px;
+  border-top-width:2px;border-left-width:2px;
+}
+.zzz-hud-frame::after{
+  bottom:-2px;right:-2px;
+  border-bottom-width:2px;border-right-width:2px;
+}
+/* 另两角用子元素（JS 注入 .zzz-hud-frame__extra） */
+.zzz-hud-frame__extra::before,
+.zzz-hud-frame__extra::after{
+  content:'';
+  position:absolute;
+  width:14px;height:14px;
+  border-color:var(--accent-line,rgba(216,250,0,.5));
+  border-style:solid;
+  border-width:0;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .3s;
+}
+.zzz-hud-frame__extra::before{
+  top:-2px;right:-2px;
+  border-top-width:2px;border-right-width:2px;
+}
+.zzz-hud-frame__extra::after{
+  bottom:-2px;left:-2px;
+  border-bottom-width:2px;border-left-width:2px;
+}
+/* 入场动画：角标从 0 展开 */
+.zzz-hud-frame.is-hud-on::before,
+.zzz-hud-frame.is-hud-on::after,
+.zzz-hud-frame.is-hud-on .zzz-hud-frame__extra::before,
+.zzz-hud-frame.is-hud-on .zzz-hud-frame__extra::after{
+  opacity:1;
+  animation:zzz-hud-grow .35s cubic-bezier(.22,1,.36,1) forwards;
+}
+@keyframes zzz-hud-grow{
+  from{width:0;height:0}
+  to{width:14px;height:14px}
+}
+/* HUD 内扫描线 */
+.zzz-hud-frame.is-hud-on .zzz-hud-scan{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  opacity:.15;
+}
+.zzz-hud-frame.is-hud-on .zzz-hud-scan::after{
+  content:'';
+  position:absolute;
+  left:0;right:0;
+  height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent,#d8fa00),transparent);
+  animation:zzz-hud-scanline 2.5s linear infinite;
+}
+@keyframes zzz-hud-scanline{
+  0%{top:-2px}
+  100%{top:calc(100% + 2px)}
+}
+
+/* ---------- P4: 命中反馈涟漪 ---------- */
+.zzz-ripple{
+  position:absolute;
+  border-radius:50%;
+  border:2px solid var(--accent,#d8fa00);
+  pointer-events:none;
+  animation:zzz-ripple-out .4s ease-out forwards;
+}
+@keyframes zzz-ripple-out{
+  0%{width:0;height:0;opacity:1;transform:translate(-50%,-50%) scale(0)}
+  100%{width:80px;height:80px;opacity:0;transform:translate(-50%,-50%) scale(1)}
+}
+
+/* ---------- P4: 能量流 ---------- */
+.zzz-energy-flow{
+  position:relative;
+  overflow:hidden;
+}
+.zzz-energy-flow::before,
+.zzz-energy-flow::after{
+  content:'';
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:2px;
+  pointer-events:none;
+}
+.zzz-energy-flow::before{
+  background:linear-gradient(90deg,transparent 0%,var(--accent,#d8fa00) 20%,var(--accent,#d8fa00) 40%,transparent 60%);
+  background-size:200% 100%;
+  animation:zzz-energy-main 3s linear infinite;
+  opacity:.7;
+}
+.zzz-energy-flow::after{
+  height:1px;bottom:3px;
+  background:linear-gradient(90deg,transparent 10%,var(--signal,#3ec7d6) 30%,transparent 50%);
+  background-size:180% 100%;
+  animation:zzz-energy-aux 2.2s linear infinite reverse;
+  opacity:.4;
+}
+@keyframes zzz-energy-main{
+  0%{background-position:100% 0}
+  100%{background-position:-100% 0}
+}
+@keyframes zzz-energy-aux{
+  0%{background-position:100% 0}
+  100%{background-position:-100% 0}
+}
+/* 脉冲亮点 */
+.zzz-energy-pulse{
+  position:absolute;
+  bottom:0;left:0;
+  width:30px;height:2px;
+  background:radial-gradient(ellipse at center,var(--accent-hot,#fff) 0%,transparent 70%);
+  pointer-events:none;
+  animation:zzz-pulse-move 1.8s ease-in-out infinite;
+  opacity:.9;
+}
+@keyframes zzz-pulse-move{
+  0%{left:-30px;opacity:0}
+  10%{opacity:.9}
+  90%{opacity:.9}
+  100%{left:calc(100% + 30px);opacity:0}
+}
+
+/* ── ZZZ DNA：半色调网点覆盖 ── */
+.zzz-halftone{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:2;
+  background:radial-gradient(circle,rgba(216,250,0,.06) .6px,transparent .6px);
+  background-size:4px 4px;
+  mix-blend-mode:overlay;
+  opacity:.4;
+}
+
+/* ── 偶发 Glitch 闪烁 ── */
+@keyframes zzz-micro-glitch{
+  0%,95.5%,97%,99%,100%{opacity:0;transform:none}
+  95.8%{opacity:.7;transform:translateX(-3px) skewX(-2deg);filter:hue-rotate(90deg)}
+  96.2%{opacity:0}
+  97.3%{opacity:.5;transform:translateX(2px);filter:hue-rotate(-40deg)}
+  97.6%{opacity:0}
+}
+.zzz-glitch-layer{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:4;
+  background:linear-gradient(transparent 40%,rgba(216,250,0,.03) 40.5%,transparent 41%);
+  animation:zzz-micro-glitch 6s linear infinite;
+}
+@media(prefers-reduced-motion:reduce){
+  .zzz-halftone,.zzz-glitch-layer{display:none}
+}
+
+/* ---------- P5: 统一入场动画 ---------- */
+@keyframes zzz-signal-in{
+  from{opacity:0;transform:translateY(12px) scale(.97);filter:blur(3px)}
+  to{opacity:1;transform:none;filter:none}
+}
+
+/* ---------- 角色页背景呼吸光效 ---------- */
+@keyframes zzz-ambient-breathe{
+  0%,100%{opacity:.15;transform:scale(1) translate(0,0)}
+  33%{opacity:.25;transform:scale(1.05) translate(8px,-4px)}
+  66%{opacity:.18;transform:scale(.98) translate(-6px,3px)}
+}
+.archive-stories .agent-stage-art::before{
+  content:'';
+  position:absolute;
+  inset:-10%;
+  z-index:-1;
+  border-radius:50%;
+  background:radial-gradient(ellipse at 50% 50%,var(--character-ambient,rgba(216,250,0,.2)),transparent 70%);
+  animation:zzz-ambient-breathe 8s ease-in-out infinite;
+  pointer-events:none;
+}
+@media(prefers-reduced-motion:reduce){
+  .archive-stories .agent-stage-art::before{animation:none;opacity:.15}
 }

@@ -13,13 +13,368 @@
   <meta name="twitter:description" content="按版本与章节整理的《绝区零》主线剧情档案。粉丝非官方，与米哈游无隶属。"/>
   <title>主线剧情 // HOOXI 绝区零档案</title>
   <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="theme-tokens.css?v=ink-wash-1"/>
   <link rel="stylesheet" href="theme-zzz.css?v=archive-light-3"/>
   <link rel="stylesheet" href="zzz-motion.css?v=zzz-motion-r6"/>
   <link rel="stylesheet" href="zzz-tv-transition.css?v=zzz-tv-r1"/>
   <link rel="stylesheet" href="game-feel.css?v=gf-1"/>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
+  <link rel="stylesheet" href="subpage-enhance.css?v=sp-2"/>
+  <style>
+  /* ═══ 赛博朋克深色主题 — 主线剧情页 ═══ */
+  :root {
+    --cyber-bg: #08080c;
+    --cyber-bg-alt: #0a0e14;
+    --cyber-accent: #d8fa00;
+    --cyber-cyan: #00e5ff;
+    --cyber-text: #f0f2f4;
+    --cyber-text-dim: rgba(240,245,250,.6);
+    --cyber-card: rgba(18,22,30,.7);
+    --cyber-border: rgba(255,255,255,.06);
+    --cyber-glow: rgba(216,250,0,.15);
+    --cyber-cyan-glow: rgba(0,229,255,.12);
+  }
+
+  /* — 全局重置 — */
+  body.archive-mainline {
+    background: linear-gradient(160deg, var(--cyber-bg) 0%, var(--cyber-bg-alt) 100%) !important;
+    color: var(--cyber-text) !important;
+    min-height: 100vh;
+  }
+  body.archive-mainline::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(0,229,255,.04), transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(216,250,0,.03), transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* — 顶栏 — */
+  .archive-mainline .archive-topbar {
+    background: rgba(8,8,12,.92) !important;
+    border-bottom: 1px solid rgba(216,250,0,.2) !important;
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  }
+  .archive-mainline .brand { color: var(--cyber-text) !important; }
+  .archive-mainline .brand-mark {
+    background: var(--cyber-accent) !important;
+    color: #08080c !important;
+    box-shadow: 4px 4px 0 rgba(0,229,255,.4) !important;
+  }
+  .archive-mainline .brand small { color: var(--cyber-cyan) !important; }
+  .archive-mainline .archive-topbar nav a {
+    color: var(--cyber-text-dim) !important;
+    transition: color .2s, text-shadow .2s;
+  }
+  .archive-mainline .archive-topbar nav a:hover,
+  .archive-mainline .archive-topbar nav a[aria-current="page"] {
+    color: var(--cyber-accent) !important;
+    text-shadow: 0 0 8px rgba(216,250,0,.4);
+  }
+
+  /* — 移动导航 — */
+  .archive-mainline .archive-mobile-nav {
+    background: rgba(10,14,20,.95) !important;
+    border: 1px solid var(--cyber-border) !important;
+  }
+  .archive-mainline .archive-mobile-nav > summary { color: var(--cyber-text) !important; }
+  .archive-mainline .archive-mobile-nav nav a {
+    color: var(--cyber-text-dim) !important;
+    border-bottom: 1px solid var(--cyber-border) !important;
+    padding: 12px 16px;
+  }
+  .archive-mainline .archive-mobile-nav nav a:hover {
+    color: var(--cyber-accent) !important;
+    background: rgba(216,250,0,.05) !important;
+  }
+
+  /* — Hero 区 — */
+  .archive-mainline .archive-hero {
+    background: linear-gradient(135deg, rgba(10,14,20,.95), rgba(8,8,12,.98)) !important;
+    border-bottom: 1px solid var(--cyber-border) !important;
+    padding: 80px 5vw 60px !important;
+    position: relative;
+    overflow: hidden;
+  }
+  .archive-mainline .archive-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 60%;
+    height: 200%;
+    background: radial-gradient(ellipse, rgba(0,229,255,.06), transparent 60%);
+    pointer-events: none;
+  }
+  .archive-mainline .archive-hero .eyebrow {
+    color: var(--cyber-cyan) !important;
+    letter-spacing: 3px;
+    font-size: 10px;
+    text-transform: uppercase;
+  }
+  .archive-mainline .archive-hero h1 {
+    color: var(--cyber-text) !important;
+    text-shadow: 0 0 30px rgba(216,250,0,.15);
+    font-size: clamp(48px, 8vw, 88px);
+    letter-spacing: -2px;
+    margin: 12px 0 20px;
+  }
+  .archive-mainline .archive-hero > p:not(.eyebrow) {
+    color: var(--cyber-text-dim) !important;
+    max-width: 520px;
+    line-height: 1.6;
+  }
+  .archive-mainline .archive-primary-action {
+    display: inline-block;
+    margin-top: 24px;
+    padding: 12px 28px;
+    background: var(--cyber-accent) !important;
+    color: #08080c !important;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    border: none;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    transition: background .2s, box-shadow .2s;
+  }
+  .archive-mainline .archive-primary-action:hover {
+    background: #e8ff44 !important;
+    box-shadow: 0 0 20px rgba(216,250,0,.4);
+  }
+
+  /* — 内容区 — */
+  .archive-mainline .archive-content {
+    padding: 60px 5vw !important;
+    position: relative;
+  }
+  .archive-mainline .section-head h2 {
+    color: var(--cyber-text) !important;
+    font-size: clamp(32px, 5vw, 52px);
+    position: relative;
+    padding-left: 16px;
+  }
+  .archive-mainline .section-head h2::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    background: var(--cyber-accent);
+    box-shadow: 0 0 8px rgba(216,250,0,.5);
+  }
+  .archive-mainline .section-head p {
+    color: var(--cyber-text-dim) !important;
+  }
+
+  /* — 时间线容器（版本号突出、章节结构清晰）— */
+  .archive-mainline .page-timeline {
+    position: relative;
+    padding-left: 32px;
+  }
+  .archive-mainline .page-timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--cyber-accent), var(--cyber-cyan), transparent);
+    opacity: .4;
+  }
+
+  /* 版本分组 */
+  .archive-mainline .timeline-version {
+    margin-bottom: 48px;
+    position: relative;
+  }
+  .archive-mainline .timeline-version::before {
+    content: '';
+    position: absolute;
+    left: -28px;
+    top: 14px;
+    width: 10px;
+    height: 10px;
+    background: var(--cyber-accent);
+    border: 2px solid #08080c;
+    box-shadow: 0 0 10px rgba(216,250,0,.6);
+    transform: rotate(45deg);
+  }
+  .archive-mainline .timeline-version-head {
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 800;
+    color: var(--cyber-accent) !important;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    text-shadow: 0 0 12px rgba(216,250,0,.3);
+  }
+  .archive-mainline .timeline-version-sub {
+    color: var(--cyber-text-dim) !important;
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  /* 时间线卡片 */
+  .archive-mainline .timeline-card,
+  .archive-mainline .page-timeline article,
+  .archive-mainline .page-timeline .entry,
+  .archive-mainline [class*="timeline"] article {
+    background: var(--cyber-card) !important;
+    border: 1px solid var(--cyber-border) !important;
+    border-left: 3px solid transparent !important;
+    padding: 20px 24px !important;
+    margin-bottom: 14px;
+    border-radius: 2px;
+    transition: border-color .25s, background .25s, box-shadow .25s;
+    position: relative;
+  }
+  .archive-mainline .timeline-card:hover,
+  .archive-mainline .page-timeline article:hover,
+  .archive-mainline .page-timeline .entry:hover,
+  .archive-mainline [class*="timeline"] article:hover {
+    border-left-color: var(--cyber-accent) !important;
+    background: rgba(22,28,38,.8) !important;
+    box-shadow: inset 3px 0 12px rgba(216,250,0,.06), 0 4px 20px rgba(0,0,0,.3);
+  }
+  .archive-mainline .timeline-card h3,
+  .archive-mainline .page-timeline article h3,
+  .archive-mainline .page-timeline .entry h3 {
+    color: var(--cyber-text) !important;
+    font-weight: 700;
+  }
+  .archive-mainline .timeline-card p,
+  .archive-mainline .page-timeline article p,
+  .archive-mainline .page-timeline .entry p {
+    color: var(--cyber-text-dim) !important;
+    line-height: 1.6;
+  }
+  .archive-mainline .timeline-card a,
+  .archive-mainline .page-timeline a {
+    color: var(--cyber-cyan) !important;
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .archive-mainline .timeline-card a:hover,
+  .archive-mainline .page-timeline a:hover {
+    color: var(--cyber-accent) !important;
+    text-shadow: 0 0 6px rgba(216,250,0,.3);
+  }
+
+  /* 标签与类型 badge */
+  .archive-mainline .timeline-card [class*="tag"],
+  .archive-mainline .timeline-card [class*="badge"],
+  .archive-mainline .page-timeline [class*="tag"],
+  .archive-mainline .page-timeline [class*="badge"] {
+    background: rgba(216,250,0,.1) !important;
+    color: var(--cyber-accent) !important;
+    border: 1px solid rgba(216,250,0,.2) !important;
+    padding: 3px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .5px;
+  }
+
+  /* 剧透提示 */
+  .archive-mainline [class*="spoiler"] {
+    background: rgba(255,60,60,.08) !important;
+    border-color: rgba(255,60,60,.2) !important;
+    color: #ff6b6b !important;
+  }
+
+  /* — 筛选工具栏 — */
+  .archive-mainline [class*="filter"],
+  .archive-mainline [class*="toolbar"],
+  .archive-mainline [class*="search"] {
+    background: var(--cyber-card) !important;
+    border: 1px solid var(--cyber-border) !important;
+    color: var(--cyber-text) !important;
+  }
+  .archive-mainline input,
+  .archive-mainline select {
+    background: rgba(8,8,12,.8) !important;
+    border: 1px solid rgba(255,255,255,.1) !important;
+    color: var(--cyber-text) !important;
+    padding: 8px 12px;
+    color-scheme: dark;
+  }
+  .archive-mainline input:focus,
+  .archive-mainline select:focus {
+    border-color: var(--cyber-accent) !important;
+    outline: none;
+    box-shadow: 0 0 8px rgba(216,250,0,.2);
+  }
+  .archive-mainline button {
+    background: rgba(216,250,0,.1) !important;
+    border: 1px solid rgba(216,250,0,.3) !important;
+    color: var(--cyber-accent) !important;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .archive-mainline button:hover {
+    background: rgba(216,250,0,.2) !important;
+  }
+
+  /* — 来源区域 — */
+  .archive-mainline .archive-sources {
+    padding: 48px 5vw !important;
+    border-top: 1px solid var(--cyber-border) !important;
+    background: rgba(10,14,20,.5) !important;
+  }
+  .archive-mainline .archive-sources h2 {
+    color: var(--cyber-text) !important;
+  }
+  .archive-mainline .archive-sources p,
+  .archive-mainline .archive-sources li {
+    color: var(--cyber-text-dim) !important;
+    line-height: 1.7;
+  }
+  .archive-mainline .archive-sources a {
+    color: var(--cyber-cyan) !important;
+  }
+
+  /* — 页脚 — */
+  .archive-mainline .archive-footer {
+    background: rgba(8,8,12,.95) !important;
+    border-top: 1px solid var(--cyber-border) !important;
+    padding: 24px 5vw !important;
+  }
+  .archive-mainline .archive-footer .footer-disclaimer {
+    color: var(--cyber-text-dim) !important;
+    opacity: .7;
+  }
+
+  /* — Skip link — */
+  .archive-mainline .skip-link {
+    background: var(--cyber-accent) !important;
+    color: #08080c !important;
+  }
+
+  /* — 响应式 — */
+  @media (max-width: 760px) {
+    .archive-mainline .archive-hero {
+      padding: 60px 6vw 40px !important;
+    }
+    .archive-mainline .page-timeline {
+      padding-left: 20px;
+    }
+    .archive-mainline .timeline-version::before {
+      left: -16px;
+      width: 8px;
+      height: 8px;
+    }
+    .archive-mainline .page-timeline::before {
+      left: 4px;
+    }
+  }
+  </style>
 </head>
 <body class="subpage archive-mainline archive-shell">
+  <div class="noise-layer" aria-hidden="true"></div>
   <a class="skip-link" href="#mainContent">跳至主要内容</a>
   <header class="topbar archive-topbar">
     <a class="brand" href="index.html" aria-label="HOOXI 首页"><span class="brand-mark" aria-hidden="true">H</span><span><strong>HOOXI</strong><small>ZENLESS ARCHIVE</small></span></a>
@@ -63,10 +418,11 @@
   <script src="media-catalog.js?v=media-1"></script>
   <script src="page.js?v=archive-light-3"></script>
   <script src="assets/vendor/gsap/gsap.min.js?v=gsap-3-15-0"></script>
-  <script src="zzz-motion.js?v=zzz-motion-r6"></script>
+  <script src="zzz-motion.js?v=zzz-motion-r7"></script>
   <script src="zzz-motion-notice.js?v=zzz-motion-notice-r1"></script>
   <script src="zzz-tv-transition.js?v=zzz-tv-r1"></script>
   <script src="theme-switcher.js?v=theme-switcher-r1"></script>
   <script src="game-feel.js?v=gf-1"></script>
+  <script src="subpage-motion.js?v=sp-2"></script>
 </body>
 </html>

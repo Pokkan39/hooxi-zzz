@@ -110,3 +110,86 @@
   .cultivate-faq-item p{padding-left:16px}
   .cultivate-mat-grid{grid-template-columns:1fr}
 }
+
+/* — ink-wash 浅色覆盖（非首页硬编码深色）— */
+body[data-theme="ink-wash"] .page-hero{background:var(--bg)!important;color:var(--text-1)!important;border-bottom-color:var(--accent)!important}
+body[data-theme="ink-wash"] .page-hero:after{color:var(--accent);opacity:1}
+body[data-theme="ink-wash"] .page-hero .eyebrow{color:var(--accent)}
+body[data-theme="ink-wash"] .page-hero h1{text-shadow:3px 3px 0 rgba(31,35,40,.30)}
+body[data-theme="ink-wash"] .page-hero h1 span{-webkit-text-stroke:1px rgba(239,232,220,.4)}
+body[data-theme="ink-wash"] .page-hero .hero-copy-panel>p:last-of-type{color:var(--text-2)}
+body[data-theme="ink-wash"] .page-hero .hero-copy-panel{background:linear-gradient(90deg,rgba(31,35,40,.10),rgba(31,35,40,.02))}
+body[data-theme="ink-wash"] .page-hero .hero-hud strong{text-shadow:5px 5px 0 rgba(31,35,40,.30)}
+body[data-theme="ink-wash"] .page-hero .hero-status b{box-shadow:3px 3px 0 rgba(31,35,40,.30)}
+body[data-theme="ink-wash"] .page-hero .hero-hud small{color:var(--text-2)}
+body[data-theme="ink-wash"] .timeline-page:not(.character-detail-page){background:var(--bg)!important}
+body[data-theme="ink-wash"] .timeline-toolbar{border-bottom-color:var(--ink)!important}
+body[data-theme="ink-wash"] .timeline-toolbar b{color:var(--accent)}
+body[data-theme="ink-wash"] .page-timeline-item:before{border-left-color:var(--text-3)}
+body[data-theme="ink-wash"] .page-card{background:var(--bg-panel)!important;color:var(--text-1)!important;box-shadow:5px 5px 0 rgba(31,35,40,.15)}
+body[data-theme="ink-wash"] .page-card p{color:var(--text-2)}
+body[data-theme="ink-wash"] .page-card h2{color:var(--text-1)!important}
+body[data-theme="ink-wash"] .episode-tag{background:var(--accent-soft)!important;color:var(--accent)!important}
+body[data-theme="ink-wash"] .route-kicker .spoiler-level{color:var(--coral)}
+body[data-theme="ink-wash"] .video-link{color:var(--accent)!important}
+body[data-theme="ink-wash"] .story-lane-switch{background:var(--bg-panel)!important;border-color:var(--line-strong)!important;box-shadow:4px 4px 0 rgba(31,35,40,.12)}
+body[data-theme="ink-wash"] .story-lane-switch .lane-kicker{color:var(--accent)}
+body[data-theme="ink-wash"] .story-lane-switch .lane-chip{background:var(--bg-soft);border-color:var(--line);color:var(--text-1)}
+body[data-theme="ink-wash"] .story-lane-switch .lane-chip:hover{border-color:var(--accent)}
+body[data-theme="ink-wash"] .story-lane-switch .lane-chip.is-active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+body[data-theme="ink-wash"] .video-cover-wrap{background:var(--bg-soft)!important;border-color:var(--line-strong)!important}
+body[data-theme="ink-wash"] .cover-placeholder{background:var(--bg-soft)!important;color:var(--text-3)!important}
+body[data-theme="ink-wash"] .subpage{background:var(--bg)!important}
+
+body[data-theme="ink-wash"] .faction-entry-icon{background:var(--bg-soft)!important;box-shadow:8px 8px 0 var(--faction-card-theme)}
+body[data-theme="ink-wash"] .faction-entry-action{color:var(--text-1)}
+body[data-theme="ink-wash"] .agent-entry-avatar{background:var(--bg-soft)!important}
+body[data-theme="ink-wash"] .character-empty{background:var(--bg-soft)!important;color:var(--text-1)!important;border-color:var(--line-strong)!important}
+
+/* 角色页独立视觉体系，不受 ink-wash 覆盖；颜色由 archive-tools.js 动态注入 */
+
+/* ── P3 修复：主线排版收紧 + 图片显示不全 ── */
+/* 标题缩小 */
+.page-hero h1{font-size:clamp(42px,6vw,72px)!important;letter-spacing:-1px!important;margin-bottom:16px!important}
+.page-hero p:last-child{font-size:16px!important;max-width:480px}
+/* 卡片间距收紧 */
+.page-timeline-item{margin-bottom:14px!important}
+.page-card{padding:16px 18px!important;gap:14px!important;box-shadow:5px 5px 0 var(--ink,rgba(0,0,0,.22))!important}
+.page-card h2{font-size:22px!important;margin:4px 0!important}
+.page-card p{font-size:14px!important;margin-bottom:8px!important}
+/* 图片区：固定高度 + cover 填满 */
+.video-cover-wrap{flex:0 0 180px!important;height:140px!important;overflow:hidden!important}
+.video-cover{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center top!important}
+.page-card[data-orientation="landscape"] .video-cover-wrap{height:160px!important;flex:none!important;width:100%!important;max-width:100%!important}
+.page-card[data-orientation="landscape"] .video-cover{max-height:160px!important;object-fit:cover!important}
+/* hero 区缩紧 */
+.page-hero{padding:60px 8vw 36px!important}
+/* 节点编号缩小 */
+.page-node{width:42px!important;height:42px!important;font-size:12px!important;box-shadow:3px 3px 0 var(--ink,#000)!important}
+/* ink-wash 下配色修正 */
+body[data-theme="ink-wash"] .page-hero{background:var(--bg-soft)!important;border-bottom-color:var(--line-strong)!important}
+body[data-theme="ink-wash"] .page-hero h1{color:var(--text-1)!important}
+body[data-theme="ink-wash"] .page-hero .eyebrow{color:var(--accent)!important}
+body[data-theme="ink-wash"] .page-hero p{color:var(--text-2)!important}
+body[data-theme="ink-wash"] .page-node{background:var(--accent)!important;color:var(--accent-ink)!important;border-color:var(--line-strong)!important}
+body[data-theme="ink-wash"] .page-card{border-color:var(--line-strong)!important}
+body[data-theme="ink-wash"] .page-card h2{color:var(--text-1)!important}
+body[data-theme="ink-wash"] .video-link{color:var(--accent)!important}
+body[data-theme="ink-wash"] .episode-tag{background:var(--accent-soft)!important;color:var(--accent)!important}
+/* ink-wash 筛选栏适配 */
+body[data-theme="ink-wash"] .archive-filter-bar{background:var(--bg-panel)!important;border-color:var(--line-strong)!important}
+body[data-theme="ink-wash"] .archive-filter-bar input,
+body[data-theme="ink-wash"] .archive-filter-bar select{background:var(--bg-soft)!important;border-color:var(--line)!important;color:var(--text-1)!important}
+body[data-theme="ink-wash"] .archive-filter-bar label{color:var(--text-2)!important}
+body[data-theme="ink-wash"] .archive-filter-bar output{color:var(--accent)!important}
+body[data-theme="ink-wash"] .archive-filter-bar button{color:var(--text-1)!important;border-color:var(--line)!important}
+body[data-theme="ink-wash"] .route-console{background:var(--bg-panel)!important;border-color:var(--line)!important;color:var(--text-1)!important}
+body[data-theme="ink-wash"] .archive-content{background:var(--bg)!important}
+body[data-theme="ink-wash"] .section-head h2{color:var(--text-1)!important}
+body[data-theme="ink-wash"] .section-head p{color:var(--text-2)!important}
+@media(max-width:760px){
+  .video-cover-wrap{flex:none!important;height:120px!important;width:100%!important;margin-bottom:10px!important}
+  .page-card{padding:12px!important}
+  .page-card h2{font-size:18px!important}
+}
+/* 角色页 figcaption 由角色自身色系控制 */

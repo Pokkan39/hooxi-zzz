@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>卡雕分层效果展示 — 全部 19 组</title>
+<style>
+*{margin:0;box-sizing:border-box}
+body{
+  background:#08080c;
+  color:#eee;
+  font-family:system-ui,-apple-system,sans-serif;
+  padding:32px 24px 80px;
+  min-height:100vh;
+}
+h1{
+  text-align:center;
+  font-size:22px;
+  letter-spacing:.08em;
+  color:#d8fa00;
+  margin-bottom:8px;
+}
+.subtitle{
+  text-align:center;
+  font-size:13px;
+  color:#888;
+  margin-bottom:40px;
+  line-height:1.7;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(520px,1fr));
+  gap:32px;
+  max-width:1600px;
+  margin:0 auto;
+}
+/* 卡片 */
+.card{
+  background:#111118;
+  border:1px solid #222;
+  border-radius:12px;
+  overflow:hidden;
+  padding:16px;
+}
+.card h2{
+  font-size:13px;
+  color:#ccc;
+  margin-bottom:12px;
+  letter-spacing:.04em;
+}
+/* 卡雕舞台 */
+.stage{
+  position:relative;
+  width:100%;
+  aspect-ratio:2.37;
+  overflow:hidden;
+  border-radius:8px;
+  cursor:crosshair;
+  background:#050508;
+  perspective:900px;
+  transform-style:preserve-3d;
+}
+.stage .layer{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  will-change:transform;
+}
+/* 远景 — scale 大幅放大，保证位移时不露边 */
+.stage .layer--far{
+  z-index:0;
+  transform-origin:center center;
+  animation:breath-far 9s ease-in-out infinite;
+}
+/* 中景 */
+.stage .layer--mid{
+  z-index:1;
+  filter:drop-shadow(0 6px 14px rgba(0,0,0,.5));
+  transform-origin:center center;
+  animation:breath-mid 7s ease-in-out infinite;
+}
+/* 近景 */
+.stage .layer--near{
+  z-index:2;
+  filter:drop-shadow(0 10px 22px rgba(0,0,0,.6));
+  transform-origin:center center;
+  animation:breath-near 4.5s ease-in-out infinite;
+}
+/* 呼吸动画 — 幅度克制，以微缩放+微旋为主，位移极小避免黑边 */
+@keyframes breath-far{
+  0%,100%{transform:translateZ(0px) scale(1.18) translate(0,0) rotate(0deg)}
+  50%{transform:translateZ(0px) scale(1.20) translate(2px,1px) rotate(-0.15deg)}
+}
+@keyframes breath-mid{
+  0%,100%{transform:translateZ(25px) scale(1.14) translate(0,0) rotate(0deg)}
+  50%{transform:translateZ(25px) scale(1.16) translate(-2px,1px) rotate(0.2deg)}
+}
+@keyframes breath-near{
+  0%,100%{transform:translateZ(50px) scale(1.12) translate(0,0) rotate(0deg)}
+  50%{transform:translateZ(50px) scale(1.14) translate(1px,-2px) rotate(-0.1deg)}
+}
+/* 独立展示行 */
+.layers-row{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+}
+.layers-row img{
+  flex:1;
+  height:60px;
+  object-fit:cover;
+  border-radius:4px;
+  border:1px solid #333;
+  background:repeating-conic-gradient(#1a1a1e 0% 25%,#222226 0% 50%) 0 0/12px 12px;
+}
+.layers-row span{
+  display:block;
+  text-align:center;
+  font-size:9px;
+  color:#666;
+  margin-top:3px;
+}
+</style>
+</head>
+<body>
+<h1>卡雕分层 3D 效果展示</h1>
+<p class="subtitle">
+  共 19 组素材 · 鼠标移入查看视差景深 · 各层独立运动证明分层有效<br>
+  远景（蓝框）/ 中景（绿框）/ 近景（黄框）· 投影 + perspective + translateZ
+</p>
+<div class="grid" id="grid"></div>
+<script>
+const ACTS=[
+  ['amusement-island-rescue','游乐岛大救援'],
+  ['angel-muse-delusion','天使缪斯妄想'],
+  ['art-is-bangboo','Art is Bangboo'],
+  ['artist-profile-book','代理人写真集'],
+  ['bangboo-genius-chip','邦邦！天才与青涩芝片'],
+  ['beyond-sight','日不可及'],
+  ['blade-shadow-coop','刃影联动'],
+  ['delusion-resonance','妄想协奏于此刻'],
+  ['extreme-judgment-trial','极限判定试炼'],
+  ['hollow-hunt-coronation','空洞猎冠'],
+  ['lame-crow-chronicle','跛脚乌鸦异闻录'],
+  ['lido-strange-tales','丽都奇谈'],
+  ['mock-exam-comeback','模考逆袭计划'],
+  ['old-dream-encore','旧梦的安可曲'],
+  ['silver-revival','银翼复苏'],
+  ['simulated-annihilation','拟境湮灭战'],
+  ['sleepwalker-confession','某个梦游者的自白'],
+  ['tianshu-intel-atlas','天枢情报图鉴'],
+  ['wish-proxy-station','许愿代理站']
+];
+
+const grid=document.getElementById('grid');
+
+ACTS.forEach(([slug,name])=>{
+  const base=`assets/hero/acts/${slug}`;
+  const card=document.createElement('div');
+  card.className='card';
+  card.innerHTML=`
+    <h2>${name} <small style="color:#666;font-weight:400">· ${slug}</small></h2>
+    <div class="stage" data-slug="${slug}">
+      <img class="layer layer--far" src="${base}/far.webp" alt="远景">
+      <img class="layer layer--mid" src="${base}/mid.webp" alt="中景">
+      <img class="layer layer--near" src="${base}/near.webp" alt="近景">
+    </div>
+    <div class="layers-row">
+      <div><img src="${base}/far.webp"><span>远景</span></div>
+      <div><img src="${base}/mid.webp"><span>中景</span></div>
+      <div><img src="${base}/near.webp"><span>近景</span></div>
+    </div>
+  `;
+  grid.appendChild(card);
+});
+
+// 鼠标视差 — 通过 CSS translate 属性叠加，不干扰呼吸动画
+// CSS animation 控制 transform，鼠标控制 translate（独立属性，浏览器自动叠加）
+const RATES=[-0.04, 0.10, 0.22];
+document.querySelectorAll('.stage').forEach(stage=>{
+  const layers=stage.querySelectorAll('.layer');
+  stage.addEventListener('mousemove',e=>{
+    const r=stage.getBoundingClientRect();
+    const nx=((e.clientX-r.left)/r.width)*2-1;
+    const ny=((e.clientY-r.top)/r.height)*2-1;
+    layers.forEach((layer,i)=>{
+      const dx=nx*18*RATES[i];
+      const dy=ny*10*RATES[i];
+      layer.style.translate=`${dx}px ${dy}px`;
+    });
+  });
+  stage.addEventListener('mouseleave',()=>{
+    layers.forEach(layer=>{
+      layer.style.translate='';
+    });
+  });
+});
+</script>
+</body>
+</html>

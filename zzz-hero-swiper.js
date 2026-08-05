@@ -12,7 +12,7 @@
      Swiper 每次切换时回调原有 showHeroCarouselSlide，保持单一活动项与页码同步。 */
 
   const READY_TIMEOUT=8000;
-  const AUTOPLAY_DELAY=7000;
+  const AUTOPLAY_DELAY=3000;
 
   const takeOver=()=>{
     const track=document.querySelector('#heroCarouselTrack');
@@ -137,4 +137,74 @@
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',waitForSlides,{once:true});
   else waitForSlides();
+})();
+
+/* ── P1: 缩略图条联动 + 入场动画 ── */
+(function(){
+  'use strict';
+  if(!document.body.classList.contains('home-page'))return;
+
+  /* 入场动画：页面加载时触发信号干扰效果 */
+  function triggerEntrance(){
+    var hero=document.querySelector('.hero');
+    if(!hero)return;
+    hero.setAttribute('data-hero-entering','');
+    setTimeout(function(){hero.removeAttribute('data-hero-entering');},1200);
+  }
+
+  /* 缩略图条联动 */
+  function initThumbstrip(){
+    var strip=document.getElementById('heroThumbstrip');
+    if(!strip)return;
+    var thumbs=strip.querySelectorAll('.hero-thumb');
+    if(!thumbs.length)return;
+
+    // 点击缩略图 → 切换轮播
+    strip.addEventListener('click',function(e){
+      var btn=e.target.closest('.hero-thumb');
+      if(!btn)return;
+      var idx=parseInt(btn.getAttribute('data-thumb-idx'),10);
+      if(isNaN(idx))return;
+
+      // 使用 Swiper 切换
+      if(window.__zzzHeroSwiper){
+        var viewport=document.querySelector('.zzz-hero-swiper');
+        if(viewport&&viewport.swiper)viewport.swiper.slideTo(idx);
+      }else if(typeof window.showHeroCarouselSlide==='function'){
+        window.showHeroCarouselSlide(idx);
+      }
+
+      // 暂停自动播放（用户手动操作）
+      if(typeof window.setHeroPauseReason==='function')window.setHeroPauseReason('user',true);
+
+      // 更新缩略图激活态
+      syncThumbs(idx);
+    });
+
+    // 监听轮播切换同步缩略图
+    var observer=new MutationObserver(function(){
+      var active=document.querySelector('.hero-carousel-slide.is-active, .swiper-slide-active');
+      if(!active)return;
+      var idx=parseInt(active.getAttribute('data-hero-slide'),10);
+      if(!isNaN(idx))syncThumbs(idx);
+    });
+    var track=document.getElementById('heroCarouselTrack');
+    if(track)observer.observe(track,{attributes:true,attributeFilter:['class'],subtree:true});
+  }
+
+  function syncThumbs(idx){
+    var thumbs=document.querySelectorAll('.hero-thumb');
+    thumbs.forEach(function(t,i){
+      t.classList.toggle('is-active',i===idx);
+    });
+  }
+
+  function init(){
+    // triggerEntrance() 已由 zzz-motion.js 的 GSAP stagger timeline 替代，
+    // 避免 CSS opacity:0 与 GSAP from() 冲突。
+    initThumbstrip();
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
 })();

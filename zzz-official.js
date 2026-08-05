@@ -52,7 +52,7 @@
         const dist=Math.abs(i-hot);
         c.classList.toggle('is-key-hot',dist===0);
         c.classList.toggle('is-key-near',dist===1);
-        c.style.setProperty('--key-scale',dist===0?'1.06':dist===1?'1.02':'1');
+        c.style.setProperty('--key-scale',dist===0?'1.08':dist===1?'1.03':'1');
       });
     };
     cards.forEach((card,i)=>{
@@ -164,6 +164,20 @@
       if(paths)initPianoKeys('.path-card',paths);
       const reel=document.querySelector('#homeArchiveReels');
       if(reel)initPianoKeys('.home-reel-card',reel);
+      // P3: 精选代理人卡片琴键缩放（动态渲染，需等 DOM 就绪）
+      const rail=document.querySelector('#homeAgentRail');
+      if(rail){
+        const tryAgentKeys=()=>{
+          if(rail.querySelector('.home-agent-card'))initPianoKeys('.home-agent-card',rail);
+        };
+        if(rail.querySelector('.home-agent-card'))tryAgentKeys();
+        else if('MutationObserver' in window){
+          const obs=new MutationObserver(()=>{
+            if(rail.querySelector('.home-agent-card')){obs.disconnect();tryAgentKeys();}
+          });
+          obs.observe(rail,{childList:true});
+        }
+      }
     }
     if(isCharacter){
       // character.js 渲染完成后才存在模块与卡片；等内容落位再挂官方导航、06/18

@@ -2,6 +2,8 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+  <meta http-equiv="Pragma" content="no-cache"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <meta name="description" content="Hooxi 的《绝区零》剧情视频档案与角色关系导航站。主线、角色与阵营、活动可检索；粉丝非官方，与米哈游无隶属。"/>
   <meta property="og:type" content="website"/>
@@ -17,12 +19,13 @@
   <link rel="stylesheet" href="assets/vendor/swiper/swiper-bundle.min.css?v=swiper-11-2-10"/>
   <link rel="stylesheet" href="motion.css?v=signal-field-stack-r1"/>
   <link rel="stylesheet" href="theme-zzz.css?v=home-carousel-r2"/>
-  <link rel="stylesheet" href="home-neon.css?v=home-calm-r2"/>
-  <link rel="stylesheet" href="zzz-motion.css?v=zzz-motion-r6"/>
+  <link rel="stylesheet" href="home-neon.css?v=home-acts-r9"/>
+  <link rel="stylesheet" href="zzz-motion.css?v=zzz-motion-r7"/>
   <link rel="stylesheet" href="official-dna.css?v=official-dna-r1"/>
-  <link rel="stylesheet" href="zzz-hero-parallax.css?v=zzz-parallax-r2"/>
+  <link rel="stylesheet" href="zzz-hero-parallax.css?v=zzz-carve-r6"/>
   <link rel="stylesheet" href="zzz-tv-transition.css?v=zzz-tv-r1"/>
   <link rel="stylesheet" href="game-feel.css?v=gf-1"/>
+  <link rel="stylesheet" href="official-wiki.css?v=ow-1"/>
   <meta name="theme-color" content="#18171A"/>
   <meta name="author" content="Hooxi"/>
   <meta name="robots" content="index,follow"/>
@@ -73,42 +76,23 @@
       <div class="hero__projector-light" aria-hidden="true"></div>
       <div class="hero__screen-grain" aria-hidden="true"></div>
       <div class="hero-copy">
-        <p class="eyebrow">HOOXI / ZENLESS STORY VIDEO ARCHIVE</p>
-        <h1 id="heroTitle">绝区零剧情影像档案</h1>
-        <p class="intro" id="heroIntro">按版本补剧情，按代理人追关联。先定位片段，再前往来源观看。</p>
+        <h1 id="heroTitle">绝区零剧情档案</h1>
+        <p class="intro" id="heroIntro">按版本补剧情，按代理人追关联。</p>
         <div class="hero-actions">
           <a class="button primary hero-primary-action" href="#finder" data-fx="press">开始查档 <span aria-hidden="true">→</span></a>
-          <a class="hero-play-action" href="tape-wall-sample.html">PLAY · 可选进入录像店</a>
-        </div>
-        <div class="hero-index" aria-label="当前本地档案概况">
-          <b id="archiveStatus">装载中…</b>
-          <small>计数来自本地档案，PLAY 可跳过。</small>
         </div>
       </div>
-      <div class="hero-art" id="homeHeroArt" data-hero-carousel>
-        <div class="hero-carousel-viewport">
-          <div class="hero-carousel-track" id="heroCarouselTrack">
-            <figure class="hero-carousel-slide is-active" data-hero-slide="0">
-              <img class="hero-star" id="heroStarImg" src="assets/hero/zzz-random-play-keyart.webp" alt="Random Play 主视觉" width="1146" height="717" decoding="async" fetchpriority="high"/>
-            </figure>
-            <figure class="hero-carousel-slide" data-hero-slide="1">
-              <img class="hero-star" src="assets/gallery/miyabi/05.webp" alt="星见雅官方 gallery 影画展示2" loading="lazy" decoding="async"/>
-            </figure>
-            <figure class="hero-carousel-slide" data-hero-slide="2">
-              <img class="hero-star" src="assets/gallery/harumasa/04.webp" alt="浅羽悠真官方 gallery 影画展示1" loading="lazy" decoding="async"/>
-            </figure>
-            <figure class="hero-carousel-slide" data-hero-slide="3">
-              <img class="hero-star" src="assets/gallery/aria/01.webp" alt="爱芮官方 gallery 入场特写2" loading="lazy" decoding="async"/>
-            </figure>
-          </div>
-        </div>
+      <div class="hero-art" id="homeHeroArt">
+        <figure class="hero-carve" id="heroCarve">
+          <img class="carve-layer carve-layer--far" id="heroFar" src="assets/hero/acts/sleepwalker-confession/far.webp" alt="" aria-hidden="true" decoding="async"/>
+          <img class="carve-layer carve-layer--mid" id="heroMid" src="assets/hero/acts/sleepwalker-confession/mid.webp" alt="" aria-hidden="true" decoding="async"/>
+          <img class="carve-layer carve-layer--near" id="heroNear" src="assets/hero/acts/sleepwalker-confession/near.webp" alt="某个梦游者的自白 活动主视觉" decoding="async" fetchpriority="high"/>
+          <div class="carve-particles" aria-hidden="true"></div>
+        </figure>
         <div class="hero-art-veil" aria-hidden="true"></div>
-        <div class="hero-carousel-controls" aria-label="首页大图轮播状态">
-          <span id="heroCarouselIndex" aria-label="当前第 1 张，共 4 张">01 / 04</span>
-          <button type="button" id="heroCarouselPause" aria-pressed="false" aria-label="暂停首页轮播" aria-describedby="heroCarouselStatus"><span>暂停</span></button>
-          <span class="sr-only" id="heroCarouselStatus">轮播正在自动播放，每 7 秒切换一张。</span>
-        </div>
       </div>
+      <p class="hero-act-name" id="heroActName">某个梦游者的自白</p>
+      <div class="hero-scroll-hint" aria-hidden="true"><span></span></div>
     </section>
 
     <section class="route-section home-act" id="finder" data-home-act="finder" aria-labelledby="finderTitle">
@@ -150,6 +134,45 @@
         <a href="behind-scenes.html">幕后正式页</a>
       </nav>
       <div class="home-lane-grid" id="homeArchiveReels" aria-label="主线、活动与幕后预览"></div>
+    </section>
+
+    <section class="official-wiki" id="officialWiki" aria-labelledby="owTitle" data-ow-section>
+      <div class="ow-wrap">
+        <div class="ow-head">
+          <div class="ow-head-left">
+            <span class="ow-kicker">// 官方维基 · 沉浸展示</span>
+            <h2 id="owTitle">角色 · 维基视图</h2>
+          </div>
+          <p class="ow-head-note">模仿米哈游官方维基全屏风格：左侧代理人列表、右侧角色详情。<a href="stories.html">完整目录 →</a></p>
+        </div>
+        <div class="ow-stage">
+          <aside class="ow-roster" aria-label="代理人列表">
+            <div class="ow-roster-head"><span>ROSTER</span><b data-ow-count></b></div>
+            <div data-ow-list></div>
+          </aside>
+          <div class="ow-detail" data-ow-detail>
+            <div class="ow-detail-bg" data-ow-detail-bg></div>
+            <div class="ow-detail-veil"></div>
+            <div class="ow-detail-body">
+              <p class="ow-detail-id" data-ow-detail-id></p>
+              <h3 class="ow-detail-name" data-ow-detail-name>选择代理人</h3>
+              <p class="ow-detail-en" data-ow-detail-en>SELECT AN AGENT</p>
+              <div class="ow-tags" data-ow-tags></div>
+              <p class="ow-summary" data-ow-detail-summary>点击左侧角色进入维基式详情；或前往完整档案页查看角色影画与资料。</p>
+              <div class="ow-actions" data-ow-actions>
+                <a class="ow-btn primary" href="stories.html">完整档案 →</a>
+                <a class="ow-btn ghost" href="faction.html">阵营目录</a>
+              </div>
+              <div class="ow-meta-grid" data-ow-meta-grid>
+                <div class="ow-meta-item"><span>Faction</span><b data-ow-detail-faction>—</b></div>
+                <div class="ow-meta-item"><span>Attribute</span><b data-ow-detail-attr>—</b></div>
+                <div class="ow-meta-item"><span>Specialty</span><b data-ow-detail-specialty>—</b></div>
+                <div class="ow-meta-item"><span>Attack Type</span><b data-ow-detail-attack>—</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="about home-act" id="sources" data-home-act="sources" data-source-section aria-labelledby="sourcesTitle">
@@ -210,14 +233,13 @@
   <script src="agent-catalog.js?v=archive-3"></script>
   <script src="layout-data.js?v=1"></script>
   <script src="image-webp.js?v=webp-4"></script>
-  <script src="app.js?v=home-carousel-r2"></script>
+  <script src="app.js?v=home-carve-r1"></script>
   <script src="layout-editor.js?v=editor-2"></script>
   <script src="home-neon.js?v=home-calm-r2"></script>
-  <script src="zzz-motion.js?v=zzz-motion-r6"></script>
+  <script src="zzz-motion.js?v=zzz-motion-r7"></script>
   <script src="zzz-official.js?v=zzz-official-r1"></script>
   <script src="zzz-motion-notice.js?v=zzz-motion-notice-r1"></script>
-  <script src="zzz-hero-parallax.js?v=zzz-parallax-r1"></script>
-  <script src="zzz-hero-swiper.js?v=zzz-hero-swiper-r1"></script>
+  <script src="zzz-hero-parallax.js?v=zzz-carve-r4"></script>
   <script src="zzz-tv-transition.js?v=zzz-tv-r1"></script>
   <script src="theme-switcher.js?v=theme-switcher-r1"></script>
   <script>
@@ -255,5 +277,104 @@
   })();
   </script>
   <script src="game-feel.js?v=gf-1"></script>
+  <script>
+  (function(){
+    // Official-Wiki 沉浸区块：读取已有数据，填充角色列表与详情
+    function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c})}
+    function init(){
+      var data = window.archiveData || {};
+      var chars = data.characters || [];
+      if(!chars.length) return;
+      var listHost = document.querySelector('[data-ow-list]');
+      var countEl  = document.querySelector('[data-ow-count]');
+      if(!listHost) return;
+      if(countEl) countEl.textContent = chars.length + ' AGENTS';
+
+      var activeIdx = 0;
+      // 按稀有度排序：S → A → 其他，同等级按中文名拼音
+      var order = {S:0,A:1};
+      var sorted = chars.slice().sort(function(a,b){
+        return (order[a.rank]??2) - (order[b.rank]??2) || (a.name||'').localeCompare(b.name||'','zh');
+      });
+      // 优先选已有 faction 的活跃角色
+      for(var i=0;i<sorted.length;i++){ if(sorted[i].factionName){ activeIdx = i; break; }}
+      chars = sorted;
+
+      function buildRow(c, idx){
+        var el = document.createElement('a');
+        el.className = 'ow-roster-item' + (idx===activeIdx?' active':'');
+        el.href = 'character.html?id=' + encodeURIComponent(c.id);
+        el.setAttribute('data-ow-row', idx);
+        el.setAttribute('tabindex', idx===activeIdx?0:-1);
+        var faction = c.factionName || (data.factions||[]).find(function(f){return f.id===c.factionId})?.name || '';
+        var pimg = c.card || c.avatar || c.headshot || '';
+        el.innerHTML =
+          '<div class="ow-avatar">' +
+            (pimg ? '<img loading="lazy" src="'+esc(pimg)+'" alt="">' : (c.id.charAt(0).toUpperCase())) +
+          '</div>' +
+          '<div class="ow-name"><b>' + esc(c.name) + '</b><small>' + esc(faction) + '</small></div>' +
+          '<span class="ow-arrow">›</span>';
+        el.addEventListener('click', function(e){
+          e.preventDefault();
+          setActive(idx);
+        });
+        return el;
+      }
+      function setActive(idx){
+        activeIdx = idx;
+        listHost.querySelectorAll('[data-ow-row]').forEach(function(r,i){
+          r.classList.toggle('active', i===idx);
+        });
+        renderDetail(chars[idx]);
+      }
+      function renderDetail(c){
+        if(!c) return;
+        var faction = c.factionName || (data.factions||[]).find(function(f){return f.id===c.factionId})?.name || '';
+        var idEl = document.querySelector('[data-ow-detail-id]'); if(idEl) idEl.textContent = (c.id||'').toUpperCase() + ' // FILE NO.';
+        var nameEl = document.querySelector('[data-ow-detail-name]'); if(nameEl) nameEl.textContent = c.name||'—';
+        var enEl = document.querySelector('[data-ow-detail-en]'); if(enEl) enEl.textContent = (c.englishName||'') ? (c.englishName.toUpperCase()) : 'PROFILE';
+        var tags = document.querySelector('[data-ow-tags]'); if(tags){
+          tags.innerHTML = [c.attribute,c.specialty,faction].filter(Boolean).map(function(t){return '<span class="ow-tag">'+esc(t)+'</span>'}).join('');
+        }
+        var sumEl = document.querySelector('[data-ow-detail-summary]'); if(sumEl) sumEl.textContent = c.summary||'—';
+        var fEl = document.querySelector('[data-ow-detail-faction]'); if(fEl) fEl.textContent = faction||'—';
+        var aEl = document.querySelector('[data-ow-detail-attr]'); if(aEl) aEl.textContent = c.attribute||'—';
+        var sEl = document.querySelector('[data-ow-detail-specialty]'); if(sEl) sEl.textContent = c.specialty||'—';
+        var atEl = document.querySelector('[data-ow-detail-attack]'); if(atEl) atEl.textContent = c.attackType||'—';
+        var link = document.querySelector('[data-ow-actions] .ow-btn.primary');
+        if(link) link.href = 'character.html?id=' + encodeURIComponent(c.id);
+        // 右侧详情背景：角色立绘
+        var bg = document.querySelector('[data-ow-detail-bg]');
+        if(bg){
+          var pimg = c.portrait || c.card || c.avatar || c.headshot || '';
+          bg.classList.remove('loaded');
+          if(pimg){
+            bg.style.backgroundImage = 'url("'+pimg+'")';
+            // 加载完成后淡入
+            var img = new Image();
+            img.onload = function(){ bg.classList.add('loaded'); };
+            img.onerror = function(){ bg.classList.add('loaded'); };
+            img.src = pimg;
+          } else {
+            bg.style.backgroundImage = 'none';
+            bg.classList.add('loaded');
+          }
+        }
+        // 图集预览（如有）
+        var galleryHost = document.querySelector('[data-ow-gallery]');
+        if(galleryHost && c.gallery && c.gallery.length){
+          galleryHost.innerHTML = c.gallery.slice(0,4).map(function(g){
+            return '<a href="character.html?id='+encodeURIComponent(c.id)+'"><img loading="lazy" src="'+esc(g.image)+'" alt=""></a>';
+          }).join('');
+          galleryHost.classList.add('is-loaded');
+        }
+      }
+      chars.forEach(function(c,i){ listHost.appendChild(buildRow(c,i)); });
+      renderDetail(chars[activeIdx]);
+    }
+    if(document.readyState==='complete' || document.readyState==='interactive') init();
+    else document.addEventListener('DOMContentLoaded', init);
+  })();
+  </script>
 </body>
 </html>

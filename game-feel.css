@@ -27,11 +27,34 @@
 /* hover / focus-visible 触发 */
 [data-disperse]:hover .gf-chr-r,
 [data-disperse]:focus-visible .gf-chr-r {
-  opacity: .5; transform: translate3d(-3px, 0, 0);
+  opacity: .6; transform: translate3d(-4px, -1px, 0);
 }
 [data-disperse]:hover .gf-chr-b,
 [data-disperse]:focus-visible .gf-chr-b {
-  opacity: .5; transform: translate3d(3px, 0, 0);
+  opacity: .6; transform: translate3d(4px, 1px, 0);
+}
+
+/* 选中态：持续色散（比 hover 弱但常驻） */
+[data-disperse].is-selected .gf-chr-r {
+  opacity: .35; transform: scale(1.32) translate3d(-2px, 0, 0);
+}
+[data-disperse].is-selected .gf-chr-b {
+  opacity: .35; transform: scale(1.32) translate3d(2px, 0, 0);
+}
+/* 选中 + hover：色散加强 + 脉冲 */
+@keyframes chr-pulse {
+  0%,100%{ opacity:.6; transform:scale(1.32) translate3d(-4px,-1px,0) }
+  50%{ opacity:.75; transform:scale(1.32) translate3d(-6px,-2px,0) }
+}
+@keyframes chr-pulse-b {
+  0%,100%{ opacity:.6; transform:scale(1.32) translate3d(4px,1px,0) }
+  50%{ opacity:.75; transform:scale(1.32) translate3d(6px,2px,0) }
+}
+[data-disperse].is-selected:hover .gf-chr-r {
+  animation: chr-pulse 1.5s ease-in-out infinite;
+}
+[data-disperse].is-selected:hover .gf-chr-b {
+  animation: chr-pulse-b 1.5s ease-in-out infinite;
 }
 
 /* 浅色主题用 multiply 混合而非 screen */
@@ -175,6 +198,7 @@ body[data-theme="ink-wash"] .ink-img:hover {
 /* 全局图片（非 logo/icon/emoji）的浅去饱和：只对角色图鉴、装备、章节封面类图片生效 */
 body[data-theme="ink-wash"] .archive-card img,
 body[data-theme="ink-wash"] .agent-thumb img,
+body[data-theme="ink-wash"] .agent-card-image img,
 body[data-theme="ink-wash"] .chapter-cover img,
 body[data-theme="ink-wash"] .wiki-card img,
 body[data-theme="ink-wash"] .gallery-item img {
@@ -183,6 +207,7 @@ body[data-theme="ink-wash"] .gallery-item img {
 }
 body[data-theme="ink-wash"] .archive-card:hover img,
 body[data-theme="ink-wash"] .agent-thumb:hover img,
+body[data-theme="ink-wash"] .agent-roster-card:hover .agent-card-image img,
 body[data-theme="ink-wash"] .chapter-cover:hover img,
 body[data-theme="ink-wash"] .wiki-card:hover img,
 body[data-theme="ink-wash"] .gallery-item:hover img {
