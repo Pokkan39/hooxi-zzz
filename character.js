@@ -227,7 +227,7 @@
     const shortLabel=skill.name.split('：')[0]||skill.name.slice(0,4);
     const hasIcon=!!skill.icon;
     const iconHtml=hasIcon
-      ?`<span class="talent-icon-circle"><img src="${esc(skill.icon)}" alt="" width="48" height="48" loading="lazy" decoding="async"/></span>`
+      ?`<span class="talent-icon-circle"><img src="${esc(skill.icon)}" alt="" loading="lazy" decoding="async"/></span>`
       :`<span class="talent-icon-circle talent-icon-no-img" aria-hidden="true">${esc(shortLabel.slice(0,2))}</span>`;
     return `<button id="${talentId}-tab-${index}" type="button" role="tab" aria-controls="${talentId}-panel-${index}" aria-selected="${index===0?'true':'false'}" tabindex="${index===0?'0':'-1'}" class="talent-icon-tab${index===0?' is-active':''}" data-talent-tab="${index}" title="${esc(skill.name)}">${iconHtml}<span class="talent-icon-label">${esc(shortLabel)}</span></button>`;
   }).join('');
@@ -246,9 +246,7 @@
         const rowsHtml=stage.rows.map(row=>row.split('\n').map(line=>`<li>${esc(line)}</li>`).join('')).join('');
         return `<div class="talent-stage-card${si===0?' is-active':''}" data-stage="${si}"><span class="talent-stage-num${isCore?' is-core':''}">${isCore?`S${stageChar}`:stageChar}</span><ul class="talent-stage-rows">${rowsHtml}</ul></div>`;
       }).join('');
-      // 底部等级选择器（点击切换，不用全部滑动看）
-      const stageDots=growth.map((stage,si)=>`<button type="button" class="talent-stage-dot${si===0?' is-active':''}" data-stage-dot="${si}" aria-label="等级 ${esc(stage.name)}">${esc(stage.name)}</button>`).join('');
-      growthHtml=`<div class="talent-growth-scroll" aria-label="技能升级数据"><div class="talent-growth-track">${stageCircles}</div></div><div class="talent-stage-nav">${stageDots}</div><p class="talent-growth-tip">点击等级或左右滑动查看倍率</p>`;
+      growthHtml=`<div class="talent-growth-scroll" aria-label="技能升级数据"><div class="talent-growth-track">${stageCircles}</div></div>`;
     }
     return `<div id="${talentId}-panel-${index}" class="talent-panel${index===0?' is-active':''}" role="tabpanel" aria-labelledby="${talentId}-tab-${index}" aria-hidden="${index===0?'false':'true'}" ${index===0?'':'hidden inert'} data-talent-panel="${index}"><div class="talent-detail"><div class="talent-detail-left"><span class="talent-big-icon">${hasIcon?`<span class="talent-icon-circle"><img src="${esc(skill.icon)}" alt="" width="120" height="120" loading="lazy" decoding="async"/></span>`:`<span class="talent-icon-circle talent-icon-no-img" aria-hidden="true">${esc(shortLabel.slice(0,2))}</span>`}</span><div class="talent-detail-name"><span class="talent-detail-type">${esc(shortLabel)}</span><h3>${esc(skill.name)}</h3>${nameSuffix?`<span class="talent-detail-sub">${esc(nameSuffix)}</span>`:''}</div></div><div class="talent-detail-right"><p class="talent-desc">${esc(skill.desc)}</p></div></div>${growthHtml}</div>`;
   }).join('');
@@ -363,26 +361,6 @@
       go(next,{focus:true});
     });
     go(0);
-    // 等级导航：点击 dot 切换显示对应 stage 卡片
-    panels.forEach(panel=>{
-      const dots=[...panel.querySelectorAll('[data-stage-dot]')];
-      const cards=[...panel.querySelectorAll('.talent-stage-card')];
-      if(!dots.length||!cards.length)return;
-      const goStage=(si)=>{
-        dots.forEach((d,i)=>d.classList.toggle('is-active',i===si));
-        cards.forEach((c,i)=>{
-          c.classList.toggle('is-active',i===si);
-          c.dataset.active=String(i===si);
-        });
-        const track=panel.closest('.talent-module')?.querySelector('.talent-growth-track')||panel.querySelector('.talent-growth-track');
-        if(track&&cards[si]){
-          const left=Math.max(0,cards[si].offsetLeft-track.clientWidth/2+cards[si].clientWidth/2);
-          track.scrollTo({left,behavior:'smooth'});
-        }
-      };
-      cards.forEach((c,i)=>c.dataset.active=String(c.classList.contains('is-active')));
-      dots.forEach((dot,i)=>dot.addEventListener('click',()=>goStage(i)));
-    });
   };
 
   const archiveTablist=document.querySelector('.character-module-nav[role="tablist"]');
