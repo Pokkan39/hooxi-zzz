@@ -28,7 +28,7 @@
       });
       if(!['http:','https:'].includes(url.protocol)
         ||url.origin!==location.origin
-        ||!decodedPath.startsWith('/assets/')
+        ||!decodedPath.includes('/assets/')
         ||/%2f|%5c/i.test(url.pathname)
         ||hasEscape
         ||!/\.(?:png|jpe?g|webp|gif|svg)$/i.test(decodedPath))return '';
