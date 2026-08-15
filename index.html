@@ -178,6 +178,10 @@
             <div data-ow-list></div>
           </aside>
           <div class="ow-detail" data-ow-detail>
+            <div class="ow-detail-portrait" data-ow-detail-portrait>
+              <img data-ow-portrait-img alt="" aria-hidden="true"/>
+            </div>
+            <div style="position:relative;display:flex;flex-direction:column;overflow:hidden;">
             <div class="ow-detail-bg" data-ow-detail-bg></div>
             <div class="ow-detail-veil"></div>
             <div class="ow-detail-body">
@@ -196,6 +200,7 @@
                 <div class="ow-meta-item"><span>Specialty</span><b data-ow-detail-specialty>—</b></div>
                 <div class="ow-meta-item"><span>Attack Type</span><b data-ow-detail-attack>—</b></div>
               </div>
+            </div>
             </div>
           </div>
         </div>
@@ -371,26 +376,30 @@
         var atEl = document.querySelector('[data-ow-detail-attack]'); if(atEl) atEl.textContent = c.attackType||'—';
         var link = document.querySelector('[data-ow-actions] .ow-btn.primary');
         if(link) link.href = 'character.html?id=' + encodeURIComponent(c.id);
-        // 右侧详情背景：角色立绘，延迟到区块可见时才加载
+        // 左侧立绘前景图 + 右侧背景氛围，延迟到区块可见时才加载
+        var portraitImg = document.querySelector('[data-ow-portrait-img]');
         var bg = document.querySelector('[data-ow-detail-bg]');
-        if(bg){
-          var pimg = c.portrait || c.card || c.avatar || c.headshot || '';
-          bg.classList.remove('loaded');
-          if(pimg && loadPortraits){
-            var myToken = ++portraitToken;
-            bg.style.backgroundImage = '';
-            var img = new Image();
-            img.onload = function(){ if(myToken===portraitToken){ bg.style.backgroundImage='url("'+pimg+'")'; bg.classList.add('loaded'); }};
-            img.onerror = function(){ if(myToken===portraitToken) bg.classList.add('loaded'); };
-            img.src = pimg;
-          } else if(!pimg){
-            bg.style.backgroundImage = 'none';
+        var pimg = c.portrait || c.card || c.avatar || c.headshot || '';
+        if(bg) bg.classList.remove('loaded');
+        if(portraitImg) { portraitImg.classList.remove('loaded'); portraitImg.src = ''; }
+        if(pimg && loadPortraits){
+          var myToken = ++portraitToken;
+          if(portraitImg){
+            portraitImg.onload = function(){ if(myToken===portraitToken) portraitImg.classList.add('loaded'); };
+            portraitImg.onerror = function(){ };
+            portraitImg.alt = c.name || '';
+            portraitImg.src = pimg;
+          }
+          if(bg){
+            bg.style.backgroundImage = 'url("'+pimg+'")';
             bg.classList.add('loaded');
           }
-          // 若区块尚未可见，仅记录待显示的 pimg，等 IO 触发后再补
-          if(!loadPortraits) bg.dataset.pendingPortrait = pimg;
-          else delete bg.dataset.pendingPortrait;
+        } else if(!pimg){
+          if(bg){ bg.style.backgroundImage='none'; bg.classList.add('loaded'); }
         }
+        // 若区块尚未可见，仅记录待显示的 pimg，等 IO 触发后再补
+        if(!loadPortraits && bg) { bg.dataset.pendingPortrait = pimg; }
+        else if(bg) { delete bg.dataset.pendingPortrait; }
         // 图集预览（如有）
         var galleryHost = document.querySelector('[data-ow-gallery]');
         if(galleryHost && c.gallery && c.gallery.length){
@@ -403,7 +412,7 @@
       chars.forEach(function(c,i){ listHost.appendChild(buildRow(c,i)); });
       renderDetail(chars[activeIdx]);
 
-      // 角色区接近视口时才允许加载立绘背景
+      // 角色区接近视口时才允许加载立绘
       var section = document.getElementById('officialWiki');
       if(section && 'IntersectionObserver' in window){
         var io = new IntersectionObserver(function(entries){
@@ -411,14 +420,17 @@
             loadPortraits = true;
             io.disconnect();
             var bg = document.querySelector('[data-ow-detail-bg]');
+            var portraitImg = document.querySelector('[data-ow-portrait-img]');
             var pending = bg && bg.dataset.pendingPortrait;
-            if(bg && pending){
+            if(pending){
               delete bg.dataset.pendingPortrait;
               var myToken = ++portraitToken;
-              var img = new Image();
-              img.onload = function(){ if(myToken===portraitToken){ bg.style.backgroundImage='url("'+pending+'")'; bg.classList.add('loaded'); }};
-              img.onerror = function(){ if(myToken===portraitToken) bg.classList.add('loaded'); };
-              img.src = pending;
+              if(portraitImg){
+                portraitImg.onload = function(){ if(myToken===portraitToken) portraitImg.classList.add('loaded'); };
+                portraitImg.onerror = function(){};
+                portraitImg.src = pending;
+              }
+              if(bg){ bg.style.backgroundImage='url("'+pending+'")'; bg.classList.add('loaded'); }
             }
           }
         },{rootMargin:'300px'});
