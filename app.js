@@ -1,43 +1,34 @@
-const defaultConfig={appearance:{title:'绝区零 / 剧情档案',intro:'按版本补剧情，按代理人追关联。',bgUrl:'',bgOpacity:18,particles:true,gridEffect:true,titleScale:100,bodyScale:100},cards:[{category:'主线剧情',no:'01',tag:'主线 · 序章',title:'绳匠的序章',desc:'从录像店出发，代理人第一次接触空洞。',video:''},{category:'主线剧情',no:'02',tag:'主线 · 第一章',title:'猫的失物',desc:'在六分街与空洞之间，寻找失踪的委托人。',video:''},{category:'角色档案',no:'03',tag:'角色剧情 · 安比',title:'安比的午后',desc:'一份汉堡，一次意外的约会。',video:''},{category:'角色档案',no:'04',tag:'EP / PV · 角色展示',title:'代理人的信号',desc:'收录角色 EP、PV 与战斗演示视频。',video:''},{category:'往期活动',no:'05',tag:'往期活动 · 新艾利都',title:'城市的回声',desc:'回看限时活动与特别主题剧情。',video:''}],tracks:[{name:'ChiliChill乐团 _ 三Z-STUDIO _ HOYO-MiX - pinKing.ogg',url:'assets/audio/ChiliChill乐团 _ 三Z-STUDIO _ HOYO-MiX - pinKing.ogg'},{name:'hanser _ 三Z-STUDIO _ HOYO-MiX - 食通万物 修心修身.ogg',url:'assets/audio/hanser _ 三Z-STUDIO _ HOYO-MiX - 食通万物 修心修身.ogg'},{name:'King Gnu - AIZO.ogg',url:'assets/audio/King Gnu - AIZO.ogg'},{name:'Sihan _ 三Z-STUDIO _ HOYO-MiX - DAMIDAMI.ogg',url:'assets/audio/Sihan _ 三Z-STUDIO _ HOYO-MiX - DAMIDAMI.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的日常.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的日常.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的日常·悠闲.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的日常·悠闲.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的日常·自由(1).ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的日常·自由(1).ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的日常·自由.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的日常·自由.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的遐想.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的遐想.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的遐想·热情.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的遐想·热情.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的遐想·静谧(1).ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的遐想·静谧(1).ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的遐想·静谧.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的遐想·静谧.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 60%的遐想·热情.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 60%的遐想·热情.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - Billy Mode.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - Billy Mode.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - Burning Desires 绝望吧台.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - Burning Desires 绝望吧台.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - chaos_exe.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - chaos_exe.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - Fearless 无所畏惧.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - Fearless 无所畏惧.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - ReDreaming Angel 复梦天使.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - ReDreaming Angel 复梦天使.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 乐园梦游计.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 乐园梦游计.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 午晴闲闻.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 午晴闲闻.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 天使ロード中…^_−☆.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 天使ロード中…^_−☆.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 妄想色心跳.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 妄想色心跳.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 小停再出发.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 小停再出发.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 当群星交汇 (Feat_耀嘉音).ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 当群星交汇 (Feat_耀嘉音).ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 把心跳变成节奏.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 把心跳变成节奏.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 晓.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 晓.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 流光夜巷.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 流光夜巷.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 澄空映辉.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 澄空映辉.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 繁星数载.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 繁星数载.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 绘本.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 绘本.ogg'},{name:'三Z-STUDIO _ HOYO-MiX - 问.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX - 问.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ Alaina Cross - FURYON 狂怒觉醒.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ Alaina Cross - FURYON 狂怒觉醒.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ Ashley Alisha - Tiny Giant 小巨星.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ Ashley Alisha - Tiny Giant 小巨星.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 乐园游梦记.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 乐园游梦记.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 原色.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 原色.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 闪亮.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ 于梓贝 - 闪亮.ogg'},{name:'三Z-STUDIO _ HOYO-MiX _ 黄美珍 - 千万次初见.ogg',url:'assets/audio/三Z-STUDIO _ HOYO-MiX _ 黄美珍 - 千万次初见.ogg'},{name:'苏诗丁 _ 三Z-STUDIO _ HOYO-MiX - 不及.ogg',url:'assets/audio/苏诗丁 _ 三Z-STUDIO _ HOYO-MiX - 不及.ogg'},{name:'宫阁 _ 三Z-STUDIO _ HOYO-MiX - My Curse, My Fate (Destin et malédiction).ogg',url:'assets/audio/宫阁 _ 三Z-STUDIO _ HOYO-MiX - My Curse, My Fate (Destin et malédiction).ogg'},{name:'金玟岐 _ 三Z-STUDIO _ HOYO-MiX - 红透晚烟青.ogg',url:'assets/audio/金玟岐 _ 三Z-STUDIO _ HOYO-MiX - 红透晚烟青.ogg'},{name:'阿兰 _ 三Z-STUDIO _ HOYO-MiX - 一颗方糖悬滞的时间.ogg',url:'assets/audio/阿兰 _ 三Z-STUDIO _ HOYO-MiX - 一颗方糖悬滞的时间.ogg'}]};
+const defaultConfig={appearance:{title:'绝区零 / 剧情档案',intro:'按版本补剧情，按代理人追关联。',bgUrl:'',bgOpacity:18,particles:true,gridEffect:true,titleScale:100,bodyScale:100},cards:[{category:'主线剧情',no:'01',tag:'主线 · 序章',title:'绳匠的序章',desc:'从录像店出发，代理人第一次接触空洞。',video:''},{category:'主线剧情',no:'02',tag:'主线 · 第一章',title:'猫的失物',desc:'在六分街与空洞之间，寻找失踪的委托人。',video:''},{category:'角色档案',no:'03',tag:'角色剧情 · 安比',title:'安比的午后',desc:'一份汉堡，一次意外的约会。',video:''},{category:'角色档案',no:'04',tag:'EP / PV · 角色展示',title:'代理人的信号',desc:'收录角色 EP、PV 与战斗演示视频。',video:''},{category:'往期活动',no:'05',tag:'往期活动 · 新艾利都',title:'城市的回声',desc:'回看限时活动与特别主题剧情。',video:''}],tracks:window.__hooxiAudioCatalog?.getTracks?.()||[]};
 window.hooxiDefaultConfig=defaultConfig;
-function loadConfig(){try{const saved=JSON.parse(localStorage.getItem('hooxiZZZConfig'));if(!saved)return structuredClone(defaultConfig);if(saved.tracks?.some(t=>t.url?.startsWith('blob:'))){saved.tracks=structuredClone(defaultConfig.tracks)}const cfg={...structuredClone(defaultConfig),...saved,appearance:{...structuredClone(defaultConfig.appearance),...(saved.appearance||{})}};if(!cfg.appearance.intro||/整合站|可替换|示例内容|普通档案页承载/.test(cfg.appearance.intro)||cfg.appearance.intro==='《绝区零》剧情视频档案与角色关系导航。按主线补课、按代理人找关联，少剧透，再回视频平台观看。')cfg.appearance.intro=defaultConfig.appearance.intro;if(!cfg.appearance.title||/新艾利都/.test(cfg.appearance.title)||cfg.appearance.title==='先找到片 / 再决定看哪段')cfg.appearance.title=defaultConfig.appearance.title;return cfg}catch{return structuredClone(defaultConfig)}}
+function loadConfig(){try{const saved=JSON.parse(localStorage.getItem('hooxiZZZConfig'));if(!saved)return structuredClone(defaultConfig);if(saved.tracks?.some(t=>t.url?.startsWith('blob:'))){saved.tracks=structuredClone(defaultConfig.tracks)}const cfg={...structuredClone(defaultConfig),...saved,appearance:{...structuredClone(defaultConfig.appearance),...(saved.appearance||{})}};if(!Array.isArray(cfg.tracks)||!cfg.tracks.length)cfg.tracks=window.__hooxiAudioCatalog?.getTracks?.()||[];if(!cfg.appearance.intro||/整合站|可替换|示例内容|普通档案页承载/.test(cfg.appearance.intro)||cfg.appearance.intro==='《绝区零》剧情视频档案与角色关系导航。按主线补课、按代理人找关联，少剧透，再回视频平台观看。')cfg.appearance.intro=defaultConfig.appearance.intro;if(!cfg.appearance.title||/新艾利都/.test(cfg.appearance.title)||cfg.appearance.title==='先找到片 / 再决定看哪段')cfg.appearance.title=defaultConfig.appearance.title;return cfg}catch{return structuredClone(defaultConfig)}}
 const safeUrl=(value,{image=false}={})=>{const text=String(value||'').trim();if(!text)return '';if(image&&(text.startsWith('data:image/')||text.startsWith('blob:')))return text;try{const url=new URL(text,location.href);return ['http:','https:'].includes(url.protocol)||url.origin===location.origin?url.href:''}catch{return ''}};
-let config=loadConfig(),previewArchiveData=null;if(new URLSearchParams(location.search).has('editorPreview')){try{previewArchiveData=JSON.parse(localStorage.getItem('hooxi:preview:data'));const hero=previewArchiveData?.site?.pages?.home?.hero;if(hero)config.appearance={...config.appearance,eyebrow:hero.eyebrow||'',title:hero.title||config.appearance.title,intro:hero.intro||config.appearance.intro,titleScale:Number(hero.titleScale)||config.appearance.titleScale||100,bodyScale:Number(hero.bodyScale)||config.appearance.bodyScale||100}}catch{}}let currentTrack=0;let playMode=localStorage.getItem('hooxiPlayMode')||'order';let cassetteSide=localStorage.getItem('hooxiCassetteSide')||'A';const playModes={order:{label:'顺序',aria:'播放模式：顺序播放'},random:{label:'随机',aria:'播放模式：随机播放'},single:{label:'单曲',aria:'播放模式：单曲循环'}};const $=s=>document.querySelector(s);const esc=s=>String(s||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let config=loadConfig(),previewArchiveData=null;window.hooxiZZZConfig=config;if(new URLSearchParams(location.search).has('editorPreview')){try{previewArchiveData=JSON.parse(localStorage.getItem('hooxi:preview:data'));const hero=previewArchiveData?.site?.pages?.home?.hero;if(hero)config.appearance={...config.appearance,eyebrow:hero.eyebrow||'',title:hero.title||config.appearance.title,intro:hero.intro||config.appearance.intro,titleScale:Number(hero.titleScale)||config.appearance.titleScale||100,bodyScale:Number(hero.bodyScale)||config.appearance.bodyScale||100}}catch{}}let currentTrack=0;let playMode=localStorage.getItem('hooxiPlayMode')||'order';let cassetteSide=localStorage.getItem('hooxiCassetteSide')||'A';const playModes={order:{label:'顺序',aria:'播放模式：顺序播放'},random:{label:'随机',aria:'播放模式：随机播放'},single:{label:'单曲',aria:'播放模式：单曲循环'}};const $=s=>document.querySelector(s);const esc=s=>String(s||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function renderFreeComponents(pageKey){const components=(previewArchiveData||window.archiveData)?.site?.pages?.[pageKey]?.components||[];if(!components.length)return;const host=document.querySelector('main')||document.body;const markup=components.map(component=>component.type==='image'?`<img class="free-component" src="${esc(safeUrl(component.src,{image:true}))}" alt="${esc(component.alt)}" data-editor-id="component.${esc(component.id)}" data-editor-type="image" data-editor-field="src" data-component-id="${esc(component.id)}"/>`:component.type==='link'?`<a class="free-component" href="${esc(safeUrl(component.href)||'#')}" data-editor-id="component.${esc(component.id)}" data-editor-type="link" data-editor-field="text" data-component-id="${esc(component.id)}">${esc(component.text)}</a>`:`<p class="free-component" data-editor-id="component.${esc(component.id)}" data-editor-type="text" data-editor-field="text" data-component-id="${esc(component.id)}">${esc(component.text)}</p>`).join('');host.insertAdjacentHTML('beforeend',`<div class="free-components">${markup}</div>`)}
-function save(){localStorage.setItem('hooxiZZZConfig',JSON.stringify(config));toast('配置已保存到本机浏览器')}
+function save(){window.hooxiZZZConfig=config;localStorage.setItem('hooxiZZZConfig',JSON.stringify(config));toast('配置已保存到本机浏览器')}
 function toast(msg){const el=$('#toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200)}
 function applyAppearance(){const a=config.appearance;const [first,...rest]=a.title.split(' / ');$('#heroTitle').innerHTML=`${esc(first)}<br/><span>${esc(rest.join(' / ')||'剧情档案')}</span>`;$('#heroTitle').dataset.editorId='site.page.home.hero.title';$('#heroTitle').dataset.editorField='title';$('#heroIntro').textContent=a.intro;$('#heroIntro').dataset.editorId='site.page.home.hero.intro';$('#heroIntro').dataset.editorField='intro';const eyebrow=$('.hero .eyebrow');if(eyebrow){eyebrow.textContent=a.eyebrow||eyebrow.textContent;eyebrow.dataset.editorId='site.page.home.hero.eyebrow';eyebrow.dataset.editorField='eyebrow'};const titleScale=Math.min(140,Math.max(80,Number(a.titleScale)||100));const bodyScale=Math.min(130,Math.max(85,Number(a.bodyScale)||100));document.documentElement.style.setProperty('--hero-title-scale',`${titleScale/100}`);document.documentElement.style.setProperty('--body-text-scale',`${bodyScale/100}`);document.body.style.setProperty('--user-bg',a.bgUrl?`url("${a.bgUrl.replaceAll('"','')}" )`:'none');document.body.style.setProperty('--bg-opacity',a.bgOpacity/100);$('.ambient').classList.toggle('paused',!a.particles);document.body.classList.toggle('no-grid',!a.gridEffect);if($('#editTitle')){$('#editTitle').value=a.title;$('#editIntro').value=a.intro;$('#bgUrl').value=a.bgUrl;$('#bgOpacity').value=a.bgOpacity;$('#bgOpacityValue').textContent=`${a.bgOpacity}%`;$('#particles').checked=a.particles;$('#gridEffect').checked=a.gridEffect}}
-// 首页主视觉：官方活动影像档案横幅，每次进站随机取一张
-const HERO_ACTS=[
-  ['amusement-island-rescue','游乐岛拯救计划'],
-  ['angel-muse-delusion','天使与缪斯妄想'],
-  ['art-is-bangboo','艺术就是邦布'],
-  ['artist-profile-book','画手侧写簿'],
-  ['bangboo-genius-chip','邦邦！天才与奇迹芯片'],
-  ['beyond-sight','目不可及'],
-  ['blade-shadow-coop','锋芒契影协战'],
-  ['delusion-resonance','妄想协鸣于此刻'],
-  ['extreme-judgment-trial','极限裁决试炼'],
-  ['hollow-hunt-coronation','虚狩加冕之时'],
-  ['lame-crow-chronicle','跛脚乌鸦奇闻录'],
-  ['lido-strange-tales','走近丽都异闻'],
-  ['mock-exam-comeback','集结！模考逆袭计划'],
-  ['old-dream-encore','旧梦的安可曲'],
-  ['silver-revival','白银的复苏'],
-  ['simulated-annihilation','拟境湮灭战'],
-  ['sleepwalker-confession','某个梦游者的自白'],
-  ['tianshu-intel-atlas','天枢情报图册'],
-  ['wish-proxy-station','心愿代投站']
-];
+// 首页主视觉由 HTML 解析阶段先选一次，避免固定图与随机图重复下载。
 function renderHeroLayered(){
+  const art=$('#homeHeroArt');
   const far=$('#heroFar');
   const mid=$('#heroMid');
   const near=$('#heroNear');
-  if(!far||!mid||!near)return;
-  const [slug,name]=HERO_ACTS[Math.floor(Math.random()*HERO_ACTS.length)];
-  far.src=`assets/hero/acts/${slug}/far.webp`;
-  mid.src=`assets/hero/acts/${slug}/mid.webp`;
-  near.src=`assets/hero/acts/${slug}/near.webp`;
+  if(!art||!far||!mid||!near)return;
+  let acts=[];
+  try{acts=JSON.parse(document.querySelector('.hero')?.dataset.heroActs||'[]')}catch{}
+  const selected=window.__hooxiHeroSelection||acts[Math.floor(Math.random()*acts.length)]||{};
+  const slug=selected.slug||selected[0];
+  const name=selected.name||selected[1]||'';
+  if(!slug)return;
+  window.__hooxiHeroSelection={slug,name};
+  art.dataset.heroAct=slug;
+  const setSource=(image,layer)=>{
+    const src=`assets/hero/acts/${slug}/${layer}.webp`;
+    if(image.getAttribute('src')!==src)image.src=src;
+  };
+  setSource(far,'far');
+  setSource(mid,'mid');
+  setSource(near,'near');
   near.alt=`${name} 活动主视觉`;
   const caption=$('#heroActName');
   if(caption)caption.textContent=name;
@@ -77,7 +68,7 @@ function renderHomeModules(archive){
     {href:'stories.html',kicker:'代理人',title:'角色与阵营',desc:`${characters.length} 名代理人、${factions.length} 个阵营，可搜可筛。`,meta:'进入单人档案',tone:''},
     {href:'stories.html#agentSearchForm',kicker:'搜索',title:'按名字找人',desc:'直接定位代理人，再看相关影像与阵营关系。',meta:'打开目录搜索',tone:'is-soft'}
   ];
-  host.innerHTML=paths.map(p=>`<a class="path-card ${p.tone}" href="${esc(p.href)}" data-fx="press"><span class="path-kicker">${esc(p.kicker)}</span><b>${esc(p.title)}</b><p>${esc(p.desc)}</p><span class="path-meta">${esc(p.meta)}</span></a>`).join('');
+  host.innerHTML=paths.map((p,i)=>`<a class="path-card ${p.tone}" href="${esc(p.href)}" data-fx="press" data-index="${String(i+1).padStart(2,'0')}"><i class="path-glow" aria-hidden="true"></i><span class="path-kicker">${esc(p.kicker)}</span><b>${esc(p.title)}</b><p>${esc(p.desc)}</p><span class="path-meta">${esc(p.meta)}</span></a>`).join('');
 }
 function renderHomeArchive(){
   const archive=previewArchiveData||window.archiveData||{};
@@ -97,13 +88,13 @@ function renderHomeArchive(){
   renderHomeReelCards($('#homeArchiveReels'),reels);
   const rail=$('#homeAgentRail');
   if(rail){
-    const featured=characters.slice(0,8);
-    rail.innerHTML=featured.length?featured.map(character=>{
-      const faction=factions.find(item=>item.id===character.factionId);
-      const img=safeUrl(character.headshot||character.avatar||character.portrait,{image:true})||character.headshot||character.avatar||'';
-      const factionLogo=faction?.logo?safeUrl(faction.logo,{image:true})||faction.logo:'';
-      return `<a class="home-agent-card" href="character.html?id=${encodeURIComponent(character.id)}" style="--agent-theme:${esc(faction?.theme||'#e0b41c')}" data-fx="press"><span class="home-agent-avatar">${img?`<img src="${esc(img)}" alt="${esc(character.name)}" loading="lazy"/>`:`<span>${esc((character.name||'?').slice(0,1))}</span>`}${factionLogo?`<span class="home-agent-faction"><img src="${esc(factionLogo)}" alt="" aria-hidden="true" loading="lazy"/></span>`:''}</span><span class="home-agent-copy"><b>${esc(character.name)}</b><small>${esc([faction?.name||'未分组',character.attribute,character.specialty].filter(Boolean).join(' · '))}</small><em>${esc((character.summary||'').replace(/\s+/g,' ').trim().slice(0,22))}${(character.summary||'').trim().length>22?'…':''}</em></span></a>`;
-    }).join(''):'<p class="home-empty">角色档案尚未装载。请确认 agent-catalog / enrichment 已正确引入。</p>';
+    const featured=factions.filter(f=>f.id!=='covenant-of-dayat');
+    rail.innerHTML=featured.length?featured.map((faction,i)=>{
+      const n=i+1;
+      const logo=faction.logo?safeUrl(faction.logo,{image:true})||faction.logo:'';
+      const members=(faction.members||[]).length;
+      return `<a class="home-faction-channel" href="faction.html?id=${encodeURIComponent(faction.id)}" style="--fc-theme:${esc(faction.theme||'#e0b41c')}" data-fx="press" tabindex="0"><span class="home-fc-channel">${String(n).padStart(2,'0')}</span><span class="home-fc-scan" aria-hidden="true"></span><span class="home-fc-logo">${logo?`<img src="${esc(logo)}" alt="" aria-hidden="true" loading="lazy"/>`:`<span class="home-fc-logo-text">${esc(faction.name?.slice(0,2)||'?')}</span>`}</span><span class="home-fc-name">${esc(faction.name||'?')}</span><span class="home-fc-meta"><b>${members}</b><em>代理人</em></span><span class="home-fc-corner" aria-hidden="true">▶</span></a>`;
+    }).join(''):'<p class="home-empty">阵营数据尚未装载。请确认 agent-catalog 已正确引入。</p>';
   }
 }
 function render(){renderHomeArchive();if($('#contentList'))renderContentEditor();}
@@ -131,22 +122,12 @@ function formatTrackName(raw){
   return s||'未命名曲目';
 }
 function updatePlayer(){
-  const t=config.tracks[currentTrack];
-  const name=formatTrackName(t?.name||'');
-  const trackName=$('#trackName'); if(trackName) trackName.textContent=name;
-  const cassetteName=$('#cassetteTrackName'); if(cassetteName) cassetteName.textContent=name;
-  const audio=$('#audio'); if(audio){ if(t?.url && audio.src!==new URL(t.url,location.href).href) audio.src=t.url; if(!t?.url) audio.removeAttribute('src'); audio.volume=Number(localStorage.getItem('hooxiVolume')??.25); }
-  const mode=playModes[playMode]||playModes.order;
-  ['#playMode','#cassetteMode'].forEach(sel=>{const el=$(sel); if(!el)return; el.textContent=mode.label; el.title=mode.aria; el.setAttribute('aria-label',mode.aria);});
-  const vol=$('#volume'); if(vol) vol.value=String(audio?.volume??.25);
-  const cvol=$('#cassetteVolume'); if(cvol) cvol.value=String(audio?.volume??.25);
-  const order=config.tracks.map((x,i)=>({x,i})); const view=cassetteSide==='B'?[...order].reverse():order; const listHtml=view.map(({x,i})=>`<button class="playlist-item ${i===currentTrack?'selected':''}" data-play="${i}"><span class="playlist-idx">${String(i+1).padStart(2,'0')}</span><span class="playlist-name">${esc(formatTrackName(x.name))}</span></button>`).join('');
-  const playlistItems=$('#playlistItems'); if(playlistItems) playlistItems.innerHTML=listHtml;
-  const cassettePlaylist=$('#cassettePlaylist'); if(cassettePlaylist) cassettePlaylist.innerHTML=listHtml||'<p class="cassette-empty">暂无曲目</p>';
-  document.querySelectorAll('[data-play]').forEach(x=>x.onclick=()=>{currentTrack=+x.dataset.play;updatePlayer();play(true);});
-  syncCassettePlaying();
+  window.hooxiZZZConfig=config;
+  if(window.__hooxiPlayer){window.__hooxiPlayer.refreshTracks();window.__hooxiPlayer.render();}
 }
-function play(fromUser=false){if(!$('#audio').src){if(fromUser)toast('请先添加可用的音频文件');return}const request=$('#audio').play();request.then(()=>{const icon='❚❚'; const mt=$('#musicToggle'); if(mt) mt.textContent=icon; const ct=$('#cassetteToggle'); if(ct) ct.textContent=icon; syncCassettePlaying(true);}).catch(error=>{if(fromUser)toast(error?.name==='NotAllowedError'?'浏览器仍未允许播放，请检查 Edge 网站声音权限':'音频加载失败，请检查文件路径和格式')})}function next(dir=1){if(!config.tracks.length)return;currentTrack=playMode==='random'&&config.tracks.length>1?(()=>{let n=currentTrack;while(n===currentTrack)n=Math.floor(Math.random()*config.tracks.length);return n})():(currentTrack+dir+config.tracks.length)%config.tracks.length;updatePlayer()}function cyclePlayMode(){const modes=['order','random','single'];playMode=modes[(modes.indexOf(playMode)+1)%modes.length];localStorage.setItem('hooxiPlayMode',playMode);updatePlayer();toast(`已切换为${playModes[playMode].aria.replace('播放模式：','')}`)}
+function play(){return window.__hooxiPlayer?.play?.()||Promise.resolve(false)}
+function next(dir=1){return dir<0?window.__hooxiPlayer?.prev?.():window.__hooxiPlayer?.next?.()}
+function cyclePlayMode(){const modes=['order','random','single'];playMode=modes[(modes.indexOf(playMode)+1)%modes.length];localStorage.setItem('hooxiPlayMode',playMode);window.__hooxiPlayer?.setMode?.(playMode);toast(`已切换为${playModes[playMode].aria.replace('播放模式：','')}`)}
 if(document.querySelector('#heroTitle')){applyAppearance();renderHeroLayered();render();renderFreeComponents('home');}updatePlayer();
 function bindHomeNav(){
   const toggle=$('#homeNavToggle');
@@ -171,8 +152,7 @@ function bindHomeNav(){
 bindHomeNav();
 const editorButton=document.querySelector('#editorOpen');if(editorButton)editorButton.onclick=()=>{location.href='editor.html'};if(document.querySelector('#editor')){$('#editorClose').onclick=()=>$('#editor').classList.remove('open');document.querySelectorAll('.editor-tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.editor-tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.editor-body').forEach(x=>x.classList.add('hidden'));$(`#${b.dataset.tab}Tab`).classList.remove('hidden');if(b.dataset.tab==='music')renderMusicEditor()});
 $('#editTitle').oninput=$('#editIntro').oninput=$('#bgUrl').oninput=()=>{config.appearance={title:$('#editTitle').value,intro:$('#editIntro').value,bgUrl:$('#bgUrl').value,bgOpacity:+$('#bgOpacity').value,particles:$('#particles').checked,gridEffect:$('#gridEffect').checked};applyAppearance()};$('#particles').onchange=$('#gridEffect').onchange=()=>{config.appearance={title:$('#editTitle').value,intro:$('#editIntro').value,bgUrl:$('#bgUrl').value,bgOpacity:+$('#bgOpacity').value,particles:$('#particles').checked,gridEffect:$('#gridEffect').checked};applyAppearance()};$('#bgOpacity').oninput=e=>{$('#bgOpacityValue').textContent=`${e.target.value}%`;config.appearance={title:$('#editTitle').value,intro:$('#editIntro').value,bgUrl:$('#bgUrl').value,bgOpacity:+e.target.value,particles:$('#particles').checked,gridEffect:$('#gridEffect').checked};applyAppearance()};$('#saveAppearance').onclick=()=>{config.appearance={title:$('#editTitle').value,intro:$('#editIntro').value,bgUrl:$('#bgUrl').value,bgOpacity:+$('#bgOpacity').value,particles:$('#particles').checked,gridEffect:$('#gridEffect').checked};applyAppearance();save()};$('#addCard').onclick=()=>{config.cards.push({category:'往期活动',no:'',tag:'新节点',title:'未命名剧情',desc:'填写这段剧情的简介。',video:''});renderContentEditor()};$('#saveContent').onclick=()=>{render();save()};$('#addTrack').onclick=()=>{config.tracks.push({name:'新歌曲',url:''});renderMusicEditor()};$('#saveMusic').onclick=()=>{currentTrack=0;updatePlayer();save()};}
-$('#musicToggle').onclick=()=>$('#audio').paused?play(true):($('#audio').pause(),(()=>{const icon='▶'; const mt=$('#musicToggle'); if(mt) mt.textContent=icon; const ct=$('#cassetteToggle'); if(ct) ct.textContent=icon; syncCassettePlaying(false);})());$('#prevTrack').onclick=()=>next(-1);$('#nextTrack').onclick=()=>next();$('#playMode').onclick=cyclePlayMode;$('#volume').value=localStorage.getItem('hooxiVolume')??.25;$('#volume').oninput=e=>{localStorage.setItem('hooxiVolume',e.target.value);$('#audio').volume=e.target.value};$('#audio').onended=()=>{next();if(!$('#audio').paused)play()};$('#playlistOpen').onclick=()=>$('#playlist').classList.toggle('hidden');
-if(document.querySelector('#editor')){$('#exportConfig').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(config,null,2)],{type:'application/json'}));a.download='hooxi-zzz-config.json';a.click();URL.revokeObjectURL(a.href)};$('#importConfig').onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{config=JSON.parse(r.result);applyAppearance();render();updatePlayer();save();toast('配置导入成功')}catch{toast('配置文件格式不正确')}};r.readAsText(file)};$('#resetConfig').onclick=()=>{if(confirm('确定恢复默认内容吗？')){config=structuredClone(defaultConfig);localStorage.removeItem('hooxiZZZConfig');applyAppearance();render();updatePlayer();toast('已恢复默认配置')}};$('#audioUpload').onchange=e=>{[...e.target.files].forEach(file=>{const url=URL.createObjectURL(file);config.tracks.push({name:file.name,url,local:true});});renderMusicEditor();toast('已加入本机歌单，可立即试听')};$('#exportPlaylist').onclick=()=>{const playlist=config.tracks.filter(t=>!t.local).map(t=>({name:t.name,url:t.url}));const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(playlist,null,2)],{type:'application/json'}));a.download='playlist.json';a.click();toast('已生成 playlist.json；音频文件请复制到 assets/audio/')};}
+if(document.querySelector('#editor')){$('#exportConfig').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(config,null,2)],{type:'application/json'}));a.download='hooxi-zzz-config.json';a.click();URL.revokeObjectURL(a.href)};$('#importConfig').onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{config=JSON.parse(r.result);window.hooxiZZZConfig=config;applyAppearance();render();updatePlayer();save();toast('配置导入成功')}catch{toast('配置文件格式不正确')}};r.readAsText(file)};$('#resetConfig').onclick=()=>{if(confirm('确定恢复默认内容吗？')){config=structuredClone(defaultConfig);window.hooxiZZZConfig=config;localStorage.removeItem('hooxiZZZConfig');applyAppearance();render();updatePlayer();toast('已恢复默认配置')}};$('#audioUpload').onchange=e=>{[...e.target.files].forEach(file=>{const url=URL.createObjectURL(file);config.tracks.push({name:file.name,url,local:true});});renderMusicEditor();toast('已加入本机歌单，可立即试听')};$('#exportPlaylist').onclick=()=>{const playlist=config.tracks.filter(t=>!t.local).map(t=>({name:t.name,url:t.url}));const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(playlist,null,2)],{type:'application/json'}));a.download='playlist.json';a.click();toast('已生成 playlist.json；音频文件请复制到 assets/audio/')};}
 window.addEventListener('load',()=>{updatePlayer();bindPlayerDockGuard();});
 
 function bindPlayerDockGuard(){
@@ -300,29 +280,8 @@ function bindCassetteStage(){
   $('#cassetteOpen')?.addEventListener('click', openCassetteStage);
   $('#cassetteClose')?.addEventListener('click', closeCassetteStage);
   $('#cassetteCloseScrim')?.addEventListener('click', closeCassetteStage);
-  $('#cassetteToggle')?.addEventListener('click', ()=>{ const audio=$('#audio'); if(!audio)return; if(audio.paused) play(true); else { audio.pause(); syncCassettePlaying(false);} });
-  $('#cassettePrev')?.addEventListener('click', ()=>{ next(cassetteSide==='B'?1:-1); play(true); });
-  $('#cassetteNext')?.addEventListener('click', ()=>{ next(cassetteSide==='B'?-1:1); play(true); });
-  $('#cassetteMode')?.addEventListener('click', ()=>{ cyclePlayMode(); });
-  $('#cassetteVolume')?.addEventListener('input', e=>{ localStorage.setItem('hooxiVolume', e.target.value); const audio=$('#audio'); if(audio) audio.volume=e.target.value; const vol=$('#volume'); if(vol) vol.value=e.target.value; });
-  $('#cassettePlaylistBtn')?.addEventListener('click', ()=>{ const list=$('#cassettePlaylist'); if(!list)return; list.hidden=!list.hidden; $('#cassettePlaylistBtn')?.setAttribute('aria-expanded',String(!list.hidden)); updatePlayer(); });
   $('#cassetteSideA')?.addEventListener('click', ()=>setCassetteSide('A'));
   $('#cassetteSideB')?.addEventListener('click', ()=>setCassetteSide('B'));
-  const seek=$('#cassetteSeek');
-  if(seek){
-    const scrub=()=>{
-      const audio=$('#audio'); if(!audio||!Number.isFinite(audio.duration)||audio.duration<=0)return;
-      audio.currentTime=(Number(seek.value)/1000)*audio.duration;
-      updateCassetteTransport();
-    };
-    seek.addEventListener('input', ()=>{
-      const audio=$('#audio'); if(!audio)return;
-      const dur=Number.isFinite(audio.duration)?audio.duration:0;
-      const cur=dur*(Number(seek.value)/1000);
-      const now=$('#cassetteTimeNow'); if(now) now.textContent=formatClock(cur);
-    });
-    seek.addEventListener('change', scrub);
-  }
   document.addEventListener('keydown', e=>{
     if(!document.body.classList.contains('cassette-open'))return;
     if(e.key==='Escape'){e.preventDefault();closeCassetteStage();return;}
