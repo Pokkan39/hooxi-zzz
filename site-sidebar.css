@@ -1,8 +1,6 @@
 /* Site lane sidebar — cold gray + amber archive rail */
 
 :root{
-  --site-sidebar-w:0px;
-  --site-sidebar-rail:60px;
   --site-sidebar-expanded:200px;
   --site-sidebar-bg:#10141a;
   --site-sidebar-line:#2a313c;
@@ -13,18 +11,76 @@
   --site-sidebar-motion:.18s ease;
 }
 
+/* 默认完全隐藏：不占内容宽度，面板以 transform 移出视口，展开时浮在内容之上。 */
 body.subpage.has-site-sidebar{
-  --site-sidebar-w:var(--site-sidebar-rail);
-  padding-left:var(--site-sidebar-w);
-}
-
-body.subpage.has-site-sidebar.is-sidebar-expanded{
-  --site-sidebar-w:var(--site-sidebar-expanded);
+  padding-left:0;
 }
 
 .site-sidebar-root{
   position:relative;
   z-index:var(--site-sidebar-z);
+}
+
+/* 角色与阵营专区：共享侧栏优先于旧的内页导航层。 */
+body.archive-stories.has-site-sidebar,
+body.archive-character.has-site-sidebar,
+body.archive-faction.has-site-sidebar{
+  --site-sidebar-z:10001;
+  overflow-x:clip;
+}
+
+/* 角色页：约束装饰层、顶栏、画廊不超出视口，避免 body.scrollWidth 溢出。 */
+body.archive-character.has-site-sidebar .char-glow{
+  overflow:clip;
+}
+body.archive-character.has-site-sidebar .character-topbar{
+  right:clamp(16px,3.5vw,58px);
+  max-width:calc(100vw - 2 * clamp(16px,3.5vw,58px));
+}
+body.archive-character.has-site-sidebar .character-gallery-block{
+  max-width:100vw;
+}
+body.archive-character.has-site-sidebar .character-gallery-item{
+  max-width:100%;
+}
+body.archive-stories.has-site-sidebar .site-sidebar-root,
+body.archive-character.has-site-sidebar .site-sidebar-root,
+body.archive-faction.has-site-sidebar .site-sidebar-root{
+  position:fixed;
+  inset:0;
+  /* 角色页 `body.archive-character>*` 会把本容器压到 z-index:1，
+     使其成为层叠上下文并困住内部侧栏，故在专区内显式抬升。 */
+  z-index:var(--site-sidebar-z);
+  pointer-events:none;
+}
+body.archive-stories.has-site-sidebar .site-sidebar,
+body.archive-character.has-site-sidebar .site-sidebar,
+body.archive-faction.has-site-sidebar .site-sidebar{
+  pointer-events:auto;
+}
+body.archive-stories.has-site-sidebar .site-sidebar-backdrop,
+body.archive-character.has-site-sidebar .site-sidebar-backdrop,
+body.archive-faction.has-site-sidebar .site-sidebar-backdrop{
+  pointer-events:none;
+}
+body.archive-stories.has-site-sidebar .site-sidebar-backdrop.is-visible,
+body.archive-character.has-site-sidebar .site-sidebar-backdrop.is-visible,
+body.archive-faction.has-site-sidebar .site-sidebar-backdrop.is-visible{
+  pointer-events:auto;
+}
+body.archive-character.has-site-sidebar .site-sidebar-root,
+body.archive-character.has-site-sidebar .site-sidebar-toggle{
+  display:block!important;
+}
+body.archive-character.has-site-sidebar .site-sidebar-toggle{
+  display:flex!important;
+}
+body.archive-character.has-site-sidebar .character-left-rail{
+  display:none!important;
+}
+body.archive-faction.has-site-sidebar .archive-topbar,
+body.archive-faction.has-site-sidebar .archive-mobile-nav{
+  display:none!important;
 }
 
 .site-sidebar-backdrop{
@@ -52,7 +108,7 @@ body.subpage.has-site-sidebar.is-sidebar-expanded{
   top:0;
   bottom:0;
   z-index:var(--site-sidebar-z);
-  width:var(--site-sidebar-w);
+  width:var(--site-sidebar-expanded);
   display:flex;
   flex-direction:column;
   gap:8px;
@@ -63,43 +119,55 @@ body.subpage.has-site-sidebar.is-sidebar-expanded{
   border-right:1px solid var(--site-sidebar-line);
   box-shadow:4px 0 0 rgba(0,0,0,.28);
   overflow:hidden;
-  transition:width var(--site-sidebar-motion);
+  transform:translateX(-100%);
+  transition:transform var(--site-sidebar-motion);
+}
+
+body.subpage.has-site-sidebar.is-sidebar-expanded .site-sidebar{
+  transform:translateX(0);
+  box-shadow:8px 0 24px rgba(0,0,0,.45);
 }
 
 body.subpage.has-site-sidebar .site-sidebar{
   background:
-    radial-gradient(120% 60% at 0% 0%, var(--character-ambient, rgba(255,255,255,0)) 0%, transparent 55%),
-    linear-gradient(180deg,
-      rgba(16,20,26,.82) 0%,
-      rgba(10,13,18,.90) 100%);
-  backdrop-filter: blur(14px) saturate(1.1);
-  -webkit-backdrop-filter: blur(14px) saturate(1.1);
-  border-right:1px solid var(--character-line, var(--site-sidebar-line));
+    linear-gradient(180deg, rgba(20,22,28,.46) 0%, rgba(10,13,18,.62) 100%),
+    radial-gradient(140% 70% at 0% 0%, color-mix(in srgb, var(--selected-agent-theme, var(--character-accent, #d8fa00)) 40%, transparent) 0%, transparent 55%);
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  border-right:1px solid color-mix(in srgb, var(--selected-agent-theme, var(--character-accent, #d8fa00)) 46%, var(--site-sidebar-line));
   box-shadow:
-    4px 0 0 rgba(0,0,0,.28),
-    0 0 24px -4px var(--character-ambient, transparent);
+    4px 0 0 rgba(0,0,0,.22),
+    0 0 28px -4px color-mix(in srgb, var(--selected-agent-theme, var(--character-accent, #d8fa00)) 48%, transparent);
+  transition:transform var(--site-sidebar-motion), background-color .45s ease, border-color .45s ease, box-shadow .45s ease;
 }
 
-body.subpage.has-site-sidebar .site-sidebar-toggle{
-  background:rgba(20,25,34,.78) !important;
-  border-color:var(--character-line, var(--site-sidebar-line)) !important;
-  color:var(--character-accent, var(--site-sidebar-amber)) !important;
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
+body.subpage.has-site-sidebar .site-sidebar-toggle,
+body.subpage.has-site-sidebar .site-sidebar-tool{
+  --site-sidebar-control-accent:var(--selected-agent-theme, var(--character-accent, var(--site-sidebar-amber)));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--site-sidebar-control-accent) 14%, transparent), transparent 72%),
+    rgba(18,22,30,.30) !important;
+  border-color:color-mix(in srgb, var(--site-sidebar-control-accent) 48%, transparent) !important;
+  color:var(--site-sidebar-control-accent) !important;
+  backdrop-filter:blur(10px) saturate(1.25);
+  -webkit-backdrop-filter:blur(10px) saturate(1.25);
+  transition:background .35s ease, border-color .35s ease, color .35s ease, box-shadow .35s ease;
 }
 body.subpage.has-site-sidebar .site-sidebar-toggle:hover,
-body.subpage.has-site-sidebar .site-sidebar-toggle:focus-visible{
-  background:var(--character-ambient, var(--site-sidebar-toggled-bg))!important;
-  border-color:var(--character-accent, var(--site-sidebar-amber))!important;
-  color:var(--character-accent, var(--site-sidebar-amber))!important;
-}
-
+body.subpage.has-site-sidebar .site-sidebar-toggle:focus-visible,
 body.subpage.has-site-sidebar .site-sidebar-tool:hover,
 body.subpage.has-site-sidebar .site-sidebar-tool:focus-visible{
-  background:var(--character-ambient, var(--site-sidebar-toggled-bg))!important;
-  border-color:var(--character-accent, var(--site-sidebar-amber))!important;
-  color:var(--character-accent, var(--site-sidebar-amber))!important;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--site-sidebar-control-accent) 24%, transparent), transparent 72%),
+    rgba(18,22,30,.34) !important;
+  border-color:var(--site-sidebar-control-accent) !important;
+  color:var(--site-sidebar-control-accent) !important;
+  outline:2px solid color-mix(in srgb, var(--site-sidebar-control-accent) 72%, transparent);
+  outline-offset:2px;
+  box-shadow:0 0 14px -3px color-mix(in srgb, var(--site-sidebar-control-accent) 72%, transparent);
 }
+body.subpage.has-site-sidebar .site-sidebar-toggle:focus-visible,
+body.subpage.has-site-sidebar .site-sidebar-tool:focus-visible{outline-offset:3px}
 
 body.subpage.has-site-sidebar .site-sidebar-link{
   color:var(--site-sidebar-muted);
@@ -108,34 +176,18 @@ body.subpage.has-site-sidebar .site-sidebar-link{
 body.subpage.has-site-sidebar .site-sidebar-link:hover,
 body.subpage.has-site-sidebar .site-sidebar-link:focus-visible{
   color:var(--site-sidebar-ink);
-  background:rgba(27,33,44,.78);
+  background:rgba(27,33,44,.58);
   backdrop-filter:blur(6px);
   -webkit-backdrop-filter:blur(6px);
-  border-left-color:var(--character-accent, var(--site-sidebar-amber));
+  border-left-color:var(--selected-agent-theme, var(--character-accent, var(--site-sidebar-amber)));
 }
 body.subpage.has-site-sidebar .site-sidebar-link.is-active,
 body.subpage.has-site-sidebar .site-sidebar-link[aria-current="page"]{
-  color:var(--character-accent, var(--site-sidebar-amber));
-  border-left-color:var(--character-accent, var(--site-sidebar-amber));
-  background:rgba(27,33,44,.85);
+  color:var(--selected-agent-theme, var(--character-accent, var(--site-sidebar-amber)));
+  border-left-color:var(--selected-agent-theme, var(--character-accent, var(--site-sidebar-amber)));
+  background:color-mix(in srgb, var(--selected-agent-theme, var(--character-accent, #d8fa00)) 16%, rgba(27,33,44,.72));
   box-shadow:
-    -2px 0 12px -2px var(--character-accent, var(--site-sidebar-amber));
-}
-
-body.subpage.has-site-sidebar .site-sidebar-tool{
-  background:rgba(20,25,34,.72) !important;
-  border-color:var(--character-line, var(--site-sidebar-line)) !important;
-  color:var(--character-accent, var(--site-sidebar-amber)) !important;
-  backdrop-filter:blur(6px);
-  -webkit-backdrop-filter:blur(6px);
-}
-body.subpage.has-site-sidebar .site-sidebar-tool:hover,
-body.subpage.has-site-sidebar .site-sidebar-tool:focus-visible{
-  border-color:var(--character-accent, var(--site-sidebar-amber)) !important;
-  color:var(--character-accent, var(--site-sidebar-amber)) !important;
-  box-shadow:
-    0 0 0 1px var(--character-accent, var(--site-sidebar-amber)) inset,
-    0 0 14px -2px var(--character-accent, var(--site-sidebar-amber));
+    -2px 0 12px -2px color-mix(in srgb, var(--selected-agent-theme, var(--character-accent, #d8fa00)) 55%, transparent);
 }
 
 .site-sidebar-head,
@@ -182,7 +234,7 @@ body.subpage.has-site-sidebar .site-sidebar-tool:focus-visible{
 }
 
 .site-sidebar-toggle{
-  justify-content:center;
+  justify-content:flex-start;
   border-color:var(--site-sidebar-line);
   background:#161c25;
   color:var(--site-sidebar-amber);
@@ -227,19 +279,12 @@ body.subpage.has-site-sidebar .site-sidebar-tool:focus-visible{
   color:inherit;
 }
 
+/* 面板只在展开态出现，宽度恒为 200px，文字标签始终可见。 */
 .site-sidebar-label{
-  display:none;
+  display:inline;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
-}
-
-body.subpage.has-site-sidebar.is-sidebar-expanded .site-sidebar-label{
-  display:inline;
-}
-
-body.subpage.has-site-sidebar.is-sidebar-expanded .site-sidebar-toggle{
-  justify-content:flex-start;
 }
 
 .site-sidebar-tools{
@@ -251,7 +296,7 @@ body.subpage.has-site-sidebar.is-sidebar-expanded .site-sidebar-toggle{
 .site-sidebar-tool{
   justify-content:center;
   border-color:var(--site-sidebar-line);
-  background:#141a22;
+  background:rgba(20,25,34,.30);
   color:var(--site-sidebar-ink);
   padding:0;
   font-size:14px;
@@ -261,12 +306,11 @@ body.subpage.has-site-sidebar.is-sidebar-expanded .site-sidebar-toggle{
 .site-sidebar-tool:focus-visible{
   border-color:var(--site-sidebar-amber);
   color:var(--site-sidebar-amber);
-  outline:none;
 }
 
 .site-sidebar-tool:disabled,
 .site-sidebar-tool[aria-disabled="true"]{
-  opacity:.38;
+  opacity:.46;
   cursor:not-allowed;
 }
 
@@ -277,13 +321,6 @@ body.subpage.has-site-sidebar.is-sidebar-expanded .site-sidebar-toggle{
 body.subpage.has-site-sidebar.is-sidebar-expanded .site-sidebar-editor{
   justify-content:flex-start;
   padding:0 8px;
-}
-
-/* Sticky topbar lives in the padded content box already (body padding-left).
-   Fixed music player ignores padding, so recenter into the remaining viewport. */
-body.subpage.has-site-sidebar .music-player{
-  left:calc(50% + (var(--site-sidebar-w) / 2));
-  width:min(820px, calc(92vw - var(--site-sidebar-w)));
 }
 
 body.subpage.has-site-sidebar .topbar.topbar-slim{
@@ -306,14 +343,8 @@ body.subpage.has-site-sidebar .character-left-rail{
 }
 
 @media (max-width:760px){
-  body.subpage.has-site-sidebar,
-  body.subpage.has-site-sidebar.is-sidebar-expanded{
-    --site-sidebar-w:var(--site-sidebar-rail);
-  }
-
-  body.subpage.has-site-sidebar.is-sidebar-expanded .site-sidebar{
+  .site-sidebar{
     width:min(84vw, var(--site-sidebar-expanded));
-    box-shadow:8px 0 0 rgba(0,0,0,.35);
   }
 
   body.subpage.has-site-sidebar .character-left-rail{
@@ -336,17 +367,40 @@ body[data-theme="ink-wash"] .site-sidebar{
   background:var(--bg-panel)!important;
   box-shadow:4px 0 0 rgba(31,35,40,.10)!important;
 }
+
+@media (prefers-reduced-motion: reduce){
+  body.subpage.has-site-sidebar .site-sidebar,
+  body.subpage.has-site-sidebar .site-sidebar-backdrop,
+  body.subpage.has-site-sidebar .site-sidebar-toggle,
+  body.subpage.has-site-sidebar .site-sidebar-tool{
+    transition:none!important;
+  }
+}
 body[data-theme="ink-wash"] .site-sidebar-backdrop.is-visible{background:rgba(31,35,40,.25)!important}
-body[data-theme="ink-wash"] .site-sidebar-toggle{background:var(--bg)!important;color:var(--accent)!important}
+body[data-theme="ink-wash"] .site-sidebar-toggle,
+body[data-theme="ink-wash"] .site-sidebar-tool{
+  --site-sidebar-control-accent:var(--selected-agent-theme, var(--character-accent, var(--accent)));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--site-sidebar-control-accent) 12%, transparent), transparent 72%),
+    rgba(255,255,255,.30)!important;
+  border-color:color-mix(in srgb, var(--site-sidebar-control-accent) 48%, transparent)!important;
+  color:var(--site-sidebar-control-accent)!important;
+}
 body[data-theme="ink-wash"] .site-sidebar-toggle:hover,
-body[data-theme="ink-wash"] .site-sidebar-toggle:focus-visible{border-color:var(--accent)!important}
+body[data-theme="ink-wash"] .site-sidebar-toggle:focus-visible,
+body[data-theme="ink-wash"] .site-sidebar-tool:hover,
+body[data-theme="ink-wash"] .site-sidebar-tool:focus-visible{
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--site-sidebar-control-accent) 20%, transparent), transparent 72%),
+    rgba(255,255,255,.36)!important;
+  border-color:var(--site-sidebar-control-accent)!important;
+  color:var(--site-sidebar-control-accent)!important;
+}
 body[data-theme="ink-wash"] .site-sidebar-link:hover,
 body[data-theme="ink-wash"] .site-sidebar-link:focus-visible{background:var(--bg)!important;color:var(--text-1)!important}
 body[data-theme="ink-wash"] .site-sidebar-link.is-active,
 body[data-theme="ink-wash"] .site-sidebar-link[aria-current="page"]{background:var(--bg)!important;color:var(--accent)!important}
-body[data-theme="ink-wash"] .site-sidebar-tool{background:var(--bg)!important;color:var(--text-1)!important}
-body[data-theme="ink-wash"] .site-sidebar-tool:hover,
-body[data-theme="ink-wash"] .site-sidebar-tool:focus-visible{border-color:var(--accent)!important;color:var(--accent)!important}
+
 
 /* — subpage 角色色覆盖：浅色主题 — */
 body.subpage.has-site-sidebar[data-theme="ink-wash"] .site-sidebar{
@@ -362,37 +416,37 @@ body.subpage.has-site-sidebar[data-theme="ink-wash"] .site-sidebar{
     4px 0 0 rgba(31,35,40,.10)!important,
     0 0 24px -4px var(--character-ambient, transparent);
 }
-body.subpage.has-site-sidebar[data-theme="ink-wash"] .site-sidebar-toggle{
-  background:rgba(245,243,250,.78)!important;
-  border-color:var(--character-line, var(--line-strong))!important;
-  color:var(--character-accent, var(--accent))!important;
-  backdrop-filter:blur(8px)!important;
-  -webkit-backdrop-filter:blur(8px)!important;
+body.subpage.has-site-sidebar[data-theme="ink-wash"] .site-sidebar-toggle,
+body.subpage.has-site-sidebar[data-theme="ink-wash"] .site-sidebar-tool{
+  --site-sidebar-control-accent:var(--selected-agent-theme, var(--character-accent, var(--accent)));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--site-sidebar-control-accent) 12%, transparent), transparent 72%),
+    rgba(255,255,255,.30)!important;
+  border-color:color-mix(in srgb, var(--site-sidebar-control-accent) 48%, transparent)!important;
+  color:var(--site-sidebar-control-accent)!important;
+  backdrop-filter:blur(10px) saturate(1.15)!important;
+  -webkit-backdrop-filter:blur(10px) saturate(1.15)!important;
 }
 body.subpage.has-site-sidebar[data-theme="ink-wash"] .site-sidebar-toggle:hover,
-body.subpage.has-site-sidebar[data-theme="ink-wash"] .site-sidebar-toggle:focus-visible{
-  background:rgba(245,243,250,.85)!important;
-  border-color:var(--character-accent, var(--accent))!important;
-  box-shadow:
-    0 0 0 1px var(--character-accent, var(--accent)) inset,
-    0 0 16px -2px var(--character-accent, var(--accent));
-}
-body.subpage.has-site-sidebar[data-theme="ink-wash"] .site-sidebar-tool{
-  background:rgba(245,243,250,.78)!important;
-  border-color:var(--character-line, var(--line-strong))!important;
-  color:var(--character-accent, var(--accent))!important;
-  backdrop-filter:blur(6px)!important;
-  -webkit-backdrop-filter:blur(6px)!important;
-}
+body.subpage.has-site-sidebar[data-theme="ink-wash"] .site-sidebar-toggle:focus-visible,
 body.subpage.has-site-sidebar[data-theme="ink-wash"] .site-sidebar-tool:hover,
 body.subpage.has-site-sidebar[data-theme="ink-wash"] .site-sidebar-tool:focus-visible{
-  background:rgba(245,243,250,.85)!important;
-  border-color:var(--character-accent, var(--accent))!important;
-  color:var(--character-accent, var(--accent))!important;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--site-sidebar-control-accent) 20%, transparent), transparent 72%),
+    rgba(255,255,255,.36)!important;
+  border-color:var(--site-sidebar-control-accent)!important;
+  color:var(--site-sidebar-control-accent)!important;
   box-shadow:
-    0 0 0 1px var(--character-accent, var(--accent)) inset,
-    0 0 14px -2px var(--character-accent, var(--accent));
+    0 0 0 1px color-mix(in srgb, var(--site-sidebar-control-accent) 64%, transparent) inset,
+    0 0 16px -2px color-mix(in srgb, var(--site-sidebar-control-accent) 72%, transparent);
 }
 
-
-
+/* 角色页专区兼容：恢复装饰层 fixed 定位并约束顶栏宽度，避免 body.scrollWidth 溢出。 */
+body.archive-character.has-site-sidebar .char-glow{
+  position:fixed!important;
+  overflow:clip;
+}
+body.archive-character.has-site-sidebar .character-topbar{
+  right:clamp(16px,3.5vw,58px);
+  max-width:calc(100vw - 2 * clamp(16px,3.5vw,58px));
+}

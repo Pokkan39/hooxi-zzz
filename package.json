@@ -7,20 +7,30 @@
     "doc": "docs"
   },
   "dependencies": {
+    "gsap": "^3.15.0",
+    "motion": "12.23.12",
     "playwright-core": "^1.61.1",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.5",
     "esbuild": "^0.28.1",
-    "playwright": "^1.61.1"
+    "playwright": "^1.61.1",
+    "vite": "^8.2.1"
   },
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "test": "npm run test:content",
     "build:stories": "esbuild src/stories.jsx --bundle --minify --format=iife --platform=browser --target=es2020 --outfile=stories.js",
+    "build:faction-members": "esbuild src/faction-members.jsx --bundle --minify --format=iife --platform=browser --target=es2020 --legal-comments=eof --outfile=faction-members.js",
     "build:stories:draft": "esbuild src/stories.jsx --bundle --minify --format=iife --platform=browser --target=es2020 --outfile=artifacts/stories-draft.js",
     "test:stories": "node scripts/regression.mjs",
     "test:content": "node scripts/validate-archive.mjs && node scripts/check-link-integrity.mjs && node scripts/check-unofficial-boundary.mjs",
+    "test:visual": "node scripts/verify-visual-v2.mjs",
+    "test:voice": "node scripts/verify-voice-player.mjs",
     "test:ui": "node scripts/capture-r1-baseline.mjs",
     "test:formal": "python scripts/check-formal-site-gate.py",
     "test:links": "node scripts/check-link-integrity.mjs",

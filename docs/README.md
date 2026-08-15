@@ -2,13 +2,17 @@
 
 ## 当前版本
 
-这是一个不依赖构建工具的静态网站，包含绝区零主题路线图、章节展开/折叠、动态背景、站内音乐播放器和“小白可用”的可视化编辑器。内容栏目为：主线剧情、角色档案、系列·幕后/对谈、往期活动。角色页已作为游戏式代理人档案入口，提供阵营、成员、个人剧情、PV 和养成攻略；主线页提供版本总览、组合筛选、剧透控制和版本路线图；站内条目是 Hooxi 档案的可编辑示例，不代表 Hooxi 的真实投稿。
+这是一个运行时按静态文件发布的网站，部分交互由 esbuild 在发布前预构建；站点包含绝区零主题路线图、章节展开/折叠、动态背景、站内音乐播放器和“小白可用”的可视化编辑器。内容栏目为：主线剧情、角色档案、系列·幕后/对谈、往期活动。角色页已作为游戏式代理人档案入口，提供阵营、成员、个人剧情、PV 和养成攻略；主线页提供版本总览、组合筛选、剧透控制和版本路线图；站内条目是 Hooxi 档案的可编辑示例，不代表 Hooxi 的真实投稿。
+
+阵营成员交互由 `src/faction-members.jsx` 通过 `npm run build:faction-members` 预构建为根目录 `faction-members.js` 与 `faction-members.css`，并精确依赖 `motion@12.23.12`。React Bits vendored 源码的许可证位于 `src/vendor/react-bits/LICENSE.md`；`faction.js` 会先输出原生 `article`、角色链接与 `details` fallback，只有 React 首次提交成功后才替换，因此 bundle 加载或渲染失败时仍保留可读成员目录。共享 `fx-reveal.js` 不会向 `.faction-member-react-card` 及其后代添加全局 glare 标记，成员卡由 React Bits 自行处理；可使用 `node artifacts/__faction-glare-probe.mjs` 覆盖桌面、移动、减少动态效果和原生 fallback 验证。成员卡图片固定以 `contain` 与 `center bottom` 完整呈现，并禁用图片层 Tilt 变形以避免 hover 裁切；卡片分区不保留继承间隙，标题不再受固定窄宽限制。
 
 ## 网站定位与正式规划
 
 网站的正式定位、目标用户、双层产品结构、内容边界、建模素材要求、技术架构、分阶段路线、验收指标和风险门禁，统一见 [`HOOXI-WEBSITE-POSITIONING-PLAN.md`](HOOXI-WEBSITE-POSITIONING-PLAN.md)。后续首页、HOOXI PLAY、角色与阵营、编辑发布和 AI 接待施工均应以该文件为范围基线。
 
 三方视觉与技术对照（官方 wiki / 南孚 / `F:/web` Active Theory）与「学什么、不学什么、何时才能改正式站」见 [`VISUAL-TECH-REFERENCE-COMPARE.md`](VISUAL-TECH-REFERENCE-COMPARE.md)。该文档是重建参考，**不构成自动施工授权**；未获用户明确要求前，不得把对照结论直接改入正式站主链路代码。
+
+视觉研究台账见 [`HOOXI-VISUAL-RESEARCH-LEDGER.md`](HOOXI-VISUAL-RESEARCH-LEDGER.md)：先搜索、再核验，不猜；它区分正式基线、学习材料与证据层，并要求后续效果登记来源、版权、无障碍、性能、不能照搬和回退信息。台账不会把无法访问的 YouTube 主题写成已核验，也不抓取 Patreon 付费内容。
 
 正式 R1 已于 2026-07-19 获得施工授权。全站视觉与交互唯一合同见根目录 [`../design.md`](../design.md)；媒体来源、封面和权利状态规则见 [`media-source-policy.md`](media-source-policy.md)。发布前至少执行 `npm run test:content` 与 `npm run test:formal`；`npm run test:ui` 默认生成带时间戳的 `artifacts/ui-gate-YYYYMMDD-HHMMSS/`，也可通过 `HOOXI_UI_OUTPUT_DIR` 指定固定输出目录，不会删除既有视觉证据，并同时阻断正式路由外联、无效页面结构和失效深链。代理人工作台由 `src/stories.jsx` 构建为正式 `stories.js`；`npm run test:stories` 直接自启临时静态服务，不会覆盖正式脚本。
 
@@ -17,6 +21,8 @@
 设计重想讨论稿（用户价值、信息架构、双层体验、视觉优先级；只讨论不定案施工）见 [`HOOXI-DESIGN-RETHINK.md`](HOOXI-DESIGN-RETHINK.md)。该稿不替代 [`HOOXI-WEBSITE-POSITIONING-PLAN.md`](HOOXI-WEBSITE-POSITIONING-PLAN.md)，也**不构成施工授权**。
 
 **功能 + 视觉设计审核稿**见 [`HOOXI-FUNCTION-VISUAL-REVIEW.md`](HOOXI-FUNCTION-VISUAL-REVIEW.md)。分步改时优先改裁片 [`HOOXI-FUNCTION-VISUAL-PART-0.md`](HOOXI-FUNCTION-VISUAL-PART-0.md)（仅 1.1 之前）。长版备份见 [`HOOXI-FUNCTION-VISUAL-REVIEW.v0.1-full.md`](HOOXI-FUNCTION-VISUAL-REVIEW.v0.1-full.md)。**改设计稿 ≠ 改正式站**。
+
+**InterKnot-Web 迁移分析**见 [`INTERKNOT-MIGRATION-ANALYSIS.md`](INTERKNOT-MIGRATION-ANALYSIS.md)。该文档分析了 InterKnot Nuxt 社区平台与现有静态站点的技术栈差异，并提出三种可行方案：视觉借鉴（推荐）、SSG 迁移、完整社区平台迁移。**不构成自动施工授权**。
 
 按仓库现况填写的**网站需求填空工单**见 [`网站需求填空工单-HOOXI-现况填写.md`](网站需求填空工单-HOOXI-现况填写.md)（定位/用户/双层入口/页面范围/禁忌与验收；标注现况 vs 建议默认 vs 待拍板；**不构成施工授权**）。
 
@@ -63,7 +69,7 @@
 - 基础事实优先核对绝区零官方 / 米游社百科归档；攻略建议可参考 Prydwen 等站，但必须标记来源。
 - 不复制官方 wiki 整站或第三方长篇攻略；站内只保留结构化事实、短摘要和来源链接。材料总量、配装、词条和配队未完成核验时显示“待核验”，不得用推测数字填充。
 - `stories.html` 是图四三段式角色目录：左侧固定站点导航，中部显示当前角色的大舞台及基础/技能/装备信息，右侧显示 57 人人物卡网格；搜索与阵营筛选收进原生 `details` disclosure，选择角色时无需刷新即可同步舞台、URL 与详情入口。
-- `faction.html` 展示阵营摘要与成员；角色详情统一使用 `character.html?id=<id>`。详情页的四个 Hash tab 始终只显示一个活动 panel，支持浏览器 history、方向键、Home/End、roving tabindex，并把旧 hash 映射到当前模块；来源、版权归属、粉丝非官方与无隶属边界常显在 tab panel 之外。材料图标从本地 wiki 镜像复制到 `assets/materials/<epId>.<ext>`，页面只加载同源 `icon`；无图标时降级为等级字母。档案图集从镜像按原格式（含 GIF）复制到 `assets/gallery/<agentId>/<nn>.<ext>`，每角色最多 8 张，镜像缺失项跳过；页面只加载同源图集，禁止热链。材料详情若来自 `/zzz/wiki/...`，规范化为 `https://baike.mihoyo.com/...`，仅在用户点击时外跳。
+- `faction.html` 展示阵营摘要与成员；角色详情统一使用 `character.html?id=<id>`。详情页的四个 Hash tab 始终只显示一个活动 panel，支持浏览器 history、方向键、Home/End、roving tabindex，并把旧 hash 映射到当前模块；角色模块导航不再创建内部限宽/限高滚动条，站点侧栏保留栏目链接、展开/收起，以及上一/下一栏目和浏览器后退/前进控制；来源、版权归属、粉丝非官方与无隶属边界常显在 tab panel 之外。材料图标从本地 wiki 镜像复制到 `assets/materials/<epId>.<ext>`，页面只加载同源 `icon`；无图标时降级为等级字母。档案图集从镜像按原格式（含 GIF）复制到 `assets/gallery/<agentId>/<nn>.<ext>`，每角色最多 8 张，镜像缺失项跳过；页面只加载同源图集，禁止热链。材料详情若来自 `/zzz/wiki/...`，规范化为 `https://baike.mihoyo.com/...`，仅在用户点击时外跳。
 - `character-sample.html`、`tech-direction-demos.html`、`cinematic-slice.html`、`prototype/` 等仍是隔离实验/样板，不替换正式档案首页。
 - 重新生成 enrichment：`python scripts/build-agent-enrichment.py`（读取 `F:/website-archives/zzz-wiki`，写出 `artifacts/agent-enrichment.json`、`agent-enrichment.js`，并本地化材料图标到 `assets/materials/`、档案图集到 `assets/gallery/`）。
 
@@ -77,8 +83,12 @@
 - **立绘解析（维护时必看）**：Stories 的正式解析在 `src/stories.jsx` 的 `resolvePortrait()`，Character 的正式解析在 `character.js` 的 `CHARACTER_HERO_COMPOSITION` 与 portrait source；当前 57/57 均使用普通 `portrait` 分支与 `assets/portraits/<id>-portrait.webp`，并分别通过 `data-portrait-source` / `data-portrait-mode` 与 `data-portrait-source/path` 暴露真实分支，不存在 card fallback。Stories 主舞台与 Character Hero 使用 portrait；右侧 roster/avatar/headshot 仍独立使用 `<id>-card.webp`，不得把舞台立绘链与缩略图链合并。资源必须本地同源且真实存在，禁止依靠 404 回退；否则会触发 `console-error` 与 `local-http-error` 阻塞失败。
 - 图片未提供时会显示站内占位，阵营、成员和角色页面仍可正常打开。添加资源后，提交图片与更新后的 `agent-catalog.js` 一并发布。
 
-阵营成员区采用游戏内角色选择风格的错位立绘卡阵列：默认展示 `headshot`（未填写时回退到 `avatar`），桌面端悬停或键盘聚焦时显示 `portrait` 全身立绘。指针移动会使前景立绘、头部近景与背景高光以不同速度偏移，形成无需 3D 模型的 2.5D 景深效果；触摸设备仍是单击直接进入角色详情，避免要求二次点击。系统开启“减少动态效果”时会停用位移和缩放，仅保留全身立绘显示、颜色与焦点反馈。
+阵营成员区使用 vendored React Bits `SpotlightCard` 与基于 Motion 的 `TiltedCard`：图片仍只读取 `faction.js` 清洗后的同源本地路径，桌面 fine pointer 且未开启“减少动态效果”时启用轻量倾斜；触摸、粗指针或 reduced-motion 环境使用静止参数。React 不再读取或筛选 `archiveData`，原生 fallback 与 React 共用同一份安全 view model。
 
+
+## 角色与阵营专区侧边栏
+
+`stories.html`、`character.html`、`faction.html` 三个角色与阵营专区路由共享可收纳侧栏 (`site-sidebar.css` / `site-sidebar.js`)，提供栏目导航、展开/收起、上一/下一栏目和浏览器后退/前进控制。侧栏在桌面端默认展开且持久化状态到 `localStorage`，移动端 (≤640px) 默认收起；用户可通过切换按钮、`[` 快捷键、Escape 键或点击遮罩关闭。侧栏会自动识别当前路由并标记对应栏目为 `aria-current="page"`；`site-sidebar.css` 针对角色与阵营专区补充了布局兼容规则，确保侧栏不遮挡角色详情页的左侧轨道、阵营页的 React 成员卡或角色目录的搜索工作台。移动端侧栏展开时会显示全屏遮罩，点击遮罩或按 Escape 可收起侧栏并将焦点回到切换控件。系统开启"减少动态效果"时，侧栏过渡动画会被压缩为近即时切换，且不会创建全局点击光效画布。验证专区侧栏接入可运行 `node scripts/verify-faction-sidebar-integration.mjs`，覆盖三页在桌面 (1440px)、移动 (390px/320px) 和 reduced-motion 下的侧栏唯一性、键盘操作、焦点管理、无横向溢出和 React 成员卡 glare 隔离。
 
 角色个人档案页统一通过 `character.html?id=<id>` 进入：顶部影画舞台负责角色视觉与身份，正文使用四个 Hash tab 承载媒体、故事、资料与关联档案，并严格保持单活动 panel。Character Hero 背景影画在桌面端使用 `cover` 铺满首屏，移动端按自然文档流使用 `16:9` 容器并以 `cover` 铺满，展示层边缘允许裁切；前景 portrait 继续使用 `contain` 完整展示并按角色构图参数细调。源素材转换仍禁止裁切、拉伸或抠图；Stories 舞台不变，roster / avatar / headshot 继续使用独立的 card + `cover` 链。
 

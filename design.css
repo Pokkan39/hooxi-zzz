@@ -1006,11 +1006,16 @@ body.archive-character>*{position:relative;z-index:1}
   width:min(1120px,100%);
   margin-inline:auto;
 }
+.archive-character .character-detail-page > .character-module-nav{
+  width:100%;
+  max-width:none;
+  margin-inline:0;
+}
 .archive-character .character-module-nav{
   display:flex;
-  flex-wrap:wrap;
+  flex-wrap:nowrap;
   gap:8px;
-  margin:0 auto 22px;
+  margin:0 0 22px;
   padding:8px;
   border:1px solid var(--character-line);
   border-radius:12px;
@@ -1407,9 +1412,10 @@ body.archive-character>*{position:relative;z-index:1}
 .archive-character .talent-icon-row{
   display:flex;
   overflow-x:auto;
-  overflow-y:hidden;
-  gap:8px;
-  padding:10px 14px;
+  overflow-y:visible;
+  align-items:flex-start;
+  gap:10px;
+  padding:10px 14px 12px;
   background:rgba(20,24,22,.6);
   border-bottom:1px solid rgba(255,255,255,.06);
   scrollbar-width:none;
@@ -1419,52 +1425,54 @@ body.archive-character>*{position:relative;z-index:1}
 .archive-character .talent-icon-tab{
   flex:0 0 auto;
   display:flex;flex-direction:column;align-items:center;
-  gap:4px;
+  gap:6px;
   background:transparent;
   border:1px solid transparent;
   border-radius:2px;
-  padding:4px 6px;
+  padding:6px 12px;
   cursor:pointer;
-  transition:border-color .15s,background .15s;
-  width:56px;height:60px;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+  max-width:92px;
 }
 .archive-character .talent-icon-tab:hover{
-  background:rgba(20,24,22,.4);
+  background:rgba(216,250,0,.08);
+  transform:scale(1.06);
+}
+.archive-character .talent-icon-tab:active{
+  transform:scale(.96);
 }
 .archive-character .talent-icon-tab.is-active{
-  background:#181c1a;
+  background:rgba(216,250,0,.10);
   border-color:rgba(216,250,0,.5);
 }
 .archive-character .talent-icon-circle{
-  width:40px;height:40px;
-  border-radius:2px;
-  background:#181c1a;
-  border:1px solid rgba(216,250,0,.4);
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;
+  display:block;
+  max-width:72px;max-height:72px;
+  overflow:visible;
 }
 .archive-character .talent-icon-tab.is-active .talent-icon-circle{
-  border-color:rgba(216,250,0,.7);
+  filter:drop-shadow(0 0 6px rgba(216,250,0,.45));
 }
 .archive-character .talent-icon-circle img{
-  width:40px;height:40px;
-  object-fit:cover;
-  object-position:center;
+  display:block;
+  max-width:72px;max-height:72px;
+  width:auto;height:auto;
+  object-fit:contain;
 }
 .archive-character .talent-icon-no-img{
   font-family:var(--font-display,sans-serif);
-  font-size:.65rem;font-weight:700;
+  font-size:.75rem;font-weight:700;
   color:var(--accent-hot);
   letter-spacing:.06em;
   line-height:1;
 }
 .archive-character .talent-icon-label{
-  font-size:.62rem;font-weight:600;
+  font-size:.7rem;font-weight:600;
   color:#d5ccb8;
   letter-spacing:.03em;
   line-height:1.2;
   white-space:nowrap;
-  opacity:.6;
+  opacity:.7;
 }
 .archive-character .talent-icon-tab.is-active .talent-icon-label{
   opacity:1;color:rgba(216,250,0,.9);
@@ -1490,11 +1498,12 @@ body.archive-character>*{position:relative;z-index:1}
   flex:0 0 auto;
 }
 .archive-character .talent-detail-left .talent-icon-circle{
-  width:100px;height:100px;
+  width:180px;height:180px;
   border:2px solid rgba(216,250,0,.55);
 }
 .archive-character .talent-detail-left .talent-icon-circle img{
-  width:100px;height:100px;
+  width:180px;height:180px;
+  object-fit:contain;
 }
 .archive-character .talent-detail-left .talent-icon-no-img{
   font-size:1.3rem;
@@ -1599,21 +1608,23 @@ body.archive-character>*{position:relative;z-index:1}
 }
 /* 移动端适配 */
 @media(max-width:600px){
-  .archive-character .talent-icon-tab{width:48px;height:52px;}
-  .archive-character .talent-icon-tab .talent-icon-circle{width:34px;height:34px;}
-  .archive-character .talent-icon-tab .talent-icon-circle img{width:34px;height:34px;}
-  .archive-character .talent-icon-label{font-size:.55rem;}
+  .archive-character .talent-icon-row{padding:8px 10px 10px;}
+  .archive-character .talent-icon-tab{padding:4px 8px;}
+  .archive-character .talent-icon-circle{max-width:52px;max-height:52px;}
+  .archive-character .talent-icon-circle img{max-width:52px;max-height:52px;}
+  .archive-character .talent-icon-label{font-size:.62rem;}
   .archive-character .talent-detail{flex-direction:column;align-items:center;text-align:center;}
-  .archive-character .talent-detail-left{flex-direction:row;align-items:center;gap:12px;}
-  .archive-character .talent-detail-left .talent-icon-circle{width:70px;height:70px;}
-  .archive-character .talent-detail-left .talent-icon-circle img{width:70px;height:70px;}
+  .archive-character .talent-detail-left{flex-direction:row;align-items:center;gap:14px;}
+  .archive-character .talent-detail-left .talent-icon-circle{width:100px;height:100px;}
+  .archive-character .talent-detail-left .talent-icon-circle img{width:100px;height:100px;}
   .archive-character .talent-detail-name{align-items:center;}
-  .archive-character .talent-stage-card{width:118px;min-width:100px;}
+  .archive-character .talent-stage-card{width:140px;min-width:120px;}
   .archive-character .talent-panel{padding:12px;}
 }
-/* 技能倍率：卡片在横向轨道上并列，当前 stage 高亮 */
-.archive-character .talent-stage-card{opacity:.55;transition:opacity .2s}
-.archive-character .talent-stage-card[data-active="true"]{opacity:1}
+/* 技能倍率：卡片在横向轨道上并列，全部可见，水平滑动查看 */
+.archive-character .talent-stage-card{opacity:1}
+/* 等级导航 dots（已废弃，保留以防数据源遗留） */
+.archive-character .talent-stage-nav{display:none}
 /* 等级导航 dots */
 .archive-character .talent-stage-nav{
   display:flex;gap:4px;justify-content:center;

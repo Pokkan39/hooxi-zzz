@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="theme-tokens.css?v=ink-wash-1"/>
   <link rel="stylesheet" href="multi-page.css?v=cold-gray-2"/>
   <link rel="stylesheet" href="motion.css?v=signal-ui-r3"/>
-  <link rel="stylesheet" href="theme-zzz.css?v=phase1-3"/>
-  <link rel="stylesheet" href="site-sidebar.css?v=rail-1"/>
+  <link rel="stylesheet" href="theme-zzz.css?v=phase1-4"/>
+  <link rel="stylesheet" href="src/styles/navigation.css"/>
   <link rel="stylesheet" href="live-hud.css?v=hud-1"/>
   <link rel="stylesheet" href="zzz-motion.css?v=phase4-1"/>
   <link rel="stylesheet" href="zzz-tv-transition.css?v=zzz-tv-r1"/>
@@ -44,7 +44,7 @@ body.archive-stories{
   --bg-panel:rgba(18,22,30,.7);
   --text-1:#f0f2f4;
   --text-2:rgba(240,245,250,.6);
-  --text-3:rgba(240,245,250,.38);
+  --text-3:rgba(240,245,250,.5);
   --text:#f0f2f4;
   --accent:#d8fa00;
   --accent-ink:#08080c;
@@ -250,7 +250,7 @@ body.archive-stories{
   color:#f0f2f4 !important;
 }
 .archive-stories .agent-result-count{
-  color:rgba(240,245,250,.4) !important;
+  color:rgba(240,245,250,.55) !important;
 }
 .archive-stories .agent-result-count b{
   color:var(--selected-agent-theme,#d8fa00) !important;
@@ -268,13 +268,18 @@ body.archive-stories{
   background:rgba(12,16,24,.8) !important;
   color:#f0f2f4 !important;
 }
+.archive-stories .agent-search-form input:hover,
+.archive-stories .agent-search-form select:hover{
+  border-color:rgb(var(--character-theme-rgb,216 250 0) / .45) !important;
+  background:rgba(18,24,34,.9) !important;
+}
 .archive-stories .agent-search-form input:focus-visible,
 .archive-stories .agent-search-form select:focus-visible{
   outline:2px solid var(--selected-agent-theme,#d8fa00) !important;
   border-color:rgb(var(--character-theme-rgb,216 250 0) / .3) !important;
 }
 .archive-stories .agent-search-form label{
-  color:rgba(240,245,250,.4) !important;
+  color:rgba(240,245,250,.55) !important;
 }
 
 /* --- Roster Cards --- */
@@ -317,6 +322,69 @@ body.archive-stories{
 .archive-stories .agent-card-faction{
   color:rgba(240,245,250,.45) !important;
 }
+/* --- ROSTER CARD POLISH (精细打磨层) --- */
+.archive-stories .agent-roster-card{
+  border-radius:12px !important;overflow:hidden;
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,0) 32%),rgba(18,22,30,.72) !important;
+  border:1px solid rgba(255,255,255,.07) !important;
+  box-shadow:0 2px 0 rgba(255,255,255,.04) inset,0 12px 24px -16px rgba(0,0,0,.85);
+  transform:translateY(0) scale(1);
+  transition:transform .3s cubic-bezier(.16,1,.3,1),border-color .26s,box-shadow .32s cubic-bezier(.16,1,.3,1) !important;
+  animation:rosterIn .5s cubic-bezier(.16,1,.3,1) both;
+  animation-delay:calc(var(--card-index,0)*32ms);
+}
+@keyframes rosterIn{from{opacity:0;transform:translateY(14px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.archive-stories .agent-roster-card::after{
+  content:'';position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0;
+  background:linear-gradient(115deg,transparent 40%,rgb(var(--character-theme-rgb,216 250 0) / .18) 50%,transparent 60%);
+  transform:translateX(-62%);transition:transform .55s cubic-bezier(.16,1,.3,1),opacity .3s;
+}
+.archive-stories .agent-roster-card:hover{
+  transform:translateY(-6px) scale(1.03);
+  border-color:rgb(var(--character-theme-rgb,216 250 0) / .45) !important;
+  box-shadow:0 2px 0 rgba(255,255,255,.06) inset,0 20px 36px -14px rgb(var(--character-theme-rgb,216 250 0) / .35),0 0 24px -6px rgb(var(--character-theme-rgb,216 250 0) / .28);
+}
+.archive-stories .agent-roster-card:hover::after,.archive-stories .agent-roster-card:focus-visible::after{opacity:1;transform:translateX(62%)}
+.archive-stories .agent-roster-card:active{transform:translateY(-2px) scale(.99)}
+.archive-stories .agent-roster-card:focus-visible{outline:none;border-color:var(--selected-agent-theme,#d8fa00) !important;box-shadow:0 0 0 3px rgb(var(--character-theme-rgb,216 250 0) / .35),0 14px 28px -12px rgba(0,0,0,.8) !important}
+.archive-stories .agent-roster-card.is-selected{
+  transform:translateY(-6px) scale(1.03);
+  border-color:rgb(var(--character-theme-rgb,216 250 0) / .65) !important;
+  background:linear-gradient(160deg,rgb(var(--character-theme-rgb,216 250 0) / .14),rgba(18,22,30,.9) 55%) !important;
+  box-shadow:0 0 0 1px rgb(var(--character-theme-rgb,216 250 0) / .5),0 2px 0 rgba(255,255,255,.06) inset,0 22px 44px -12px rgb(var(--character-theme-rgb,216 250 0) / .5),0 0 30px -4px rgb(var(--character-theme-rgb,216 250 0) / .4) !important;
+}
+/* 头像质感 */
+.archive-stories .agent-card-image{
+  border-radius:12px 12px 0 0;overflow:hidden;
+}
+.archive-stories .agent-card-image img{transition:transform .5s cubic-bezier(.16,1,.3,1),filter .4s;filter:saturate(.94) brightness(.95)}
+.archive-stories .agent-roster-card:hover .agent-card-image img:last-child{transform:scale(1.07);filter:saturate(1.08) brightness(1.04)}
+.archive-stories .agent-roster-card.is-selected .agent-card-image img:last-child{transform:scale(1.07);filter:saturate(1.1) brightness(1.06)}
+/* 等级改六边形徽章 */
+.archive-stories .agent-card-grade{
+  display:grid !important;place-items:center;width:27px;height:27px;padding:0 !important;
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px;line-height:1;
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  box-shadow:0 0 0 1px rgba(0,0,0,.45);
+}
+.archive-stories .agent-card-grade{}
+.archive-stories .agent-roster-card[data-rank="S"] .agent-card-grade{background:linear-gradient(160deg,#ffe79a,#f5b73a);color:#231303;text-shadow:0 1px 0 rgba(255,255,255,.35)}
+.archive-stories .agent-roster-card[data-rank="A"] .agent-card-grade{background:linear-gradient(160deg,#d9c2ff,#9a6cf0);color:#1d0b33;text-shadow:0 1px 0 rgba(255,255,255,.3)}
+.archive-stories .agent-roster-card.is-selected .agent-card-grade{transform:scale(1.1);filter:drop-shadow(0 0 6px rgb(var(--character-theme-rgb,216 250 0) / .7))}
+/* 序号小标更精致 */
+.archive-stories .agent-roster-index{
+  border-radius:6px !important;backdrop-filter:blur(4px);
+  font-size:10px;letter-spacing:.12em;padding:3px 7px !important;
+}
+/* 文案区 */
+.archive-stories .agent-card-copy b{letter-spacing:.01em}
+.archive-stories .agent-roster-card.is-selected .agent-card-name{color:var(--selected-agent-theme,#d8fa00) !important}
+/* SELECT 标更醒目 */
+.archive-stories .agent-card-selected-mark{
+  font-weight:800;letter-spacing:.18em;
+  text-shadow:0 0 10px rgb(var(--character-theme-rgb,216 250 0) / .8);
+}
+
 /* PLACEHOLDER_STYLE_CHUNK4 */
 
 /* --- Stage Portrait & Signal --- */
@@ -426,15 +494,195 @@ body.archive-stories{
   position:relative;
   transition:background .6s ease;
 }
+
+/* ═══════ ZZZ POLISH LAYER（绝区零质感重做）═══════ */
+/* 1) 整页背景:斜切撞色块 + 网格 + 噪点 + 扫描线,主题色驱动 */
+.archive-stories .agent-workbench{
+  position:relative;
+  background:
+    radial-gradient(circle at 14% 22%,rgb(var(--character-theme-rgb,216 250 0) / .07),transparent 34%),
+    linear-gradient(135deg,#0b0f16,#08080c) !important;
+}
+/* 斜切撞色大三角 — 右上酸黄绿、左下品红,ZZZ招牌对撞 */
+.archive-stories .agent-workbench::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    linear-gradient(115deg,transparent 62%,rgb(var(--character-theme-rgb,216 250 0) / .06) 62.2%,rgb(var(--character-theme-rgb,216 250 0) / .06) 78%,transparent 78.2%),
+    linear-gradient(115deg,transparent 78%,rgba(255,46,136,.05) 78.2%,rgba(255,46,136,.05) 92%,transparent 92.2%),
+    linear-gradient(-38deg,transparent 70%,rgba(0,229,255,.045) 70.2%,rgba(0,229,255,.045) 88%,transparent 88.2%);
+}
+/* 噪点颗粒 + CRT扫描线 + 细网格叠加 */
+.archive-stories .agent-workbench::after{
+  content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  mix-blend-mode:overlay;
+}
+.archive-stories .zzz-scanlines{
+  content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.028) 0 1px,transparent 1px 3px);
+}
+/* 巨型滚动描边水印 */
+.zzz-bg-marquee{position:fixed;left:0;top:8%;width:100%;z-index:0;overflow:hidden;pointer-events:none;user-select:none;opacity:.5}
+.zzz-bg-marquee .zroll{display:flex;width:max-content;animation:zzzRoll 30s linear infinite;font:900 15vw/1 Consolas,monospace;letter-spacing:.02em;white-space:nowrap;color:transparent;-webkit-text-stroke:1.5px rgb(var(--character-theme-rgb,216 250 0) / .12)}
+.zzz-bg-marquee.rev{top:auto;bottom:4%}
+.zzz-bg-marquee.rev .zroll{animation-direction:reverse;-webkit-text-stroke-color:rgba(255,46,136,.08)}
+@keyframes zzzRoll{to{transform:translateX(-50%)}}
+
+/* 2) 代理人选择面板:深色档案柜 + 主题色描边 */
+.archive-stories .agent-roster-panel{
+  background:
+    linear-gradient(180deg,rgba(14,18,26,.98),rgba(8,9,13,.99)) !important;
+  border-left:2px solid rgb(var(--character-theme-rgb,216 250 0) / .35) !important;
+  box-shadow:-16px 0 56px rgba(0,0,0,.65),inset 1px 0 0 rgba(255,255,255,.04) !important;
+}
+/* 面板内 subtle 网格 */
+.archive-stories .agent-roster-scroll{
+  background-image:
+    linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+  background-size:28px 28px;
+}
+
+/* 3) 代理人卡带:ZZZ 深色档案卡 — 斜切角 + 硬阴影 + 主题描边 */
+.archive-stories .agent-roster-card{
+  border-radius:4px !important;
+  clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px)) !important;
+  border:1px solid rgba(255,255,255,.1) !important;
+  background:linear-gradient(160deg,rgba(28,33,44,.9),rgba(12,14,20,.95)) !important;
+  box-shadow:4px 4px 0 rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.05) !important;
+  transition:transform .22s cubic-bezier(.2,.9,.3,1.4),box-shadow .22s,border-color .2s,background .25s !important;
+}
+/* hover:弹起 + 主题色灌注 */
+.archive-stories .agent-roster-card:hover{
+  transform:translate(-2px,-5px) !important;
+  border-color:rgb(var(--character-theme-rgb,216 250 0) / .8) !important;
+  background:linear-gradient(160deg,rgb(var(--character-theme-rgb,216 250 0) / .16),rgba(16,19,26,.95)) !important;
+  box-shadow:7px 7px 0 rgb(var(--character-theme-rgb,216 250 0) / .35),0 0 22px rgb(var(--character-theme-rgb,216 250 0) / .3),inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+/* 选中:主题色全灌注 + 硬阴影 */
+.archive-stories .agent-roster-card.is-selected{
+  transform:translate(-2px,-5px) !important;
+  border-color:var(--selected-agent-theme,#d8fa00) !important;
+  background:linear-gradient(160deg,rgb(var(--character-theme-rgb,216 250 0) / .28),rgba(18,21,28,.96)) !important;
+  box-shadow:8px 8px 0 rgb(var(--character-theme-rgb,216 250 0) / .5),0 0 28px rgb(var(--character-theme-rgb,216 250 0) / .45),inset 0 1px 0 rgba(255,255,255,.1) !important;
+}
+/* 卡带顶部警示条纹 */
+.archive-stories .agent-roster-card .agent-card-image{position:relative}
+.archive-stories .agent-roster-card .agent-card-image::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:5px;z-index:3;
+  background:repeating-linear-gradient(-45deg,rgb(var(--character-theme-rgb,216 250 0)) 0 8px,#0b0b10 8px 16px);
+  opacity:0;transition:opacity .22s;
+}
+.archive-stories .agent-roster-card:hover .agent-card-image::before,
+.archive-stories .agent-roster-card.is-selected .agent-card-image::before{opacity:1}
+/* 头像去白底感:压暗默认,hover提亮 */
+.archive-stories .agent-roster-card .agent-card-image img{filter:saturate(.9) brightness(.9) contrast(1.04);transition:filter .25s,transform .35s cubic-bezier(.2,.9,.3,1.2)}
+.archive-stories .agent-roster-card:hover .agent-card-image img,
+.archive-stories .agent-roster-card.is-selected .agent-card-image img{filter:saturate(1.1) brightness(1.05) contrast(1.05);transform:scale(1.06)}
+/* 序号:ZZZ 标签样式 */
+.archive-stories .agent-roster-index{
+  background:var(--selected-agent-theme,#d8fa00) !important;color:#0a0a0f !important;
+  font-weight:800;border-radius:0 !important;padding:3px 8px !important;
+  clip-path:polygon(0 0,100% 0,calc(100% - 6px) 100%,0 100%);
+  box-shadow:2px 2px 0 rgba(0,0,0,.5);
+}
+/* 名字栏:深色底 + 主题分隔线 */
+.archive-stories .agent-card-footer{
+  background:linear-gradient(180deg,rgba(10,11,16,.92),rgba(8,9,13,.98)) !important;
+  border-top:2px solid rgb(var(--character-theme-rgb,216 250 0) / .25) !important;
+}
+.archive-stories .agent-card-name{color:#f4f6f9 !important;text-shadow:0 2px 4px rgba(0,0,0,.6)}
+.archive-stories .agent-roster-card.is-selected .agent-card-name{color:var(--selected-agent-theme,#d8fa00) !important;text-shadow:0 0 12px rgb(var(--character-theme-rgb,216 250 0) / .5)}
+
+
+/* 彩色影画立绘适配 + 视差平滑 */
+.archive-stories .agent-stage-portrait{will-change:transform;transition:transform .05s linear}
+.archive-stories .agent-stage-backdrop-name{will-change:transform;transition:transform .05s linear;pointer-events:none}
+.archive-stories .agent-stage-heading{will-change:transform;transition:transform .05s linear}
+/* ═══ 裸眼3D卡雕 + 彩色影画 ═══ */
+/* 舞台容器:透视上下文 */
+.archive-stories .agent-selected-stage{perspective:1200px}
+/* 卡片面:保持3D,整体随鼠标倾斜 */
+.archive-stories .agent-stage-art{
+  transform-style:preserve-3d;
+  transition:transform .06s linear;
+  will-change:transform;
+  border-radius:8px;
+}
+/* 影画背景层(沉底) */
+.archive-stories .stage-mindscape{position:absolute;inset:-6%;width:112%;height:112%;object-fit:cover;object-position:center 30%;z-index:0;pointer-events:none;opacity:0;transition:opacity .6s ease,transform .06s linear;filter:saturate(1.06) brightness(.95);border-radius:8px}
+.archive-stories .stage-mindscape.on{opacity:1}
+/* 内部各层保持3D深度 */
+.archive-stories .agent-stage-visual{transform-style:preserve-3d}
+.archive-stories .agent-stage-portrait{transform-style:preserve-3d;will-change:transform}
+.archive-stories .agent-stage-portrait img{filter:drop-shadow(0 20px 36px rgba(0,0,0,.6))}
+/* 全息高光扫掠层 */
+/* overflow:hidden 会扁平化3D -> 卡片3D链路改 visible(用 clip-path 替代裁切保持外形) */
+.archive-stories .agent-selected-stage{overflow:hidden}
+.archive-stories .agent-stage-visual,
+.archive-stories .agent-stage-art{overflow:visible !important}
+/* 影画自身已 cover 铺满并用 inset 扩边,无需外层裁切 */
+
+/* 全息高光扫掠层:斜向光谱+中心亮斑,鼠标扫过流动 */
+.archive-stories .stage-glare{
+  position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;transition:opacity .35s ease;
+  background:
+    radial-gradient(circle at center,rgba(255,255,255,.34) 0%,rgb(var(--character-theme-rgb,216 250 0) / .14) 24%,transparent 58%),
+    linear-gradient(115deg,transparent 30%,rgba(255,255,255,.10) 46%,rgb(var(--character-theme-rgb,216 250 0) / .12) 50%,rgba(255,255,255,.10) 54%,transparent 70%);
+  background-size:260% 260%,240% 240%;background-position:50% 50%,50% 50%;
+  mix-blend-mode:screen;border-radius:8px;
+}
+/* 卡片厚度+边缘光(rim light) */
+.archive-stories .agent-stage-art{box-shadow:0 24px 60px -18px rgba(0,0,0,.75)}
+.archive-stories .agent-stage-art::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:8px;box-shadow:inset 0 0 0 1px rgb(var(--character-theme-rgb,216 250 0) / .18),inset 0 1px 0 rgba(255,255,255,.12)}
+
   </style>
 </head>
 <body class="subpage archive-stories character-directory-page">
+<div class="zzz-scanlines" aria-hidden="true"></div>
+<div class="zzz-bg-marquee" aria-hidden="true"><div class="zroll" id="zRollA"></div></div>
+<div class="zzz-bg-marquee rev" aria-hidden="true"><div class="zroll" id="zRollB"></div></div>
   <div class="zzz-halftone" aria-hidden="true"></div>
   <div class="zzz-glitch-layer" aria-hidden="true"></div>
   <a class="skip-link" href="#mainContent">跳至主要内容</a>
-  <header class="topbar topbar-slim">
-    <a class="brand" href="index.html" aria-label="HOOXI 首页"><span class="brand-mark" aria-hidden="true">H</span><span><strong>HOOXI<span class="accent"> //</span></strong><small>ZENLESS ARCHIVE</small></span></a>
-    <div class="top-meta"><span class="signal-dot" aria-hidden="true"></span> AGENT DATABASE</div>
+  <header class="ik-header">
+    <div class="ik-header__inner">
+      <div class="ik-header__left">
+        <a href="index.html" class="ik-brand" aria-label="HOOXI 首页">
+          <img src="assets/images/zzzicon.png" alt="INTER-KNOT" class="ik-brand__icon" draggable="false" />
+          <strong class="ik-brand__title">INTER-KNOT</strong>
+        </a>
+      </div>
+      <div class="ik-header__middle">
+        <form class="ik-search-shell" onsubmit="return false;">
+          <input class="ik-search-input" type="text" placeholder="搜索一下 \(￣︶￣*))" />
+          <span class="ik-search-divider"></span>
+          <button type="submit" class="ik-search-action" aria-label="搜索">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="18" height="18"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+          </button>
+        </form>
+      </div>
+      <div class="ik-header__right">
+        <div class="ik-header-tabs" role="tablist">
+          <a href="index.html" role="tab" class="ik-header-tab ik-header-tab--first">
+            <svg class="ik-tab-highlight ik-tab-highlight--first" viewBox="0 0 110.7 42" aria-hidden="true"><path d="M 21 0 L 94.38 0 A 10 10 0 0 1 103.29 14.54 L 93.75 33.26 A 16 16 0 0 1 79.5 42 L 21 42 A 21 21 0 0 1 21 0 Z" fill="currentColor"/></svg>
+            <span class="ik-header-tab__content">首页</span>
+          </a>
+          <a href="events.html" role="tab" class="ik-header-tab ik-header-tab--middle">
+            <svg class="ik-tab-highlight ik-tab-highlight--middle" viewBox="0 0 121.4 42" aria-hidden="true"><path d="M 105.08 0 A 10 10 0 0 1 113.99 14.54 L 104.45 33.26 A 16 16 0 0 1 90.2 42 L 16.32 42 A 10 10 0 0 1 7.41 27.46 L 16.95 8.74 A 16 16 0 0 1 31.2 0 Z" fill="currentColor"/></svg>
+            <span class="ik-header-tab__content">委托</span>
+          </a>
+          <a href="faction.html" role="tab" class="ik-header-tab ik-header-tab--middle">
+            <svg class="ik-tab-highlight ik-tab-highlight--middle" viewBox="0 0 121.4 42" aria-hidden="true"><path d="M 105.08 0 A 10 10 0 0 1 113.99 14.54 L 104.45 33.26 A 16 16 0 0 1 90.2 42 L 16.32 42 A 10 10 0 0 1 7.41 27.46 L 16.95 8.74 A 16 16 0 0 1 31.2 0 Z" fill="currentColor"/></svg>
+            <span class="ik-header-tab__content">阵营</span>
+          </a>
+          <a href="stories.html" role="tab" class="ik-header-tab ik-header-tab--last is-active">
+            <svg class="ik-tab-highlight ik-tab-highlight--last" viewBox="0 0 110.7 42" aria-hidden="true"><path d="M 89.7 0 A 21 21 0 0 1 89.7 42 L 13.05 42 A 8 8 0 0 1 5.93 30.37 L 16.95 8.74 A 16 16 0 0 1 31.2 0 Z" fill="currentColor"/></svg>
+            <span class="ik-header-tab__content">代理人</span>
+          </a>
+        </div>
+      </div>
+    </div>
   </header>
   <main id="mainContent">
     <section class="stories-workbench-bar" aria-labelledby="pageTitle">
@@ -448,17 +696,18 @@ body.archive-stories{
     <div id="storiesRoot"></div>
   </main>
   <footer class="archive-footer"><span class="footer-disclaimer" data-unofficial-boundary>HOOXI 为粉丝非官方档案，与米哈游/HoYoverse 无隶属；本页为角色目录索引，相关游戏设定与角色内容版权归米哈游所有。</span><span>HOOXI // ZZZ AGENT ARCHIVE</span></footer>
-  <script src="site-sidebar.js?v=rail-1"></script>
   <script src="data.js?v=s1-1"></script>
   <script src="agent-enrichment.js?v=archive-3"></script>
   <script src="agent-catalog.js?v=archive-3"></script>
   <script src="agent-xray.js?v=archive-3"></script>
   <script src="stories.js?v=sunna-portrait-1"></script>
+  <script src="stories-mindscape.js?v=ms-4"></script>
   <script src="assets/vendor/gsap/gsap.min.js?v=gsap-3-15-0"></script>
   <script src="zzz-motion.js?v=zzz-motion-r7"></script>
   <script src="zzz-motion-notice.js?v=zzz-motion-notice-r1"></script>
   <script src="zzz-tv-transition.js?v=zzz-tv-r1"></script>
   <script src="theme-switcher.js?v=theme-switcher-r1"></script>
   <script src="game-feel.js?v=parallax-1"></script>
+<script>(function(){var t="NEW ERIDU \· HOLLOW ARCHIVE \· ";var w=t.repeat(6);var a=document.getElementById("zRollA"),b=document.getElementById("zRollB");if(a)a.textContent=w;if(b)b.textContent="PROXY \· ZENLESS ZONE ZERO \· ".repeat(6);})();</script>
 </body>
 </html>

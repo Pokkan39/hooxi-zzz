@@ -5,13 +5,13 @@
   const fineQuery=window.matchMedia('(hover:hover) and (pointer:fine)');
   const reduceQuery=window.matchMedia('(prefers-reduced-motion:reduce)');
 
-  // 视差倍率（鼠标位移范围）
-  const PX_X=80,PX_Y=25;
-  const FAR_RATE=-0.04;
-  const MID_RATE=0.10;
-  const NEAR_RATE=0.22;
-  const GLOW_RATE=0.26;
-  const FRONT_RATE=-0.15;
+  // A1: 视差倍率加大 — far ±6px, mid ±16px, near ±28px
+  const PX_X=80,PX_Y=28;
+  const FAR_RATE=-0.075;
+  const MID_RATE=0.20;
+  const NEAR_RATE=0.35;
+  const GLOW_RATE=0.30;
+  const FRONT_RATE=-0.18;
 
   const init=()=>{
     const hero=document.querySelector('.hero');
@@ -32,35 +32,86 @@
     const nearEl=art.querySelector('.carve-layer--near');
     const glowEl=art.querySelector('.zzz-hero-glow');
     const frontEl=document.querySelector('.hero-copy');
+    const particlesEl=art.querySelector('.carve-particles');
 
-    // === 持续呼吸动画（Live2D 感）===
-    // GSAP 控制 x/y/scale/rotation — 这是唯一写 transform 的通道
-    let breath=null;
+    // === A3: 生成 20 个粒子光点 ===
+    if(particlesEl && !particlesEl.dataset.dotsReady){
+      particlesEl.dataset.dotsReady='1';
+      const DOT_COUNT=20;
+      const colors=['rgba(255,220,100,.6)','rgba(255,255,255,.5)','rgba(255,200,80,.55)','rgba(216,250,0,.4)','rgba(62,199,214,.35)'];
+      for(let i=0;i<DOT_COUNT;i++){
+        const dot=document.createElement('span');
+        dot.className='carve-dot';
+        dot.setAttribute('aria-hidden','true');
+        const size=2+Math.random()*2; // 2-4px
+        const top=5+Math.random()*90; // 5%-95%
+        const left=5+Math.random()*90;
+        const dur=4+Math.random()*5; // 4-9s
+        const delay=Math.random()*5; // 0-5s
+        const o1=(0.3+Math.random()*0.2).toFixed(2);
+        const o2=(0.5+Math.random()*0.2).toFixed(2);
+        const color=colors[Math.floor(Math.random()*colors.length)];
+        dot.style.cssText=`width:${size}px;height:${size}px;top:${top}%;left:${left}%;background:${color};--dot-dur:${dur.toFixed(1)}s;--dot-delay:-${delay.toFixed(1)}s;--dot-o1:${o1};--dot-o2:${o2};`;
+        particlesEl.appendChild(dot);
+      }
+    }
+
+    // === A4: 分段进场动画（GSAP 控制 art 层，CSS 控制 hero-copy 和粒子）===
     if(!reduceQuery.matches){
-      // 设各层起始态：scale 已反解 translateZ 的透视放大（perspective 1000px），
-      // 使三层有效缩放相等，消除静止态层间错位
+      // 先隐藏 art 层（GSAP 入场前）
+      if(farEl)gsap.set(farEl,{opacity:0,scale:1.05,z:0,x:0,y:0});
+      if(midEl)gsap.set(midEl,{opacity:0,scale:1.0237,z:25,x:0,y:0});
+      if(nearEl)gsap.set(nearEl,{opacity:0,scale:0.9975,z:50,x:0,y:20});
+
+      // 入场 timeline：far → mid → near → text → particles
+      const entrance=gsap.timeline({
+        defaults:{ease:'power2.out'},
+        onComplete(){
+          // 入场结束后清理 inline opacity，让 CSS animation 接管 near glow
+          if(farEl)gsap.set(farEl,{clearProps:'opacity'});
+          if(midEl)gsap.set(midEl,{clearProps:'opacity'});
+          if(nearEl)gsap.set(nearEl,{clearProps:'opacity,y'});
+        }
+      });
+      // far 层淡入（0ms）
+      if(farEl)entrance.to(farEl,{opacity:1,duration:0.6,ease:'power2.out'},0);
+      // mid 层淡入（200ms）
+      if(midEl)entrance.to(midEl,{opacity:1,duration:0.6,ease:'power2.out'},0.2);
+      // near 层从下方滑入（400ms）
+      if(nearEl)entrance.to(nearEl,{opacity:1,y:0,duration:0.6,ease:'power2.out'},0.4);
+      // 600ms 后触发 hero-copy CSS 入场
+      entrance.call(()=>{hero.classList.add('hero-entrance-done');},null,0.6);
+      // 800ms 后触发粒子 CSS 入场
+      entrance.call(()=>{hero.classList.add('hero-particles-on');},null,0.8);
+
+    } else {
+      // reduced-motion: 立即显示所有，无动画
       if(farEl)gsap.set(farEl,{scale:1.05,z:0,x:0,y:0});
       if(midEl)gsap.set(midEl,{scale:1.0237,z:25,x:0,y:0});
       if(nearEl)gsap.set(nearEl,{scale:0.9975,z:50,x:0,y:0});
+      hero.classList.add('hero-entrance-done');
+      hero.classList.add('hero-particles-on');
+    }
 
+    // === 持续呼吸动画（Live2D 感）===
+    let breath=null;
+    if(!reduceQuery.matches){
       breath=gsap.timeline({repeat:-1,yoyo:true,defaults:{ease:'sine.inOut'}});
-      // scale 三层必须同时长同缓动：时长不同会让各层有效缩放在动画中途拉开，
-      // 重新引入层间错位（实测最大 14px），抵消起始态的对齐
+      // scale 三层同时长同缓动，保持层间对齐
       if(farEl)breath.to(farEl,{scale:1.07,duration:9},0);
       if(midEl)breath.to(midEl,{scale:1.04325,duration:9},0);
       if(nearEl)breath.to(nearEl,{scale:1.0165,duration:9},0);
-      // 幅度克制：微旋+极小位移。各层节奏刻意不同步，这是 Live2D 感的来源
+      // 微旋+极小位移，各层节奏不同步 → Live2D 感
       if(farEl)breath.to(farEl,{rotation:-0.15,x:3,y:2,duration:9},0);
       if(midEl)breath.to(midEl,{rotation:0.2,x:-3,y:2,duration:7,ease:'power1.inOut'},0);
       if(nearEl)breath.to(nearEl,{rotation:-0.1,x:2,y:-3,duration:4.5,ease:'back.inOut(1.2)'},0);
       if(glowEl)breath.to(glowEl,{x:6,y:-4,scale:1.04,duration:11},0);
     }
 
-    // === 鼠标视差（用 CSS translate 属性叠加，不干扰 GSAP 的 transform）===
-    // CSS translate 和 transform 是独立属性，浏览器自动叠加渲染
+    // === A1: 鼠标视差（用 CSS translate 属性叠加，不干扰 GSAP 的 transform）===
     let rafId=0;
     let targetNx=0,targetNy=0,curNx=0,curNy=0;
-    const LERP=0.08;
+    const LERP=0.06; // 柔和缓动
 
     const applyParallax=()=>{
       curNx+=(targetNx-curNx)*LERP;
@@ -87,7 +138,6 @@
 
     let bound=false;
     const sync=()=>{
-      // 视差只要求精确指针设备，不受 reduced-motion 限制
       const on=fineQuery.matches;
       if(on===bound)return;
       bound=on;
@@ -113,7 +163,25 @@
     document.addEventListener('visibilitychange',()=>{if(document.hidden)resetParallax();});
     sync();
 
-    window.__zzzHeroParallax={mode:'card-carve-live2d',FAR_RATE,MID_RATE,NEAR_RATE,breath:!!breath};
+    // === C3: 滚动缩放视差 — far 层随页面滚出轻微 scale 1.0→1.06 ===
+    if(!reduceQuery.matches && farEl){
+      farEl.style.willChange='transform';
+      let scrollRaf=0;
+      const onScroll=()=>{
+        if(scrollRaf)return;
+        scrollRaf=requestAnimationFrame(()=>{
+          scrollRaf=0;
+          const heroH=hero.offsetHeight||1;
+          const scrollY=window.scrollY||pageYOffset;
+          const ratio=Math.min(1,scrollY/heroH);
+          const sc=1+ratio*0.06; // 1.0 → 1.06
+          farEl.style.setProperty('--far-scroll-scale',sc.toFixed(4));
+        });
+      };
+      window.addEventListener('scroll',onScroll,{passive:true});
+    }
+
+    window.__zzzHeroParallax={mode:'card-carve-live2d-phaseABC',FAR_RATE,MID_RATE,NEAR_RATE,breath:!!breath};
   };
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});

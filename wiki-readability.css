@@ -252,8 +252,8 @@ html{scroll-padding-top:88px}
 .archive-events .page-card h2{color:#fff;font-size:clamp(24px,2.8vw,34px);line-height:1.15}
 .archive-events .page-card p,
 .archive-events .page-meta,
-.archive-events .page-links{color:var(--text-2);font-size:16px;line-height:1.6}
-.archive-events .page-meta span{background:var(--bg-0);border-color:var(--line-strong);color:var(--text-2)}
+.archive-events .page-links{color:var(--text-1);font-size:16px;line-height:1.6}
+.archive-events .page-meta span{background:var(--bg-0);border-color:var(--line-strong);color:var(--text-1)}
 .archive-events .episode-tag{background:var(--amber);color:#14120a}
 .archive-events .page-node{
   background:var(--amber);color:#14120a;box-shadow:none;
@@ -456,14 +456,14 @@ html{scroll-padding-top:88px}
 .subpage .page-links,
 .subpage .spoiler-copy,
 .subpage .spoiler-placeholder{
-  color:var(--text-2)!important;
+  color:var(--text-1)!important;
   font-size:14px!important;
   line-height:1.45!important;
 }
 .subpage .page-meta span{
   background:var(--bg-0)!important;
   border-color:var(--line-strong)!important;
-  color:var(--text-2)!important;
+  color:var(--text-1)!important;
 }
 .subpage .episode-tag,
 .subpage .page-node{

@@ -21,9 +21,9 @@
 .zzz-tv__noise{
   position:absolute;inset:-20%;opacity:0;
   background-image:
-    radial-gradient(rgba(255,255,255,.9) .8px,transparent 1px),
-    radial-gradient(rgba(255,255,255,.55) .7px,transparent .9px),
-    radial-gradient(rgba(255,255,255,.3) 1px,transparent 1.4px);
+    radial-gradient(rgba(255,255,255,.45) .8px,transparent 1px),
+    radial-gradient(rgba(255,255,255,.25) .7px,transparent .9px),
+    radial-gradient(rgba(255,255,255,.14) 1px,transparent 1.4px);
   background-size:3px 3px,5px 5px,8px 8px;
   background-position:0 0,1px 2px,3px 1px;
 }

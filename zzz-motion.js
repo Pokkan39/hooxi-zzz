@@ -138,13 +138,12 @@
     title.dataset.zzzSplit='on';
 
     gsap.from(spans,{
-      duration:.72,
-      yPercent:110,
+      duration:.65,
+      yPercent:70,
       opacity:0,
-      scale:.82,
-      filter:'blur(6px)',
-      ease:'back.out(1.6)',
-      stagger:.028,
+      filter:'blur(4px)',
+      ease:'power2.out',
+      stagger:.025,
       clearProps:'all',
     });
   };
@@ -237,7 +236,7 @@
     if(eyebrow)tl.from(eyebrow,{y:20,opacity:0,duration:0.6,ease:'power2.out',clearProps:'all'},0);
 
     const viewport=one('.hero-layered');
-    if(viewport)tl.from(viewport,{opacity:0,scale:0.96,filter:'blur(6px) brightness(1.6) saturate(0.3)',duration:1.0,ease:'power2.out',clearProps:'all'},0.1);
+    if(viewport)tl.from(viewport,{opacity:0,filter:'blur(6px)',duration:0.8,ease:'power2.out',clearProps:'all'},0.1);
 
     const intro=one('#heroIntro');
     if(intro)tl.from(intro,{y:16,opacity:0,duration:0.5,ease:'power2.out',clearProps:'all'},0.4);
@@ -373,7 +372,7 @@
     sections.forEach(sec=>{
       const children=[...sec.querySelectorAll('.start-paths > *,.home-agent-rail > *,.home-lane-grid > *,.about-credits > *,.archive-reel-links > *,.section-note')];
       if(!children.length)return;
-      gsap.set(children,{opacity:0,y:60,scale:0.92,filter:'blur(4px)'});
+      gsap.set(children,{opacity:0,y:24,scale:1,filter:'blur(3px)'});
       ScrollTrigger.create({
         trigger:sec,
         start:'top 82%',
@@ -381,7 +380,7 @@
         onEnter:()=>{
           gsap.to(children,{
             opacity:1,y:0,scale:1,filter:'blur(0px)',
-            duration:0.6,stagger:0.1,ease:'back.out(1.4)',clearProps:'all'
+            duration:0.55,stagger:0.08,ease:'power2.out',clearProps:'all'
           });
         }
       });

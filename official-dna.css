@@ -137,6 +137,8 @@ body.official-dna .section-nav-num{
 
 /* ---------- 角色页官方式斜切缩略图导航条（DNA home-character__nav） ---------- */
 body.archive-character .character-module-nav.zzz-o-nav{
+  width:100%;
+  max-width:none;
   flex-wrap:nowrap;
   gap:4px;
   align-items:stretch;

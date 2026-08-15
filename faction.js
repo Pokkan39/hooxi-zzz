@@ -4,7 +4,7 @@
   })[char]);
   const text=value=>String(value??'').trim();
   const slug=value=>text(value).toLowerCase().replace(/[^a-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'')||'item';
-  const safeTheme=value=>/^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i.test(text(value))?text(value):'#f3d33b';
+  const safeTheme=value=>/^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i.test(text(value))?text(value):'#ffe600';
   const safeUrl=value=>{
     const raw=text(value);
     if(!raw||raw.startsWith('//'))return '';
@@ -67,6 +67,7 @@
   const factions=Array.isArray(archiveData.factions)?archiveData.factions:[];
   const characters=Array.isArray(archiveData.characters)?archiveData.characters:[];
   const faction=factions.find(item=>text(item?.id)===requestedId)||null;
+  const agentColors=window.agentColors||{};
   const recordSources=[
     ['mainline','主线'],
     ['stories','角色剧情'],
@@ -74,28 +75,62 @@
     ['events','往期活动']
   ];
 
-  const heroName=document.querySelector('#factionName');
-  const heroSummary=document.querySelector('#factionSummary');
-  const heroLogo=document.querySelector('#factionLogo');
-  const notice=document.querySelector('#factionNotice');
-  const directory=document.querySelector('#factionDirectory');
-  const detail=document.querySelector('#factionDetail');
-  const sourceStatus=document.querySelector('#factionSourceStatus');
-  const sourceAction=document.querySelector('#factionSourceAction');
+  const FACTION_EN={
+    'cunning-hares':'Gentle House',
+    'belobog':'Belobog Heavy Industries',
+    'victoria-housekeeping':'Victoria Housekeeping',
+    'sons-of-calydon':'Sons of Calydon',
+    'section-6':'Section 6',
+    'criminal-investigation-srt':'Criminal Investigation',
+    'obol-squad':'Obol Squad',
+    'stars-of-lyra':'Stars of Lyra',
+    'mockingbird':'Mockingbird',
+    'yunkui-summit':'Yunkui Summit',
+    'spook-shack':'Spook Shack',
+    'krampus-compliance-authority':'Krampus',
+    'angels-of-delusion':'Angels of Delusion',
+    'metropolitan-order-division':'Metropolitan Order',
+    'defense-force-silver-squad':'Silver Squad',
+    'external-strategy-department':'External Strategy',
+    'phaethon':'Phaethon',
+    'covenant-of-dayat':'Covenant of Dayat'
+  };
+  const factionEn=item=>FACTION_EN[text(item?.id)]||text(item?.id).replace(/-/g,' ');
+
+  const $=selector=>document.querySelector(selector);
+  const notice=$('#factionNotice');
+  const directory=$('#factionDirectory');
+  const detail=$('#factionDetail');
+  const sourceStatus=$('#factionSourceStatus');
+  const sourceAction=$('#factionSourceAction');
 
   const memberListFor=item=>{
     const memberIds=new Set(Array.isArray(item?.members)?item.members.map(text):[]);
     return characters.filter(character=>text(character?.factionId)===text(item?.id)||memberIds.has(text(character?.id)));
   };
   const localLogo=item=>safeLocalImage(item?.logo);
-  const memberImage=member=>safeLocalImage(member?.headshot||member?.avatar||member?.portrait);
+  const cardArt=member=>safeLocalImage(member?.card||member?.avatar||member?.headshot||member?.portrait);
+  const fullArt=member=>safeLocalImage(member?.portrait||member?.card||member?.avatar);
+  const agentColor=(member,fallback)=>safeTheme(agentColors[text(member?.id)]||fallback);
+  const pad=value=>String(value).padStart(2,'0');
 
+  /* ── 跑马灯（内容重复两遍实现无缝滚动） ── */
+  const buildMarquee=(node,items,hlEvery=0)=>{
+    if(!node)return;
+    const seq=items.map((item,index)=>`<span class="mi${hlEvery&&index%hlEvery===hlEvery-1?' hl':''}">${escapeHtml(item)}</span><span class="dot"></span>`).join('');
+    node.innerHTML=`<div class="fg-marquee-track">${seq}${seq}</div>`;
+  };
+
+  /* ── 交错入场 ── */
+  const io=new IntersectionObserver(entries=>entries.forEach(entry=>{
+    if(entry.isIntersecting){entry.target.classList.add('revealed');io.unobserve(entry.target);}
+  }),{threshold:.1});
+  const observe=nodes=>nodes.forEach((el,index)=>{el.style.transitionDelay=(index%6*70)+'ms';io.observe(el);});
+
+  /* ════════ 目录页 ════════ */
   const renderDirectory=invalid=>{
     document.body.style.removeProperty('--faction-theme');
-    heroName.textContent='阵营目录';
-    heroSummary.textContent='选择阵营，查看本地成员映射、关联记录与已核验来源。';
-    heroLogo.hidden=true;
-    heroLogo.replaceChildren();
+    document.body.style.removeProperty('--agent');
     directory.hidden=false;
     detail.hidden=true;
     if(invalid){
@@ -105,53 +140,55 @@
       notice.hidden=true;
       notice.textContent='';
     }
-    document.querySelector('#directoryCount').textContent=String(factions.length);
-    document.querySelector('#factionDirectoryList').innerHTML=factions.length
-      ?factions.map(item=>{
+    buildMarquee($('#dirMarquee'),['Faction Archive','阵营档案','New Eridu','HOOXI','Hollow Raiders','新艾利都']);
+    buildMarquee($('#dirBgMarquee'),factions.flatMap(item=>[text(item?.name)||text(item?.id),factionEn(item)]));
+    buildMarquee($('#dirBgMarquee2'),['Admit One','HOOXI Archive','New Eridu','Faction Pass','Hollow Raiders','阵营档案']);
+    buildMarquee($('#footTape'),['World All Ends Here','欢迎来到新艾利都','Zenless Zone Zero','HOOXI Fan Archive']);
+    $('#directoryCountSticker').textContent=`${pad(factions.length)} 个阵营已收录`;
+    $('#factionDirectoryList').innerHTML=factions.length
+      ?factions.map((item,idx)=>{
         const id=text(item?.id);
         const name=text(item?.name)||id||'未命名阵营';
         const logo=localLogo(item);
-        const count=memberListFor(item).length;
-        return `<article class="faction-directory-card" data-faction-id="${escapeHtml(id)}">
-          <div class="faction-directory-emblem">${logo?`<img src="${escapeHtml(logo)}" alt="${escapeHtml(name)}徽记" loading="lazy"/>`:`<span aria-label="${escapeHtml(name)}暂无可用徽记">${escapeHtml(name.slice(0,1))}</span>`}</div>
-          <div class="faction-directory-copy"><h3>${escapeHtml(name)}</h3><p>${count} 名成员</p></div>
-          <a class="faction-primary-action" href="faction.html?id=${encodeURIComponent(id)}">查看阵营档案</a>
-        </article>`;
+        const members=memberListFor(item);
+        const arts=members.map(cardArt).filter(Boolean).slice(0,3);
+        const theme=safeTheme(item?.theme);
+        return `<a class="fg-fcard fg-ticket fx-glare-target" style="--fc:${escapeHtml(theme)}" href="faction.html?id=${encodeURIComponent(id)}" data-faction-id="${escapeHtml(id)}">
+          <span class="fg-fcard-en" aria-hidden="true">${escapeHtml(factionEn(item))}</span>
+          <div class="fg-fcard-body">
+            <span class="fg-ticket-head" aria-hidden="true">HOOXI ARCHIVE · FACTION PASS</span>
+            <div class="fg-fcard-top">
+              ${logo?`<span class="fg-fcard-emblem"><img src="${escapeHtml(logo)}" alt="${escapeHtml(name)}徽记" loading="lazy"/></span>`:''}
+              <div>
+                <h3>${escapeHtml(name)}</h3>
+                <p class="en">${escapeHtml(factionEn(item))}</p>
+              </div>
+            </div>
+            <p class="sum">${escapeHtml(text(item?.summary))}</p>
+            <div class="fg-fcard-foot">
+              <span class="fg-fcard-count">${pad(members.length)} AGENTS</span>
+              <span class="fg-fcard-cta">查看阵营档案</span>
+            </div>
+          </div>
+          <div class="fg-fcard-arts" aria-hidden="true"><div class="fig">${arts.map(src=>`<img src="${escapeHtml(src)}" alt="" loading="lazy"/>`).join('')}</div></div>
+          <span class="fg-ticket-perf" aria-hidden="true"></span>
+          <span class="fg-ticket-stub" aria-hidden="true">
+            <span class="stub-serial">NO.${pad(idx+1)}</span>
+            <span class="stub-admit">ADMIT ONE</span>
+            <span class="stub-barcode"></span>
+            <span class="stub-venue">NEW·ERIDU</span>
+          </span>
+          <span class="fg-ticket-holo" aria-hidden="true"></span>
+        </a>`;
       }).join('')
-      :'<p class="faction-empty">当前预览数据未提供阵营目录。</p>';
+      :'<p class="fg-empty">当前预览数据未提供阵营目录。</p>';
+    observe([...document.querySelectorAll('.fg-fcard')]);
     sourceStatus.textContent='目录与成员映射来自 HOOXI 本地角色目录与已核验记录索引；目录仅展示阵营徽记，版权归米哈游所有。';
     sourceAction.replaceChildren();
     setPageMeta('阵营目录 // HOOXI（粉丝非官方）','《绝区零》阵营目录与本地成员映射。HOOXI 为粉丝非官方档案，与米哈游/HoYoverse 无隶属。');
   };
 
-  const renderMemberCard=(member,index)=>{
-    const id=text(member?.id)||`member-${index+1}`;
-    const name=text(member?.name)||id;
-    const image=memberImage(member);
-    const facts=[text(member?.attribute),text(member?.specialty||member?.role)].filter(Boolean).join(' · ')||'身份资料待核验';
-    const extraId=`member-extra-${slug(id)}`;
-    const disclosureId=`member-disclosure-${slug(id)}`;
-    const extraFacts=[
-      ['英文名',member?.englishName],
-      ['攻击类型',member?.attackType],
-      ['收录日期',member?.releaseDate]
-    ].filter(([,value])=>text(value));
-    const summary=text(member?.summary||member?.impression);
-    const hasExtra=summary||extraFacts.length;
-    return `<article class="faction-member-card" data-member-id="${escapeHtml(id)}">
-      <div class="faction-member-image">${image?`<img src="${escapeHtml(image)}" alt="${escapeHtml(name)}立绘" loading="lazy"/>`:`<span aria-hidden="true">${escapeHtml(name.slice(0,1))}</span>`}</div>
-      <div class="faction-member-copy"><h3>${escapeHtml(name)}</h3><p>${escapeHtml(facts)}</p></div>
-      <a class="faction-primary-action" href="character.html?id=${encodeURIComponent(id)}">查看角色档案</a>
-      ${hasExtra?`<details id="${disclosureId}" class="faction-disclosure faction-member-disclosure" data-archive-disclosure>
-        <summary>更多成员资料</summary>
-        <div id="${extraId}" class="faction-disclosure-content">
-          ${summary?`<p>${escapeHtml(summary)}</p>`:''}
-          ${extraFacts.length?`<dl>${extraFacts.map(([label,value])=>`<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join('')}</dl>`:''}
-        </div>
-      </details>`:''}
-    </article>`;
-  };
-
+  /* ════════ 关联记录 ════════ */
   const recordMatchesFaction=row=>text(row?.factionId)===requestedId
     ||(Array.isArray(row?.factionIds)&&row.factionIds.map(text).includes(requestedId));
   const recordActions=row=>{
@@ -175,16 +212,15 @@
     if(!actions.length)actions.push('<span class="faction-source-disabled">来源不可用</span>');
     return actions.join('');
   };
-
   const renderRecords=()=>{
     const groups=recordSources.map(([key,label])=>{
       const rows=(Array.isArray(archiveData[key])?archiveData[key]:[]).filter(recordMatchesFaction);
       return {key,label,rows};
     }).filter(group=>group.rows.length);
     const total=groups.reduce((sum,group)=>sum+group.rows.length,0);
-    document.querySelector('#factionCount').textContent=String(total);
+    $('#factionCount').textContent=String(total);
     const usedIds=new Set();
-    document.querySelector('#factionRecords').innerHTML=groups.length?groups.map(group=>{
+    $('#factionRecords').innerHTML=groups.length?groups.map(group=>{
       const contentId=`records-${slug(group.key)}-content`;
       const detailId=`records-${slug(group.key)}`;
       const records=group.rows.map((row,index)=>{
@@ -208,34 +244,114 @@
     }).join(''):'<p class="faction-empty">该阵营当前没有打包的关联记录；来源区仍保留成员映射与核验状态说明。</p>';
   };
 
+  /* ════════ 详情页 ════════ */
   const renderFaction=()=>{
     const name=text(faction?.name)||requestedId;
     const summary=text(faction?.summary)||`${name}的成员与关联记录导航。`;
     const logo=localLogo(faction);
+    const theme=safeTheme(faction?.theme);
     const members=memberListFor(faction);
-    document.body.style.setProperty('--faction-theme',safeTheme(faction?.theme));
-    heroName.textContent=name;
-    heroSummary.textContent=summary;
+    document.body.style.setProperty('--faction-theme',theme);
     notice.hidden=true;
     notice.textContent='';
     directory.hidden=true;
     detail.hidden=false;
-    if(logo){
-      heroLogo.hidden=false;
-      heroLogo.innerHTML=`<img src="${escapeHtml(logo)}" alt="${escapeHtml(name)}徽记"/>`;
-    }else{
-      heroLogo.hidden=true;
-      heroLogo.replaceChildren();
+
+    buildMarquee($('#stageMarquee'),[factionEn(faction),name,'Faction File','HOOXI Archive']);
+    buildMarquee($('#midTape'),[factionEn(faction),name,`${pad(members.length)} Agents`,`Theme ${theme}`,'New Eridu Archive'],3);
+    buildMarquee($('#footTape'),['World All Ends Here','欢迎来到新艾利都','Zenless Zone Zero',name]);
+
+    const ghost=$('#stageGhostEmblem');
+    if(logo){ghost.src=logo;ghost.hidden=false;}else{ghost.hidden=true;}
+    $('#panelFaction').innerHTML=`${logo?`<img src="${escapeHtml(logo)}" alt=""/>`:''}<span>${escapeHtml(name)} · ${escapeHtml(factionEn(faction)).toUpperCase()}</span>`;
+    const briefEmblem=$('#briefEmblem');
+    if(logo){briefEmblem.src=logo;briefEmblem.hidden=false;}else{briefEmblem.hidden=true;}
+    $('#briefName').textContent=name;
+    $('#briefSummary').textContent=summary;
+    const wikiBtn=$('#btnWiki');
+    const wiki=safeUrl(faction?.wikiUrl);
+    if(wiki){wikiBtn.href=wiki;wikiBtn.style.display='';}
+    else wikiBtn.style.display='none';
+
+    $('#memberHint').textContent=`${pad(members.length)} AGENTS // 点击切换 · ← → 键切换`;
+    $('#factionMembers').innerHTML=members.length?members.map((member,index)=>{
+      const rank=text(member?.rank).toUpperCase();
+      const color=agentColor(member,theme);
+      return `<div class="fg-mcard" style="--mc:${escapeHtml(color)}" data-i="${index}" role="button" tabindex="0" aria-label="查看${escapeHtml(text(member?.name))}">
+        <div class="ph">
+          ${rank?`<span class="mr ${rank==='S'?'s':rank==='A'?'a':''}">${escapeHtml(rank)}</span>`:''}
+          <img src="${escapeHtml(cardArt(member))}" alt="${escapeHtml(text(member?.name))}" loading="lazy"/>
+        </div>
+        <p class="mn">${escapeHtml(text(member?.name))}</p>
+      </div>`;
+    }).join(''):'<p class="fg-empty">HOOXI 本地角色目录暂未映射该阵营成员。</p>';
+
+    const cards=[...document.querySelectorAll('.fg-mcard')];
+    let current=-1;
+    const select=(index,animate=true)=>{
+      const member=members[index];
+      if(!member)return;
+      current=index;
+      const color=agentColor(member,theme);
+      document.body.style.setProperty('--agent',color);
+      cards.forEach((el,i)=>el.classList.toggle('active',i===index));
+      cards[index].scrollIntoView({block:'nearest',inline:'center',behavior:animate?'smooth':'auto'});
+      const apply=()=>{
+        const img=$('#stageImg');
+        const art=fullArt(member);
+        if(art){img.src=art;img.hidden=false;}else{img.hidden=true;}
+        img.alt=`${text(member?.name)}立绘`;
+        const rank=text(member?.rank).toUpperCase();
+        const rankBadge=$('#panelRank');
+        rankBadge.textContent=rank?`${rank} 级`:'—';
+        rankBadge.className='fg-rank '+(rank==='S'?'s':rank==='A'?'a':'');
+        $('#panelNo').textContent=`AGENT No.${pad(index+1)} // ${requestedId.toUpperCase()}`;
+        $('#agentName').textContent=text(member?.name);
+        $('#agentEn').textContent=text(member?.englishName);
+        $('#agentChips').innerHTML=[
+          text(member?.attribute)&&`<span class="fg-chip">属性 <b>${escapeHtml(text(member?.attribute))}</b></span>`,
+          text(member?.specialty||member?.role)&&`<span class="fg-chip">特性 <b>${escapeHtml(text(member?.specialty||member?.role))}</b></span>`,
+          text(member?.attackType)&&`<span class="fg-chip">${escapeHtml(text(member?.attackType))}</span>`
+        ].filter(Boolean).join('');
+        $('#agentDesc').textContent=text(member?.summary||member?.impression)||'身份资料待核验。';
+        $('#btnChar').href=`character.html?id=${encodeURIComponent(text(member?.id))}`;
+      };
+      const wrap=$('#stagePortrait');
+      if(animate&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
+        wrap.classList.remove('swap-in');
+        wrap.classList.add('swap-out');
+        setTimeout(()=>{apply();wrap.classList.remove('swap-out');wrap.classList.add('swap-in');},240);
+      }else apply();
+    };
+    cards.forEach((el,index)=>{
+      el.addEventListener('click',()=>select(index));
+      el.addEventListener('keydown',event=>{
+        if(event.key==='Enter'||event.key===' '){event.preventDefault();select(index);}
+      });
+    });
+    document.addEventListener('keydown',event=>{
+      if(!members.length||event.target.matches('input,textarea,select'))return;
+      if(event.key==='ArrowRight')select((current+1)%members.length);
+      if(event.key==='ArrowLeft')select((current-1+members.length)%members.length);
+    });
+
+    /* 立绘轻微视差 */
+    const stage=$('.fg-stage');
+    if(stage&&matchMedia('(pointer:fine)').matches&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
+      stage.addEventListener('mousemove',event=>{
+        const rect=stage.getBoundingClientRect();
+        const x=(event.clientX-rect.left)/rect.width-.5;
+        $('#stageImg').style.transform=`translateX(${x*18}px) rotate(${x*1.2}deg)`;
+      });
+      stage.addEventListener('mouseleave',()=>{$('#stageImg').style.transform='';});
     }
-    document.querySelector('#memberCount').textContent=String(members.length);
-    document.querySelector('#factionMembers').innerHTML=members.length
-      ?members.map(renderMemberCard).join('')
-      :'<p class="faction-empty">HOOXI 本地角色目录暂未映射该阵营成员。</p>';
-    document.querySelector('#factionContextContent').innerHTML=`<p>${escapeHtml(name)}的成员关系按本地角色目录中的 factionId 与阵营成员表交叉整理；关联记录只读取当前打包 archiveData，不从正式页本地存储补写。</p>`;
+
+    select(0,false);
+
+    $('#factionContextContent').innerHTML=`<p>${escapeHtml(name)}的成员关系按本地角色目录中的 factionId 与阵营成员表交叉整理；关联记录只读取当前打包 archiveData，不从正式页本地存储补写。角色代表色提取自本地立绘素材并经人工核对。</p>`;
     renderRecords();
 
     const scopedSource=safeUrl(faction?.sourceUrl);
-    const wiki=safeUrl(faction?.wikiUrl);
     if(faction?.sourceType==='official-member-page'&&scopedSource){
       sourceStatus.textContent='本页展示成员立绘与阵营徽记，版权归米哈游所有；阵营名称与成员关系由蕾米埃尔·丹官方角色百科页佐证；当前未收录独立阵营官方页面。';
       sourceAction.innerHTML=`<a data-source-action href="${escapeHtml(scopedSource)}" target="_blank" rel="noreferrer">打开蕾米埃尔·丹官方角色页</a>`;
@@ -246,9 +362,7 @@
       sourceStatus.textContent='本页展示成员立绘与阵营徽记，版权归米哈游所有；阵营专属来源待核验，成员映射来自HOOXI本地角色目录与已核验记录索引；本站不伪造官方链接。';
       sourceAction.replaceChildren();
     }
-    const shareTitle=`${name} // HOOXI 阵营档案（粉丝非官方）`;
-    const shareDescription=`${name}成员与关联记录导航。HOOXI 为粉丝非官方档案，与米哈游/HoYoverse 无隶属。`;
-    setPageMeta(shareTitle,shareDescription);
+    setPageMeta(`${name} // HOOXI 阵营档案（粉丝非官方）`,`${name}成员与关联记录导航。HOOXI 为粉丝非官方档案，与米哈游/HoYoverse 无隶属。`);
   };
 
   const focusHashTarget=()=>{

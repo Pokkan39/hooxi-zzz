@@ -5,7 +5,6 @@
   const body=document.body;
   if(!body||!body.classList.contains('subpage'))return;
 
-  const EXPANDED_KEY='hooxi:sidebar-expanded';
   const TRAIL_KEY='hooxi:nav-trail';
   const MOBILE_MQ=window.matchMedia('(max-width:760px)');
 
@@ -38,14 +37,6 @@
   const currentIndex=LANES.findIndex(lane=>lane.id===currentLaneId);
   const prevLane=currentIndex>0?LANES[currentIndex-1]:null;
   const nextLane=currentIndex>=0&&currentIndex<LANES.length-1?LANES[currentIndex+1]:null;
-
-  const readExpanded=()=>{
-    try{return localStorage.getItem(EXPANDED_KEY)==='1'}catch{return false}
-  };
-
-  const writeExpanded=value=>{
-    try{localStorage.setItem(EXPANDED_KEY,value?'1':'0')}catch{/* ignore */}
-  };
 
   const emptyTrail=()=>({stack:[],index:-1});
 
@@ -149,7 +140,8 @@
   const prevBtn=aside.querySelector('[data-lane-prev]');
   const nextBtn=aside.querySelector('[data-lane-next]');
 
-  const setExpanded=(open,{persist=true}={})=>{
+  // 侧栏永远从隐藏态开始，不记忆上次状态，否则刷新后会自己弹出。
+  const setExpanded=open=>{
     const expanded=!!open;
     body.classList.toggle('is-sidebar-expanded',expanded);
     aside.classList.toggle('is-expanded',expanded);
@@ -158,7 +150,6 @@
     const showBackdrop=expanded&&MOBILE_MQ.matches;
     backdrop.hidden=!showBackdrop;
     backdrop.classList.toggle('is-visible',showBackdrop);
-    if(persist&&!MOBILE_MQ.matches)writeExpanded(expanded);
   };
 
   const syncActive=()=>{
@@ -195,15 +186,57 @@
     }
   };
 
-  const initialExpanded=MOBILE_MQ.matches?false:readExpanded();
-  setExpanded(initialExpanded,{persist:false});
+  // Always start collapsed, hover-to-expand
+  setExpanded(false);
   syncActive();
   syncHistoryButtons();
 
-  const toggleExpanded=()=>setExpanded(!body.classList.contains('is-sidebar-expanded'));
+  // Auto-expand on hover near left edge
+  let hoverExpandTimer=null;
+  let isHoverExpanded=false;
+
+  const checkHoverExpand=(event)=>{
+    if(MOBILE_MQ.matches)return;
+    const expanded=body.classList.contains('is-sidebar-expanded');
+    // 沉浸式角色舞台:关闭"贴左边缘自动弹出",避免拖卡片/点立绘误触发。
+    // 仍可点把手或按 [ 展开;已展开时保持展开。
+    const immersiveDetail=body.classList.contains('archive-stories')&&!expanded;
+    if(immersiveDetail){
+      if(hoverExpandTimer)clearTimeout(hoverExpandTimer);
+      return;
+    }
+    // Collapsed: arm on the left edge. Expanded: stay armed across the panel's full
+    // width. Use offsetWidth, not getBoundingClientRect — the latter includes the
+    // slide-in transform, so a mid-animation pointer move reads as "already left".
+    const edge=expanded?aside.offsetWidth:60;
+    const shouldExpand=event.clientX<=edge;
+
+    if(shouldExpand&&!expanded){
+      if(hoverExpandTimer)clearTimeout(hoverExpandTimer);
+      hoverExpandTimer=setTimeout(()=>{
+        setExpanded(true);
+        isHoverExpanded=true;
+      },150);
+    }else if(!shouldExpand&&isHoverExpanded){
+      if(hoverExpandTimer)clearTimeout(hoverExpandTimer);
+      hoverExpandTimer=setTimeout(()=>{
+        setExpanded(false);
+        isHoverExpanded=false;
+      },300);
+    }
+  };
+
+  addEventListener('mousemove',checkHoverExpand);
+
+  // Clicking the toggle takes over from hover auto-collapse.
+  const toggleExpanded=()=>{
+    isHoverExpanded=false;
+    if(hoverExpandTimer)clearTimeout(hoverExpandTimer);
+    setExpanded(!body.classList.contains('is-sidebar-expanded'));
+  };
 
   toggleBtn.addEventListener('click',toggleExpanded);
-  backdrop.addEventListener('click',()=>setExpanded(false,{persist:!MOBILE_MQ.matches}));
+  backdrop.addEventListener('click',()=>setExpanded(false));
 
   const isTypingTarget=target=>{
     if(!(target instanceof Element))return false;
@@ -214,7 +247,7 @@
 
   addEventListener('keydown',event=>{
     if(event.key==='Escape'&&body.classList.contains('is-sidebar-expanded')&&MOBILE_MQ.matches){
-      setExpanded(false,{persist:false});
+      setExpanded(false);
       toggleBtn.focus();
       return;
     }
@@ -226,8 +259,8 @@
   });
 
   const onMobileChange=()=>{
-    if(MOBILE_MQ.matches)setExpanded(false,{persist:false});
-    else setExpanded(readExpanded(),{persist:false});
+    setExpanded(false);
+    isHoverExpanded=false;
   };
   if(typeof MOBILE_MQ.addEventListener==='function')MOBILE_MQ.addEventListener('change',onMobileChange);
   else if(typeof MOBILE_MQ.addListener==='function')MOBILE_MQ.addListener(onMobileChange);
@@ -269,11 +302,11 @@
       try{target=new URL(anchor.href,location.href)}catch{return}
       const sameDocument=target.pathname===location.pathname&&target.search===location.search;
       if(sameDocument&&target.hash){
-        if(MOBILE_MQ.matches)setExpanded(false,{persist:false});
+        if(MOBILE_MQ.matches)setExpanded(false);
         return;
       }
       pushTrailBeforeLeave();
-      if(MOBILE_MQ.matches)setExpanded(false,{persist:false});
+      if(MOBILE_MQ.matches)setExpanded(false);
     });
   });
 

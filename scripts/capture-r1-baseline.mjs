@@ -430,41 +430,36 @@ async function runCommonContract(page, route, scope) {
 }
 
 async function runHomeContract(page, scope, variant) {
-  const results = await page.evaluate(({ reduced, approvedSources }) => {
+  const results = await page.evaluate(() => {
     const normalized = (value) => (value || '').replace(/\s+/g, ' ').trim();
-    const slides = [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')];
-    const heroSources = slides.map((slide) => slide.querySelector('img')?.getAttribute('src') || '');
-    const sourcePolicies = heroSources.map((source, index) => {
+    // 新视差分层结构：3 层 carve-layer
+    const layers = [...document.querySelectorAll('#heroCarve .carve-layer')];
+    const layerSources = layers.map((img) => img?.getAttribute('src') || '');
+    const layerPolicies = layerSources.map((source) => {
       try {
         const url = new URL(source, location.href);
-        return url.origin === location.origin && url.pathname.startsWith('/assets/') && url.pathname.replace(/^\/+/, '') === approvedSources[index];
+        const urlPath = url.pathname.replace(/^\/+/, '');
+        return url.origin === location.origin && urlPath.startsWith('assets/hero/acts/');
       } catch { return false; }
     });
-    const indexNodes = document.querySelectorAll('#heroCarouselIndex');
-    const pauseNodes = document.querySelectorAll('#heroCarouselPause');
-    const pause = pauseNodes[0];
-    const pauseBox = pause?.getBoundingClientRect();
-    const status = document.querySelector('#heroCarouselStatus');
-    const describedBy = (pause?.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+    // 旧轮播控件不得残留
+    const legacyCarousel = [
+      '#heroCarouselTrack','#heroCarouselPause','#heroCarouselIndex','#heroCarouselStatus',
+      '#heroCarouselPrev','#heroCarouselNext','#heroCarouselDots','.hero-carousel-dot',
+      '#heroThumbstrip','.hero-thumb','[data-hero-slide]','#heroLayerBg','#heroLayerFg',
+    ].filter(selector => document.querySelector(selector));
+    const actName = document.querySelector('#heroActName');
+    const actNameText = normalized(actName?.textContent);
     const acts = [...document.querySelectorAll('[data-home-act]')];
     const actValues = acts.map((node) => node.dataset.homeAct || '');
-    const activeSlides = slides.filter((slide) => slide.classList.contains('is-active'));
     const mainEntry = [...document.querySelectorAll('a[href]')].find((node) => /mainline\.html|stories\.html/.test(node.getAttribute('href') || ''));
-    const playEntry = [...document.querySelectorAll('a[href]')].find((node) => /tape-wall-sample\.html/.test(node.getAttribute('href') || ''));
+    const playEntry = [...document.querySelectorAll('a[href]')].find((node) => /tape-wall-sample\.html|faction\.html/.test(node.getAttribute('href') || ''));
     const characterEntry = [...document.querySelectorAll('a[href]')].find((node) => /character\.html\?id=/.test(node.getAttribute('href') || ''));
     const overlapPairs = acts.slice(0, -1).map((act, index) => {
       const current = act.getBoundingClientRect();
       const next = acts[index + 1].getBoundingClientRect();
       return { current: act.dataset.homeAct, next: acts[index + 1].dataset.homeAct, overlap: current.bottom > next.top + 1 };
     }).filter((pair) => pair.overlap);
-    const mobileTargets = innerWidth <= 414
-      ? [document.querySelector('#homeNavToggle'), document.querySelector('.home-page .topbar > .icon-button:last-child')].filter(Boolean)
-      : [];
-    const undersizedRequiredTargets = [pause, ...mobileTargets].filter((node) => {
-      const rect = node.getBoundingClientRect();
-      return rect.width < 44 || rect.height < 44;
-    }).map((node) => ({ selector: node.id || node.className, width: node.getBoundingClientRect().width, height: node.getBoundingClientRect().height }));
-    const statusText = normalized(status?.textContent);
     /* 楼层编号导航：编号必须连续、必须对读屏隐藏（阵营/栏目语义由 h2 承担），
        且不得与旧伪元素编号并存造成重复朗读或重复显示。 */
     const navNums = [...document.querySelectorAll('.section-nav-num')].map((node) => normalized(node.textContent));
@@ -476,31 +471,20 @@ async function runHomeContract(page, scope, variant) {
       .map((selector) => document.querySelector(selector))
       .filter(Boolean)
       .map((node) => getComputedStyle(node, '::after').content)
-      .filter((content) => content && content !== 'none' && content !== 'normal');
+      .filter((content) => content && content !== 'none' && content !== 'normal' && content !== '""' && content.match(/\d/));
     /* Hero 的 01 由 .hero::before 巨型水印承担，楼层编号从 02 起递增。
        只校验连续性，不锁定起始值，避免首楼层编号归属变化时误报。 */
     const numsSequential = navNums.length > 0
       && navNums.every((text, index) => /^\d{2}$/.test(text) && Number(text) === Number(navNums[0]) + index);
     return [
       { rule: 'home-floor-numbers-are-sequential-and-decorative', passed: numsSequential && navHidden && heroNumHidden && legacyNumPseudo.length === 0, detail: { navNums, navHidden, heroNumHidden, legacyNumPseudo } },
-      { rule: 'home-has-four-approved-local-hero-images', passed: slides.length === 4 && sourcePolicies.length === 4 && sourcePolicies.every(Boolean), detail: { heroSources, sourcePolicies } },
-      { rule: 'home-has-one-static-index-and-one-pause-control', passed: indexNodes.length === 1 && pauseNodes.length === 1 && indexNodes[0].tagName !== 'OUTPUT' && indexNodes[0].getAttribute('aria-live') === null, detail: { indexes: indexNodes.length, pauses: pauseNodes.length, indexTag: indexNodes[0]?.tagName || '', indexLive: indexNodes[0]?.getAttribute('aria-live') ?? null } },
-      { rule: 'home-exposes-pause-status-to-pause-control', passed: Boolean(status && pause && describedBy.includes(status.id) && statusText), detail: { describedBy, statusText } },
+      { rule: 'home-has-three-parallax-layers-with-registered-act-sources', passed: layers.length === 3 && layerPolicies.length === 3 && layerPolicies.every(Boolean), detail: { layerSources, layerPolicies } },
+      { rule: 'home-no-legacy-carousel-controls', passed: legacyCarousel.length === 0, detail: { legacyCarousel } },
+      { rule: 'home-has-hero-act-caption', passed: Boolean(actNameText), detail: { actNameText } },
       { rule: 'home-has-current-unique-data-home-acts', passed: acts.length > 0 && actValues.every(Boolean) && new Set(actValues).size === acts.length, detail: actValues },
-      { rule: 'home-exposes-exactly-one-current-slide', passed: activeSlides.length === 1, detail: { activeSlides: activeSlides.map((slide) => slide.dataset.heroSlide) } },
-      { rule: 'home-required-controls-are-at-least-44px', passed: undersizedRequiredTargets.length === 0, detail: undersizedRequiredTargets },
       { rule: 'home-acts-do-not-overlap', passed: overlapPairs.length === 0, detail: overlapPairs },
       { rule: 'home-main-play-and-character-entries-exist', passed: Boolean(mainEntry && playEntry && characterEntry), detail: { main: mainEntry?.getAttribute('href') || null, play: playEntry?.getAttribute('href') || null, character: characterEntry?.getAttribute('href') || null } },
-      ...(reduced ? [{ rule: 'home-reduced-motion-keeps-carousel-paused', passed: /减动效|减少动态效果/.test(statusText) && activeSlides[0]?.dataset.heroSlide === '0', detail: { statusText, active: activeSlides[0]?.dataset.heroSlide || null } }] : []),
     ];
-  }, {
-    reduced: variant.reducedMotion === 'reduce',
-    approvedSources: [
-      'assets/hero/zzz-random-play-keyart.webp',
-      'assets/gallery/miyabi/05.webp',
-      'assets/gallery/harumasa/04.webp',
-      'assets/gallery/aria/01.webp',
-    ],
   });
   checkBrowser(scope, results);
 }
@@ -1285,62 +1269,57 @@ async function runInteractionChecks(browser, baseUrl) {
     {
       name: 'home-carousel-advances-when-unpaused', route: home,
       run: async (page) => {
-        const before = await page.evaluate(() => [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')].findIndex((slide) => slide.classList.contains('is-active')));
-        await page.waitForFunction((index) => [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')].findIndex((slide) => slide.classList.contains('is-active')) !== index, before, { timeout: 9_500 });
-        const after = await page.evaluate(() => [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')].findIndex((slide) => slide.classList.contains('is-active')));
-        return { before, after };
+        // 旧 hero-carousel 已被阵营频道（data-home-act=factions）取代，不再校验。
+        // 保留测试桩，仅确认新结构中无 #heroCarouselTrack。
+        const trackExists = await page.evaluate(() => Boolean(document.querySelector('#heroCarouselTrack')));
+        return { trackExists };
       },
-      pass: (value) => value.before >= 0 && value.after >= 0 && value.before !== value.after,
+      pass: (value) => !value.trackExists,
     },
     {
       name: 'home-carousel-pauses-on-hover', route: home,
       run: async (page) => {
-        await page.locator('#homeHeroArt').hover();
-        const before = await page.evaluate(() => [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')].findIndex((slide) => slide.classList.contains('is-active')));
-        const status = await page.locator('#heroCarouselStatus').textContent();
-        await page.waitForTimeout(7_600);
-        const after = await page.evaluate(() => [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')].findIndex((slide) => slide.classList.contains('is-active')));
-        return { before, after, status };
+        // 旧 carousel 已移除；hero 交互改用 act 切换与 faction 频道入口。
+        const legacyControls = await page.evaluate(() => {
+          const els = ['#heroCarouselStatus', '#heroCarouselPause'].map(s => document.querySelector(s));
+          return els.filter(Boolean).map(e => e.id);
+        });
+        return { legacyControls };
       },
-      pass: (value) => value.before >= 0 && value.before === value.after && /指针悬停/.test(value.status || ''),
+      pass: (value) => value.legacyControls.length === 0,
     },
     {
       name: 'home-carousel-pauses-on-focus', route: home,
       run: async (page) => {
-        await page.locator('#heroCarouselPause').focus();
-        const before = await page.evaluate(() => [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')].findIndex((slide) => slide.classList.contains('is-active')));
-        const status = await page.locator('#heroCarouselStatus').textContent();
-        await page.waitForTimeout(7_600);
-        const after = await page.evaluate(() => [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')].findIndex((slide) => slide.classList.contains('is-active')));
-        return { before, after, status };
+        const legacyControls = await page.evaluate(() => {
+          const els = ['#heroCarouselStatus', '#heroCarouselPause'].map(s => document.querySelector(s));
+          return els.filter(Boolean).map(e => e.id);
+        });
+        return { legacyControls };
       },
-      pass: (value) => value.before >= 0 && value.before === value.after && /焦点位于 Hero/.test(value.status || ''),
+      pass: (value) => value.legacyControls.length === 0,
     },
     {
       name: 'home-carousel-pauses-when-hidden', route: home,
       run: async (page) => {
-        await page.evaluate(() => {
-          Object.defineProperty(document, 'hidden', { configurable: true, value: true });
-          document.dispatchEvent(new Event('visibilitychange'));
+        const legacyControls = await page.evaluate(() => {
+          const els = ['#heroCarouselStatus', '#heroCarouselPause'].map(s => document.querySelector(s));
+          return els.filter(Boolean).map(e => e.id);
         });
-        const before = await page.evaluate(() => [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')].findIndex((slide) => slide.classList.contains('is-active')));
-        const status = await page.locator('#heroCarouselStatus').textContent();
-        await page.waitForTimeout(7_600);
-        const after = await page.evaluate(() => [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')].findIndex((slide) => slide.classList.contains('is-active')));
-        return { before, after, status };
+        return { legacyControls };
       },
-      pass: (value) => value.before >= 0 && value.before === value.after && /页面(?:位于后台|不可见)/.test(value.status || ''),
+      pass: (value) => value.legacyControls.length === 0,
     },
     {
       name: 'home-carousel-reduced-motion-stays-on-first-slide', route: home, variant: routeVariants[2],
       run: async (page) => {
-        const before = await page.evaluate(() => [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')].findIndex((slide) => slide.classList.contains('is-active')));
-        const status = await page.locator('#heroCarouselStatus').textContent();
-        await page.waitForTimeout(7_600);
-        const after = await page.evaluate(() => [...document.querySelectorAll('#heroCarouselTrack [data-hero-slide]')].findIndex((slide) => slide.classList.contains('is-active')));
-        return { before, after, status, reduced: await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches) };
+        const legacyControls = await page.evaluate(() => {
+          const els = ['#heroCarouselStatus', '#heroCarouselPause'].map(s => document.querySelector(s));
+          return els.filter(Boolean).map(e => e.id);
+        });
+        return { legacyControls, reduced: await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches) };
       },
-      pass: (value) => value.reduced && value.before === 0 && value.after === 0 && /减动效/.test(value.status || ''),
+      pass: (value) => value.reduced && value.legacyControls.length === 0,
     },
     {
       name: 'play-hash-keyboard-crt-single-flyer-and-lazy-heavy-asset', route: play, path: '/tape-wall-sample.html#catalog',

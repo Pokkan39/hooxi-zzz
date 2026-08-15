@@ -513,6 +513,11 @@ function StoriesApp() {
     const body = document.body;
     root.style.setProperty('--character-theme-rgb', theme.css);
     root.style.setProperty('--selected-agent-theme', `rgb(${theme.css})`);
+    // Bridge sidebar tokens so glass rail follows the selected agent color.
+    root.style.setProperty('--character-accent', `rgb(${theme.css})`);
+    root.style.setProperty('--character-accent-rgb', theme.css.replace(/ /g, ','));
+    root.style.setProperty('--character-ambient', `rgb(${theme.css} / .22)`);
+    root.style.setProperty('--character-line', `rgb(${theme.css} / .42)`);
     // Override accent system on BODY to beat data-theme specificity
     body.style.setProperty('--accent', `rgb(${theme.css})`);
     body.style.setProperty('--accent-soft', `rgb(${theme.css} / .12)`);
@@ -522,9 +527,17 @@ function StoriesApp() {
     body.style.setProperty('--amber-dim', `rgb(${theme.css} / .18)`);
     body.style.setProperty('--amber-line', `rgb(${theme.css} / .38)`);
     body.style.setProperty('--hooxi-confirm', `rgb(${theme.css})`);
+    body.style.setProperty('--character-accent', `rgb(${theme.css})`);
+    body.style.setProperty('--character-ambient', `rgb(${theme.css} / .22)`);
+    body.style.setProperty('--character-line', `rgb(${theme.css} / .42)`);
+    body.style.setProperty('--selected-agent-theme', `rgb(${theme.css})`);
     return () => {
       root.style.removeProperty('--character-theme-rgb');
       root.style.removeProperty('--selected-agent-theme');
+      root.style.removeProperty('--character-accent');
+      root.style.removeProperty('--character-accent-rgb');
+      root.style.removeProperty('--character-ambient');
+      root.style.removeProperty('--character-line');
       body.style.removeProperty('--accent');
       body.style.removeProperty('--accent-soft');
       body.style.removeProperty('--accent-dim');
@@ -533,6 +546,10 @@ function StoriesApp() {
       body.style.removeProperty('--amber-dim');
       body.style.removeProperty('--amber-line');
       body.style.removeProperty('--hooxi-confirm');
+      body.style.removeProperty('--character-accent');
+      body.style.removeProperty('--character-ambient');
+      body.style.removeProperty('--character-line');
+      body.style.removeProperty('--selected-agent-theme');
     };
   }, [theme.css]);
 
@@ -603,7 +620,7 @@ function StoriesApp() {
     setSwitching(!reducedMotion);
     setSelectedId(id);
     setStatus(`已选择${field(character.name)}，所属${field(factionById.get(character.factionId)?.name)}。`);
-    if (!reducedMotion) switchTimer.current = setTimeout(() => setSwitching(false), 420);
+    if (!reducedMotion) switchTimer.current = setTimeout(() => setSwitching(false), 860);
   }, [characterById, factionById, reducedMotion, selectedId]);
 
   const toggleFavorite = useCallback(() => {

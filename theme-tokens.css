@@ -34,14 +34,14 @@
   --text-3:    rgba(240,240,245,0.48);
   --text-4:    rgba(240,240,245,0.28);
 
-  /* — 强调色（ZZZ 荧光黄绿） — */
-  --accent:        #d8fa00;
+  /* — 强调色（暖琥珀金，替换荧光黄绿） — */
+  --accent:        #ffc233;
   --accent-ink:    #0a0a0f;
   --accent-2:      #00e5ff;
-  --accent-soft:   rgba(216,250,0,0.12);
-  --accent-hot:    #ffe600;
-  --accent-dim:    rgba(216,250,0,0.18);
-  --accent-line:   rgba(216,250,0,0.38);
+  --accent-soft:   rgba(255,194,51,0.12);
+  --accent-hot:    #ffda6a;
+  --accent-dim:    rgba(255,194,51,0.18);
+  --accent-line:   rgba(255,194,51,0.38);
 
   /* — 信号色（霓虹青） — */
   --signal:      #00e5ff;
@@ -57,12 +57,12 @@
   --ether-dim:   rgba(168,85,247,0.14);
 
   /* — 分隔线（带品牌色倾向） — */
-  --line:         rgba(216,250,0,0.10);
-  --line-strong:  rgba(216,250,0,0.24);
+  --line:         rgba(255,194,51,0.10);
+  --line-strong:  rgba(255,194,51,0.24);
 
   /* — 阴影 — */
   --shadow:       0 18px 40px rgba(0,0,0,0.55);
-  --shadow-hard:  4px 4px 0 rgba(216,250,0,0.22);
+  --shadow-hard:  4px 4px 0 rgba(255,194,51,0.22);
 
   /* — 稀有度 S / A — */
   --rank-s:       #ffe600;

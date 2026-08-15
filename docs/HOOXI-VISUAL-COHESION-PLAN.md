@@ -224,6 +224,23 @@ HOOXI 的一致性载体应为**档案卡 / 标签纸**：
 
 ---
 
+## 11 首页 Hero 对象级卡雕审批样板
+
+v4 的 `far / mid / near` 三层候选已否决；v5 也不再把五个高度交叠邦布拆成互相扣除的 subject 层。本轮采用“完整邦布群 + 独立摩天轮/云朵/星芒/标题锁定层”：五个邦布与粉色彩带、无法可靠判定前后的纸屑合并为 `bangboo-ribbon-cluster`，避免帽子、耳朵、手臂和腿被切成碎片；复杂隐藏区域不假造独立角色。
+
+本轮只处理 `amusement-island-rescue`，不覆盖 `assets/hero/acts/` 下任何正式资源。候选固定为八个语义层：天空/远景/草地基础底板、独立云团、镂空摩天轮、底部前景边角、邦布后的橙色星芒、完整邦布彩带群、压在前排邦布表面的橙色小星芒，以及包含标题牌、文字、描边、投影、中央迷你邦布和黄色爆炸图形的标题锁定层。
+
+- 对象 manifest：`artifacts/hero-layering-v5/object-manifest.json`
+- 候选目录：`artifacts/hero-layering-v5/candidate/`
+- 候选生成脚本：`scripts/object-layer-carve.py`
+- 动态审阅页：`artifacts/hero-layering-v5/preview.html`
+
+审批重点：完整邦布群不得出现单独耳朵、手臂或腿碎片；摩天轮必须保留轮架孔洞，不得以实心椭圆吞掉天空和云朵；前后橙色星芒、底部弧面及版权字必须归属正确；标题相关视觉必须作为一个锁定层，不再生成只有头部的 `title-bangboo`。只有 v5 对象级样板明确通过后，才可另立任务讨论正式资源发布。
+
+**当前像素级收紧状态（v5 最新一轮）：**`bangboo-ribbon-cluster` 已改用本机 `isnet-anime.onnx`（优先）+ 5 个人物级 ROI 并集 + `minComponentArea=200` 去碎片，严格天空泄漏仅 **807px（0.32%）**，蓝/青泄漏 **1.1%**，连通域 26 个，无< 200px 孤立碎片；`background-plate.webp` 已确认 RGBA；右下纸屑孤岛已并入 `orange-starbursts-back`；全部 8/8 层解码验收无错误，MAE 0.765。
+
+---
+
 ## 附录 A：参考站一手取证摘要
 
 来源：`F:\website-archives\zzz-wiki`，JS bundle 内联 CSS 静态抽取 + 镜像离线渲染实测。仅作机制参考，数值不直接照搬。

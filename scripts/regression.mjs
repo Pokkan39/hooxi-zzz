@@ -1705,23 +1705,27 @@ const approvedHomeHeroActs = [
   const page = await context.newPage();
   await page.goto(`${base}/index.html`, { waitUntil:'networkidle' });
   const structure = await page.evaluate(({ approvedActs }) => {
-    const art = document.querySelector('#heroActImg');
+    const art = document.querySelector('#heroNear');
     const source = art?.getAttribute('src') || '';
     let policy = { source, assetPath:'', sameOrigin:false, insideAssets:false, registeredPath:false };
     try {
       const url = new URL(source, location.href);
       const assetPath = url.pathname.replace(/^\/+/, '');
-      const slug = assetPath.split('/').pop().replace(/\.webp$/i, '');
+      const pathParts = assetPath.split('/');
+      const layerName = pathParts.pop().replace(/\.webp$/i, '');
+      const actSlug = pathParts.pop() || '';
       policy = {
         source,
         assetPath,
         sameOrigin:url.origin === location.origin,
         insideAssets:url.pathname.startsWith('/assets/'),
-        registeredPath:assetPath.startsWith('assets/hero/acts/') && approvedActs.includes(slug),
+        registeredPath:assetPath.startsWith('assets/hero/acts/') && approvedActs.includes(actSlug),
+        layerName,
+        actSlug,
       };
     } catch {}
     return {
-      artCount:document.querySelectorAll('#heroActImg').length,
+      artCount:document.querySelectorAll('#heroNear').length,
       policy,
       altText:(art?.getAttribute('alt') || '').trim(),
       captionCount:document.querySelectorAll('#heroActName').length,
@@ -1753,7 +1757,7 @@ const approvedHomeHeroActs = [
     structure);
 
   // 单图不再自动换片：等待超过原轮播周期后 src 必须保持不变
-  const currentSrc = () => page.evaluate(() => document.querySelector('#heroActImg')?.getAttribute('src') || '');
+  const currentSrc = () => page.evaluate(() => document.querySelector('#heroNear')?.getAttribute('src') || '');
   const srcBefore = await currentSrc();
   await page.waitForTimeout(8_100);
   const srcAfter = await currentSrc();
@@ -1863,9 +1867,9 @@ const approvedHomeHeroActs = [
   const context = await browser.newContext({ viewport:{ width:1440, height:900 }, reducedMotion:'reduce' });
   const page = await context.newPage();
   await page.goto(`${base}/index.html`, { waitUntil:'networkidle' });
-  const before = await page.evaluate(() => document.querySelector('#heroActImg')?.getAttribute('src') || '');
+  const before = await page.evaluate(() => document.querySelector('#heroNear')?.getAttribute('src') || '');
   await page.waitForTimeout(8_100);
-  const after = await page.evaluate(() => document.querySelector('#heroActImg')?.getAttribute('src') || '');
+  const after = await page.evaluate(() => document.querySelector('#heroNear')?.getAttribute('src') || '');
   record('home-reduced-motion-keeps-single-act-banner', !!before && before === after, { before, after });
   await context.close();
 }

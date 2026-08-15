@@ -48,8 +48,8 @@
       .set(p.bars,{opacity:0,height:0})
       .set(p.roll,{top:'-25%'})
       .to(p.bars,{opacity:1,height:6,duration:.06,ease:'none'})
-      .to(p.noise,{opacity:.95,duration:.05,ease:'none'},'<')
-      .to(p.scan,{opacity:1,duration:.05},'<')
+      .to(p.noise,{opacity:.52,duration:.05,ease:'none'},'<')
+      .to(p.scan,{opacity:.55,duration:.05},'<')
       .to(p.bars,{opacity:0,height:0,duration:.08})
       // 雪花逐帧挪 background-position，出现沙沙质感
       .to(p.noise,{duration:.34,ease:'none',onUpdate:function(){
@@ -81,8 +81,8 @@
     };
     gsap.set(el,{autoAlpha:1});
     gsap.set([p.bars,p.roll,p.tear,p.mark],{opacity:0});
-    gsap.set(p.noise,{opacity:.9});
-    gsap.set(p.scan,{opacity:1});
+    gsap.set(p.noise,{opacity:.48});
+    gsap.set(p.scan,{opacity:.52});
     var tl=gsap.timeline({onComplete:clear});
     tl.to(p.noise,{opacity:0,duration:.2,ease:'power2.out'})
       .to(p.scan,{opacity:0,duration:.16},'-=.08');
