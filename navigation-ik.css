@@ -159,7 +159,7 @@
   overflow: visible;
   border: 3px solid #313131;
   border-radius: 999px;
-  background: #050505 url('/assets/images/tab-bg-point.webp') repeat;
+  background: #050505 url('assets/images/tab-bg-point.webp') repeat;
 }
 
 .ik-header-tab {
