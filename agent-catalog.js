@@ -199,7 +199,7 @@
     'zhao':'Mindscape_Zhao_Full.png',
     'zhu-yuan':'Mindscape_Zhu_Yuan_Full.png',
   };
-  const localPortrait=id=>mindscapeMap[id]?`assets/portraits/${mindscapeMap[id]}`:`assets/portraits/${id}-portrait.webp`;
+  const localPortrait=id=>`assets/portraits/${id}-portrait.webp`;
   const enrichmentBag=window.agentEnrichment?.agents||{};
   const characters=rows.map(([id,name,englishName,factionId,rank,attribute,specialty,attackType,releaseDate,signatureWEngine,birthday])=>{
     const enrich=enrichmentBag[id]||{};
