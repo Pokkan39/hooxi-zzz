@@ -1,0 +1,236 @@
+/* Hallmark · macrostructure: Workbench · tone: atmospheric editorial · anchor hue: amber-cyan · pre-emit critique: P4 H4 E4 S5 R4 V5 */
+:root{
+  --v3-bg:#090a0d;
+  --v3-panel:#11141a;
+  --v3-panel-strong:#171b22;
+  --v3-text:#f4f7f8;
+  --v3-muted:#aeb7c2;
+  --v3-line:rgba(255,255,255,.16);
+  --v3-line-strong:rgba(255,255,255,.3);
+  --v3-amber:#ffb000;
+  --v3-cyan:#00e5ff;
+  --v3-lime:#d8fa00;
+  --v3-coral:#ff6b5f;
+  --v3-indigo:#8b7dff;
+  --v3-ease-out:cubic-bezier(.16,1,.3,1);
+  --v3-ease-in-out:cubic-bezier(.65,0,.35,1);
+}
+
+/* P0: 深色外壳强制深底，但 ink-wash 主题的文字令牌是为浅底设计的深色，
+   会造成深底深字。这里把外壳内的文字令牌重映射为深底可读值，
+   不改动任何背景令牌，也不影响仍为浅底的主题页。 */
+html body:is(.archive-shell,.data-shell){
+  --text-1:var(--v3-text);
+  --text-2:var(--v3-muted);
+  --text-3:#8d97a3;
+  --text-4:rgba(244,247,248,.42);
+  --text:var(--v3-text);
+  --muted:#8d97a3;
+  --text-dim:var(--v3-muted);
+  --text-faint:#8d97a3;
+  --line:var(--v3-line);
+  --line-strong:var(--v3-line-strong);
+  --line-soft:var(--v3-line);
+  /* ink-wash 的 darken 强调色在深底上只有 3.7~4.0，换回亮版；
+     accent 同时被用作按钮背景，故配对的 accent-ink 必须同步翻成深色。 */
+  --accent:var(--v3-lime);
+  --accent-ink:#0a0a0f;
+  --accent-soft:rgba(216,250,0,.10);
+  --accent-dim:rgba(216,250,0,.14);
+  --accent-line:rgba(216,250,0,.28);
+}
+
+html,body{overflow-x:clip}
+
+/* P0: hide every in-page / floating audio surface without removing its DOM or scripts. */
+html body :is(
+  #musicPlayer,
+  .music-player,
+  .cassette-dock,
+  .floating-cassette,
+  .cassette-stage,
+  .zzz-player,
+  .zzz-player-shell,
+  .zzz-player-playlist,
+  .zzz-mini-player,
+  #zzzMiniPlayer,
+  .zzz-side-waveform,
+  .tps-recall,
+  .fc-hotline,
+  [data-cf="hotline"]
+){display:none!important;visibility:hidden!important;pointer-events:none!important}
+body.cassette-open{overflow:auto!important}
+
+/* P0: clear the legacy light content island while preserving page-specific v3 surfaces. */
+html body:is(.archive-events,.archive-behind) .archive-content{
+  background:transparent!important;
+  color:var(--v3-text)!important;
+}
+
+/* Shared accessibility and interaction floor. */
+html body :is(a,button,summary,input,select,textarea,[role="button"]):focus-visible{
+  outline:3px solid var(--v3-cyan)!important;
+  outline-offset:3px!important;
+  box-shadow:0 0 0 2px #090a0d!important;
+}
+html body :is(a,button,summary,[role="button"]){
+  transition:transform 180ms var(--v3-ease-out),border-color 180ms linear,background-color 180ms linear,color 180ms linear,opacity 180ms linear;
+}
+@media (hover:hover){
+  html body :is(a,button,summary,[role="button"]):hover{transform:translateY(-2px)}
+}
+html body :is(p,li,dd,.archive-record-summary,.page-copy){text-wrap:pretty}
+
+/* P0: sources remain readable and complete, but collapse into a compact footer-like band. */
+html body:is(.archive-shell,.data-shell,.archive-stories) .archive-sources{
+  display:grid!important;
+  grid-template-columns:minmax(150px,.24fr) minmax(0,1fr)!important;
+  gap:8px 24px!important;
+  align-items:start!important;
+  width:min(1180px,calc(100% - 32px))!important;
+  min-height:0!important;
+  margin:32px auto 0!important;
+  padding:18px 20px!important;
+  border:1px solid var(--v3-line)!important;
+  border-left:4px solid var(--page-accent,var(--v3-amber))!important;
+  background:rgba(9,10,13,.78)!important;
+  color:var(--v3-muted)!important;
+  box-shadow:none!important;
+}
+html body:is(.archive-shell,.data-shell,.archive-stories) .archive-sources h2{
+  grid-row:1 / span 3!important;
+  margin:0!important;
+  color:var(--v3-text)!important;
+  font-size:clamp(16px,2vw,22px)!important;
+  line-height:1.15!important;
+}
+html body:is(.archive-shell,.data-shell,.archive-stories) .archive-sources :is(p,ul,ol,#sourceList,.faction-source-actions){
+  min-width:0!important;
+  margin:0!important;
+  font-size:12px!important;
+  line-height:1.55!important;
+}
+html body:is(.archive-shell,.data-shell,.archive-stories) .archive-sources :is(ul,ol){display:flex!important;flex-wrap:wrap!important;gap:4px 20px!important;padding-left:18px!important}
+html body:is(.archive-shell,.data-shell,.archive-stories) .archive-sources a{color:var(--v3-cyan)!important;text-decoration-thickness:1px;text-underline-offset:3px}
+html body:is(.archive-shell,.data-shell,.archive-stories) .archive-footer{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  justify-content:space-between!important;
+  gap:6px 20px!important;
+  min-height:0!important;
+  margin-top:0!important;
+  padding:12px max(16px,calc((100vw - 1180px)/2))!important;
+  border-top:1px solid var(--v3-line)!important;
+  background:#07080a!important;
+  color:#b7c0ca!important;
+  font-size:11px!important;
+  line-height:1.5!important;
+}
+html body:is(.archive-shell,.data-shell,.archive-stories) .archive-footer .footer-disclaimer{max-width:88ch!important;opacity:.9!important;font-size:inherit!important}
+
+html body.data-character .character-art-credit{
+  display:block!important;
+  width:min(1180px,calc(100% - 32px))!important;
+  min-height:0!important;
+  margin:24px auto 0!important;
+  padding:16px 20px!important;
+  border:1px solid var(--v3-line)!important;
+  border-left:4px solid var(--v3-lime)!important;
+  background:rgba(9,10,13,.82)!important;
+  box-shadow:none!important;
+}
+html body.data-character .character-art-credit > div:not([hidden]){
+  display:grid!important;
+  grid-template-columns:minmax(140px,.2fr) minmax(0,1fr)!important;
+  gap:4px 20px!important;
+  align-items:start!important;
+}
+html body.data-character .character-art-credit h2{
+  grid-row:1 / span 4!important;
+  margin:0!important;
+  color:var(--v3-text)!important;
+  font-size:18px!important;
+  line-height:1.2!important;
+}
+html body.data-character .character-art-credit :is(p,a){margin:0!important;font-size:12px!important;line-height:1.55!important}
+html body.data-character .character-art-credit p{color:var(--v3-muted)!important}
+html body.data-character .character-art-credit a{color:var(--v3-cyan)!important}
+
+/* Shared reveal primitive. Classes are only added by fx-reveal.js, so content stays visible if JS fails. */
+.fx-reveal{
+  opacity:0;
+  transform:translate3d(0,24px,0);
+  transition:opacity 620ms var(--v3-ease-out),transform 620ms var(--v3-ease-out);
+  transition-delay:var(--fx-delay,0ms);
+  will-change:opacity,transform;
+}
+.fx-reveal.is-visible{opacity:1;transform:translate3d(0,0,0);will-change:auto}
+
+/* Shared mouse-follow glare. */
+.fx-glare-target{position:relative;isolation:isolate;overflow:hidden}
+.fx-glare-target::after{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  z-index:5;
+  pointer-events:none;
+  opacity:0;
+  background:radial-gradient(circle 180px at var(--glare-x,50%) var(--glare-y,50%),rgba(255,255,255,.22),rgba(0,229,255,.08) 35%,transparent 72%);
+  mix-blend-mode:screen;
+  transition:opacity 180ms linear;
+}
+.fx-glare-target.is-glare-active::after{opacity:1}
+.fx-click-spark-canvas{position:fixed;inset:0;z-index:2147483000;width:100%;height:100%;pointer-events:none}
+
+@media (max-width:720px){
+  html body:is(.archive-shell,.data-shell,.archive-stories) .archive-sources{grid-template-columns:minmax(0,1fr)!important;gap:8px!important;width:calc(100% - 24px)!important;padding:14px 16px!important}
+  html body:is(.archive-shell,.data-shell,.archive-stories) .archive-sources h2{grid-row:auto!important}
+  html body:is(.archive-shell,.data-shell,.archive-stories) .archive-sources :is(ul,ol){display:block!important}
+  html body.data-character .character-art-credit{width:calc(100% - 24px)!important;padding:14px 16px!important}
+  html body.data-character .character-art-credit > div:not([hidden]){grid-template-columns:minmax(0,1fr)!important;gap:4px!important}
+  html body.data-character .character-art-credit h2{grid-row:auto!important}
+}
+
+/* Home-only TV handoff. The overlay is injected by home-fx.js. */
+.home-tv-overlay{
+  position:fixed;
+  inset:0;
+  z-index:2147483400;
+  display:grid;
+  place-items:center;
+  pointer-events:none;
+  opacity:0;
+  background:#050609;
+  color:#d8fa00;
+  clip-path:inset(50% 0 50% 0);
+  transition:clip-path 360ms var(--v3-ease-in-out),opacity 120ms linear;
+}
+.home-tv-overlay::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  opacity:.48;
+  background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.08) 3px 4px),linear-gradient(90deg,rgba(216,250,0,.12),transparent 28%,rgba(0,229,255,.12));
+}
+.home-tv-overlay::after{
+  content:"SIGNAL ROUTING";
+  position:relative;
+  font:900 clamp(12px,2vw,18px)/1 var(--font-mono,monospace);
+  letter-spacing:.24em;
+  text-shadow:0 0 14px rgba(216,250,0,.7);
+}
+body.v3-tv-transition .home-tv-overlay{opacity:1;clip-path:inset(0 0 0 0)}
+body.v3-tv-transition main{filter:contrast(1.24) saturate(.55);transform:scale(.992)}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto!important}
+  html body *,html body *::before,html body *::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    scroll-behavior:auto!important;
+    transition-duration:.01ms!important;
+  }
+  .fx-reveal{opacity:1!important;transform:none!important}
+  .fx-glare-target::after,.fx-click-spark-canvas{display:none!important}
+  .home-tv-overlay{transition:none!important}
+}

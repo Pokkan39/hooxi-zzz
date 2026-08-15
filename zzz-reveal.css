@@ -1,0 +1,140 @@
+/* Phase B — Scroll Reveal (B1) + Card 3D Gloss (B2) + Button Electric (B3) */
+
+/* ══ B1: Scroll Reveal States ══════════════════════════════════════════════ */
+.zzz-reveal-pending {
+  opacity: 0;
+  transform: translateY(24px);
+}
+.zzz-revealing {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.55s cubic-bezier(0.22,1,0.36,1), transform 0.55s cubic-bezier(0.22,1,0.36,1);
+}
+.zzz-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* Staggered children: start hidden, animate in with section */
+.zzz-reveal-pending .path-card,
+.zzz-reveal-pending .home-faction-channel,
+.zzz-reveal-pending .home-reel-card,
+.zzz-reveal-pending .home-agent-card,
+.zzz-reveal-pending .ow-roster-item,
+.zzz-reveal-pending .about-column,
+.zzz-reveal-pending .archive-reel-links a {
+  opacity: 0;
+  transform: translateY(18px);
+}
+.zzz-child-reveal {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition: opacity 0.5s cubic-bezier(0.22,1,0.36,1), transform 0.5s cubic-bezier(0.22,1,0.36,1);
+}
+.zzz-child-revealed {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* ══ B2: 3D Tilt Gloss Overlay ═════════════════════════════════════════════ */
+.path-card,
+.home-faction-channel,
+.home-reel-card,
+.home-agent-card,
+.ow-roster-item {
+  --tilt-glow-x: 50%;
+  --tilt-glow-y: 50%;
+}
+/* Gloss pseudo-element: only visible during tilt */
+body.home-page .path-card::after,
+body.home-page .home-reel-card::after {
+  /* These already have ::after with other uses — use a dedicated rule below */
+}
+/* Use a box-shadow inset approach for gloss on cards that already use ::after */
+.zzz-tilting {
+  box-shadow:
+    inset 0 0 60px 10px rgba(255,255,255,0.03),
+    0 8px 24px rgba(0,0,0,0.2) !important;
+}
+/* For cards without ::after conflict, overlay via separate class */
+.home-faction-channel.zzz-tilting::after,
+.home-agent-card.zzz-tilting::after,
+.ow-roster-item.zzz-tilting::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  pointer-events: none !important;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at var(--tilt-glow-x) var(--tilt-glow-y),
+    rgba(255,255,255,0.15),
+    transparent 55%
+  ) !important;
+  opacity: 1 !important;
+  z-index: 10;
+  transition: opacity 0.2s ease;
+}
+
+/* ══ B3: Button Electric Hover + Pulse ════════════════════════════════════ */
+body.home-page .button.primary,
+body.home-page .hero-primary-action {
+  --accent-rgb: 255, 200, 80;
+}
+body.home-page .button.primary:hover,
+body.home-page .button.primary:focus-visible {
+  box-shadow:
+    0 0 18px rgba(var(--accent-rgb, 255,200,80), 0.5),
+    7px 7px 0 #030405 !important;
+  transform: translate3d(-3px,-3px,0) scale(1.03) !important;
+  transition: transform 0.2s cubic-bezier(0.22,1,0.36,1), box-shadow 0.2s ease !important;
+}
+body.home-page .button.primary:active {
+  transform: translate3d(0,0,0) scale(0.97) !important;
+  transition: transform 0.1s ease !important;
+}
+
+/* Hero CTA pulse animation — breathing box-shadow, 4s cycle */
+@keyframes zzz-hero-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 0 rgba(var(--accent-rgb, 255,200,80), 0),
+      7px 7px 0 #030405;
+  }
+  50% {
+    box-shadow:
+      0 0 22px 4px rgba(var(--accent-rgb, 255,200,80), 0.35),
+      7px 7px 0 #030405;
+  }
+}
+body.home-page .hero-primary-action {
+  animation: zzz-hero-pulse 4s ease-in-out infinite;
+}
+body.home-page .hero-primary-action:hover,
+body.home-page .hero-primary-action:focus-visible {
+  animation: none;
+  box-shadow:
+    0 0 18px rgba(var(--accent-rgb, 255,200,80), 0.5),
+    7px 7px 0 #030405 !important;
+  transform: translate3d(-3px,-3px,0) scale(1.03) !important;
+  transition: transform 0.2s cubic-bezier(0.22,1,0.36,1), box-shadow 0.2s ease !important;
+}
+body.home-page .hero-primary-action:active {
+  animation: none;
+  transform: translate3d(0,0,0) scale(0.97) !important;
+  transition: transform 0.1s ease !important;
+}
+
+/* ══ Reduced motion ════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .zzz-reveal-pending {
+    opacity: 1;
+    transform: none;
+  }
+  .zzz-revealing,
+  .zzz-child-reveal {
+    transition: none !important;
+  }
+  body.home-page .hero-primary-action {
+    animation: none;
+  }
+}
