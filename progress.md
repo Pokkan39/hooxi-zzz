@@ -622,3 +622,18 @@
 - `F:/hooxi-zzz/game-feel.js`：AUTO_SELECTORS 移除 `.agent-stage-art`；删除 `initBgDrift` IIFE。
 - `F:/hooxi-zzz/site-loader.js`：`onDomReady` 判断条件由 `getElementById('root')` 改为 `getElementById('root')||getElementById('storiesRoot')`。
 - 回滚方式：`git revert HEAD` 可完整回滚本轮所有改动。
+
+## 2026-08-16 - Task: ZZZ 视觉设计全维度扩展调研文档（v2.0）
+
+### What was done
+将 `docs/ZZZ-VISUAL-DESIGN-RESEARCH.md` 从原始约 16KB 的基础版扩充为 788 行 / 34KB 的全维度调研报告，新增以下六个模块：角色立绘设计语言（含制作人官方访谈原话）、服装/时装设计（亚文化标签 + Y2K 元素清单 + 配色规律）、地图与城市场景（各区域视觉分析 + 叙事矛盾驱动的场景特征）、W-Engine/武器引擎（球形声波装置设计逻辑）、邦布（固定剪影 + 派系映射规律）、战斗VFX与属性颜色系统。同步补充了官方宣传物料、音乐品牌（Lofi Girl 官方合作）、版本迭代路径，以及 HOOXI 首页复刻的具体可执行建议（CSS 变量、图腾清单、区块参考布局）。所有内容均标注来源可信度（✅官方/权威 | ⚠️社区推断 | ★模型知识）。
+
+### Testing
+- 文档结构：17 个章节完整，来源索引附于末尾。
+- 文档尺寸：788 行 / 34,316 字节，较原始版本约 2× 扩展。
+- 无代码改动，无构建验证需求。
+- 文档仅为调研输出，内容真实性依赖标注来源，无法自动化验证。
+
+### Notes
+- `F:/hooxi-zzz/docs/ZZZ-VISUAL-DESIGN-RESEARCH.md`：完全重写为 v2.0 扩展版，原有基础内容全部保留并扩展。
+- 回滚方式：`git checkout HEAD -- docs/ZZZ-VISUAL-DESIGN-RESEARCH.md` 可恢复至上一个已提交版本（即原始 16KB 版本）。
