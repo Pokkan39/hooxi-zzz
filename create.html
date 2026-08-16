@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+  <style id="hooxi-site-loader-critical">
+    html.site-loading,html.site-loading body{overflow:hidden}
+    .hooxi-site-loader{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;background:#000;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .18s ease}
+    html.site-loading .hooxi-site-loader{visibility:visible;opacity:1;pointer-events:auto}
+    html.site-loader-finishing .hooxi-site-loader{opacity:0;pointer-events:none}
+    .hooxi-site-loader img{width:265px;height:75px;opacity:1}
+    @media (prefers-reduced-motion:reduce){.hooxi-site-loader{transition:none}}
+  </style>
+  <script>(function(w,d){var r=d.documentElement;if(w.__hooxiSiteLoaderBoot)return;var b=w.__hooxiSiteLoaderBoot={startedAt:Date.now(),degraded:false,finished:false};var done=function(s){if(b.finished)return;b.finished=true;clearTimeout(b.timer);r.classList.remove('site-loading','site-booting','site-loader-finishing');r.dataset.siteLoaderState=s;r.classList.add(s==='degraded'?'site-degraded':'site-ready');};var fail=function(e){if(b.finished)return;var t=e&&e.target;if(e&&e.type==='error'&&t&&/^(IMG|SCRIPT|LINK)$/.test(t.tagName)){var a=t.tagName==='LINK'?'href':'src',u=t.getAttribute(a);if(u==null||u==='')return;}b.degraded=true;r.dataset.siteLoaderState='degraded';r.classList.add('site-degraded');if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.degrade();else done('degraded');};b.finish=done;b.fail=fail;r.classList.add('site-loading','site-booting');w.addEventListener('error',fail,true);w.addEventListener('unhandledrejection',fail,true);b.timer=setTimeout(function(){if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.forceFinish();else done(b.degraded?'degraded':'timeout');},4500);})(window,document);</script>
+  <script src="./site-loader.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>发布委托 - HOOXI 绳网</title>
+    <meta name="description" content="在绳网发布新的委托">
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="./zzz-tv-transition.css?v=zzz-tv-r2">
+</head>
+<body>
+  <div class="hooxi-site-loader" data-site-loader role="status" aria-live="polite" aria-label="HOOXI 加载中">
+    <img src="assets/images/loading.gif" alt="加载中">
+  </div>
+    <div id="root"></div>
+    <script src="./zzz-tv-transition.js?v=zzz-tv-r2"></script>
+    <script type="module" src="./src/create-react.jsx"></script>
+</body>
+</html>

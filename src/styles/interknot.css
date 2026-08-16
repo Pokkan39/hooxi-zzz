@@ -1,0 +1,599 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+
+:root {
+  --font-body: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  
+  /* InterKnot 官方配色 */
+  --ik-bg: #0a0a0a;
+  --ik-bg-elevated: #1a1a1a;
+  --ik-bg-card: #222;
+  --ik-text: #e8e8e8;
+  --ik-muted: #9a9a9a;
+  --ik-primary: #bfff09;
+  --ik-accent: #00e5ff;
+  --ik-danger: #ff4d4f;
+  
+  /* 卡片设计令牌 */
+  --ik-post-card-radius: 24px 24px 0 24px;
+  --ik-post-card-inner-radius: 20px 20px 0 20px;
+  --ik-post-card-padding: 4px;
+  --ik-post-card-body-gap: 8px;
+  --ik-post-card-body-padding: 0 8px 12px;
+  --ik-post-card-outer-bg: #000;
+  --ik-post-card-inner-bg: transparent;
+  --ik-post-card-cover-bg: transparent;
+  --ik-post-card-placeholder-bg: #2a2a2a;
+  --ik-post-card-divider-bg: #3a3a3a;
+  --ik-post-card-hover-bg: var(--ik-primary);
+  --ik-post-card-cover-aspect-ratio: 1.576;
+  --ik-post-card-views-font-size: 14px;
+  --ik-post-card-views-icon-size: 22px;
+  --ik-post-card-avatar-size: 54px;
+  --ik-post-card-avatar-padding: 2px;
+  --ik-post-card-avatar-offset: -28px;
+  --ik-post-card-avatar-bg: #1b1b1b;
+  --ik-post-card-author-offset: 4px;
+  --ik-post-card-author-block-width: calc(100% - 58px);
+  --ik-post-card-author-min-height: 32px;
+  --ik-post-card-author-padding-left: 8px;
+  --ik-post-card-author-name-size: 15px;
+  --ik-post-card-author-name-color: #fff;
+  --ik-post-card-title-size: 17px;
+  --ik-post-card-title-color: #e8e8e8;
+  --ik-post-card-title-read-color: #9e9e9e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: transparent;
+  color: var(--ik-text);
+  font-family: var(--font-body);
+}
+
+html {
+  background: var(--ik-bg);
+}
+
+/* ========== 页面容器 ========== */
+.hooxi-events-page {
+  position: relative;
+  min-height: 100vh;
+  background: transparent;
+  overflow-x: hidden;
+}
+
+.hooxi-events-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hooxi-create-post-btn {
+  padding: 10px 24px;
+  background: var(--ik-primary, #bfff09);
+  color: #000;
+  border: 2px solid var(--ik-primary, #bfff09);
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.hooxi-create-post-btn:hover {
+  background: #d4ff3a;
+  border-color: #d4ff3a;
+  transform: translateY(-1px);
+}
+
+/* ========== 跑马灯背景 ========== */
+.hooxi-marquee {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0a0d12;
+}
+
+.hooxi-marquee__band {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: rotate(-15deg);
+  pointer-events: none;
+}
+
+.hooxi-marquee__band--2 {
+  transform: rotate(-15deg) scaleY(-1);
+  transform-origin: center;
+}
+
+.hooxi-marquee__row {
+  white-space: nowrap;
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  opacity: 0.92;
+  text-transform: uppercase;
+  -webkit-text-stroke: 2px rgba(255,255,255,0.3);
+}
+
+.hooxi-marquee__row--ltr {
+  transform: translateX(0);
+}
+
+.hooxi-marquee__row--rtl {
+  transform: translateX(0) rotate(-15deg) scaleX(-1);
+}
+
+.hooxi-marquee__track {
+  padding: 30px 0;
+  animation: marqueeLinear 25s linear infinite;
+}
+
+@keyframes marqueeLinear {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@media (min-width: 1024px) {
+  .hooxi-marquee__text {
+    font-size: 3.1rem;
+  }
+  .hooxi-marquee__track {
+    padding: 25px 0;
+    animation-duration: 22s;
+  }
+}
+
+.hooxi-events-bg-marquee {
+  opacity: 0.07;
+}
+
+.hooxi-marquee__band {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  transform: translateY(-50%) rotate(-15deg);
+  transform-origin: center;
+}
+
+.hooxi-marquee__row {
+  display: flex;
+  white-space: nowrap;
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+  color: #fff;
+  margin: 0.5rem 0;
+  will-change: transform;
+}
+
+.hooxi-marquee__track {
+  display: flex;
+  animation-duration: 30s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.hooxi-marquee__row--ltr .hooxi-marquee__track {
+  animation-name: hooxi-marquee-ltr;
+}
+
+.hooxi-marquee__row--rtl .hooxi-marquee__track {
+  animation-name: hooxi-marquee-rtl;
+}
+
+.hooxi-marquee__text {
+  display: inline-block;
+  padding-right: 2rem;
+}
+
+@keyframes hooxi-marquee-ltr {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes hooxi-marquee-rtl {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hooxi-marquee__track {
+    animation: none;
+  }
+  
+  .hooxi-event-card-cover {
+    transition: none;
+  }
+  
+  .hooxi-event-card {
+    transition: none;
+  }
+}
+
+/* ========== 主容器 ========== */
+.hooxi-events-container {
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 40px);
+  max-width: none;
+  margin: 0 auto;
+  padding: 24px 0 60px;
+}
+
+/* ========== 标题区 ========== */
+.hooxi-events-header {
+  margin-bottom: 32px;
+}
+
+.hooxi-events-title {
+  margin: 0 0 8px 0;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 900;
+  color: var(--ik-text);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+.hooxi-events-subtitle {
+  margin: 0 0 24px 0;
+  font-size: 1rem;
+  color: var(--ik-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ========== 分类标签（ZZZ 风格：削角矩形 + 描边） ========== */
+.hooxi-category-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.hooxi-category-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 14px;
+  /* ZZZ 削角 */
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  border: none;
+  background: #1a1a1a;
+  color: #aaa;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+
+.hooxi-category-tab:hover {
+  background: #262626;
+  color: #fff;
+}
+
+.hooxi-category-tab.active {
+  color: #000;
+  background: var(--ik-primary);
+  font-weight: 700;
+}
+
+/* ========== 瀑布流布局（真正 masonry：CSS columns） ========== */
+.hooxi-masonry {
+  columns: 5;
+  column-gap: 16px;
+  width: 100%;
+}
+
+@media (max-width: 1400px) {
+  .hooxi-masonry { columns: 4; }
+}
+@media (max-width: 1100px) {
+  .hooxi-masonry { columns: 3; }
+}
+@media (max-width: 768px) {
+  .hooxi-masonry {
+    columns: 2;
+    column-gap: 12px;
+  }
+}
+@media (max-width: 420px) {
+  .hooxi-masonry { columns: 2; }
+}
+
+/* ========== 卡片样式 ========== */
+.hooxi-event-card {
+  position: relative;
+  /* ZZZ 削角矩形：右下角 45° 斜切 */
+  border-radius: 12px 12px 0 12px;
+  background: var(--ik-post-card-outer-bg);
+  padding: var(--ik-post-card-padding);
+  overflow: hidden;
+  transition: box-shadow 0.18s ease, background-color 0.18s ease;
+  cursor: pointer;
+  /* columns 布局必需：防止卡片被列切断 */
+  break-inside: avoid;
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.hooxi-event-card:hover {
+  background: var(--ik-post-card-outer-bg);
+  box-shadow: 0 0 0 2px var(--ik-primary), 0 0 28px rgba(191, 255, 9, 0.18);
+}
+
+.hooxi-event-card-link {
+  display: block;
+  border-radius: var(--ik-post-card-inner-radius);
+  background: transparent;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 封面容器 */
+.hooxi-event-card-cover-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.hooxi-event-card-cover-frame {
+  width: 100%;
+  background: transparent;
+  aspect-ratio: var(--ik-post-card-cover-aspect-ratio);
+}
+
+.hooxi-event-card-cover {
+  --ik-cover-scale: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transform: scale(var(--ik-cover-scale));
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+  will-change: transform;
+}
+
+.hooxi-event-card:hover .hooxi-event-card-cover {
+  --ik-cover-scale: 1.06;
+}
+
+/* 浏览量浮层 */
+.hooxi-event-card-views {
+  position: absolute;
+  top: 11px;
+  left: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #fff;
+  font-size: var(--ik-post-card-views-font-size);
+  font-weight: 700;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+.hooxi-event-card-views-icon {
+  width: var(--ik-post-card-views-icon-size);
+  height: var(--ik-post-card-views-icon-size);
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.6)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.7));
+}
+
+/* ========== 卡片主体 ========== */
+.hooxi-event-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ik-post-card-body-gap);
+  padding: var(--ik-post-card-body-padding);
+  position: relative;
+  padding-left: 16px;
+}
+
+/* ZZZ 风格：左侧竖色条，按分类着色 */
+.hooxi-event-card-body::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--ik-card-accent-color, transparent);
+}
+
+/* 分类颜色映射 */
+.hooxi-event-card[data-category="活动"]  { --ik-card-accent-color: var(--ik-primary); }
+.hooxi-event-card[data-category="主线"]  { --ik-card-accent-color: #ff4d3a; }
+.hooxi-event-card[data-category="幕后"]  { --ik-card-accent-color: #00e5ff; }
+.hooxi-event-card[data-category="对谈"]  { --ik-card-accent-color: #ce93d8; }
+.hooxi-event-card[data-category="官方媒体"] { --ik-card-accent-color: #f5a623; }
+
+/* 作者行 */
+.hooxi-event-card-author-row {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+}
+
+.hooxi-event-card-avatar-shell {
+  position: relative;
+  margin-top: var(--ik-post-card-avatar-offset);
+  width: var(--ik-post-card-avatar-size);
+  height: var(--ik-post-card-avatar-size);
+  padding: var(--ik-post-card-avatar-padding);
+  border-radius: 999px;
+  background: var(--ik-post-card-inner-bg);
+  flex-shrink: 0;
+}
+
+.hooxi-event-card-avatar-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  object-fit: cover;
+  background: var(--ik-post-card-avatar-bg);
+}
+
+.hooxi-event-card-author-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: var(--ik-post-card-author-min-height);
+  padding-left: var(--ik-post-card-author-padding-left);
+  margin-left: var(--ik-post-card-author-offset);
+  width: var(--ik-post-card-author-block-width);
+}
+
+.hooxi-event-card-author-name {
+  margin: 4px 0;
+  font-size: var(--ik-post-card-author-name-size);
+  font-weight: 700;
+  color: var(--ik-post-card-author-name-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hooxi-event-card-author-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--ik-post-card-divider-bg);
+}
+
+/* ========== 卡片编辑按钮（仅管理员可见）========== */
+.hooxi-event-card-edit-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid var(--ik-primary, #bfff09);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  backdrop-filter: blur(8px);
+}
+
+.hooxi-event-card-edit-btn svg {
+  width: 16px;
+  height: 16px;
+  color: var(--ik-primary, #bfff09);
+}
+
+.hooxi-event-card-edit-btn:hover {
+  background: var(--ik-primary, #bfff09);
+  transform: scale(1.1);
+}
+
+.hooxi-event-card-edit-btn:hover svg {
+  color: #000;
+}
+
+/* tall 卡片变体：封面竖版，明显更高 */
+.hooxi-event-card--tall .hooxi-event-card-cover-frame {
+  aspect-ratio: 0.75;
+}
+
+/* 标题 */
+.hooxi-event-card-title {
+  line-height: 1.25;
+  color: var(--ik-post-card-title-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}
+
+.hooxi-event-card-title-cat {
+  margin-right: 4px;
+  color: var(--ik-primary);
+  font-weight: 700;
+}
+
+/* ========== 响应式 ========== */
+@media (max-width: 768px) {
+  .hooxi-events-container {
+    width: calc(100% - 20px);
+    padding: 24px 0 80px;
+  }
+  
+  .hooxi-events-title {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+  
+  .hooxi-category-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  
+  .hooxi-category-tabs::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ========== 加载动画容器 ========== */
+.hooxi-route-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #0a0d12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+
+.hooxi-route-loader.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hooxi-route-loader img {
+  display: block;
+  width: 300px;
+  height: auto;
+  background: #fff;
+  padding: 60px;
+  border-radius: 32px;
+  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.5);
+}

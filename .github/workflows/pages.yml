@@ -24,10 +24,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build React pages
+        run: npm run build -- --config vite.config.js
+
+      - name: Check deploy inputs and output
+        run: npm run test:deploy -- --strict-tracked
+
+      - name: Assemble mixed static site
+        run: |
+          mkdir _site
+          tar --exclude='./.git' --exclude='./node_modules' --exclude='./dist' --exclude='./_site' -cf - . | tar -xf - -C _site
+          cp -a dist/. _site/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment

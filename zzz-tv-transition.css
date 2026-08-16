@@ -1,14 +1,10 @@
-/* 规范 4.8 第 20 条：电视信号缓冲转场（正式站版）
-   五层纯 CSS 无图片，全屏固定层盖住真实页面加载空档。
-   视觉语言与 prototype/art-samples 的样本一致，此处改为 fixed 全屏并拦真实跳转。 */
-
+/* HOOXI TV signal transition: visual adapter only. */
 .zzz-tv{
-  position:fixed;inset:0;z-index:9999;pointer-events:none;
-  overflow:hidden;
+  position:fixed;inset:0;z-index:2147483001;pointer-events:none;
+  width:100%;height:100%;overflow:hidden;contain:strict;
   background:#07090c;
   opacity:0;visibility:hidden;
 }
-/* 信号中断瞬间闪一下的电视彩条 */
 .zzz-tv__bars{
   position:absolute;left:0;right:0;top:0;height:0;
   background:linear-gradient(90deg,
@@ -17,7 +13,6 @@
     #1e1ec8 85.68% 100%);
   opacity:0;
 }
-/* 雪花噪点：三层叠出颗粒，由 GSAP 逐帧改 background-position 产生沙沙质感 */
 .zzz-tv__noise{
   position:absolute;inset:-20%;opacity:0;
   background-image:
@@ -27,33 +22,24 @@
   background-size:3px 3px,5px 5px,8px 8px;
   background-position:0 0,1px 2px,3px 1px;
 }
-/* 场同步没锁住时那条从上往下滚的亮带 */
 .zzz-tv__roll{
   position:absolute;left:0;right:0;height:22%;top:-25%;
   background:linear-gradient(180deg,
     transparent,rgba(255,255,255,.05) 30%,rgba(255,255,255,.16) 50%,rgba(255,255,255,.05) 70%,transparent);
   opacity:0;
 }
-/* 细扫描线纹理，压在噪点之上 */
 .zzz-tv__scan{
   position:absolute;inset:0;opacity:0;
-  background:repeating-linear-gradient(180deg,
-    rgba(0,0,0,.42) 0 1px,transparent 1px 3px);
+  background:repeating-linear-gradient(180deg,rgba(0,0,0,.42) 0 1px,transparent 1px 3px);
 }
-/* 画面撕裂：一条横切片水平错开 */
 .zzz-tv__tear{
-  position:absolute;left:0;right:0;height:12%;top:44%;
-  opacity:0;
-  background:repeating-linear-gradient(180deg,
-    rgba(255,255,255,.12) 0 2px,rgba(0,0,0,.3) 2px 5px);
+  position:absolute;left:0;right:0;height:12%;top:44%;opacity:0;
+  background:repeating-linear-gradient(180deg,rgba(255,255,255,.12) 0 2px,rgba(0,0,0,.3) 2px 5px);
 }
-/* 中段露出的缓冲提示 */
 .zzz-tv__mark{
-  position:absolute;left:50%;top:50%;translate:-50% -50%;
-  opacity:0;
+  position:absolute;left:50%;top:50%;translate:-50% -50%;opacity:0;
   color:var(--zzz-lime,#d8fa00);
   font:700 11px/1.4 var(--font-mono,"Space Mono",monospace);
   letter-spacing:.22em;text-transform:uppercase;
 }
-
-/* 减动效：转场整体不出现，直接跳转 */
+@media (prefers-reduced-motion:reduce){.zzz-tv{display:none!important}}

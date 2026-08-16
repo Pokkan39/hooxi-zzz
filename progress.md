@@ -454,3 +454,171 @@
 - `data.js`：从 `src/data.js` 复制恢复（工作区原状态为已删除），供门禁脚本及其他页面继续使用。
 - `home-data.js`：新建，首页专用精简数据投影，包含 57 主线 + 246 活动 + 7 幕后条目的展示字段。
 - 回滚方式：`git checkout -- index.html app.js` 恢复首页修改；`git rm home-data.js` 删除新文件；`git checkout HEAD -- data.js` 或 `rm data.js` 恢复删除状态（取决于上游期望）。
+
+## 2026-08-16 - Task: Events/Pages 构建白屏修复
+
+### What was done
+- 完成 Events/Pages 阶段 1 的发布闭环说明：GitHub Pages 采用“完整静态站复制到 `_site` + Vite `events/create/edit` 的 `dist` 覆盖”的混合发布，构建命令固定为 `npm run build -- --config vite.config.js`。
+- 保留本地 `/hooxi-zzz/` 子路径验证要求，并记录 `npm run test:deploy` 默认 warning、CI `--strict-tracked` 阻止漏交付的跟踪门禁语义。
+- 未进行线上部署、未提交；当前严格模式失败只表示工作区仍有未跟踪依赖，未来明确 commit 时必须把全部构建依赖一并纳入。
+
+### Testing
+- `npm run build -- --config vite.config.js`：Vite 39 modules 构建成功。
+- 本地 `http://127.0.0.1:4173/hooxi-zzz/events.html`：root 非空、`appReady=true`、Events 同源请求均为 200、console 0。
+- `create.html` / `edit.html`：文档请求 200；未认证场景均正常回 `events`。
+- `npm run test:deploy`：0 errors / 1 warning；97 个必需文件中 75 个未跟踪。
+- `npm run test:deploy -- --strict-tracked`：按预期失败；不能据此声称 CI 已可部署，未来明确 commit 时必须纳入全部依赖。
+
+### Notes
+- `.github/workflows/pages.yml`：改为 Node 安装、Vite 构建、严格部署门禁、完整静态站复制到 `_site` 并以 `dist` 覆盖后上传。
+- `vite.config.js`：新增阶段 1 的相对 base 与 `events/create/edit` 多页面构建入口。
+- `events.html`：修正 favicon 与 React module 为同目录相对路径。
+- `create.html`：新增 create 页面 Vite 入口。
+- `edit.html`：新增 edit 页面 Vite 入口。
+- `src/events-react.jsx`：通过运行时挂载函数启动 Events 页面并写入 app-ready 状态。
+- `src/create-react.jsx`：提供 create 页面 React 挂载入口。
+- `src/edit-entry.jsx`：提供 edit 页面 React 挂载入口。
+- `src/site-runtime.js`：提供子路径 URL 解析与 React 页面 ready/degraded 运行时桥接。
+- `src/index.css`：提供三页构建共用的基础样式入口。
+- `src/pages/EventsPage.jsx`：提供 Events 页面构建所需的页面实现与同源资源调用。
+- `src/pages/EventsPage.css`：提供 Events 页面专用样式。
+- `src/pages/CreatePostPage.jsx`：提供 create 页面实现。
+- `src/pages/EditPostPage.jsx`：提供 edit 页面实现及未认证回 events 逻辑。
+- `src/components/CategoryTabs.jsx`：提供 Events 分类标签组件。
+- `src/components/EventCard.jsx`：提供 Events 卡片组件及同源媒体路径消费。
+- `src/components/IkOnline.jsx`：提供 Events 在线状态组件。
+- `src/components/IkZzzMarquee.jsx`：提供 Events 跑马灯组件。
+- `src/components/Navigation.jsx`：提供三页共享导航及子路径链接。
+- `src/data/interknot-avatars.js`：提供 Events 卡片使用的本地代理人头像数据。
+- `src/styles/create-post.css`：提供 create/edit 页面样式。
+- `src/styles/ik-online.css`：提供在线状态样式。
+- `src/styles/ik-zzz-marquee.css`：提供跑马灯样式。
+- `src/styles/interknot.css`：提供 Events/create/edit 共用的绳网样式。
+- `src/styles/navigation.css`：修正构建后导航背景资源为可解析的相对路径。
+- `scripts/check-deploy-tracking.mjs`：新增构建依赖、入口、资源、`_site` 和 Git 跟踪状态检查，并支持 warning/strict 两种模式。
+- `assets/portraits/Mindscape_*_Full.png`：新增 53 个本地头像/立绘资源，供构建 import 图和页面运行时加载。
+- `docs/README.md`：补充混合发布、构建命令、`/hooxi-zzz/` 子路径验证和部署跟踪门禁说明。
+- `docs/HOOXI-FORMAL-SITE-GAP-CHECKLIST.md`：补充阶段 1 发布方式、验证范围和当前未达到可部署状态的记录。
+- `progress.md`：追加本轮阶段闭环日志。
+- 回滚方式：对已跟踪的阶段文件使用 `git restore --source=HEAD -- .github/workflows/pages.yml events.html src/events-react.jsx src/styles/navigation.css`；删除本阶段新增的 `vite.config.js`、`create.html`、`edit.html`、`scripts/check-deploy-tracking.mjs`、上述 `src/` 文件和 53 个 `assets/portraits/Mindscape_*_Full.png`，并移除本条日志与两份文档新增段落；全程不使用 `git reset --hard` 或 `git checkout`。
+
+## 2026-08-16 - Task: 收紧角色页桌面首屏高度
+
+### What was done
+- 将角色页桌面首屏从固定满视口高度收紧为 `clamp(560px,72svh,720px)`，减少大屏上下空白。
+- 保留现有响应式覆盖：宽度不超过 900px 时仍使用完整视口高度，宽度不超过 720px 时继续采用内容自适应布局，避免移动端裁切。
+
+### Testing
+- 静态层叠检查确认：`design.css` 的桌面规则会覆盖较早加载的 `multi-page.css`，`character.html` 后置内联 `min-height:100vh` 因选择器特异性较低，不会覆盖桌面新值；后续 900px 与 720px 媒体规则保持有效。
+- Playwright 本地 HTTP 验证：1440×1000 计算高度为 720px；1440×700 为 560px；800×900 保持 900px；390×844 为内容自适应 293.203px、`overflow:visible`，无首屏容器裁切。
+- `git diff -- design.css` 确认业务 CSS 仅修改两行高度声明，未改 `_site` 构建产物。
+
+### Notes
+- `design.css`：桌面 `.character-screen` 的 `min-height` 与 `height` 改为响应式限高值。
+- `progress.md`：追加本轮修复和验证记录。
+- 回滚方式：将 `design.css` 中两处 `clamp(560px,72svh,720px)` 恢复为 `100svh`，并移除本条日志。
+
+## 2026-08-16 - Task: 安比·德玛拉角色页满屏影画样板
+
+### What was done
+- 新建 `character-anby.html`：安比独立角色页样板，复用现有 `character.js` 动态填充逻辑；首屏由双层影画（`assets/gallery/anby/layers/bg.webp` 铺满背景 + `fg.webp` 角色居右通高）构成，底部渐变遮罩确保左下角文字可读。
+- 新建 `character-anby.css`：安比专属样式；覆盖 `design.css` 的 `clamp(560px,72svh,720px)` 限高，将首屏还原为满视口高度（`100dvh` / `100svh`）；定义电属性紫主题色变量，前景角色层、背景层、渐变遮罩、移动端适配规则完整。
+- 两个文件均独立于 `character.html` / `design.css`，不影响其他角色页与全局样式。
+
+### Testing
+- 静态文件检查：`character-anby.html` 180 行，HTML 结构完整（`<!doctype>`、`<head>`、`<body>`、`<footer>` 正常闭合）；`character-anby.css` 103 行，选择器均为 `.is-anby` 局部作用域。
+- 资源路径核查：`bg.webp`、`fg.webp` 路径为 `assets/gallery/anby/layers/`，已在 `F:/hooxi-zzz/assets/gallery/anby/layers/` 中确认存在；`loading.gif` 路径与全站一致。
+- CSS 优先级验证：`.subpage.archive-character .is-anby.character-screen`（0-4-0）> `design.css` 中 `.subpage.archive-character .character-screen`（0-3-0），可稳定覆盖限高规则。
+- 无浏览器环境限制，未完成实际渲染验证；需项目负责人在浏览器中打开 `character-anby.html` 确认首屏满屏效果。
+
+### Notes
+- `character-anby.html`：新建，安比独立角色页；满屏双层影画首屏 + 完整档案区域。
+- `character-anby.css`：新建，安比样板专属样式；覆盖首屏限高、定义电属性主题色、前景/背景层布局、渐变遮罩、移动端响应。
+- `character.html`、`design.css`：本轮未修改。
+- 回滚方式：删除 `character-anby.html` 与 `character-anby.css` 两个新文件，并移除本条日志。
+
+## 2026-08-16 - Task: character.html 顶部首屏满屏 + 底部去除空白，完成验证并追加 progress.md
+
+### What was done
+- 顶部首屏：将 `design.css` 中 `.subpage.archive-character .character-screen` 的 `min-height` / `height` 从 `clamp(560px,72svh,720px)` 改为 `100svh`，首屏铺满视口。
+- 底部空白根因：`design.css` 的 `body.archive-character>*{position:relative;z-index:1}` 规则特指度 (0,1,1) 高于 `redesign-core-v3.css` 中 `.fx-click-spark-canvas{position:fixed}` 的 (0,1,0)，导致点击粒子 canvas 以 `position:relative` 坐在文档流里，撑出 900px（视口高）空白。
+- 底部空白修复：在 `design.css` 该规则紧后方追加 `body.archive-character>.fx-click-spark-canvas{position:fixed;inset:0;z-index:2147483000}`，特指度 (0,2,1) 覆盖原规则，canvas 恢复悬浮于文档流之外。
+- 强制缓存失效：将 `character.html` 中 `design.css` 的版本参数由 `?v=nav-fullwidth-1` 改为 `?v=nav-fullwidth-2`，浏览器拉取含新规则的最新文件。
+
+### Testing
+- 浏览器验证（`http://localhost:5173/character.html?id=anby`，1280×900）：
+  - canvas `getComputedStyle().position` 由 `relative` 变为 `fixed`，`z-index` 恢复 `2147483000`。
+  - `document.documentElement.scrollHeight` 由 3214 降至 2560，减少 654px。
+  - 滚至页面底部：`scrollY = 1660 = scrollHeight(2560) − viewport(900)`，footer 出现在视口 702–780px，footer 底部文档坐标约 2440px，页面尾部自然余量 ~120px（正常 body padding），无异常空白区。
+  - 截图存于 `F:/hooxi-zzz/shot-verify-top.png`（首屏）与 `shot-verify-bottom.png`（底部）。
+
+### Notes
+- `design.css`：① 第322–323行 `.character-screen` 高度改为 `100svh`；② 第316行新增 `.fx-click-spark-canvas` 覆盖规则（两处均为本轮改动）。
+- `character.html`：第38行 `design.css` 版本参数由 `nav-fullwidth-1` 改为 `nav-fullwidth-2`。
+- 回滚方式：① `design.css` 将 `100svh` 恢复为 `clamp(560px,72svh,720px)`，删除第316行新增的 canvas 覆盖规则；② `character.html` 将 `nav-fullwidth-2` 改回 `nav-fullwidth-1`。
+
+## 2026-08-16 - Task: 修复角色详情页顶部/底部空白，注入英文名斜向跑马灯背景
+
+### What was done
+- 顶部空白修复：将 `design.css` 中宽泛的 `body.archive-character>*{position:relative;z-index:1}` 收窄为 `body.archive-character>:is(main,footer)`，使 `.hooxi-site-loader` 不再被强制改为 `position:relative` 进入文档流，消除约 99px 顶部空白。
+- 底部空白修复：在 `design.css` 的 `body.archive-character` 规则中追加 `padding-bottom:0`，覆盖 `theme-zzz.css` 注入的全局 `body{padding-bottom:120px}`。
+- 删除 canvas 覆盖规则：上一轮为修复点击粒子 canvas 而添加的 `.fx-click-spark-canvas` 补丁规则在本轮选择器收窄后已不再需要，一并删除。
+- 跑马灯背景实现：在 `character.js` 中注入多行 `.char-marquee` DOM，以 `character.englishName` 填充文字内容；`design.css` 新增 `.char-marquee` 及其子元素的完整样式与 keyframes 动画（全屏覆盖、斜向 -20deg、多行平铺、`z-index:1` 置于背景图之上角色内容之下，防止重复注入）。
+
+### Testing
+- 浏览器实测（`http://localhost:5173/character.html?id=anby`，1280×900）：
+  - `mainTop: 0`（顶部无空白 ✅）
+  - `bodyPaddingBottom: "0px"`（底部 padding 清除 ✅）
+  - `loaderPosition: "fixed"`（loader 恢复 fixed，不再参与文档流 ✅）
+  - `screenHasMarquee: true`，`marqueeZIndex: "1"`（跑马灯已注入，层级正确 ✅）
+  - `scrollH: 2341 ≈ footerBottom: 2340.734375`（底部无多余空间 ✅）
+- 首屏截图：`F:/hooxi-zzz/artifacts/verify-anby-top.png`
+- 底部截图：`F:/hooxi-zzz/artifacts/verify-anby-bottom.png`
+
+### Notes
+- `F:/hooxi-zzz/design.css`：① 收窄 `body.archive-character>*` 为 `>:is(main,footer)`；② 在 `body.archive-character` 追加 `padding-bottom:0`；③ 删除 `.fx-click-spark-canvas` 覆盖规则；④ 新增 `.char-marquee` 全屏斜向跑马灯样式及动画 keyframes；⑤ 新增 `.character-screen>.char-marquee{z-index:1}` 层级规则。
+- `F:/hooxi-zzz/character.js`：新增 `injectMarquee(character)` 函数，使用 `character.englishName` 生成多行跑马灯 DOM，注入到 `.character-screen` 并防止重复注入。
+- 回滚方式：① `design.css` 恢复 `body.archive-character>*{position:relative;z-index:1}`，删除 `padding-bottom:0`、`.char-marquee` 相关样式段落；② `character.js` 删除 `injectMarquee` 函数及其调用；③ 如需恢复 canvas 补丁规则，在 `design.css` 补回 `.fx-click-spark-canvas{position:fixed;inset:0;z-index:2147483000}` 覆盖。
+
+## 2026-08-16 - Task: 将跑马灯从角色首屏背景迁移到档案内容区背景
+
+### What was done
+- 跑马灯注入目标从 `.character-screen`（首屏）改为 `.character-detail-page`（档案内容区），跑马灯不再显示在首屏大图背景上。
+- 跑马灯定位规则由原先的 `z-index:1`（在首屏背景层）改为 `position:absolute;inset:0;z-index:0`，覆盖档案内容区整体区域并置于内容（z-index:1）之下。
+- 解决浏览器持续加载旧版 CSS 缓存的问题：将 `character.html` 中 `design.css` 的版本参数从 `nav-fullwidth-2` 更新为 `nav-fullwidth-3`，强制浏览器拉取含新规则的版本。
+
+### Testing
+- 浏览器 DOM 验证（`http://localhost:5174/character.html?id=anby`）：
+  - `inDetail: true`（跑马灯存在于 `.character-detail-page` ✅）
+  - `inScreen: false`（`.character-screen` 内不存在跑马灯 ✅）
+  - `pos: "absolute"`（`position:absolute` 覆盖生效 ✅）
+  - `z: "0"`（`z-index:0`，置于内容之下 ✅）
+- 计算样式额外确认：`textColor: rgb(189,213,45)`（黄绿色 ✅），`textOpacity: 0.09`（作为背景纹理故意极淡 ✅），`textVisible: true` ✅，动画运行在 `.char-marquee__track` 层（符合预期）。
+- 截图取证：`artifacts/verify-marquee-detail-final.png`（档案内容区跑马灯背景视觉验证）。
+
+### Notes
+- `F:/hooxi-zzz/character.js`：`injectMarquee` 的注入目标从 `.character-screen` 改为 `.character-detail-page`。
+- `F:/hooxi-zzz/design.css`：跑马灯定位规则改为 `.archive-character .character-detail-page>.char-marquee{position:absolute;inset:0;z-index:0}`，删除旧 `.character-screen>.char-marquee{z-index:1}` 规则。
+- `F:/hooxi-zzz/character.html`：`design.css` 版本参数从 `nav-fullwidth-2` 更新为 `nav-fullwidth-3`，解决缓存问题。
+- 回滚方式：① `character.js` 将注入目标改回 `.character-screen`；② `design.css` 将 `.character-detail-page>.char-marquee` 规则改回 `.character-screen>.char-marquee{z-index:1}`；③ `character.html` 将 `nav-fullwidth-3` 改回 `nav-fullwidth-2`；移除本条日志。
+
+## 2026-08-16 - Task: 删除 agent-stage 3D/glare 特效 + 修复 stories.html 加载动画
+
+### What was done
+- **3D/glare 特效删除**：移除 `agent-stage` 图片区域全部鼠标驱动 3D 倾斜、`stage-glare` 全息高光、`perspective`/`preserve-3d`/`will-change` 相关规则；彩色影画 `stories-mindscape.js` 保留静态 `applyMindscape`，删除所有 `onMove`/`tick`/`rotateX`/`rotateY` 交互逻辑；`game-feel.js` 的 `AUTO_SELECTORS` 移除 `.agent-stage-art`，删除 `initBgDrift` IIFE。
+- **加载动画修复（stories.html）**：`site-loader.js` 原先只识别 `id="root"` 为 React 容器，stories.js 实际渲染至 `id="storiesRoot"` 导致 loader 在 DOMContentLoaded 后 2 帧即消失，内容空白。已将判断条件扩展为同时识别 `storiesRoot`；并在 stories.html 中于 `stories.js` 之后插入内联 MutationObserver，当 React 完成首次渲染时派发 `hooxi:app-ready` 信号，loader 在真实内容就绪后才隐藏。
+- **injectMarquee 确认**：`character.js` 中 `injectMarquee` 条件为 `detailPage && resolvedEnglishName`，无 anby 特殊限制，已对所有有 `englishName` 的角色通用，无需修改。
+
+### Testing
+- Grep 验证 stories.html 无 `perspective`、`preserve-3d`、`stage-glare`、`will-change.*transform`、`transform .06s`、`rotateX`、`rotateY` 残留：✅ 无匹配
+- Grep 验证 game-feel.js 无 `agent-stage-art`、`initBgDrift`：✅ 无匹配
+- Grep 验证 site-loader.js 含 `storiesRoot`：✅ 第 132 行
+- Grep 验证 stories.html 含 `hooxi:app-ready` 内联脚本和 `ms-5` 版本号：✅ 第 686-687 行
+- 静态分析：site-loader 等待 `hooxi:app-ready` 事件；MutationObserver 在 React 首渲后触发；4500ms fallback 兜底防止永久挂载
+
+### Notes
+- `F:/hooxi-zzz/stories-mindscape.js`：全量重写，删除 tilt/glare 动态交互，仅保留 `applyMindscape` 静态彩色影画注入。
+- `F:/hooxi-zzz/stories.html`：CSS 块第 608-647 行（3D/glare 规则）替换为静态规则；`stories.js` 后插入 app-ready 内联信号脚本；stories-mindscape.js 版本从 ms-4 升至 ms-5。
+- `F:/hooxi-zzz/game-feel.js`：AUTO_SELECTORS 移除 `.agent-stage-art`；删除 `initBgDrift` IIFE。
+- `F:/hooxi-zzz/site-loader.js`：`onDomReady` 判断条件由 `getElementById('root')` 改为 `getElementById('root')||getElementById('storiesRoot')`。
+- 回滚方式：`git revert HEAD` 可完整回滚本轮所有改动。

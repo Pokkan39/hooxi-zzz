@@ -8,7 +8,6 @@
   // ── 自动标记需要色散效果的容器 ──
   var AUTO_SELECTORS = [
     // .d-keyart 不参与色散：已有 X-ray 双层交互
-    ".agent-stage-art",       // 角色舞台立绘
     ".agent-roster-card",     // 角色花名册卡片
     ".home-agent-card",       // 首页代理人卡片
     ".home-reel-card",        // 首页剧集卡片
@@ -60,19 +59,6 @@
       card.style.setProperty('--card-index', i);
     });
 
-    // 背景漂移：鼠标驱动 --bg-drift-x / --bg-drift-y
-    (function initBgDrift() {
-      var stage = document.querySelector('.archive-stories .agent-stage-art');
-      if (!stage) return;
-      var parent = stage.closest('.archive-stories') || document.documentElement;
-
-      document.addEventListener('pointermove', function(e) {
-        var nx = (e.clientX / window.innerWidth) * 2 - 1;
-        var ny = (e.clientY / window.innerHeight) * 2 - 1;
-        parent.style.setProperty('--bg-drift-x', (nx * 12) + 'px');
-        parent.style.setProperty('--bg-drift-y', (ny * 8) + 'px');
-      }, { passive: true });
-    })();
   }
 
   if (document.readyState === "loading") {

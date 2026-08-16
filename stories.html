@@ -2,6 +2,16 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8"/>
+  <style id="hooxi-site-loader-critical">
+    html.site-loading,html.site-loading body{overflow:hidden}
+    .hooxi-site-loader{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;background:#000;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .18s ease}
+    html.site-loading .hooxi-site-loader{visibility:visible;opacity:1;pointer-events:auto}
+    html.site-loader-finishing .hooxi-site-loader{opacity:0;pointer-events:none}
+    .hooxi-site-loader img{width:265px;height:75px;opacity:1}
+    @media (prefers-reduced-motion:reduce){.hooxi-site-loader{transition:none}}
+  </style>
+  <script>(function(w,d){var r=d.documentElement;if(w.__hooxiSiteLoaderBoot)return;var b=w.__hooxiSiteLoaderBoot={startedAt:Date.now(),degraded:false,finished:false};var done=function(s){if(b.finished)return;b.finished=true;clearTimeout(b.timer);r.classList.remove('site-loading','site-booting','site-loader-finishing');r.dataset.siteLoaderState=s;r.classList.add(s==='degraded'?'site-degraded':'site-ready');};var fail=function(e){if(b.finished)return;var t=e&&e.target;if(e&&e.type==='error'&&t&&/^(IMG|SCRIPT|LINK)$/.test(t.tagName)){var a=t.tagName==='LINK'?'href':'src',u=t.getAttribute(a);if(u==null||u==='')return;}b.degraded=true;r.dataset.siteLoaderState='degraded';r.classList.add('site-degraded');if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.degrade();else done('degraded');};b.finish=done;b.fail=fail;r.classList.add('site-loading','site-booting');w.addEventListener('error',fail,true);w.addEventListener('unhandledrejection',fail,true);b.timer=setTimeout(function(){if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.forceFinish();else done(b.degraded?'degraded':'timeout');},4500);})(window,document);</script>
+  <script src="./site-loader.js" defer></script>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <meta name="description" content="按姓名与阵营浏览 57 位代理人，并进入完整角色档案。HOOXI 为粉丝非官方剧情档案站。"/>
   <meta property="og:type" content="website"/>
@@ -20,7 +30,7 @@
   <link rel="stylesheet" href="src/styles/navigation.css"/>
   <link rel="stylesheet" href="live-hud.css?v=hud-1"/>
   <link rel="stylesheet" href="zzz-motion.css?v=phase4-1"/>
-  <link rel="stylesheet" href="zzz-tv-transition.css?v=zzz-tv-r1"/>
+  <link rel="stylesheet" href="zzz-tv-transition.css?v=zzz-tv-r2"/>
   <link rel="stylesheet" href="game-feel.css?v=chr-persist-2"/>
   <meta name="theme-color" content="#08080c"/>
   <meta name="author" content="Hooxi"/>
@@ -595,50 +605,22 @@ body.archive-stories{
 .archive-stories .agent-roster-card.is-selected .agent-card-name{color:var(--selected-agent-theme,#d8fa00) !important;text-shadow:0 0 12px rgb(var(--character-theme-rgb,216 250 0) / .5)}
 
 
-/* 彩色影画立绘适配 + 视差平滑 */
-.archive-stories .agent-stage-portrait{will-change:transform;transition:transform .05s linear}
-.archive-stories .agent-stage-backdrop-name{will-change:transform;transition:transform .05s linear;pointer-events:none}
-.archive-stories .agent-stage-heading{will-change:transform;transition:transform .05s linear}
-/* ═══ 裸眼3D卡雕 + 彩色影画 ═══ */
-/* 舞台容器:透视上下文 */
-.archive-stories .agent-selected-stage{perspective:1200px}
-/* 卡片面:保持3D,整体随鼠标倾斜 */
-.archive-stories .agent-stage-art{
-  transform-style:preserve-3d;
-  transition:transform .06s linear;
-  will-change:transform;
-  border-radius:8px;
-}
-/* 影画背景层(沉底) */
-.archive-stories .stage-mindscape{position:absolute;inset:-6%;width:112%;height:112%;object-fit:cover;object-position:center 30%;z-index:0;pointer-events:none;opacity:0;transition:opacity .6s ease,transform .06s linear;filter:saturate(1.06) brightness(.95);border-radius:8px}
-.archive-stories .stage-mindscape.on{opacity:1}
-/* 内部各层保持3D深度 */
-.archive-stories .agent-stage-visual{transform-style:preserve-3d}
-.archive-stories .agent-stage-portrait{transform-style:preserve-3d;will-change:transform}
-.archive-stories .agent-stage-portrait img{filter:drop-shadow(0 20px 36px rgba(0,0,0,.6))}
-/* 全息高光扫掠层 */
-/* overflow:hidden 会扁平化3D -> 卡片3D链路改 visible(用 clip-path 替代裁切保持外形) */
-.archive-stories .agent-selected-stage{overflow:hidden}
-.archive-stories .agent-stage-visual,
-.archive-stories .agent-stage-art{overflow:visible !important}
-/* 影画自身已 cover 铺满并用 inset 扩边,无需外层裁切 */
-
-/* 全息高光扫掠层:斜向光谱+中心亮斑,鼠标扫过流动 */
-.archive-stories .stage-glare{
-  position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;transition:opacity .35s ease;
-  background:
-    radial-gradient(circle at center,rgba(255,255,255,.34) 0%,rgb(var(--character-theme-rgb,216 250 0) / .14) 24%,transparent 58%),
-    linear-gradient(115deg,transparent 30%,rgba(255,255,255,.10) 46%,rgb(var(--character-theme-rgb,216 250 0) / .12) 50%,rgba(255,255,255,.10) 54%,transparent 70%);
-  background-size:260% 260%,240% 240%;background-position:50% 50%,50% 50%;
-  mix-blend-mode:screen;border-radius:8px;
-}
-/* 卡片厚度+边缘光(rim light) */
-.archive-stories .agent-stage-art{box-shadow:0 24px 60px -18px rgba(0,0,0,.75)}
+/* 舞台立绘静态样式 */
+.archive-stories .agent-stage-backdrop-name{pointer-events:none}
+.archive-stories .agent-stage-art{border-radius:8px;box-shadow:0 24px 60px -18px rgba(0,0,0,.75)}
 .archive-stories .agent-stage-art::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:8px;box-shadow:inset 0 0 0 1px rgb(var(--character-theme-rgb,216 250 0) / .18),inset 0 1px 0 rgba(255,255,255,.12)}
+/* 影画背景层(沉底) */
+.archive-stories .stage-mindscape{position:absolute;inset:-6%;width:112%;height:112%;object-fit:cover;object-position:center 30%;z-index:0;pointer-events:none;opacity:0;transition:opacity .6s ease;filter:saturate(1.06) brightness(.95);border-radius:8px}
+.archive-stories .stage-mindscape.on{opacity:1}
+.archive-stories .agent-stage-portrait img{filter:drop-shadow(0 20px 36px rgba(0,0,0,.6))}
+.archive-stories .agent-selected-stage{overflow:hidden}
 
   </style>
 </head>
 <body class="subpage archive-stories character-directory-page">
+  <div class="hooxi-site-loader" data-site-loader role="status" aria-live="polite" aria-label="HOOXI 加载中">
+    <img src="assets/images/loading.gif" alt="加载中">
+  </div>
 <div class="zzz-scanlines" aria-hidden="true"></div>
 <div class="zzz-bg-marquee" aria-hidden="true"><div class="zroll" id="zRollA"></div></div>
 <div class="zzz-bg-marquee rev" aria-hidden="true"><div class="zroll" id="zRollB"></div></div>
@@ -701,11 +683,12 @@ body.archive-stories{
   <script src="agent-catalog.js?v=archive-3"></script>
   <script src="agent-xray.js?v=archive-3"></script>
   <script src="stories.js?v=sunna-portrait-1"></script>
-  <script src="stories-mindscape.js?v=ms-4"></script>
+  <script>(function(){var el=document.getElementById('storiesRoot');if(!el)return;var mo=new MutationObserver(function(){if(el.firstElementChild){mo.disconnect();window.dispatchEvent(new Event('hooxi:app-ready'));}});mo.observe(el,{childList:true});if(el.firstElementChild)window.dispatchEvent(new Event('hooxi:app-ready'));})();</script>
+  <script src="stories-mindscape.js?v=ms-5"></script>
   <script src="assets/vendor/gsap/gsap.min.js?v=gsap-3-15-0"></script>
   <script src="zzz-motion.js?v=zzz-motion-r7"></script>
   <script src="zzz-motion-notice.js?v=zzz-motion-notice-r1"></script>
-  <script src="zzz-tv-transition.js?v=zzz-tv-r1"></script>
+  <script src="zzz-tv-transition.js?v=zzz-tv-r2"></script>
   <script src="theme-switcher.js?v=theme-switcher-r1"></script>
   <script src="game-feel.js?v=parallax-1"></script>
 <script>(function(){var t="NEW ERIDU \· HOLLOW ARCHIVE \· ";var w=t.repeat(6);var a=document.getElementById("zRollA"),b=document.getElementById("zRollB");if(a)a.textContent=w;if(b)b.textContent="PROXY \· ZENLESS ZONE ZERO \· ".repeat(6);})();</script>

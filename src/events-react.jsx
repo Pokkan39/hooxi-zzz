@@ -4,6 +4,6 @@ import './data.js';
 import EventsPage from './pages/EventsPage.jsx';
 import './pages/EventsPage.css';
 import './index.css';
+import { mountReactApp } from './site-runtime.js';
 
-const root = createRoot(document.getElementById('root'));
-root.render(<EventsPage />);
+mountReactApp(createRoot, <EventsPage />);
