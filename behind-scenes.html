@@ -2,6 +2,16 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8"/>
+  <style id="hooxi-site-loader-critical">
+    html.site-loading,html.site-loading body{overflow:hidden}
+    .hooxi-site-loader{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:flex-end;justify-content:flex-end;padding:32px 40px;background:#fff;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .18s ease}
+    html.site-loading .hooxi-site-loader{visibility:visible;opacity:1;pointer-events:auto}
+    html.site-loader-finishing .hooxi-site-loader{opacity:0;pointer-events:none}
+    .hooxi-site-loader img{width:360px;height:auto;opacity:1}
+    @media (prefers-reduced-motion:reduce){.hooxi-site-loader{transition:none}}
+  </style>
+  <script>(function(w,d){var r=d.documentElement;if(w.__hooxiSiteLoaderBoot)return;var b=w.__hooxiSiteLoaderBoot={startedAt:Date.now(),degraded:false,finished:false};var done=function(s){if(b.finished)return;b.finished=true;clearTimeout(b.timer);r.classList.remove('site-loading','site-booting','site-loader-finishing');r.dataset.siteLoaderState=s;r.classList.add(s==='degraded'?'site-degraded':'site-ready');};var fail=function(e){if(b.finished)return;var t=e&&e.target;if(e&&e.type==='error'&&t&&/^(IMG|SCRIPT|LINK)$/.test(t.tagName)){var a=t.tagName==='LINK'?'href':'src',u=t.getAttribute(a);if(u==null||u==='')return;}b.degraded=true;r.dataset.siteLoaderState='degraded';r.classList.add('site-degraded');if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.degrade();else done('degraded');};b.finish=done;b.fail=fail;r.classList.add('site-loading','site-booting');w.addEventListener('error',fail,true);w.addEventListener('unhandledrejection',fail,true);b.timer=setTimeout(function(){if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.forceFinish();else done(b.degraded?'degraded':'timeout');},4500);})(window,document);</script>
+  <script src="./site-loader.js" defer></script>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <meta name="description" content="整理《绝区零》制作记录与 ZTALK 对谈。HOOXI 为粉丝非官方索引。"/>
   <meta property="og:type" content="website"/>
@@ -17,7 +27,7 @@
   <link rel="stylesheet" href="theme-tokens.css?v=ink-wash-1"/>
   <link rel="stylesheet" href="theme-zzz.css?v=archive-light-3"/>
   <link rel="stylesheet" href="zzz-motion.css?v=zzz-motion-r6"/>
-  <link rel="stylesheet" href="zzz-tv-transition.css?v=zzz-tv-r1"/>
+  <link rel="stylesheet" href="zzz-tv-transition.css?v=zzz-tv-r2"/>
   <link rel="stylesheet" href="game-feel.css?v=gf-1"/>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
 <link rel="stylesheet" href="subpage-enhance.css?v=sp-1"/>
@@ -32,6 +42,9 @@
   <link rel="stylesheet" href="navigation-ik.css">
 </head>
 <body class="subpage archive-behind archive-shell">
+  <div class="hooxi-site-loader" data-site-loader role="status" aria-live="polite" aria-label="HOOXI 加载中">
+    <img src="assets/images/loading.gif" alt="加载中">
+  </div>
   <div class="noise-layer" aria-hidden="true"></div>
   <a class="skip-link" href="#mainContent">跳至主要内容</a>
     <header class="ik-header">
@@ -97,7 +110,7 @@
   <script src="assets/vendor/gsap/gsap.min.js?v=gsap-3-15-0"></script>
   <script src="zzz-motion.js?v=zzz-motion-r7"></script>
   <script src="zzz-motion-notice.js?v=zzz-motion-notice-r1"></script>
-  <script src="zzz-tv-transition.js?v=zzz-tv-r1"></script>
+  <script src="zzz-tv-transition.js?v=zzz-tv-r2"></script>
   <script src="theme-switcher.js?v=theme-switcher-r1"></script>
   <script src="game-feel.js?v=gf-1"></script>
   <script src="subpage-motion.js?v=sp-2"></script>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="theme-tokens.css?v=ink-wash-1"/>
+<link rel="stylesheet" href="theme-zzz.css?v=archive-light-4"/>
+<link rel="stylesheet" href="home-neon.css"/>
+<title>Check: Faction Channels</title>
+<style>
+body.home-page{background:#080b10!important}
+</style>
+  <link rel="stylesheet" href="zzz-global-player.css?v=gp-1"/>
+</head>
+<body class="home-page zzz-page archive-page archive-home home-page">
+<div class="home-act" id="test">
+<div class="home-faction-rail" id="homeAgentRail"></div>
+</div>
+<script>
+window.archiveData={
+  factions:[
+    {id:'cunning-hares',name:'狡兔屋',theme:'#f3d33b',logo:'assets/icons/cunning-hares.png',members:['nick','burnice','anonymous']},
+    {id:'belobog',name:'白祇重工',theme:'#ef6e3a',logo:'assets/icons/belobog.png',members:['caesar','anton']},
+    {id:'victoria-housekeeping',name:'维多利亚家政',theme:'#bfc9dc',logo:'assets/icons/victoria-housekeeping.png',members:['alice','anby']},
+    {id:'sons-of-calydon',name:'卡吕冬之子',theme:'#e65031',logo:'assets/icons/sons-of-calydon.png',members:['evelyn','banyue','harumasa']},
+    {id:'section-6',name:'对空洞特别行动部第六课',theme:'#65bce8',logo:'assets/icons/section-6.png',members:['dialyn']},
+    {id:'criminal-investigation-srt',name:'刑侦特勤组',theme:'#3aaad8',logo:'assets/icons/criminal-investigation-srt.png',members:['grace-howard']},
+    {id:'obol-squad',name:'奥波勒斯小队',theme:'#db3848',logo:'assets/icons/obol-squad.png',members:['sunna']},
+    {id:'stars-of-lyra',name:'天琴座',theme:'#f6a3cc',logo:'assets/icons/stars-of-lyra.png',members:['remielle']},
+    {id:'mockingbird',name:'「反舌鸟」',theme:'#8169c7',logo:'assets/icons/mockingbird.png',members:[]},
+    {id:'yunkui-summit',name:'云岿山',theme:'#d9b553',logo:'assets/icons/yunkui-summit.png',members:['astra-yao']},
+    {id:'spook-shack',name:'怪啖屋',theme:'#6bb68d',logo:'assets/icons/spook-shack.png',members:[]},
+    {id:'krampus-compliance-authority',name:'「坎卜斯黑枝」',theme:'#a55555',logo:'assets/icons/krampus-compliance-authority.png',members:[]},
+    {id:'angels-of-delusion',name:'「妄想天使」',theme:'#ef8fc0',logo:'assets/icons/angels-of-delusion.png',members:[]},
+    {id:'metropolitan-order-division',name:'都市秩序部',theme:'#5b86b8',logo:'assets/icons/metropolitan-order-division.png',members:['cissia']},
+    {id:'defense-force-silver-squad',name:'防卫军·白银小队',theme:'#b8c3d1',logo:'assets/icons/defense-force-silver-squad.png',members:[]},
+    {id:'external-strategy-department',name:'外务筹策局',theme:'#988bc4',logo:'assets/icons/external-strategy-department.png',members:[]},
+    {id:'phaethon',name:'「法厄同」',theme:'#e6c33b',logo:'assets/icons/phaethon.png',members:['ben','corin','dollar']},
+  ],
+};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+const safeUrl=(v)=>v||'';
+const rail=$('#homeAgentRail');
+const factions=window.archiveData.factions;
+const featured=factions.filter(f=>f.id!=='covenant-of-dayat');
+rail.innerHTML=featured.map((faction,i)=>{
+  const n=i+1;
+  const logo=faction.logo;
+  const members=(faction.members||[]).length;
+  return `<a class="home-faction-channel" href="faction.html?id=${encodeURIComponent(faction.id)}" style="--fc-theme:${esc(faction.theme||'#e0b41c')}" data-fx="press" tabindex="0"><span class="home-fc-channel">${String(n).padStart(2,'0')}</span><span class="home-fc-scan" aria-hidden="true"></span><span class="home-fc-logo">${logo?`<img src="${esc(logo)}" alt="" aria-hidden="true" loading="lazy"/>`:`<span class="home-fc-logo-text">${esc(faction.name?.slice(0,2)||'?')}</span>`}</span><span class="home-fc-name">${esc(faction.name||'?')}</span><span class="home-fc-meta"><b>${members}</b><em>代理人</em></span><span class="home-fc-corner" aria-hidden="true">▶</span></a>`;
+}).join('');
+</script>
+  <script src="zzz-global-player.js?v=gp-1"></script>
+</body>
+</html>

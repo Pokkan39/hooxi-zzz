@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="description" content="HOOXI 绝区零音频档案 — 沉浸式全屏播放器"/>
+  <title>HOOXI // ZZZ AUDIO ARCHIVE</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="theme-tokens.css?v=ink-wash-1"/>
+  <link rel="stylesheet" href="zzz-global-player.css?v=gp-1"/>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
+  <style>
+    /* ---- player.html — 流媒体风格布局 ---- */
+    .player-page{background:var(--bg,#0a0a0f);min-height:100vh;color:var(--text-1,#f0f0f5);display:flex;flex-direction:column}
+    .player-page .topbar{position:sticky;top:0;z-index:10}
+    .player-app{flex:1;display:flex;min-height:0;height:calc(100vh - 52px)}
+    /* 左：封面 + 控件 */
+    .player-left{width:42%;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;padding:32px 40px;gap:20px;padding:32px 40px 40px}
+    .player-art-wrap{position:relative;width:min(280px,60%);aspect-ratio:1}
+    .player-cover{width:100%;height:100%;border-radius:12px;overflow:hidden;background:var(--bg-panel,#181820);display:grid;place-items:center;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 40px rgba(255,194,51,.08)}
+    .player-cover img{width:100%;height:100%;object-fit:cover;display:block}
+    .player-cover-placeholder{font-size:56px;color:var(--text-4,rgba(240,240,245,.28))}
+    .player-spectrum{position:absolute;bottom:0;left:0;right:0;height:48px;border-radius:0 0 12px 12px;pointer-events:none;opacity:.35}
+    .player-track-info{text-align:center;width:100%}
+    .player-track-title{font:700 22px/1.25 sans-serif;color:var(--text-1);margin:0 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .player-track-artist{font-size:14px;color:var(--text-3,rgba(240,240,245,.48));margin:0}
+    .player-progress{width:100%;display:flex;flex-direction:column;gap:4px}
+    .player-progress input[type="range"]{width:100%;height:4px;accent-color:var(--accent,#ffc233);cursor:pointer}
+    .player-progress-times{display:flex;justify-content:space-between;font:11px/1 var(--font-mono,monospace);color:var(--text-3)}
+    .player-controls{display:flex;align-items:center;gap:20px}
+    .player-controls button{border:none;background:transparent;color:var(--text-2);cursor:pointer;transition:color .15s,transform .15s,background .15s;display:grid;place-items:center;padding:0;border-radius:50%}
+    .player-controls button:focus-visible{outline:2px solid var(--signal,#00e5ff);outline-offset:3px}
+    .player-btn-side{width:40px;height:40px;font-size:15px;background:rgba(255,255,255,.06)}
+    .player-btn-side:hover{color:#fff;background:rgba(255,255,255,.12);transform:scale(1.08)}
+    .player-btn-play{width:60px!important;height:60px!important;font-size:22px!important;background:var(--accent,#ffc233)!important;color:#0a0a0f!important;box-shadow:0 4px 20px rgba(255,194,51,.35)}
+    .player-btn-play:hover{transform:scale(1.06)!important;box-shadow:0 6px 28px rgba(255,194,51,.45)!important}
+    .player-util{display:flex;align-items:center;gap:12px;width:100%;justify-content:center}
+    .player-mode{border:1px solid rgba(255,255,255,.14);background:transparent;color:var(--text-3);font-size:11px;letter-spacing:.06em;padding:5px 12px;border-radius:20px;cursor:pointer;transition:background .15s,color .15s}
+    .player-mode:hover{background:rgba(255,255,255,.08);color:var(--text-1)}
+    .player-volume{display:flex;align-items:center;gap:8px}
+    .player-volume input[type="range"]{width:80px;height:3px;accent-color:var(--accent,#ffc233);cursor:pointer}
+    /* 右：播放列表 */
+    .player-right{flex:1;display:flex;flex-direction:column;border-left:1px solid rgba(255,255,255,.06);min-height:0}
+    .player-right-header{padding:20px 24px 14px;font:700 10px/1 var(--font-mono,monospace);letter-spacing:.18em;color:var(--text-3);text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0}
+    .player-playlist-wrap{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent}
+    .player-playlist{list-style:none;padding:8px 0;margin:0}
+    .player-playlist li{display:flex;align-items:center;gap:12px;padding:10px 24px;cursor:pointer;transition:background .12s;border-left:2px solid transparent;min-height:48px;font-size:14px}
+    .player-playlist li:hover{background:rgba(255,255,255,.04)}
+    .player-playlist li.is-current{border-left-color:var(--accent,#ffc233);background:rgba(255,194,51,.06);color:var(--accent,#ffc233)}
+    .pl-num{font:700 11px/1 var(--font-mono,monospace);color:var(--text-4,rgba(240,240,245,.28));min-width:22px;text-align:right;flex-shrink:0}
+    .player-playlist li.is-current .pl-num{color:var(--accent,#ffc233)}
+    .pl-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .player-lyrics-box{display:none}
+    @media(max-width:768px){.player-app{flex-direction:column;height:auto}.player-left{width:100%;padding:24px 20px}.player-right{border-left:none;border-top:1px solid rgba(255,255,255,.06);min-height:300px}}
+  </style>
+</head>
+<body class="player-page">
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">H</span>
+      <span><strong>HOOXI<span class="accent"> //</span></strong><small>ZENLESS ARCHIVE</small></span>
+    </a>
+    <div class="top-meta">
+      <span class="signal-dot"></span> AUDIO ARCHIVE
+    </div>
+  </header>
+
+  <div class="player-app">
+    <!-- 左侧：封面 + 控件 -->
+    <div class="player-left">
+      <div class="player-art-wrap">
+        <div class="player-cover" id="playerCover"><span class="player-cover-placeholder">♫</span></div>
+        <canvas class="player-spectrum" id="playerSpectrum" aria-hidden="true"></canvas>
+      </div>
+      <div class="player-track-info">
+        <h2 class="player-track-title" id="playerTitle">加载中…</h2>
+        <p class="player-track-artist" id="playerArtist">—</p>
+      </div>
+      <div class="player-progress">
+        <input type="range" id="playerSeek" min="0" max="100" value="0" step="0.1" aria-label="播放进度"/>
+        <div class="player-progress-times">
+          <span id="playerTimeCur">0:00</span>
+          <span id="playerTimeDur">0:00</span>
+        </div>
+      </div>
+      <div class="player-controls">
+        <button class="player-btn-side" id="playerPrev" aria-label="上一曲">⏮</button>
+        <button class="player-btn-side player-btn-play" id="playerPlay" aria-label="播放/暂停">▶</button>
+        <button class="player-btn-side" id="playerNext" aria-label="下一曲">⏭</button>
+      </div>
+      <div class="player-util">
+        <button class="player-mode" id="playerMode" aria-label="循环模式">顺序</button>
+        <div class="player-volume">
+          <span style="font-size:14px">🔊</span>
+          <input type="range" id="playerVolume" min="0" max="100" value="70" aria-label="音量"/>
+        </div>
+      </div>
+    </div>
+    <!-- 右侧：播放列表 -->
+    <div class="player-right">
+      <div class="player-right-header">PLAYLIST</div>
+      <div class="player-playlist-wrap">
+        <ul class="player-playlist" id="playerPlaylist"></ul>
+      </div>
+    </div>
+  </div>
+  <!-- 歌词（隐藏保留，JS 引用） -->
+  <div class="player-lyrics-box" aria-hidden="true">
+    <ul class="player-lyrics" id="playerLyrics"><li class="is-active">暂无歌词</li></ul>
+  </div>
+
+  <script src="zzz-global-player.js?v=gp-1"></script>
+  <script>
+  /* ---- player.html 专属逻辑 ---- */
+  (function(){
+    'use strict';
+    if(!window.ZZZPlayer) return;
+    var P = window.ZZZPlayer;
+
+    /* 元素引用 */
+    var elTitle = document.getElementById('playerTitle');
+    var elArtist = document.getElementById('playerArtist');
+    var elCover = document.getElementById('playerCover');
+    var elSpectrum = document.getElementById('playerSpectrum');
+    var elSeek = document.getElementById('playerSeek');
+    var elTimeCur = document.getElementById('playerTimeCur');
+    var elTimeDur = document.getElementById('playerTimeDur');
+    var elPlay = document.getElementById('playerPlay');
+    var elPrev = document.getElementById('playerPrev');
+    var elNext = document.getElementById('playerNext');
+    var elMode = document.getElementById('playerMode');
+    var elVolume = document.getElementById('playerVolume');
+    var elLyrics = document.getElementById('playerLyrics');
+    var elPlaylist = document.getElementById('playerPlaylist');
+
+    var playMode = 'order'; // order | random | single
+    var parsedLrc = [];
+    var spectrumRaf = null;
+
+    /* ---- 播放列表渲染 ---- */
+    function renderPlaylist(){
+      var playlist = P.getPlaylist();
+      var state = P.getState();
+      elPlaylist.innerHTML = playlist.map(function(t, i){
+        var cls = i === state.trackIndex ? 'is-current' : '';
+        return '<li class="'+cls+'" data-idx="'+i+'"><span class="pl-num">'+(i+1<10?'0':'')+(i+1)+'</span><span class="pl-title">'+escHtml(t.title)+'</span></li>';
+      }).join('');
+    }
+
+    elPlaylist.addEventListener('click', function(e){
+      var li = e.target.closest('li[data-idx]');
+      if(!li) return;
+      P.loadTrack(parseInt(li.dataset.idx, 10), true);
+    });
+
+    /* ---- 曲目变化 ---- */
+    window.addEventListener('zzz-player-trackchange', function(e){
+      var track = e.detail.track;
+      if(!track) return;
+      elTitle.textContent = track.title;
+      elArtist.textContent = track.artist;
+      if(track.cover){
+        elCover.innerHTML = '<img src="'+escHtml(track.cover)+'" alt="'+escHtml(track.title)+' 封面"/>';
+      } else {
+        elCover.innerHTML = '<span class="player-cover-placeholder">♫</span>';
+      }
+      parsedLrc = parseLrc(track.lrc || '');
+      renderLyrics();
+      renderPlaylist();
+      startSpectrumDraw();
+    });
+
+    /* ---- 时间更新 ---- */
+    window.addEventListener('zzz-player-timeupdate', function(e){
+      var time = e.detail.time;
+      var dur = e.detail.duration;
+      if(!isFinite(dur) || dur <= 0) return;
+      elTimeCur.textContent = fmtTime(time);
+      elTimeDur.textContent = fmtTime(dur);
+      elSeek.max = dur;
+      elSeek.value = time;
+      highlightLyric(time);
+    });
+
+    /* ---- 进度拖动 ---- */
+    elSeek.addEventListener('input', function(){
+      P.seek(parseFloat(this.value));
+    });
+
+    /* ---- 控件按钮 ---- */
+    elPlay.addEventListener('click', function(){ P.togglePlay(); });
+    elPrev.addEventListener('click', function(){ P.prev(); });
+    elNext.addEventListener('click', function(){ P.next(); });
+    elVolume.addEventListener('input', function(){ P.setVolume(this.value / 100); });
+    elMode.addEventListener('click', function(){
+      var modes = ['order','random','single'];
+      var labels = ['顺序','随机','单曲'];
+      var idx = (modes.indexOf(playMode) + 1) % modes.length;
+      playMode = modes[idx];
+      elMode.textContent = labels[idx];
+    });
+
+    /* 播放状态同步 */
+    var audio = P.getAudio();
+    if(audio){
+      audio.addEventListener('play', function(){ elPlay.textContent = '⏸'; });
+      audio.addEventListener('pause', function(){ elPlay.textContent = '▶'; });
+    }
+
+    /* ---- LRC 解析 ---- */
+    function parseLrc(text){
+      if(!text) return [];
+      var lines = text.split('\n');
+      var result = [];
+      var re = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/;
+      for(var i = 0; i < lines.length; i++){
+        var m = lines[i].match(re);
+        if(m){
+          var t = parseInt(m[1])*60 + parseInt(m[2]) + parseInt(m[3])/(m[3].length===3?1000:100);
+          var txt = lines[i].replace(/\[\d{2}:\d{2}\.\d{2,3}\]/g,'').trim();
+          if(txt) result.push({ time: t, text: txt });
+        }
+      }
+      return result.sort(function(a,b){ return a.time - b.time; });
+    }
+
+    function renderLyrics(){
+      if(!parsedLrc.length){
+        elLyrics.innerHTML = '<li class="is-active">暂无歌词</li>';
+        return;
+      }
+      elLyrics.innerHTML = parsedLrc.map(function(l){
+        return '<li>'+escHtml(l.text)+'</li>';
+      }).join('');
+    }
+
+    function highlightLyric(time){
+      if(!parsedLrc.length) return;
+      var active = -1;
+      for(var i = parsedLrc.length - 1; i >= 0; i--){
+        if(time >= parsedLrc[i].time){ active = i; break; }
+      }
+      var items = elLyrics.querySelectorAll('li');
+      for(var j = 0; j < items.length; j++){
+        if(j === active){
+          if(!items[j].classList.contains('is-active')){
+            items[j].classList.add('is-active');
+            items[j].scrollIntoView({ behavior:'smooth', block:'center' });
+          }
+        } else {
+          items[j].classList.remove('is-active');
+        }
+      }
+    }
+
+    /* ---- 频谱可视化（大 Canvas） ---- */
+    function startSpectrumDraw(){
+      if(spectrumRaf) return;
+      var analyser = P.getAnalyser();
+      if(!analyser) return;
+      var canvas = elSpectrum;
+      var ctx = canvas.getContext('2d');
+      canvas.width = canvas.clientWidth * (window.devicePixelRatio || 1);
+      canvas.height = canvas.clientHeight * (window.devicePixelRatio || 1);
+      var dataArray = new Uint8Array(analyser.frequencyBinCount);
+      var accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#d8fa00';
+      var signalColor = getComputedStyle(document.documentElement).getPropertyValue('--signal').trim() || '#00e5ff';
+
+      function draw(){
+        spectrumRaf = requestAnimationFrame(draw);
+        analyser.getByteFrequencyData(dataArray);
+        var w = canvas.width;
+        var h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+        var bars = dataArray.length;
+        var barW = w / bars;
+        for(var i = 0; i < bars; i++){
+          var val = dataArray[i] / 255;
+          var barH = val * h * 0.9;
+          var x = i * barW;
+          ctx.fillStyle = i % 2 === 0 ? accentColor : signalColor;
+          ctx.globalAlpha = 0.6 + val * 0.4;
+          ctx.fillRect(x, h - barH, barW - 1, barH);
+        }
+        ctx.globalAlpha = 1;
+      }
+      draw();
+    }
+
+    /* ---- 工具 ---- */
+    function fmtTime(s){
+      if(!isFinite(s)) return '0:00';
+      var m = Math.floor(s / 60);
+      var sec = Math.floor(s % 60);
+      return m + ':' + (sec < 10 ? '0' : '') + sec;
+    }
+    function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    /* ---- 初始化当前曲目显示 ---- */
+    (function initDisplay(){
+      var state = P.getState();
+      var playlist = P.getPlaylist();
+      var track = playlist[state.trackIndex];
+      if(track){
+        elTitle.textContent = track.title;
+        elArtist.textContent = track.artist;
+        parsedLrc = parseLrc(track.lrc || '');
+        renderLyrics();
+      }
+      renderPlaylist();
+      /* 延迟启动频谱（需要用户交互后 AudioContext 才可用） */
+      document.addEventListener('click', function once(){
+        startSpectrumDraw();
+        document.removeEventListener('click', once);
+      });
+    })();
+
+  })();
+  </script>
+</body>
+</html>

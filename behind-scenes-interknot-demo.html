@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>幕后与对谈 // InterKnot 风格演示</title>
+  <link rel="stylesheet" href="interknot-cards.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .demo-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 229, 255, 0.15);
+      padding: 16px 24px;
+    }
+
+    .demo-header h1 {
+      color: var(--ik-text);
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .demo-badge {
+      padding: 4px 8px;
+      background: var(--ik-accent);
+      color: #000;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      border-radius: 4px;
+    }
+
+    .demo-controls {
+      margin-top: 12px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .demo-controls button {
+      padding: 8px 16px;
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      color: var(--ik-accent);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 180ms ease;
+    }
+
+    .demo-controls button:hover {
+      background: rgba(0, 229, 255, 0.2);
+      border-color: var(--ik-accent);
+    }
+
+    .demo-section {
+      padding: 40px 0;
+    }
+
+    .demo-section-title {
+      color: var(--ik-text);
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      padding: 0 24px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .demo-section-desc {
+      color: var(--ik-muted);
+      font-size: 14px;
+      margin-bottom: 24px;
+      padding: 0 24px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* 纵向封面样式（幕后对谈通常是纵向） */
+    .ik-behind-card .ik-event-card__cover-frame {
+      aspect-ratio: 0.75; /* 3:4 纵向 */
+    }
+
+    /* 移动端优化 */
+    @media (max-width: 768px) {
+      .demo-header {
+        padding: 12px 16px;
+      }
+
+      .demo-header h1 {
+        font-size: 18px;
+      }
+
+      .demo-section {
+        padding: 24px 0;
+      }
+
+      .demo-section-title {
+        font-size: 20px;
+      }
+
+      .ik-behind-card .ik-event-card__cover-frame {
+        aspect-ratio: 1.2; /* 移动端更宽 */
+      }
+    }
+  </style>
+</head>
+<body class="ik-dark-theme">
+  <header class="demo-header">
+    <h1>
+      <span>幕后与对谈</span>
+      <span class="demo-badge">InterKnot 风格</span>
+    </h1>
+    <div class="demo-controls">
+      <button onclick="location.href='behind-scenes.html'">← 返回原版</button>
+      <button onclick="toggleLayout()">切换布局</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="demo-section">
+      <h2 class="demo-section-title">幕后对谈档案</h2>
+      <p class="demo-section-desc">游戏开发幕后故事、角色访谈与官方深度内容</p>
+      
+      <div class="ik-masonry-grid" id="behindGrid">
+        <!-- 幕后卡片将由 JavaScript 动态渲染 -->
+      </div>
+    </section>
+
+    <section class="demo-section" style="background: rgba(10, 10, 10, 0.3); padding: 60px 24px;">
+      <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+        <h2 style="color: var(--ik-text); font-size: 28px; margin-bottom: 16px;">InterKnot 风格适配完成</h2>
+        <p style="color: var(--ik-muted); font-size: 15px; line-height: 1.6; margin-bottom: 24px;">
+          幕后对谈页面使用纵向封面比例（3:4），更适合展示访谈和幕后内容的竖版海报。
+          卡片保持相同的双层嵌套结构和 hover 动画，统一视觉语言。
+        </p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; font-size: 13px;">
+          <span style="color: var(--ik-accent);">✓ 纵向封面比例</span>
+          <span style="color: var(--ik-accent);">✓ 瀑布流自适应</span>
+          <span style="color: var(--ik-accent);">✓ 移动端优化</span>
+          <span style="color: var(--ik-accent);">✓ 统一交互</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="data.js"></script>
+  <script>
+    // 从 data.js 读取幕后对谈数据
+    const behindData = window.archiveData?.behindScenes || [];
+    
+    // 取前12条作为演示
+    const displayBehind = behindData.slice(0, 12);
+
+    // 渲染幕后卡片
+    function renderBehind() {
+      const grid = document.getElementById('behindGrid');
+      
+      if (displayBehind.length === 0) {
+        grid.innerHTML = '<div class="ik-empty">等待制作信号...</div>';
+        return;
+      }
+
+      grid.innerHTML = displayBehind.map((item, index) => `
+        <article class="ik-event-card ik-behind-card" data-behind-id="${item.id}" style="animation-delay: ${index * 50}ms">
+          <a href="${item.sourceUrl || item.wikiUrl || '#'}" class="ik-event-card__inner" target="_blank" rel="noopener">
+            <div class="ik-event-card__cover-wrap">
+              <div class="ik-event-card__cover-frame">
+                <img 
+                  src="${item.cover || 'assets/placeholder.jpg'}" 
+                  alt="${item.title}"
+                  class="ik-event-card__cover"
+                  loading="lazy"
+                  decoding="async"
+                  onload="this.classList.add('loaded')"
+                />
+              </div>
+            </div>
+            <div class="ik-event-card__body">
+              <div class="ik-event-card__meta">
+                <span class="ik-event-card__version">${item.type || '幕后记录'}</span>
+              </div>
+              <div class="ik-event-card__divider"></div>
+              <h3 class="ik-event-card__title">${item.title}</h3>
+              ${item.spoilerLevel && item.spoilerLevel !== '无' ? `
+                <div class="ik-event-card__tags">
+                  <span class="ik-event-card__tag" style="background: rgba(255, 77, 79, 0.1); color: var(--ik-danger);">剧透:${item.spoilerLevel}</span>
+                </div>
+              ` : ''}
+            </div>
+          </a>
+        </article>
+      `).join('');
+    }
+
+    // 切换布局（演示：在纵向和横向之间切换）
+    let layoutHorizontal = false;
+    function toggleLayout() {
+      layoutHorizontal = !layoutHorizontal;
+      document.querySelectorAll('.ik-behind-card .ik-event-card__cover-frame').forEach(frame => {
+        frame.style.aspectRatio = layoutHorizontal ? '1.576' : '0.75';
+      });
+    }
+
+    // 初始化
+    renderBehind();
+
+    // 图片加载失败时的fallback
+    document.addEventListener('error', (e) => {
+      if (e.target.tagName === 'IMG' && e.target.classList.contains('ik-event-card__cover')) {
+        e.target.style.background = 'linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%)';
+        e.target.alt = '封面加载失败';
+      }
+    }, true);
+  </script>
+</body>
+</html>

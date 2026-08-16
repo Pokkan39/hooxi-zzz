@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>往期活动 // InterKnot 风格演示</title>
+  <link rel="stylesheet" href="interknot-cards.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .demo-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(191, 255, 9, 0.15);
+      padding: 16px 24px;
+    }
+
+    .demo-header h1 {
+      color: var(--ik-text);
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .demo-badge {
+      padding: 4px 8px;
+      background: var(--ik-primary);
+      color: #000;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      border-radius: 4px;
+    }
+
+    .demo-controls {
+      margin-top: 12px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .demo-controls button {
+      padding: 8px 16px;
+      background: rgba(191, 255, 9, 0.1);
+      border: 1px solid rgba(191, 255, 9, 0.3);
+      color: var(--ik-primary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 180ms ease;
+    }
+
+    .demo-controls button:hover {
+      background: rgba(191, 255, 9, 0.2);
+      border-color: var(--ik-primary);
+    }
+
+    .demo-section {
+      padding: 40px 0;
+    }
+
+    .demo-section-title {
+      color: var(--ik-text);
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      padding: 0 24px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .demo-section-desc {
+      color: var(--ik-muted);
+      font-size: 14px;
+      margin-bottom: 24px;
+      padding: 0 24px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* 移动端优化 */
+    @media (max-width: 768px) {
+      .demo-header {
+        padding: 12px 16px;
+      }
+
+      .demo-header h1 {
+        font-size: 18px;
+      }
+
+      .demo-section {
+        padding: 24px 0;
+      }
+
+      .demo-section-title {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body class="ik-dark-theme">
+  <header class="demo-header">
+    <h1>
+      <span>往期活动</span>
+      <span class="demo-badge">InterKnot 风格</span>
+    </h1>
+    <div class="demo-controls">
+      <button onclick="location.href='events.html'">← 返回原版</button>
+      <button onclick="toggleReadState()">切换已读状态</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="demo-section">
+      <h2 class="demo-section-title">1.4 版本活动</h2>
+      <p class="demo-section-desc">最新版本的限时活动与特别委托</p>
+      
+      <div class="ik-masonry-grid" id="eventsGrid">
+        <!-- 活动卡片将由 JavaScript 动态渲染 -->
+      </div>
+    </section>
+
+    <section class="demo-section" style="background: rgba(10, 10, 10, 0.3); padding: 60px 24px;">
+      <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+        <h2 style="color: var(--ik-text); font-size: 28px; margin-bottom: 16px;">InterKnot 视觉风格已应用</h2>
+        <p style="color: var(--ik-muted); font-size: 15px; line-height: 1.6; margin-bottom: 24px;">
+          此演示页面借鉴了 InterKnot-Web 的深色主题、卡片结构和交互动画，同时保持 HOOXI 静态站点的技术架构。
+          无需 Node.js 服务器或数据库，可直接部署到 GitHub Pages。
+        </p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; font-size: 13px;">
+          <span style="color: var(--ik-primary);">✓ 双层嵌套卡片</span>
+          <span style="color: var(--ik-primary);">✓ 右下直角设计</span>
+          <span style="color: var(--ik-primary);">✓ hover 亮黄效果</span>
+          <span style="color: var(--ik-primary);">✓ 封面 scale 动画</span>
+          <span style="color: var(--ik-primary);">✓ 瀑布流网格</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="data.js"></script>
+  <script>
+    // 从 data.js 读取活动数据
+    const eventsData = window.archiveData?.events || [];
+    
+    // 筛选最新版本的活动（演示用）
+    const latestEvents = eventsData.filter(e => e.version === '1.4').slice(0, 9);
+    
+    // 如果没有1.4版本，fallback到所有活动的前9条
+    const displayEvents = latestEvents.length > 0 ? latestEvents : eventsData.slice(0, 9);
+
+    // 渲染活动卡片
+    function renderEvents() {
+      const grid = document.getElementById('eventsGrid');
+      
+      if (displayEvents.length === 0) {
+        grid.innerHTML = '<div class="ik-empty">暂无活动数据</div>';
+        return;
+      }
+
+      grid.innerHTML = displayEvents.map((event, index) => `
+        <article class="ik-event-card" data-event-id="${event.id}" style="animation-delay: ${index * 50}ms">
+          <a href="${event.sourceUrl || '#'}" class="ik-event-card__inner" target="_blank" rel="noopener">
+            <div class="ik-event-card__cover-wrap">
+              <div class="ik-event-card__cover-frame">
+                <img 
+                  src="${event.cover || 'assets/placeholder.jpg'}" 
+                  alt="${event.title}"
+                  class="ik-event-card__cover"
+                  loading="lazy"
+                  decoding="async"
+                  onload="this.classList.add('loaded')"
+                />
+              </div>
+            </div>
+            <div class="ik-event-card__body">
+              <div class="ik-event-card__meta">
+                <span class="ik-event-card__version">${event.version || '未知版本'}</span>
+                <span class="ik-event-card__date">${event.tag || event.type || ''}</span>
+              </div>
+              <div class="ik-event-card__divider"></div>
+              <h3 class="ik-event-card__title">${event.title}</h3>
+              ${event.routeType ? `
+                <div class="ik-event-card__tags">
+                  <span class="ik-event-card__tag">${event.routeType}</span>
+                </div>
+              ` : ''}
+            </div>
+          </a>
+        </article>
+      `).join('');
+    }
+
+    // 切换已读状态（演示）
+    let readStateToggle = false;
+    function toggleReadState() {
+      readStateToggle = !readStateToggle;
+      document.querySelectorAll('.ik-event-card__title').forEach(title => {
+        title.classList.toggle('ik-event-card__title--read', readStateToggle);
+      });
+    }
+
+    // 初始化
+    renderEvents();
+
+    // 图片加载失败时的fallback
+    document.addEventListener('error', (e) => {
+      if (e.target.tagName === 'IMG' && e.target.classList.contains('ik-event-card__cover')) {
+        e.target.style.background = 'linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%)';
+        e.target.alt = '封面加载失败';
+      }
+    }, true);
+  </script>
+</body>
+</html>

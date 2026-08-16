@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>阵营档案测试 // HOOXI 绝区零档案</title>
+<style>
+@font-face{font-family:'Barlow Condensed';src:url('assets/fonts/barlow-condensed-800-latin.woff2') format('woff2');font-weight:800;font-display:swap}
+@font-face{font-family:'Barlow Condensed';src:url('assets/fonts/barlow-condensed-600-latin.woff2') format('woff2');font-weight:600;font-display:swap}
+@font-face{font-family:'Space Mono';src:url('assets/fonts/space-mono-700-latin.woff2') format('woff2');font-weight:700;font-display:swap}
+
+:root{
+  --bg:#101014;
+  --bg-raise:#17171d;
+  --ink:#f4f4f6;
+  --ink-dim:rgba(244,244,246,.6);
+  --ink-faint:rgba(244,244,246,.34);
+  --line:rgba(255,255,255,.1);
+  --red:#ff4646;
+  --yellow:#ffe600;
+  --t:#ffe600; /* faction theme, set per page/card */
+  --ease:cubic-bezier(.22,1,.36,1);
+  --noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scrollbar-color:#3a3a44 var(--bg)}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  min-height:100vh;overflow-x:hidden;
+}
+::selection{background:var(--t);color:#111}
+
+/* ═══ 全局背景：半调网点 + 噪点 + 主题氛围光 ═══ */
+.bg-fx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-fx::before{ /* halftone dots */
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(rgba(255,255,255,.055) 1.2px,transparent 1.3px);
+  background-size:22px 22px;
+  -webkit-mask-image:radial-gradient(120% 90% at 50% 0%,#000 30%,transparent 78%);
+  mask-image:radial-gradient(120% 90% at 50% 0%,#000 30%,transparent 78%);
+}
+.bg-fx::after{content:'';position:absolute;inset:0;background:var(--noise);opacity:.05;mix-blend-mode:overlay}
+.bg-glow{position:absolute;width:70vw;height:70vw;left:50%;top:-30vw;transform:translateX(-50%);
+  background:radial-gradient(circle,color-mix(in srgb,var(--t) 14%,transparent),transparent 62%);
+  transition:background .6s}
+.bg-ring{ /* 巨大描边圆环，游戏内常见图形元素 */
+  position:absolute;width:min(88vw,980px);height:min(88vw,980px);left:50%;top:6vh;transform:translateX(-50%);
+  border:2px solid rgba(255,255,255,.05);border-radius:50%;
+}
+.bg-ring::after{content:'';position:absolute;inset:9%;border:1.5px dashed rgba(255,255,255,.06);border-radius:50%}
+
+/* ═══ 文字跑马灯 ═══ */
+.marquee{overflow:hidden;white-space:nowrap;user-select:none;pointer-events:none}
+.marquee-track{display:inline-flex;align-items:center;gap:.6em;will-change:transform;animation:marq var(--marq-dur,32s) linear infinite}
+.marquee.rev .marquee-track{animation-direction:reverse}
+@keyframes marq{to{transform:translateX(-50%)}}
+.marquee .mi{font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.marquee .dot{width:.32em;height:.32em;background:var(--t);transform:skewX(-14deg);flex:none;transition:background .6s}
+
+/* 背景巨型描边跑马灯 */
+.bg-marquee{position:absolute;left:0;right:0;z-index:0}
+.bg-marquee .mi{font-size:clamp(90px,14vw,200px);line-height:1;
+  color:transparent;-webkit-text-stroke:2px rgba(255,255,255,.07)}
+.bg-marquee .dot{width:.18em;height:.18em;background:rgba(255,255,255,.1)}
+
+/* 内容级跑马灯带（黑底斜切边） */
+.tape{
+  position:relative;padding:10px 0;background:#0a0a0e;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  transform:rotate(-1.2deg) scale(1.02);z-index:2;
+}
+.tape .mi{font-size:15px;color:var(--ink-faint)}
+.tape .mi.hl{color:var(--t)}
+.tape-red{background:var(--red);border-color:transparent}
+.tape-red .mi{color:#16060a;font-weight:800}
+.tape-red .dot{background:#16060a}
+
+/* 警示条纹 */
+.hazard{height:8px;background:repeating-linear-gradient(-45deg,var(--t) 0 14px,#101014 14px 28px);opacity:.9}
+
+.wrap{position:relative;z-index:1;max-width:1360px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
+
+/* ═══ 顶部导航条 ═══ */
+.topbar{display:flex;align-items:center;gap:14px;padding:18px 0;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.14em}
+.topbar a{color:var(--ink-faint);text-decoration:none;transition:color .2s}
+.topbar a:hover{color:var(--ink)}
+.topbar .tag{margin-left:auto;color:var(--ink-faint)}
+.topbar .tag b{color:var(--t)}
+
+/* ═══ 贴纸（官方招牌元素） ═══ */
+.sticker{
+  display:inline-flex;align-items:center;gap:.5em;
+  padding:.35em .9em .3em;font-weight:900;font-size:13px;letter-spacing:.12em;
+  background:#fff;color:#111;transform:skewX(-8deg);
+  box-shadow:4px 4px 0 rgba(0,0,0,.55);
+}
+.sticker.red{background:var(--red);color:#fff}
+.sticker.theme{background:var(--t);color:#14140a}
+.sticker>i{width:.55em;height:.55em;background:currentColor;transform:skewX(-14deg);opacity:.85}
+
+/* ═══ 目录页 Hero ═══ */
+.hero-dir{position:relative;padding:clamp(56px,9vh,110px) 0 clamp(30px,5vh,56px)}
+.hero-dir .bg-marquee{top:50%;transform:translateY(-58%)}
+.hero-dir-inner{position:relative;z-index:1}
+.hero-dir h1{
+  font-size:clamp(44px,8vw,104px);font-weight:900;line-height:1;letter-spacing:.02em;
+  text-shadow:6px 6px 0 rgba(0,0,0,.6);
+}
+.hero-dir h1 .en{
+  display:block;font-family:'Barlow Condensed',sans-serif;font-weight:800;
+  font-size:.92em;text-transform:uppercase;letter-spacing:.04em;
+  color:transparent;-webkit-text-stroke:2.5px var(--ink);
+}
+.hero-dir h1 .cn{display:inline-block;margin-top:.12em}
+.hero-dir .sub{margin-top:22px;display:flex;flex-wrap:wrap;align-items:center;gap:14px;color:var(--ink-dim);font-size:14px}
+.hero-dir .sub .mono{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.16em;color:var(--ink-faint)}
+
+/* ═══ 目录页阵营海报卡 ═══ */
+.dir-grid{display:flex;flex-direction:column;gap:clamp(18px,3vh,30px);padding:clamp(20px,4vh,44px) 0 64px}
+.fcard{
+  --h:212px;
+  position:relative;display:flex;align-items:stretch;min-height:var(--h);overflow:hidden;
+  background:
+    linear-gradient(100deg,#15151b 34%,color-mix(in srgb,var(--t) 16%,#15151b) 78%,color-mix(in srgb,var(--t) 30%,#15151b));
+  border:1px solid var(--line);border-radius:6px;
+  text-decoration:none;color:inherit;isolation:isolate;
+  opacity:0;transform:translateY(34px) skewY(.6deg);
+  transition:opacity .55s var(--ease),transform .55s var(--ease),border-color .25s,box-shadow .4s var(--ease);
+}
+.fcard.revealed{opacity:1;transform:none}
+.fcard::before{ /* halftone on theme side */
+  content:'';position:absolute;inset:0;z-index:0;
+  background-image:radial-gradient(rgba(0,0,0,.32) 1.4px,transparent 1.5px);background-size:14px 14px;
+  -webkit-mask-image:linear-gradient(90deg,transparent 42%,#000 80%);
+  mask-image:linear-gradient(90deg,transparent 42%,#000 80%);
+}
+.fcard::after{ /* hazard top edge on hover */
+  content:'';position:absolute;left:0;right:0;top:0;height:6px;z-index:3;
+  background:repeating-linear-gradient(-45deg,var(--t) 0 12px,#101014 12px 24px);
+  transform:scaleY(0);transform-origin:top;transition:transform .3s var(--ease);
+}
+.fcard:hover{border-color:color-mix(in srgb,var(--t) 65%,transparent);
+  box-shadow:0 22px 60px rgba(0,0,0,.55),0 0 44px color-mix(in srgb,var(--t) 18%,transparent)}
+.fcard:hover::after{transform:scaleY(1)}
+
+.fcard-en-bg{ /* 描边英文大字 */
+  position:absolute;right:16px;top:50%;transform:translateY(-50%) skewX(-6deg);z-index:0;
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:calc(var(--h)*.62);line-height:1;letter-spacing:.02em;white-space:nowrap;
+  color:transparent;-webkit-text-stroke:2px rgba(255,255,255,.12);
+  transition:transform .5s var(--ease),-webkit-text-stroke-color .3s;
+}
+.fcard:hover .fcard-en-bg{transform:translateY(-50%) skewX(-6deg) translateX(-14px);
+  -webkit-text-stroke-color:color-mix(in srgb,var(--t) 45%,transparent)}
+
+.fcard-body{position:relative;z-index:2;flex:1;min-width:0;padding:clamp(20px,3vw,32px);
+  display:flex;flex-direction:column;justify-content:center;gap:10px}
+.fcard-top{display:flex;align-items:center;gap:12px}
+.fcard-emblem{
+  width:58px;height:58px;flex:none;padding:7px;background:#fff;border-radius:10px;
+  transform:rotate(-5deg);box-shadow:4px 5px 0 rgba(0,0,0,.5);
+  transition:transform .35s var(--ease);
+}
+.fcard:hover .fcard-emblem{transform:rotate(3deg) scale(1.08)}
+.fcard-emblem img{width:100%;height:100%;object-fit:contain}
+.fcard h3{font-size:clamp(24px,2.8vw,34px);font-weight:900;letter-spacing:.02em;text-shadow:3px 3px 0 rgba(0,0,0,.5)}
+.fcard .en{font-family:'Barlow Condensed',sans-serif;font-weight:600;text-transform:uppercase;
+  letter-spacing:.18em;font-size:14px;color:color-mix(in srgb,var(--t) 82%,#fff)}
+.fcard .sum{font-size:13px;line-height:1.7;color:var(--ink-dim);max-width:52ch;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.fcard-foot{display:flex;align-items:center;gap:14px;margin-top:4px}
+.fcard-count{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.14em;
+  padding:4px 12px;border:1px solid color-mix(in srgb,var(--t) 55%,transparent);color:var(--t);transform:skewX(-8deg)}
+.fcard-cta{font-size:13px;font-weight:800;letter-spacing:.1em;color:var(--ink)}
+.fcard-cta::after{content:'→';margin-left:8px;color:var(--t);display:inline-block;transition:transform .3s var(--ease)}
+.fcard:hover .fcard-cta::after{transform:translateX(6px)}
+
+.fcard-arts{position:relative;flex:0 0 34%;z-index:1}
+.fcard-arts .fig{position:absolute;inset:-12% -8%;display:flex;justify-content:flex-end;
+  transform:rotate(3deg);transition:transform .55s var(--ease)}
+.fcard:hover .fcard-arts .fig{transform:rotate(1deg) scale(1.05)}
+.fcard-arts img{
+  height:100%;width:44%;object-fit:cover;object-position:top center;flex:none;
+  -webkit-mask-image:linear-gradient(100deg,transparent 2%,#000 45%);
+  mask-image:linear-gradient(100deg,transparent 2%,#000 45%);
+}
+.fcard-arts::before{ /* 斜切主题色块 */
+  content:'';position:absolute;top:-20%;bottom:-20%;right:6%;width:34%;
+  background:color-mix(in srgb,var(--t) 88%,#000);transform:skewX(-10deg);opacity:.9;
+}
+
+/* ═══ 详情页：游戏内代理人界面布局 ═══ */
+.stage{position:relative;display:flex;min-height:min(76vh,760px);padding:clamp(10px,2vh,24px) 0 0}
+.stage-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.stage-bg .bg-marquee{top:38%;transform:translateY(-50%)}
+.stage-halftone{ /* 主题色半调圆，立绘底座 */
+  position:absolute;left:2%;top:50%;transform:translateY(-52%);
+  width:min(46vw,620px);height:min(46vw,620px);border-radius:50%;
+  background-image:radial-gradient(color-mix(in srgb,var(--t) 55%,transparent) 2.2px,transparent 2.4px);
+  background-size:16px 16px;
+  -webkit-mask-image:radial-gradient(circle,#000 55%,transparent 71%);
+  mask-image:radial-gradient(circle,#000 55%,transparent 71%);
+  transition:background-image .5s;
+}
+.stage-emblem-ghost{position:absolute;left:8%;top:50%;transform:translateY(-50%);width:min(30vw,380px);opacity:.1;
+  filter:grayscale(1) brightness(2)}
+.stage-slash{position:absolute;width:42%;height:150%;left:-6%;top:-25%;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--t) 10%,transparent),transparent);
+  transform:skewX(-9deg);transition:background .5s}
+
+.stage-portrait{
+  position:relative;flex:0 0 52%;display:flex;align-items:flex-end;justify-content:center;z-index:1;
+}
+.stage-portrait img{
+  height:min(72vh,720px);max-width:100%;object-fit:contain;object-position:bottom;
+  filter:drop-shadow(0 24px 44px rgba(0,0,0,.65));
+  transition:transform .5s var(--ease),opacity .35s var(--ease),filter .4s;
+}
+.stage-portrait.swap-out img{opacity:0;transform:translateX(-46px) skewX(-3deg) scale(.98);filter:blur(6px)}
+.stage-portrait.swap-in img{animation:portIn .55s var(--ease)}
+@keyframes portIn{from{opacity:0;transform:translateX(46px) skewX(3deg) scale(.98);filter:blur(6px)}}
+
+/* 右侧信息面板 */
+.panel{position:relative;z-index:2;flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(18px,3vw,36px) 0}
+.panel-faction{display:inline-flex;align-items:center;gap:10px;margin-bottom:18px;text-decoration:none;color:inherit;width:max-content}
+.panel-faction img{width:34px;height:34px;object-fit:contain;background:#fff;border-radius:8px;padding:4px;transform:rotate(-4deg);box-shadow:3px 3px 0 rgba(0,0,0,.5)}
+.panel-faction span{font-size:13px;font-weight:800;letter-spacing:.14em;color:var(--ink-dim)}
+.panel-faction:hover span{color:var(--t)}
+
+.panel-rank-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.rank-badge{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;line-height:1;
+  padding:6px 14px 4px;transform:skewX(-8deg);box-shadow:4px 4px 0 rgba(0,0,0,.55);
+}
+.rank-badge.s{background:linear-gradient(135deg,#ffd76b,#ff9d3b);color:#231303}
+.rank-badge.a{background:linear-gradient(135deg,#d9b3ff,#9a6cf0);color:#1d0b33}
+.panel-no{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--ink-faint)}
+
+.panel h1{font-size:clamp(34px,4.6vw,60px);font-weight:900;line-height:1.05;text-shadow:5px 5px 0 rgba(0,0,0,.6)}
+.panel .en-name{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(22px,3vw,38px);letter-spacing:.08em;line-height:1.1;margin-top:2px;
+  color:transparent;-webkit-text-stroke:1.8px color-mix(in srgb,var(--t) 75%,#fff);
+}
+.panel-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chip{
+  font-size:12.5px;font-weight:800;letter-spacing:.08em;padding:5px 14px;
+  border:1px solid var(--line);background:rgba(255,255,255,.04);transform:skewX(-8deg);
+}
+.chip b{color:var(--t)}
+.panel-desc{margin-top:16px;font-size:14px;line-height:1.85;color:var(--ink-dim);max-width:52ch;
+  border-left:3px solid var(--red);padding-left:14px}
+.panel-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;text-decoration:none;
+  font-weight:900;font-size:14px;letter-spacing:.1em;padding:12px 26px;transform:skewX(-8deg);
+  transition:transform .25s var(--ease),box-shadow .25s;
+}
+.btn>*{transform:skewX(8deg)}
+.btn.primary{background:var(--t);color:#14140a;box-shadow:5px 5px 0 rgba(0,0,0,.55)}
+.btn.primary:hover{transform:skewX(-8deg) translate(-2px,-2px);box-shadow:8px 8px 0 rgba(0,0,0,.55)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink-faint)}
+.btn.ghost:hover{border-color:var(--t);color:var(--t)}
+
+/* 阵营小结（详情页底部） */
+.faction-brief{
+  position:relative;margin:clamp(20px,4vh,40px) 0;padding:clamp(18px,2.6vw,28px);
+  background:var(--bg-raise);border:1px solid var(--line);border-left:5px solid var(--t);
+  display:flex;gap:20px;align-items:flex-start;
+}
+.faction-brief img{width:64px;height:64px;object-fit:contain;flex:none}
+.faction-brief h4{font-size:15px;font-weight:900;letter-spacing:.1em;margin-bottom:6px}
+.faction-brief h4 span{color:var(--t)}
+.faction-brief p{font-size:13.5px;line-height:1.8;color:var(--ink-dim)}
+.faction-brief .wiki{margin-left:auto;flex:none;align-self:center}
+
+/* ═══ 底部成员选择条（游戏内选人栏） ═══ */
+.selector-head{display:flex;align-items:baseline;gap:16px;margin:clamp(24px,4vh,40px) 0 16px}
+.selector-head h2{font-size:clamp(20px,2.4vw,26px);font-weight:900;display:flex;align-items:center;gap:12px}
+.selector-head h2::before{content:'';width:12px;height:12px;background:var(--t);transform:skewX(-14deg);box-shadow:0 0 14px var(--t)}
+.selector-head .hint{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--ink-faint)}
+.member-row{display:flex;gap:14px;overflow-x:auto;padding:6px 2px 26px;scroll-snap-type:x proximity}
+.member-row::-webkit-scrollbar{height:6px}
+.member-row::-webkit-scrollbar-thumb{background:#3a3a44;border-radius:3px}
+.mcard{
+  position:relative;flex:0 0 118px;scroll-snap-align:start;cursor:pointer;
+  background:var(--bg-raise);border:1px solid var(--line);border-radius:8px;overflow:hidden;
+  transition:transform .3s var(--ease),border-color .25s,box-shadow .3s;
+}
+.mcard:hover{transform:translateY(-5px);border-color:color-mix(in srgb,var(--t) 55%,transparent)}
+.mcard.active{border-color:var(--t);box-shadow:0 0 0 1px var(--t),0 10px 26px color-mix(in srgb,var(--t) 24%,transparent);transform:translateY(-5px)}
+.mcard.active::after{content:'';position:absolute;left:0;right:0;top:0;height:5px;
+  background:repeating-linear-gradient(-45deg,var(--t) 0 8px,#101014 8px 16px)}
+.mcard .ph{position:relative;height:128px;overflow:hidden}
+.mcard .ph img{width:100%;height:100%;object-fit:cover;object-position:top center;transition:transform .4s var(--ease)}
+.mcard:hover .ph img,.mcard.active .ph img{transform:scale(1.08)}
+.mcard .ph::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(8,8,12,.85))}
+.mcard .mr{position:absolute;top:6px;left:6px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:13px;
+  padding:2px 7px;transform:skewX(-8deg)}
+.mcard .mr.s{background:#ffd76b;color:#231303}
+.mcard .mr.a{background:#c9a7ff;color:#1d0b33}
+.mcard .mn{padding:8px 10px 10px;font-size:12.5px;font-weight:800;text-align:center;letter-spacing:.02em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mcard.active .mn{color:var(--t)}
+
+/* ═══ 目录/详情通用 ═══ */
+.reveal{opacity:0;transform:translateY(26px)}
+.reveal.revealed{opacity:1;transform:none;transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.empty{color:var(--ink-faint);padding:24px 0}
+footer{position:relative;z-index:1;padding:22px 0 44px;color:var(--ink-faint);font-size:12px;line-height:1.8}
+footer .mono{font-family:'Space Mono',monospace;letter-spacing:.12em}
+
+@media (max-width:900px){
+  .stage{flex-direction:column;min-height:0}
+  .stage-portrait{flex:none;order:2}
+  .stage-portrait img{height:52vh}
+  .stage-halftone{left:50%;top:auto;bottom:-6%;transform:translateX(-50%);width:86vw;height:86vw}
+  .panel{order:1;padding-top:8px}
+  .fcard{--h:186px}
+  .fcard-en-bg{display:none}
+  .fcard-arts{flex-basis:40%}
+  .faction-brief{flex-wrap:wrap}
+  .faction-brief .wiki{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){
+  .marquee-track{animation:none}
+  *{transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<!-- 全局背景层 -->
+<div class="bg-fx">
+  <div class="bg-glow"></div>
+  <div class="bg-ring"></div>
+</div>
+
+<div class="wrap">
+  <nav class="topbar">
+    <a href="index.html">HOOXI</a><span style="color:var(--ink-faint)">/</span>
+    <a href="faction-redesign-test.html">阵营档案</a>
+    <span class="tag">NEW ERIDU <b>//</b> ARCHIVE</span>
+  </nav>
+
+  <!-- ══ 目录视图 ══ -->
+  <div id="directoryView">
+    <header class="hero-dir">
+      <div class="bg-marquee marquee" id="dirMarquee"></div>
+      <div class="hero-dir-inner">
+        <span class="sticker red"><i></i>HOOXI ARCHIVE · 非官方</span>
+        <h1>
+          <span class="cn">阵营档案</span>
+          <span class="en">Faction Archive</span>
+        </h1>
+        <div class="sub">
+          <span class="sticker theme" id="dirCountSticker"></span>
+          <span id="dirSummary">选择阵营，查看成员立绘与已核验档案。</span>
+          <span class="mono">// SOURCE: LOCAL ARCHIVE + OFFICIAL WIKI</span>
+        </div>
+      </div>
+    </header>
+    <div class="hazard"></div>
+    <div class="dir-grid" id="factionGrid"></div>
+  </div>
+
+  <!-- ══ 详情视图 ══ -->
+  <div id="detailView" hidden>
+    <section class="stage">
+      <div class="stage-bg">
+        <div class="stage-slash"></div>
+        <div class="stage-halftone"></div>
+        <img class="stage-emblem-ghost" id="stageGhostEmblem" alt=""/>
+        <div class="bg-marquee marquee rev" id="stageMarquee"></div>
+      </div>
+      <div class="stage-portrait" id="stagePortrait"><img id="stageImg" alt=""/></div>
+      <aside class="panel">
+        <a class="panel-faction" href="faction-redesign-test.html" id="panelFaction"></a>
+        <div class="panel-rank-row">
+          <span class="rank-badge" id="panelRank"></span>
+          <span class="panel-no" id="panelNo"></span>
+        </div>
+        <h1 id="panelName"></h1>
+        <p class="en-name" id="panelEn"></p>
+        <div class="panel-chips" id="panelChips"></div>
+        <p class="panel-desc" id="panelDesc"></p>
+        <div class="panel-actions">
+          <a class="btn primary" id="btnChar" href="#"><span>进入角色档案 →</span></a>
+          <a class="btn ghost" id="btnWiki" href="#" target="_blank" rel="noopener"><span>官方 WIKI ↗</span></a>
+        </div>
+      </aside>
+    </section>
+
+    <div class="tape marquee" id="midTape"></div>
+
+    <div class="faction-brief">
+      <img id="briefEmblem" alt=""/>
+      <div>
+        <h4>关于 <span id="briefName"></span></h4>
+        <p id="briefSummary"></p>
+      </div>
+    </div>
+
+    <div class="selector-head">
+      <h2>代理人名录</h2>
+      <span class="hint" id="memberHint"></span>
+    </div>
+    <div class="member-row" id="memberRow"></div>
+  </div>
+
+  <div class="tape tape-red marquee" id="footTape"></div>
+  <footer>
+    <p class="mono">HOOXI ARCHIVE — UNOFFICIAL FAN PROJECT</p>
+    <p>HOOXI 为粉丝非官方档案，与米哈游/HoYoverse 无隶属；《绝区零》相关游戏内容版权归米哈游所有。</p>
+  </footer>
+</div>
+
+<script src="src/data.js"></script>
+<script src="agent-enrichment.js"></script>
+<script src="agent-catalog.js"></script>
+<script>
+(()=>{
+  const $=s=>document.querySelector(s);
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const data=window.archiveData||{};
+  const factions=Array.isArray(data.factions)?data.factions:[];
+  const characters=Array.isArray(data.characters)?data.characters:[];
+
+  const FACTION_EN={
+    'cunning-hares':'Gentle House',
+    'belobog':'Belobog Heavy Industries',
+    'victoria-housekeeping':'Victoria Housekeeping',
+    'sons-of-calydon':'Sons of Calydon',
+    'section-6':'Section 6',
+    'criminal-investigation-srt':'Criminal Investigation',
+    'obol-squad':'Obol Squad',
+    'stars-of-lyra':'Stars of Lyra',
+    'mockingbird':'Mockingbird',
+    'yunkui-summit':'Yunkui Summit',
+    'spook-shack':'Spook Shack',
+    'krampus-compliance-authority':'Krampus',
+    'angels-of-delusion':'Angels of Delusion',
+    'metropolitan-order-division':'Metropolitan Order',
+    'defense-force-silver-squad':'Silver Squad',
+    'external-strategy-department':'External Strategy',
+    'phaethon':'Phaethon',
+    'covenant-of-dayat':'Covenant of Dayat'
+  };
+  const en=f=>FACTION_EN[f.id]||f.id.replace(/-/g,' ');
+
+  /* ── 跑马灯填充（内容重复两遍实现无缝） ── */
+  const buildMarquee=(el,items,hlEvery=0)=>{
+    if(!el)return;
+    const seq=items.map((t,i)=>`<span class="mi${hlEvery&&i%hlEvery===hlEvery-1?' hl':''}">${esc(t)}</span><span class="dot"></span>`).join('');
+    el.innerHTML=`<div class="marquee-track">${seq}${seq}</div>`;
+  };
+
+  const membersOf=f=>characters.filter(c=>c.factionId===f.id||(Array.isArray(f.members)&&f.members.includes(c.id)));
+  const fullArt=c=>c.portrait||c.card||'';
+  const cardArt=c=>c.card||c.portrait||'';
+  const pad=n=>String(n).padStart(2,'0');
+
+  /* staggered reveal */
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');io.unobserve(e.target);}}),{threshold:.1});
+  const observe=nodes=>nodes.forEach((el,i)=>{el.style.transitionDelay=(i%6*70)+'ms';io.observe(el);});
+
+  /* ════════ 目录页 ════════ */
+  const renderDirectory=()=>{
+    buildMarquee($('#dirMarquee'),['Faction Archive','阵营档案','New Eridu','HOOXI','Hollow Raiders','新艾利都'],0);
+    buildMarquee($('#footTape'),['World All Ends Here','欢迎来到新艾利都','Zenless Zone Zero','HOOXI Fan Archive']);
+    $('#dirCountSticker').textContent=`${pad(factions.length)} 个阵营已收录`;
+    $('#factionGrid').innerHTML=factions.map(f=>{
+      const members=membersOf(f);
+      const arts=members.map(cardArt).filter(Boolean).slice(0,3);
+      return `<a class="fcard" style="--t:${esc(f.theme||'#ffe600')}" href="faction-redesign-test.html?id=${encodeURIComponent(f.id)}">
+        <span class="fcard-en-bg">${esc(en(f))}</span>
+        <div class="fcard-body">
+          <div class="fcard-top">
+            ${f.logo?`<span class="fcard-emblem"><img src="${esc(f.logo)}" alt="${esc(f.name)}徽记" loading="lazy"/></span>`:''}
+            <div>
+              <h3>${esc(f.name)}</h3>
+              <p class="en">${esc(en(f))}</p>
+            </div>
+          </div>
+          <p class="sum">${esc(f.summary||'')}</p>
+          <div class="fcard-foot">
+            <span class="fcard-count">${pad(members.length)} AGENTS</span>
+            <span class="fcard-cta">查看阵营档案</span>
+          </div>
+        </div>
+        <div class="fcard-arts"><div class="fig">${arts.map(s=>`<img src="${esc(s)}" alt="" loading="lazy"/>`).join('')}</div></div>
+      </a>`;
+    }).join('')||'<p class="empty">暂无阵营数据。</p>';
+    observe([...document.querySelectorAll('.fcard')]);
+  };
+
+  /* ════════ 详情页 ════════ */
+  let current=null;
+  const renderFaction=f=>{
+    const theme=f.theme||'#ffe600';
+    document.documentElement.style.setProperty('--t',theme);
+    document.title=`${f.name} // 阵营档案 // HOOXI`;
+    const members=membersOf(f);
+
+    buildMarquee($('#stageMarquee'),[en(f),f.name,'Faction File','HOOXI Archive'],0);
+    buildMarquee($('#midTape'),[en(f),f.name,`${pad(members.length)} Agents`,`Theme ${theme}`,'New Eridu Archive'],3);
+    buildMarquee($('#footTape'),['World All Ends Here','欢迎来到新艾利都','Zenless Zone Zero',f.name]);
+
+    if(f.logo)$('#stageGhostEmblem').src=f.logo;
+    $('#panelFaction').innerHTML=`${f.logo?`<img src="${esc(f.logo)}" alt=""/>`:''}<span>${esc(f.name)} · ${esc(en(f)).toUpperCase()}</span>`;
+    $('#briefEmblem').src=f.logo||'';
+    $('#briefEmblem').hidden=!f.logo;
+    $('#briefName').textContent=f.name;
+    $('#briefSummary').textContent=f.summary||'';
+    const wikiBtn=$('#btnWiki');
+    if(f.wikiUrl){wikiBtn.href=f.wikiUrl;wikiBtn.style.display='';}
+    else wikiBtn.style.display='none';
+
+    $('#memberHint').textContent=`${pad(members.length)} AGENTS // 点击切换 · ← → 键切换`;
+    $('#memberRow').innerHTML=members.map((c,i)=>{
+      const rank=(c.rank||'').toUpperCase();
+      return `<div class="mcard" data-i="${i}" role="button" tabindex="0">
+        <div class="ph">
+          ${rank?`<span class="mr ${rank==='S'?'s':rank==='A'?'a':''}">${esc(rank)}</span>`:''}
+          <img src="${esc(cardArt(c))}" alt="${esc(c.name)}" loading="lazy"/>
+        </div>
+        <p class="mn">${esc(c.name)}</p>
+      </div>`;
+    }).join('')||'<p class="empty">本地角色目录暂未映射该阵营成员。</p>';
+
+    const cards=[...document.querySelectorAll('.mcard')];
+    const select=(i,animate=true)=>{
+      const c=members[i];if(!c)return;
+      current=i;
+      cards.forEach((el,j)=>el.classList.toggle('active',j===i));
+      cards[i].scrollIntoView({block:'nearest',inline:'center',behavior:animate?'smooth':'auto'});
+      const img=$('#stageImg'),wrap=$('#stagePortrait');
+      const apply=()=>{
+        img.src=fullArt(c);img.alt=c.name+'立绘';
+        const rank=(c.rank||'').toUpperCase();
+        const rb=$('#panelRank');
+        rb.textContent=rank?rank+' 级':'—';
+        rb.className='rank-badge '+(rank==='S'?'s':rank==='A'?'a':'');
+        $('#panelNo').textContent=`AGENT No.${pad(i+1)} // ${f.id.toUpperCase()}`;
+        $('#panelName').textContent=c.name;
+        $('#panelEn').textContent=c.englishName||'';
+        $('#panelChips').innerHTML=[c.attribute&&`<span class="chip">属性 <b>${esc(c.attribute)}</b></span>`,
+          c.specialty&&`<span class="chip">特性 <b>${esc(c.specialty)}</b></span>`,
+          c.attackType&&`<span class="chip">${esc(c.attackType)}</span>`].filter(Boolean).join('');
+        $('#panelDesc').textContent=c.summary||c.impression||'身份资料待核验。';
+        $('#btnChar').href='character.html?id='+encodeURIComponent(c.id);
+      };
+      if(animate&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
+        wrap.classList.remove('swap-in');wrap.classList.add('swap-out');
+        setTimeout(()=>{apply();wrap.classList.remove('swap-out');wrap.classList.add('swap-in');},240);
+      }else apply();
+    };
+    cards.forEach((el,i)=>{
+      el.addEventListener('click',()=>select(i));
+      el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select(i);}});
+    });
+    document.addEventListener('keydown',e=>{
+      if(!members.length)return;
+      if(e.key==='ArrowRight')select((current+1)%members.length);
+      if(e.key==='ArrowLeft')select((current-1+members.length)%members.length);
+    });
+
+    /* 立绘轻微视差 */
+    const stage=$('.stage');
+    if(matchMedia('(pointer:fine)').matches){
+      stage.addEventListener('mousemove',e=>{
+        const r=stage.getBoundingClientRect();
+        const x=(e.clientX-r.left)/r.width-.5;
+        $('#stageImg').style.transform=`translateX(${x*18}px) rotate(${x*1.2}deg)`;
+      });
+      stage.addEventListener('mouseleave',()=>{$('#stageImg').style.transform='';});
+    }
+
+    select(0,false);
+  };
+
+  const requested=new URLSearchParams(location.search).get('id')||'';
+  const faction=factions.find(x=>x.id===requested)||null;
+  if(faction){
+    $('#directoryView').hidden=true;
+    $('#detailView').hidden=false;
+    renderFaction(faction);
+  }else{
+    renderDirectory();
+  }
+})();
+</script>
+</body>
+</html>

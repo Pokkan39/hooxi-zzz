@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="description" content="《绝区零》阵营目录、成员映射与关联记录。HOOXI 为粉丝非官方档案。"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="HOOXI 绝区零档案（粉丝非官方）"/>
+  <meta property="og:title" content="阵营档案 // HOOXI（粉丝非官方）"/>
+  <meta property="og:description" content="阵营成员与关联记录导航。粉丝非官方，与米哈游/HoYoverse 无隶属。"/>
+  <meta name="twitter:card" content="summary"/>
+  <meta name="twitter:title" content="阵营档案 // HOOXI（粉丝非官方）"/>
+  <meta name="twitter:description" content="阵营成员与关联记录导航。粉丝非官方，与米哈游/HoYoverse 无隶属。"/>
+  <title>阵营档案 // HOOXI 绝区零档案</title>
+  <script src="zzz-visual-runtime.js"></script>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="theme-tokens.css?v=ink-wash-1"/>
+  <link rel="stylesheet" href="theme-zzz.css?v=archive-light-4"/>
+  <link rel="stylesheet" href="zzz-motion.css?v=zzz-motion-r6"/>
+  <link rel="stylesheet" href="zzz-tv-transition.css?v=zzz-tv-r1"/>
+  <link rel="stylesheet" href="game-feel.css?v=gf-1"/>
+  <link rel="stylesheet" href="subpage-enhance.css?v=sp-2"/>
+  <link rel="stylesheet" href="src/styles/navigation.css"/>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
+  <style>
+  /* ══ 深色阶梯表面设计系统 ══ */
+  :root {
+    /* Surface ladder — 五阶深色表面，从近黑到浅灰 */
+    --surface-0: #05070C;
+    --surface-1: #0A0D12;
+    --surface-2: #0F131C;
+    --surface-3: #161D2B;
+    --surface-4: #1E2636;
+
+    /* Accent — 单一黄绿高饱和色 */
+    --accent-primary: #BFFF09;
+    --accent-dim: rgba(191, 255, 9, 0.12);
+    --accent-glow: 0 0 16px rgba(191, 255, 9, 0.2);
+
+    /* Typography */
+    --text-display: #FAFBFC;
+    --text-body: #D4D8DE;
+    --text-muted: rgba(212, 216, 222, 0.6);
+
+    /* Radii — 圆润几何 */
+    --radius-card: 24px;
+    --radius-pill: 999px;
+    --radius-avatar: 50%;
+
+    /* Spacing — token 化间距 */
+    --space-section: clamp(4rem, 8vw, 8rem);
+    --space-card: clamp(1.5rem, 3vw, 2.5rem);
+    --space-grid-gap: clamp(1rem, 2vw, 1.5rem);
+
+    /* Shadow */
+    --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-card-hover: 0 8px 32px rgba(0, 0, 0, 0.5), var(--accent-glow);
+  }
+
+  /* ══ Page Shell ══ */
+  body.archive-faction {
+    background: linear-gradient(165deg, var(--surface-0) 0%, var(--surface-1) 100%) !important;
+    color: var(--text-body) !important;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    line-height: 1.6;
+  }
+
+  /* ══ Topbar ══ */
+  .archive-faction .archive-topbar {
+    background: rgba(5, 7, 12, 0.9) !important;
+    border-bottom: 1px solid var(--accent-primary) !important;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 20px rgba(191, 255, 9, 0.1);
+  }
+
+  .archive-faction .archive-topbar .brand { color: var(--text-display) !important; }
+  .archive-faction .archive-topbar .brand strong { color: var(--accent-primary) !important; }
+  .archive-faction .archive-topbar .brand small { color: var(--text-muted) !important; }
+
+  .archive-faction .archive-topbar nav a {
+    color: var(--text-muted) !important;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+  }
+
+  .archive-faction .archive-topbar nav a:hover,
+  .archive-faction .archive-topbar nav a[aria-current] {
+    color: var(--accent-primary) !important;
+    text-shadow: 0 0 8px rgba(191, 255, 9, 0.4);
+  }
+
+  /* ══ Hero Section ══ */
+  .archive-faction .archive-hero {
+    background: linear-gradient(135deg, var(--surface-2) 0%, var(--surface-1) 100%) !important;
+    border-bottom: 1px solid rgba(191, 255, 9, 0.08) !important;
+    padding: var(--space-section) clamp(1.5rem, 5vw, 5rem) !important;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .archive-faction .archive-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 2px,
+        rgba(191, 255, 9, 0.01) 2px,
+        rgba(191, 255, 9, 0.01) 3px
+      );
+    pointer-events: none;
+  }
+
+  .archive-faction .faction-heading {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(2rem, 4vw, 3rem);
+    align-items: center;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .archive-faction .faction-heading-logo {
+    width: 120px;
+    height: 120px;
+    display: grid;
+    place-items: center;
+    background: var(--surface-3);
+    border: 1px solid rgba(191, 255, 9, 0.12);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  .archive-faction .faction-heading-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 16px rgba(191, 255, 9, 0.3));
+  }
+
+  .archive-faction .eyebrow {
+    color: var(--accent-primary) !important;
+    font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0 0 0.75rem;
+    text-shadow: var(--accent-glow);
+  }
+
+  .archive-faction .archive-hero h1 {
+    color: var(--text-display) !important;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin: 0 0 1rem;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .archive-faction .archive-hero p {
+    color: var(--text-muted) !important;
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    max-width: 42rem;
+    margin: 0;
+  }
+
+  .archive-faction .faction-notice {
+    color: var(--accent-primary) !important;
+    background: rgba(191, 255, 9, 0.06);
+    border-left: 3px solid var(--accent-primary);
+    padding: 8px 14px;
+    margin-top: 1rem;
+  }
+
+  /* ══ Section Heads ══ */
+  .archive-faction .section-head {
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .archive-faction .section-head h2 {
+    color: var(--text-display) !important;
+    font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+  }
+
+  .archive-faction .section-head h2::before {
+    content: '';
+    width: 4px;
+    height: 1.5em;
+    background: var(--accent-primary);
+    border-radius: var(--radius-pill);
+    box-shadow: var(--accent-glow);
+  }
+
+  .archive-faction .section-head p {
+    color: var(--text-muted) !important;
+    font-size: clamp(0.875rem, 1.75vw, 1rem);
+    margin: 0;
+  }
+
+  .archive-faction .section-head b {
+    color: var(--accent-primary) !important;
+  }
+
+  /* ══ Directory Cards ══ */
+  .archive-faction .faction-directory-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: var(--space-grid-gap);
+    padding: 0;
+  }
+
+  .archive-faction .faction-directory-card {
+    background: var(--surface-2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.04) !important;
+    border-left: 3px solid var(--accent-primary) !important;
+    border-radius: var(--radius-card);
+    padding: var(--space-card);
+    box-shadow: var(--shadow-card);
+    transition:
+      transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .archive-faction .faction-directory-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at top left,
+      var(--accent-dim) 0%,
+      transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .archive-faction .faction-directory-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+    border-color: rgba(191, 255, 9, 0.2) !important;
+  }
+
+  .archive-faction .faction-directory-card:hover::after {
+    opacity: 1;
+  }
+
+  .archive-faction .faction-directory-emblem {
+    width: 72px;
+    height: 72px;
+    background: var(--surface-3);
+    border: 1px solid rgba(191, 255, 9, 0.12);
+    border-radius: var(--radius-card);
+    display: grid;
+    place-items: center;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .archive-faction .faction-directory-emblem img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px rgba(191, 255, 9, 0.2));
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .archive-faction .faction-directory-card:hover .faction-directory-emblem img {
+    transform: scale(1.08);
+  }
+
+  .archive-faction .faction-directory-emblem span {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent-primary);
+    text-shadow: var(--accent-glow);
+  }
+
+  .archive-faction .faction-directory-copy h3 {
+    color: var(--text-display) !important;
+    margin: 0 0 0.375rem;
+    font-size: clamp(1.125rem, 2.25vw, 1.25rem);
+    font-weight: 600;
+  }
+
+  .archive-faction .faction-directory-copy p {
+    color: var(--text-muted) !important;
+    margin: 0;
+    font-size: clamp(0.8125rem, 1.625vw, 0.875rem);
+  }
+
+  .archive-faction .faction-primary-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0.625rem 1.25rem;
+    background: transparent;
+    border: 1.5px solid var(--accent-primary);
+    border-radius: var(--radius-pill);
+    color: var(--accent-primary) !important;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  .archive-faction .faction-primary-action:hover {
+    background: var(--accent-primary);
+    color: var(--surface-0) !important;
+    box-shadow: var(--accent-glow);
+  }
+
+  /* ══ Member Cards ══ */
+  .archive-faction .faction-member-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+    gap: var(--space-grid-gap);
+    padding: 0;
+  }
+
+  .archive-faction .faction-member-card {
+    background: var(--surface-2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.04) !important;
+    border-radius: var(--radius-card);
+    padding: var(--space-card);
+    box-shadow: var(--shadow-card);
+    transition:
+      transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .archive-faction .faction-member-fallback-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent-primary);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .archive-faction .faction-member-card:hover {
+    border-color: rgba(191, 255, 9, 0.2) !important;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .archive-faction .faction-member-fallback-card:hover::before {
+    opacity: 1;
+  }
+
+  .archive-faction .faction-member-image {
+    width: 52px;
+    height: 52px;
+    overflow: hidden;
+    background: var(--surface-3);
+    border: 1px solid rgba(191, 255, 9, 0.12);
+    border-radius: var(--radius-card);
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .archive-faction .faction-member-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .archive-faction .faction-member-image span {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--accent-primary);
+  }
+
+  .archive-faction .faction-member-copy h3 {
+    color: var(--text-display) !important;
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .archive-faction .faction-member-copy p {
+    color: var(--text-muted) !important;
+    margin: 0;
+    font-size: 0.75rem;
+  }
+
+  /* ══ Disclosure / Collapsible ══ */
+  .archive-faction .faction-disclosure {
+    background: rgba(15, 19, 28, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.04) !important;
+    border-radius: var(--radius-card);
+    margin-top: 1rem;
+  }
+
+  .archive-faction .faction-disclosure > summary {
+    color: var(--text-display) !important;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    border-left: 3px solid var(--accent-primary);
+    transition: background 0.2s ease;
+  }
+
+  .archive-faction .faction-disclosure > summary:hover {
+    background: rgba(191, 255, 9, 0.04);
+  }
+
+  .archive-faction .faction-disclosure-content {
+    padding: 1rem 1.5rem;
+    color: var(--text-muted) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .archive-faction .faction-disclosure-content p {
+    color: var(--text-muted) !important;
+  }
+
+  .archive-faction .faction-disclosure-content dt {
+    color: var(--accent-primary) !important;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .archive-faction .faction-disclosure-content dd {
+    color: var(--text-display) !important;
+  }
+
+  /* ══ Records ══ */
+  .archive-faction .faction-record-list {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+
+  .archive-faction .faction-record {
+    background: var(--surface-2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.04) !important;
+    border-left: 3px solid var(--accent-primary) !important;
+    border-radius: var(--radius-card);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-card);
+    transition:
+      transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.3s ease;
+  }
+
+  .archive-faction .faction-record:hover {
+    border-left-color: var(--accent-primary) !important;
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .archive-faction .faction-record-meta {
+    color: var(--accent-primary) !important;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 0.5rem;
+  }
+
+  .archive-faction .faction-record h3 {
+    color: var(--text-display) !important;
+    margin: 0 0 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  .archive-faction .faction-record-summary {
+    color: var(--text-muted) !important;
+    margin: 0 0 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .archive-faction .faction-record code {
+    display: block;
+    color: rgba(191, 255, 9, 0.5);
+    font-size: 0.75rem;
+    margin: 0 0 1rem;
+  }
+
+  .archive-faction .faction-record-actions a,
+  .archive-faction .faction-record-actions span {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-pill);
+    color: var(--accent-primary) !important;
+    text-decoration: none;
+    margin-right: 0.5rem;
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease;
+  }
+
+  .archive-faction .faction-record-actions a:hover {
+    background: var(--accent-primary);
+    color: var(--surface-0) !important;
+  }
+
+  .archive-faction .faction-source-disabled {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-muted) !important;
+    opacity: 0.5;
+  }
+
+  /* ══ Sources & Footer ══ */
+  .archive-faction .archive-sources {
+    background: rgba(10, 13, 18, 0.5) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.04) !important;
+    padding: var(--space-section) clamp(1.5rem, 5vw, 5rem) !important;
+  }
+
+  .archive-faction .archive-sources h2 {
+    color: var(--text-display) !important;
+  }
+
+  .archive-faction .archive-sources p {
+    color: var(--text-muted) !important;
+  }
+
+  .archive-faction .archive-footer {
+    background: rgba(5, 7, 12, 0.95) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.04) !important;
+    padding: 1.5rem clamp(1.5rem, 5vw, 5rem) !important;
+  }
+
+  .archive-faction .archive-footer .footer-disclaimer {
+    color: var(--text-muted) !important;
+  }
+
+  .archive-faction .faction-empty {
+    color: var(--text-muted) !important;
+  }
+
+  /* ══ Mobile Nav ══ */
+  .archive-faction .archive-mobile-nav {
+    background: rgba(5, 7, 12, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  }
+
+  .archive-faction .archive-mobile-nav > summary {
+    color: var(--text-display) !important;
+  }
+
+  .archive-faction .archive-mobile-nav nav a {
+    color: var(--text-muted) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+    padding: 0.75rem 1rem;
+    display: block;
+  }
+
+  .archive-faction .archive-mobile-nav nav a:hover {
+    color: var(--accent-primary) !important;
+    background: rgba(191, 255, 9, 0.04) !important;
+  }
+
+  /* ══ 响应式 ══ */
+  @media (max-width: 640px) {
+    .archive-faction .faction-directory-list,
+    .archive-faction .faction-member-list {
+      grid-template-columns: 1fr;
+    }
+
+    .archive-faction .archive-hero {
+      padding: 2.5rem 1rem 2rem !important;
+    }
+
+    .archive-faction .faction-heading {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+
+    .archive-faction .faction-heading-logo {
+      margin: 0 auto;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .archive-faction .faction-directory-card,
+    .archive-faction .faction-member-card {
+      padding: 1rem;
+    }
+  }
+
+  /* ══ 动画 ══ */
+  @media (prefers-reduced-motion: reduce) {
+    .archive-faction .faction-directory-card,
+    .archive-faction .faction-member-card,
+    .archive-faction .faction-directory-emblem img,
+    .archive-faction .faction-primary-action {
+      transition: none;
+    }
+
+    .archive-faction .faction-directory-card:hover,
+    .archive-faction .faction-member-card:hover {
+      transform: none;
+    }
+  }
+
+  /* ══ 扫描线效果 ══ */
+  body.archive-faction::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 1px,
+      rgba(0, 0, 0, 0.02) 1px,
+      rgba(0, 0, 0, 0.02) 2px
+    );
+    opacity: 0.5;
+  }
+
+  /* ══ 隐藏播放器 ══ */
+  .zzz-player,
+  .zzz-mini-player,
+  .zzz-side-waveform,
+  #zzzMiniPlayer,
+  #musicPlayer {
+    display: none !important;
+  }
+  </style>
+  <link rel="stylesheet" href="navigation-ik.css">
+</head>
+<body class="subpage archive-faction archive-shell data-shell data-faction">
+  <a class="skip-link" href="#mainContent">跳至主要内容</a>
+  <noscript><p>成员目录需 JavaScript 读取本地档案；可先浏览 <a href="stories.html">角色与阵营目录</a>。</p></noscript>
+    <header class="ik-header">
+    <div class="ik-header__inner">
+      <div class="ik-header__left">
+        <a href="index.html" class="ik-brand" aria-label="HOOXI 首页">
+          <img src="assets/images/zzzicon.png" alt="HOOXI" class="ik-brand__icon" draggable="false">
+          <strong class="ik-brand__title">HOOXI</strong>
+        </a>
+      </div>
+      <div class="ik-header__middle">
+        <form class="ik-search-shell" onsubmit="return false;">
+          <input class="ik-search-input" type="text" placeholder="搜索一下 (￣︶￣*))">
+          <span class="ik-search-divider"></span>
+          <button type="submit" class="ik-search-action" aria-label="搜索">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="18" height="18"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+          </button>
+        </form>
+      </div>
+      <div class="ik-header__right">
+        <div class="ik-header-tabs" role="tablist">
+          <a href="index.html" role="tab" class="ik-header-tab ik-header-tab--first">
+            <svg class="ik-tab-highlight ik-tab-highlight--first" viewBox="0 0 110.7 42" aria-hidden="true"><path d="M 21 0 L 94.38 0 A 10 10 0 0 1 103.29 14.54 L 93.75 33.26 A 16 16 0 0 1 79.5 42 L 21 42 A 21 21 0 0 1 21 0 Z" fill="currentColor"/></svg>
+            <span class="ik-header-tab__content">首页</span>
+          </a>
+          <a href="events.html" role="tab" class="ik-header-tab ik-header-tab--middle">
+            <svg class="ik-tab-highlight ik-tab-highlight--middle" viewBox="0 0 121.4 42" aria-hidden="true"><path d="M 105.08 0 A 10 10 0 0 1 113.99 14.54 L 104.45 33.26 A 16 16 0 0 1 90.2 42 L 16.32 42 A 10 10 0 0 1 7.41 27.46 L 16.95 8.74 A 16 16 0 0 1 31.2 0 Z" fill="currentColor"/></svg>
+            <span class="ik-header-tab__content">委托</span>
+          </a>
+          <a href="stories.html" role="tab" class="ik-header-tab ik-header-tab--last is-active">
+            <svg class="ik-tab-highlight ik-tab-highlight--last" viewBox="0 0 110.7 42" aria-hidden="true"><path d="M 89.7 0 A 21 21 0 0 1 89.7 42 L 13.05 42 A 8 8 0 0 1 5.93 30.37 L 16.95 8.74 A 16 16 0 0 1 31.2 0 Z" fill="currentColor"/></svg>
+            <span class="ik-header-tab__content">代理人</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="mainContent">
+    <section class="archive-hero faction-heading" aria-labelledby="factionName">
+      <div id="factionLogo" class="faction-heading-logo" hidden></div>
+      <div>
+        <p class="eyebrow">HOOXI 非官方阵营档案</p>
+        <h1 id="factionName">阵营目录</h1>
+        <p id="factionSummary">选择阵营，查看本地成员映射、关联记录与已核验来源。</p>
+        <p id="factionNotice" class="faction-notice" role="status" hidden></p>
+      </div>
+    </section>
+
+    <section id="factionDirectory" class="faction-directory" aria-labelledby="directoryTitle">
+      <div class="section-head" data-section-head>
+        <h2 id="directoryTitle">阵营目录</h2>
+        <p>共 <b id="directoryCount">0</b> 个阵营；每项使用本地徽记并显示当前收录成员数。</p>
+      </div>
+      <div id="factionDirectoryList" class="faction-directory-list"></div>
+      <details id="faction-directory-notes" class="faction-disclosure" data-archive-disclosure>
+        <summary>目录与来源状态</summary>
+        <div id="faction-directory-notes-content" class="faction-disclosure-content">
+          <p>阵营目录与成员数来自打包的 HOOXI 本地角色目录；仅对已有可信专属词条的阵营提供来源动作，未核验词条不会补造链接。</p>
+        </div>
+      </details>
+    </section>
+
+    <div id="factionDetail" hidden>
+      <section class="faction-members" aria-labelledby="membersTitle">
+        <div class="section-head" data-section-head>
+          <h2 id="membersTitle">成员名录</h2>
+          <p>当前收录 <b id="memberCount">0</b> 名成员；每项主动作进入完整角色档案。</p>
+        </div>
+        <div id="factionMembers" class="faction-member-list"></div>
+      </section>
+
+      <details id="factionContext" class="faction-disclosure faction-context" data-archive-disclosure>
+        <summary>阵营档案说明</summary>
+        <div id="factionContextContent" class="faction-disclosure-content"></div>
+      </details>
+
+      <section class="faction-record-section" aria-labelledby="recordsTitle">
+        <div class="section-head" data-section-head>
+          <h2 id="recordsTitle">关联资料</h2>
+          <p>共 <b id="factionCount">0</b> 条打包记录；按档案类型渐进展开。</p>
+        </div>
+        <div id="factionRecords" class="faction-record-groups"></div>
+      </section>
+    </div>
+
+    <section id="sources" class="archive-sources" data-source-section aria-labelledby="sourcesTitle">
+      <h2 id="sourcesTitle">来源与使用说明</h2>
+      <p id="factionSourceStatus">目录与成员映射来自 HOOXI 本地角色目录与已核验记录索引；目录仅展示阵营徽记，版权归米哈游所有。</p>
+      <div id="factionSourceAction" class="faction-source-actions"></div>
+    </section>
+  </main>
+
+  <footer class="archive-footer">
+    <span class="footer-disclaimer" data-unofficial-boundary>HOOXI 为粉丝非官方档案，与米哈游/HoYoverse 无隶属；《绝区零》相关游戏内容版权归米哈游所有。</span>
+  </footer>
+
+    <script src="data.js?v=lane-stories-1"></script>
+  <script src="agent-enrichment.js?v=archive-3"></script>
+  <script src="agent-catalog.js?v=archive-3"></script>
+  <script src="faction.js?v=react-bits-faction-1"></script>
+  <script src="faction-members.js?v=react-bits-faction-1"></script>
+  <script src="assets/vendor/gsap/gsap.min.js?v=gsap-3-15-0"></script>
+  <script src="zzz-motion.js?v=zzz-motion-r7"></script>
+  <script src="zzz-motion-notice.js?v=zzz-motion-notice-r1"></script>
+  <script src="zzz-tv-transition.js?v=zzz-tv-r1"></script>
+  <script src="theme-switcher.js?v=theme-switcher-r1"></script>
+  <script src="game-feel.js?v=gf-1"></script>
+  <script src="subpage-motion.js?v=sp-2"></script>
+  <script src="zzz-audio-catalog.js?v=voice-p2"></script>
+  <script src="zzz-player.js?v=voice-p2"></script>
+  <script src="zzz-waveform.js?v=voice-p2"></script>
+  <script src="zzz-global-player.js?v=gp-1"></script>
+  <script src="fx-reveal.js?v=react-bits-faction-1"></script>
+  <script src="fx-parallax.js?v=react-bits-faction-1"></script>
+  <script src="fx-flowing-nav.js?v=hallmark-v3"></script>
+<script src="fx-glare.js?v=hallmark-v3"></script>
+<script src="fx-click-spark.js?v=hallmark-v3"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>无双闪光海报 · 样板审批页</title>
+<link rel="stylesheet" href="holo-poster.css"/>
+</head>
+<body>
+<header class="demo-head">
+  <div class="demo-title">
+    <span class="demo-eyebrow">HOOXI ARCHIVE · 效果样板</span>
+    <h1>无双闪光海报 <em>鼠标驱动 · 分层视差 · 镭射扫光</em></h1>
+  </div>
+  <div class="demo-hints">
+    <span>移动鼠标：3D 翻转 + 视差 + 扫光跟随</span>
+    <span>静止 1.5s：光效自动循环流动</span>
+    <span>← → 或点击下方缩略图：切换海报</span>
+  </div>
+</header>
+
+<main class="holo-stage" id="holoStage">
+  <div class="holo-card" id="holoCard">
+    <div class="holo-tilt" id="holoTilt">
+      <img class="holo-layer holo-far"  id="layerFar"  alt="" aria-hidden="true" draggable="false"/>
+      <img class="holo-layer holo-mid"  id="layerMid"  alt="" aria-hidden="true" draggable="false"/>
+      <img class="holo-layer holo-near" id="layerNear" alt="" draggable="false"/>
+      <div class="holo-foil"   aria-hidden="true"></div>
+      <div class="holo-sweep"  aria-hidden="true"></div>
+      <div class="holo-glare"  aria-hidden="true"></div>
+      <div class="holo-sparkles" id="holoSparkles" aria-hidden="true"></div>
+      <div class="holo-frame"  aria-hidden="true"></div>
+    </div>
+  </div>
+  <p class="holo-act-name" id="holoActName"></p>
+</main>
+
+<nav class="holo-thumbstrip" id="holoThumbstrip" aria-label="切换海报"></nav>
+
+<script src="holo-poster.js"></script>
+</body>
+</html>

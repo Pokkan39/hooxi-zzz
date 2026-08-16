@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOOXI // 代理人档案</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --page-accent: #a8d8ea;
+  --page-accent-dim: rgba(168,216,234,0.15);
+  --font: 'Inter', 'Arial Black', sans-serif;
+}
+html, body { width: 100%; height: 100%; overflow: hidden; background: #000; color: #fff; font-family: var(--font); }
+body.hv2 { background: #000; position: relative; }
+.hv2-bg-gradient { position: fixed; inset: 0; z-index: 0; pointer-events: none; transition: background 600ms ease; }
+.hv2-bg-name {
+  position: fixed; right: -0.05em; top: -6vh; height: 50vh;
+  line-height: 1; overflow: hidden; pointer-events: none; z-index: 0;
+}
+.hv2-bg-name__inner {
+  display: inline-block; font-size: 50vh; font-weight: 900;
+  letter-spacing: -0.0875em; text-transform: uppercase; white-space: nowrap;
+  color: rgba(255,255,255,0.055);
+  transform: translateY(100%);
+  transition: transform 300ms cubic-bezier(0.7,0,0.3,1);
+  will-change: transform; font-family: var(--font);
+}
+.hv2-bg-name__inner.visible { transform: translateY(0); }
+.hv2-bg-nick {
+  position: fixed; left: 0.15em; bottom: -6vh; height: 35vh;
+  overflow: hidden; pointer-events: none; z-index: 2;
+}
+.hv2-bg-nick__inner {
+  display: inline-block; font-size: 35vh; font-weight: 900;
+  letter-spacing: -0.0875em; text-transform: uppercase; white-space: nowrap;
+  color: rgba(255,255,255,0.9);
+  transform: translateY(-100%);
+  transition: transform 300ms cubic-bezier(0.7,0,0.3,1);
+  will-change: transform; font-family: var(--font);
+}
+.hv2-bg-nick__inner.visible { transform: translateY(0); }
+.hv2-portrait {
+  position: fixed; right: 20%; bottom: 0; height: 90vh; width: auto;
+  object-fit: contain; object-position: bottom center;
+  pointer-events: none; z-index: 1;
+  filter: drop-shadow(0 0 0 transparent);
+  transition: opacity 300ms ease, filter 300ms ease;
+}
+.hv2-header {
+  position: fixed; top: 0; left: 0; right: 0; height: 60px;
+  display: flex; align-items: center; padding: 0 32px; gap: 40px; z-index: 20;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%);
+}
+.hv2-logo { font-size: 13px; font-weight: 900; letter-spacing: 0.15em; text-transform: uppercase; color: #fff; text-decoration: none; }
+.hv2-logo span { color: var(--page-accent); }
+.hv2-nav { display: flex; gap: 28px; flex: 1; }
+.hv2-nav a { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 200ms; }
+.hv2-nav a:hover { color: #fff; }
+.hv2-status { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.15em; color: rgba(255,255,255,0.4); }
+.hv2-status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--page-accent); animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1;}50%{opacity:0.2;} }
+.hv2-sidebar {
+  position: fixed; left: 24px; top: 50%; transform: translateY(-50%);
+  z-index: 10; display: flex; flex-direction: column; gap: 8px;
+  max-height: 70vh; overflow-y: auto; scrollbar-width: none;
+}
+.hv2-sidebar::-webkit-scrollbar { display: none; }
+.hv2-agent-btn {
+  width: 48px; height: 48px; border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(8px); overflow: hidden; cursor: pointer;
+  transition: border-color 200ms, transform 200ms, box-shadow 200ms;
+  padding: 0; flex-shrink: 0;
+}
+.hv2-agent-btn img { width: 100%; height: 100%; object-fit: cover; }
+.hv2-agent-btn.active { border-color: var(--page-accent); transform: scale(1.1); box-shadow: 0 0 12px var(--page-accent-dim); }
+.hv2-agent-btn:hover:not(.active) { border-color: rgba(255,255,255,0.3); transform: scale(1.05); }
+.hv2-info {
+  position: fixed; right: 0; top: 50%; transform: translateY(-50%);
+  width: 280px; padding: 32px 32px 32px 0; z-index: 10;
+}
+.hv2-info__faction { overflow: hidden; line-height: 1.2; margin-bottom: 8px; }
+.hv2-info__faction-inner {
+  display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--page-accent, #BFFF09);
+  transform: translateY(100%);
+  transition: transform 300ms 100ms cubic-bezier(0.22,1,0.36,1);
+}
+.hv2-info__faction-inner.visible { transform: translateY(0); }
+.hv2-info__name { overflow: hidden; margin-bottom: 16px; }
+.hv2-info__name-inner {
+  display: block; font-size: 48px; font-weight: 900; line-height: 1; color: #fff;
+  transform: translateY(100%);
+  transition: transform 300ms 160ms cubic-bezier(0.22,1,0.36,1);
+}
+.hv2-info__name-inner.visible { transform: translateY(0); }
+.hv2-info__tags { overflow: hidden; margin-bottom: 8px; }
+.hv2-info__tags-inner {
+  display: flex; gap: 8px; align-items: center;
+  transform: translateY(100%);
+  transition: transform 300ms 220ms cubic-bezier(0.22,1,0.36,1);
+}
+.hv2-info__tags-inner.visible { transform: translateY(0); }
+.hv2-tag { padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.hv2-tag.rank-s { background: rgba(250,204,21,0.15); color: #facc15; border: 1px solid rgba(250,204,21,0.3); }
+.hv2-tag.element { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.15); }
+.hv2-info__cta { overflow: hidden; margin-top: 24px; }
+.hv2-info__cta-inner { display: inline-block; transform: translateY(100%); transition: transform 300ms 280ms cubic-bezier(0.22,1,0.36,1); }
+.hv2-info__cta-inner.visible { transform: translateY(0); }
+.hv2-info__wiki { overflow: hidden; margin-top: 10px; }
+.hv2-info__wiki-inner { display: inline-block; transform: translateY(100%); transition: transform 300ms 320ms cubic-bezier(0.22,1,0.36,1); }
+.hv2-info__wiki-inner.visible { transform: translateY(0); }
+.hv2-btn { display: inline-block; padding: 10px 20px; background: var(--page-accent,#BFFF09); color: #000; font-size: 12px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; border-radius: 4px; transition: opacity 200ms; }
+.hv2-btn:hover { opacity: 0.85; }
+.hv2-btn-ghost { display: inline-block; padding: 8px 16px; background: transparent; color: rgba(255,255,255,0.5); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; transition: color 200ms, border-color 200ms; }
+.hv2-btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+.hv2-footer { position: fixed; bottom: 0; left: 0; right: 0; height: 48px; display: flex; align-items: center; padding: 0 32px; justify-content: space-between; z-index: 20; background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%); }
+.hv2-footer-disc { font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 0.05em; }
+.hv2-pagination { display: flex; gap: 6px; align-items: center; }
+.hv2-page-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.2); cursor: pointer; transition: background 200ms, transform 200ms; border: none; padding: 0; }
+.hv2-page-dot.active { background: var(--page-accent); transform: scale(1.4); }
+</style>
+</head>
+<body class="hv2">
+<div class="hv2-bg-gradient" id="bgGrad"></div>
+
+<div class="hv2-bg-name" aria-hidden="true">
+  <span class="hv2-bg-name__inner clip-inner" id="bgName">SRT</span>
+</div>
+
+<div class="hv2-bg-nick" aria-hidden="true">
+  <span class="hv2-bg-nick__inner clip-inner" id="bgNick">MIYABI</span>
+</div>
+
+<img class="hv2-portrait" id="portrait" src="assets/portraits/miyabi-portrait.webp" alt="雅">
+
+<header class="hv2-header">
+  <a class="hv2-logo" href="index.html">HOOXI <span>//</span> ZZZ ARCHIVE</a>
+  <nav class="hv2-nav">
+    <a href="mainline.html">主线</a>
+    <a href="events.html">活动</a>
+    <a href="faction.html">阵营</a>
+    <a href="cultivate.html">养成</a>
+    <a href="behind-scenes.html">幕后</a>
+  </nav>
+  <div class="hv2-status">
+    <span class="hv2-status-dot"></span>
+    <span id="statusText">AGENT 01 / 12</span>
+  </div>
+</header>
+
+<aside class="hv2-sidebar" id="sidebar" aria-label="代理人选择"></aside>
+
+<div class="hv2-info" id="infoPanel">
+  <div class="hv2-info__faction">
+    <span class="hv2-info__faction-inner clip-inner" id="infoFaction">公安特勤厅</span>
+  </div>
+  <div class="hv2-info__name">
+    <span class="hv2-info__name-inner clip-inner" id="infoName">雅</span>
+  </div>
+  <div class="hv2-info__tags">
+    <div class="hv2-info__tags-inner clip-inner" id="infoTags">
+      <span class="hv2-tag rank-s">S 级</span>
+      <span class="hv2-tag element">冰</span>
+    </div>
+  </div>
+  <div class="hv2-info__cta">
+    <a class="hv2-info__cta-inner clip-inner hv2-btn" id="infoCta" href="character.html?id=miyabi">进入档案 →</a>
+  </div>
+  <div class="hv2-info__wiki">
+    <a class="hv2-info__wiki-inner clip-inner hv2-btn-ghost" id="infoWiki" href="faction.html">查看阵营 ↗</a>
+  </div>
+</div>
+
+<footer class="hv2-footer">
+  <span class="hv2-footer-disc">HOOXI 粉丝非官方档案 · 与米哈游无隶属</span>
+  <div class="hv2-pagination" id="pagination"></div>
+</footer>
+<script>
+const AGENTS = [
+  { id:"miyabi",   name:"雅",     en:"MIYABI",       faction:"公安特勤厅",  factionEn:"SRT",          element:"冰",   rank:"S", accent:"#a8d8ea", portrait:"assets/portraits/miyabi-portrait.webp",   icon:"assets/icons/criminal-investigation-srt.png" },
+  { id:"yanagi",   name:"绫",     en:"YANAGI",       faction:"公安特勤厅",  factionEn:"SRT",          element:"电",   rank:"S", accent:"#c084fc", portrait:"assets/portraits/yanagi-portrait.webp",   icon:"assets/icons/criminal-investigation-srt.png" },
+  { id:"ellen",    name:"艾莲",   en:"ELLEN JOE",    faction:"维多利亚家政",factionEn:"VICTORIA",     element:"冰",   rank:"S", accent:"#93c5fd", portrait:"assets/portraits/ellen-portrait.webp",    icon:"assets/icons/victoria-housekeeping.png" },
+  { id:"caesar",   name:"凯撒",   en:"CAESAR KING",  faction:"卡吕冬之子", factionEn:"CALYDON",       element:"火",   rank:"S", accent:"#f97316", portrait:"assets/portraits/caesar-portrait.webp",   icon:"assets/icons/sons-of-calydon.png" },
+  { id:"burnice",  name:"伯妮斯", en:"BURNICE",      faction:"卡吕冬之子", factionEn:"CALYDON",       element:"火",   rank:"S", accent:"#fb923c", portrait:"assets/portraits/burnice-portrait.webp",  icon:"assets/icons/sons-of-calydon.png" },
+  { id:"lycaon",   name:"莱卡恩", en:"LYCAON",       faction:"维多利亚家政",factionEn:"VICTORIA",     element:"冰",   rank:"S", accent:"#7dd3fc", portrait:"assets/portraits/lycaon-portrait.webp",   icon:"assets/icons/victoria-housekeeping.png" },
+  { id:"jane-doe", name:"简·道", en:"JANE DOE",     faction:"刑事调查局", factionEn:"CIB",           element:"物理", rank:"S", accent:"#f9a8d4", portrait:"assets/portraits/jane-doe-portrait.webp", icon:"assets/icons/section-6.png" },
+  { id:"lighter",  name:"莱特",   en:"LIGHTER",      faction:"卡吕冬之子", factionEn:"CALYDON",       element:"火",   rank:"S", accent:"#fde047", portrait:"assets/portraits/lighter-portrait.webp",  icon:"assets/icons/sons-of-calydon.png" },
+  { id:"evelyn",   name:"伊芙琳", en:"EVELYN",       faction:"模仿鸟",     factionEn:"MOCKINGBIRD",   element:"火",   rank:"S", accent:"#ef4444", portrait:"assets/portraits/evelyn-portrait.webp",   icon:"assets/icons/mockingbird.png" },
+  { id:"vivian",   name:"薇薇安", en:"VIVIAN",       faction:"星光比利",   factionEn:"STARS OF LYRA", element:"以太", rank:"S", accent:"#BFFF09", portrait:"assets/portraits/vivian-portrait.webp",   icon:"assets/icons/stars-of-lyra.png" },
+  { id:"qingyi",   name:"青衣",   en:"QING YI",      faction:"公安特勤厅", factionEn:"SRT",           element:"电",   rank:"S", accent:"#818cf8", portrait:"assets/portraits/qingyi-portrait.webp",   icon:"assets/icons/criminal-investigation-srt.png" },
+  { id:"zhu-yuan", name:"朱鸢",   en:"ZHU YUAN",     faction:"刑事调查局", factionEn:"CIB",           element:"以太", rank:"S", accent:"#a3e635", portrait:"assets/portraits/zhu-yuan-portrait.webp", icon:"assets/icons/section-6.png" },
+];
+
+let current = 0, switching = false;
+
+function hexToRgba(hex, alpha) {
+  const h = hex.replace('#','');
+  const r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+  return 'rgba('+r+','+g+','+b+','+alpha+')';
+}
+function getFactionId(agent) {
+  const map = {
+    '公安特勤厅':'srt','维多利亚家政':'victoria','卡吕冬之子':'calydon',
+    '刑事调查局':'cib','模仿鸟':'mockingbird','星光比利':'stars-of-lyra'
+  };
+  return map[agent.faction] || agent.id;
+}
+function showAgent(idx, animate) {
+  if (switching && animate) return;
+  current = idx;
+  const agent = AGENTS[idx];
+  const dim = hexToRgba(agent.accent, 0.15);
+  document.documentElement.style.setProperty('--page-accent', agent.accent);
+  document.documentElement.style.setProperty('--page-accent-dim', dim);
+  document.getElementById('bgGrad').style.background =
+    'radial-gradient(ellipse 70% 90% at 65% 60%, '+hexToRgba(agent.accent,0.12)+', #000 70%)';
+  if (!animate) {
+    setContent(agent);
+    requestAnimationFrame(()=>requestAnimationFrame(makeVisible));
+    return;
+  }
+  switching = true;
+  slideOut();
+  setTimeout(() => {
+    setContent(agent);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{makeVisible();switching=false;}));
+  }, 180);
+}
+
+function slideOut() {
+  document.querySelectorAll('.clip-inner').forEach(el=>el.classList.remove('visible'));
+  const p = document.getElementById('portrait');
+  p.style.opacity='0'; p.style.filter='blur(12px)';
+}
+
+function setContent(agent) {
+  document.getElementById('bgName').textContent = agent.factionEn;
+  document.getElementById('bgNick').textContent = agent.en;
+  document.getElementById('infoFaction').textContent = agent.faction;
+  document.getElementById('infoName').textContent = agent.name;
+  document.getElementById('infoTags').innerHTML =
+    '<span class="hv2-tag rank-'+agent.rank.toLowerCase()+'">'+agent.rank+' 级</span>'+
+    '<span class="hv2-tag element">'+agent.element+'</span>';
+  document.getElementById('infoCta').href = 'character.html?id='+agent.id;
+  document.getElementById('infoWiki').href = 'faction.html?id='+getFactionId(agent);
+  document.getElementById('statusText').textContent =
+    'AGENT '+String(current+1).padStart(2,'0')+' / '+String(AGENTS.length).padStart(2,'0');
+  const p = document.getElementById('portrait');
+  p.style.transition='none'; p.style.opacity='0'; p.style.filter='blur(12px)';
+  p.src=agent.portrait; p.alt=agent.name;
+  function rev(){p.style.transition='opacity 400ms ease, filter 400ms ease';p.style.opacity='1';p.style.filter='blur(0)';}
+  if(p.complete&&p.naturalWidth>0){setTimeout(rev,50);}else{p.onload=rev;p.onerror=rev;}
+  document.querySelectorAll('.hv2-agent-btn').forEach((btn,i)=>btn.classList.toggle('active',i===current));
+  document.querySelectorAll('.hv2-page-dot').forEach((dot,i)=>dot.classList.toggle('active',i===current));
+}
+
+function makeVisible(){document.querySelectorAll('.clip-inner').forEach(el=>el.classList.add('visible'));}
+
+const sidebar = document.getElementById('sidebar');
+AGENTS.forEach((agent,i)=>{
+  const btn=document.createElement('button');
+  btn.className='hv2-agent-btn'+(i===0?' active':'');
+  btn.title=agent.name; btn.setAttribute('aria-label',agent.name);
+  const img=document.createElement('img'); img.src=agent.icon; img.alt=agent.name; img.loading='lazy';
+  btn.appendChild(img);
+  btn.addEventListener('click',()=>showAgent(i,true));
+  sidebar.appendChild(btn);
+});
+
+const pag=document.getElementById('pagination');
+AGENTS.forEach((_,i)=>{
+  const dot=document.createElement('button');
+  dot.className='hv2-page-dot'+(i===0?' active':'');
+  dot.setAttribute('aria-label','代理人 '+(i+1));
+  dot.addEventListener('click',()=>showAgent(i,true));
+  pag.appendChild(dot);
+});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'||e.key==='ArrowRight') showAgent((current+1)%AGENTS.length,true);
+  else if(e.key==='ArrowUp'||e.key==='ArrowLeft') showAgent((current-1+AGENTS.length)%AGENTS.length,true);
+});
+
+showAgent(0,false);
+</script>
+</body>
+</html>

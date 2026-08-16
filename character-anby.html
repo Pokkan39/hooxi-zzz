@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <style id="hooxi-site-loader-critical">
+    html.site-loading,html.site-loading body{overflow:hidden}
+    .hooxi-site-loader{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:flex-end;justify-content:flex-end;padding:32px 40px;background:#fff;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .18s ease}
+    html.site-loading .hooxi-site-loader{visibility:visible;opacity:1;pointer-events:auto}
+    html.site-loader-finishing .hooxi-site-loader{opacity:0;pointer-events:none}
+    .hooxi-site-loader img{width:360px;height:auto;opacity:1}
+    @media (prefers-reduced-motion:reduce){.hooxi-site-loader{transition:none}}
+  </style>
+  <script>(function(w,d){var r=d.documentElement;if(w.__hooxiSiteLoaderBoot)return;var b=w.__hooxiSiteLoaderBoot={startedAt:Date.now(),degraded:false,finished:false};var done=function(s){if(b.finished)return;b.finished=true;clearTimeout(b.timer);r.classList.remove('site-loading','site-booting','site-loader-finishing');r.dataset.siteLoaderState=s;r.classList.add(s==='degraded'?'site-degraded':'site-ready');};var fail=function(e){if(b.finished)return;var t=e&&e.target;if(e&&e.type==='error'&&t&&/^(IMG|SCRIPT|LINK)$/.test(t.tagName)){var a=t.tagName==='LINK'?'href':'src',u=t.getAttribute(a);if(u==null||u==='')return;}b.degraded=true;r.dataset.siteLoaderState='degraded';r.classList.add('site-degraded');if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.degrade();else done('degraded');};b.finish=done;b.fail=fail;r.classList.add('site-loading','site-booting');w.addEventListener('error',fail,true);w.addEventListener('unhandledrejection',fail,true);b.timer=setTimeout(function(){if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.forceFinish();else done(b.degraded?'degraded':'timeout');},4500);})(window,document);</script>
+  <script src="./site-loader.js" defer></script>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="description" content="安比·德玛拉代理人档案：角色影画、相关影像、个人剧情、资料与来源。Hooxi 粉丝非官方剧情档案站。"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="HOOXI 绝区零档案（粉丝非官方）"/>
+  <meta property="og:title" content="安比·德玛拉 // HOOXI 代理人档案（粉丝非官方）"/>
+  <meta property="og:description" content="安比·德玛拉影画与个人档案。粉丝非官方，与米哈游、HoYoverse 无隶属。"/>
+  <meta name="twitter:card" content="summary"/>
+  <meta name="twitter:title" content="安比·德玛拉 // HOOXI（粉丝非官方）"/>
+  <meta name="twitter:description" content="安比·德玛拉代理人影画与个人档案。粉丝非官方，与米哈游、HoYoverse 无隶属。"/>
+  <title>安比·德玛拉 // Hooxi 角色档案</title>
+  <script src="zzz-visual-runtime.js"></script>
+  <link rel="stylesheet" href="tokens.css?v=character-theme-1"/>
+  <link rel="stylesheet" href="theme-tokens.css?v=char-indep-1"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="multi-page.css?v=char-indep-1"/>
+  <link rel="stylesheet" href="motion.css?v=signal-ui-r3"/>
+  <link rel="stylesheet" href="theme-zzz.css?v=char-indep-3"/>
+  <meta name="theme-color" content="#0a0714"/>
+  <meta name="author" content="Hooxi"/>
+  <meta name="robots" content="index,follow"/>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
+  <link rel="stylesheet" href="live-hud.css?v=hud-1"/>
+  <link rel="stylesheet" href="archive-tools.css?v=character-dossier-2"/>
+  <link rel="stylesheet" href="design.css?v=nav-fullwidth-1"/>
+  <link rel="stylesheet" href="zzz-motion.css?v=cursor-slash-1"/>
+  <link rel="stylesheet" href="official-dna.css?v=nav-fullwidth-1"/>
+  <link rel="stylesheet" href="zzz-tv-transition.css?v=zzz-tv-r2"/>
+  <link rel="stylesheet" href="game-feel.css?v=gf-1"/>
+  <link rel="stylesheet" href="subpage-enhance.css?v=sp-2"/>
+  <link rel="stylesheet" href="zzz-visual-effects.css"/>
+  <link rel="stylesheet" href="zzz-waveform.css?v=voice-p2"/>
+  <link rel="stylesheet" href="zzz-global-player.css?v=gp-1"/>
+  <link rel="stylesheet" href="redesign-core-v3.css?v=hallmark-v3"/>
+  <link rel="stylesheet" href="redesign-data-v3.css?v=hallmark-v3"/>
+  <link rel="stylesheet" href="navigation-ik.css"/>
+  <!-- 安比样板专属样式：满屏影画 + 双层 hero + 电属性主题色 -->
+  <link rel="stylesheet" href="character-anby.css"/>
+</head>
+<body class="subpage archive-character archive-shell data-shell data-character">
+  <div class="hooxi-site-loader" data-site-loader role="status" aria-live="polite" aria-label="HOOXI 加载中">
+    <img src="assets/images/loading.gif" alt="加载中">
+  </div>
+  <div class="ambient" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="noise" aria-hidden="true"></div>
+
+  <main id="mainContent" tabindex="-1">
+
+    <!-- ══════════════════════════════════════════════════════
+         英雄首屏：双层影画（bg.webp 铺满 + fg.webp 角色居右通高）
+         ══════════════════════════════════════════════════════ -->
+    <section class="character-screen is-anby" id="art"
+             aria-labelledby="characterName"
+             data-character-art-source="gallery">
+
+      <header class="character-topbar">
+        <a class="character-back" href="stories.html">← 返回角色与阵营</a>
+      </header>
+
+      <!-- 背景层：铺满整个视口（object-fit:cover） -->
+      <img class="hero-bg"
+           src="assets/gallery/anby/layers/bg.webp"
+           alt="" aria-hidden="true"
+           fetchpriority="high" decoding="async"/>
+
+      <!-- 前景角色层：安比立绘，居右，通高 -->
+      <img class="hero-fg"
+           src="assets/gallery/anby/layers/fg.webp"
+           alt="安比·德玛拉全身立绘"
+           fetchpriority="high" decoding="async"/>
+
+      <!-- 左下角文字覆层 -->
+      <div class="character-hero-copy">
+        <p id="characterEnglishName" class="character-hero-english" lang="en">ANBY DEMARA</p>
+        <h1 id="characterName">安比·德玛拉</h1>
+        <dl class="character-identity" id="characterMeta" aria-label="角色身份">
+          <div><dt>所属阵营</dt><dd><a href="faction.html?id=cunning-hares">狡兔屋</a></dd></div>
+          <div><dt>作战属性</dt><dd>电</dd></div>
+          <div><dt>战斗特性</dt><dd>击破</dd></div>
+        </dl>
+        <a class="character-dossier-link" href="#dossier">向下查看档案 <span aria-hidden="true">↓</span></a>
+      </div>
+
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         档案详情区（由 character.js 动态填充）
+         ══════════════════════════════════════════════════════ -->
+    <section class="character-detail-page timeline-page" id="dossier" aria-label="角色完整档案">
+      <nav class="character-module-nav" role="tablist" aria-label="角色档案模块">
+        <a id="character-tab-media"   href="#media"   role="tab" aria-controls="media"   aria-selected="true"  tabindex="0"  data-character-nav="media"><span>影像</span></a>
+        <a id="character-tab-lore"    href="#lore"    role="tab" aria-controls="lore"    aria-selected="false" tabindex="-1" data-character-nav="lore"><span>剧情</span></a>
+        <a id="character-tab-profile" href="#profile" role="tab" aria-controls="profile" aria-selected="false" tabindex="-1" data-character-nav="profile"><span>资料</span></a>
+        <a id="character-tab-talents" href="#talents" role="tab" aria-controls="talents" aria-selected="false" tabindex="-1" data-character-nav="talents"><span>技能</span></a>
+        <a id="character-tab-related" href="#related" role="tab" aria-controls="related" aria-selected="false" tabindex="-1" data-character-nav="related"><span>来源</span></a>
+      </nav>
+      <div id="characterContent" class="character-content"></div>
+      <div id="characterFreeComponents" class="free-components"></div>
+
+      <aside class="character-art-credit" id="artSource" data-source-section
+             aria-live="polite" aria-label="角色影画来源">
+        <div data-character-art-credit="gallery" hidden>
+          <h2>影画来源</h2>
+          <p>本页使用站内本地官方 gallery 影画（安比双层：bg / fg）。</p>
+          <p>角色影画美术版权归米哈游所有；本站仅作非官方档案展示。</p>
+        </div>
+        <div data-character-art-credit="default" hidden>
+          <h2>影画来源</h2>
+          <p>本页使用经许可接入的 Default 影画。</p>
+          <a data-source-action href="https://steamcommunity.com/sharedfiles/filedetails/?id=3491187965"
+             target="_blank" rel="noreferrer">Toastertjie · Steam Workshop 3491187965</a>
+          <p>项目方确认已获 Toastertjie 许可使用；站内仅使用 Default 版本。</p>
+        </div>
+        <div data-character-art-credit="official-wiki" hidden>
+          <h2>影画来源</h2>
+          <p>本页使用米哈游官方 Wiki 素材。</p>
+          <p>角色影画美术版权归米哈游所有；本站仅作非官方档案展示。</p>
+        </div>
+      </aside>
+    </section>
+
+  </main>
+
+  <footer>
+    <span class="footer-disclaimer" data-unofficial-boundary>粉丝非官方档案站 · 与米哈游、HoYoverse 无隶属</span>
+    <span id="characterFooterSource">角色影画、前景角色立绘/卡图与阵营徽记版权归米哈游</span>
+    <span>HOOXI // ZZZ AGENT ARCHIVE</span>
+  </footer>
+
+  <!-- 默认 id=anby：直接打开 character-anby.html 时自动加载安比档案 -->
+  <script>(function(){
+    if(!new URLSearchParams(location.search).has('id')){
+      var u=new URL(location.href);
+      u.searchParams.set('id','anby');
+      history.replaceState(null,'',u);
+    }
+  })();</script>
+
+  <script src="site-motion.js?v=signal-ui-r3"></script>
+  <script src="data.js?v=s1-1"></script>
+  <script src="agent-enrichment.js?v=remielle-1"></script>
+  <script src="agent-talents.js?v=talent-r1"></script>
+  <script src="agent-xray.js?v=remielle-1"></script>
+  <script src="agent-catalog.js?v=remielle-1"></script>
+  <script src="layout-data.js?v=s1-1"></script>
+  <script src="image-webp.js?v=webp-4"></script>
+  <script src="character.js?v=char-indep-2"></script>
+  <script src="live-hud.js?v=hud-1"></script>
+  <script src="layout-editor.js?v=1"></script>
+  <script src="archive-tools.js?v=char-anim-2"></script>
+  <script src="assets/vendor/gsap/gsap.min.js?v=gsap-3-15-0"></script>
+  <script src="zzz-motion.js?v=zzz-motion-r7"></script>
+  <script src="zzz-official.js?v=zzz-official-r2"></script>
+  <script src="zzz-motion-notice.js?v=zzz-motion-notice-r1"></script>
+  <script src="zzz-tv-transition.js?v=zzz-tv-r2"></script>
+  <script src="theme-switcher.js?v=theme-switcher-r1"></script>
+  <script src="game-feel.js?v=gf-1"></script>
+  <script src="subpage-motion.js?v=sp-2"></script>
+  <script src="zzz-audio-catalog.js?v=voice-p2"></script>
+  <script src="zzz-player.js?v=voice-p2"></script>
+  <script src="zzz-waveform.js?v=voice-p2"></script>
+  <script src="zzz-global-player.js?v=gp-1"></script>
+  <script src="fx-reveal.js?v=hallmark-v3"></script>
+  <script src="fx-parallax.js?v=hallmark-v3"></script>
+  <script src="fx-flowing-nav.js?v=hallmark-v3"></script>
+</body>
+</html>
