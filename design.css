@@ -284,6 +284,7 @@
 body.archive-character{
   min-height:100%;
   padding-inline-start:0!important;
+  padding-bottom:0;
   overflow-x:hidden;
   color:var(--character-text);
   background:var(--character-page-bg);
@@ -312,7 +313,7 @@ body.archive-character::after{background:transparent}
 .char-glow-b{animation:char-drift-b 24s ease-in-out infinite}
 .char-glow-c{animation:char-pulse 12s ease-in-out infinite}
 /* 主内容层保持在伪元素之上 */
-body.archive-character>*{position:relative;z-index:1}
+body.archive-character>:is(main,footer){position:relative;z-index:1}
 .subpage.archive-character main{
   width:100%;
   max-width:none;
@@ -863,6 +864,54 @@ body.archive-character>*{position:relative;z-index:1}
 .archive-character .ambient{display:none}
 .archive-character .noise{opacity:.035}
 .archive-character .character-screen > :not(.d-keyart){z-index:2}
+.archive-character .character-detail-page>.char-marquee{position:absolute;inset:0;z-index:0}
+.archive-character .char-marquee{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  pointer-events:none;
+}
+.archive-character .char-marquee__band{
+  position:absolute;
+  inset:-30%;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-around;
+  transform:rotate(-15deg);
+}
+.archive-character .char-marquee__row{overflow:hidden}
+.archive-character .char-marquee__track{
+  display:inline-flex;
+  white-space:nowrap;
+  animation:char-marquee-ltr 40s linear infinite;
+}
+.archive-character .char-marquee__row--rtl .char-marquee__track{
+  animation-name:char-marquee-rtl;
+  animation-duration:52s;
+}
+.archive-character .char-marquee__row--offset .char-marquee__track{
+  animation-delay:-20s;
+}
+.archive-character .char-marquee__text{
+  display:inline-block;
+  font:800 clamp(80px,16vh,220px)/1 var(--font-display,sans-serif);
+  letter-spacing:-0.04em;
+  color:var(--character-accent,#d7f300);
+  opacity:.09;
+  user-select:none;
+  -webkit-user-select:none;
+}
+@media(prefers-reduced-motion:reduce){
+  .archive-character .char-marquee__track{animation:none}
+}
+@keyframes char-marquee-ltr{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}
+@keyframes char-marquee-rtl{
+  from{transform:translateX(-50%)}
+  to{transform:translateX(0)}
+}
 
 /* ---------- 13. 角色影画首屏与连续档案 ---------- */
 .archive-character .character-topbar{
@@ -979,10 +1028,9 @@ body.archive-character>*{position:relative;z-index:1}
   position:relative;
   isolation:isolate;
   width:100%;
-  min-height:100svh;
   margin:0;
-  padding:clamp(38px,6vw,84px) clamp(18px,5vw,76px) clamp(54px,8vw,108px);
-  overflow:hidden;
+  padding:clamp(38px,6vw,84px) clamp(18px,5vw,76px) clamp(40px,5vw,72px);
+  overflow:clip;
   color:var(--character-text);
   background:var(--character-page-bg);
 }
