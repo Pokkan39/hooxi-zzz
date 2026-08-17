@@ -614,21 +614,21 @@ body.archive-character>:is(main,footer){position:relative;z-index:1}
   fill:var(--at,var(--paper-dim));
 }
 .zzz-icon-sm{width:16px;height:16px}
-/* rank 花边章：参考图是圆形波浪外缘 + 中心字母 */
-.zzz-rank{
+/* rank 徽章：官方 wiki PNG */
+.zzz-rank-img{
   width:24px;
   height:24px;
   flex:0 0 auto;
-  display:grid;
-  place-items:center;
-  border-radius:50%;
-  font:800 13px/1 var(--font-display);
-  color:#1a1205;
-  background:var(--zzz-acid);
+  display:block;
+  object-fit:contain;
 }
-.zzz-rank[data-rank="S"]{background:#FFB500;color:#3a2600}
-.zzz-rank[data-rank="I"]{background:#FFB500;color:#3a2600}
-.zzz-rank[data-rank="A"]{background:var(--zzz-acid);color:#1a1f01}
+.char-rank-img{
+  width:22px;
+  height:22px;
+  display:inline-block;
+  vertical-align:middle;
+  object-fit:contain;
+}
 
 /* ---------- 12d. 右侧角色网格 ---------- */
 /* 名录必须自己限高。若让它随 56 张卡自然堆叠，会把整个
@@ -1532,126 +1532,114 @@ body.archive-character>:is(main,footer){position:relative;z-index:1}
   padding:14px 16px 16px;
 }
 .archive-character .talent-panel.is-active{display:block;}
-/* 详情区：左侧大图 + 名称，右侧描述 */
+/* 详情区：左大图框架 + 右侧名称/分隔线/描述 */
 .archive-character .talent-detail{
-  display:flex;
-  gap:16px;
-  margin-bottom:12px;
+  display:flex;gap:18px;margin-bottom:16px;align-items:flex-start;
 }
-.archive-character .talent-detail-left{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:8px;
-  flex:0 0 auto;
+.archive-character .talent-detail-icon{
+  flex:0 0 auto;display:flex;justify-content:center;align-items:center;
 }
-.archive-character .talent-detail-left .talent-icon-circle{
-  width:180px;height:180px;
-  border:2px solid rgba(216,250,0,.55);
+.archive-character .talent-detail-icon .talent-icon-circle{
+  width:160px;height:160px;
+  max-width:160px;max-height:160px;
+  background:#0a0f14;border:2px solid rgba(255,255,255,.08);
+  box-shadow:0 8px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06);
+  display:inline-flex;justify-content:center;align-items:center;
 }
-.archive-character .talent-detail-left .talent-icon-circle img{
-  width:180px;height:180px;
-  object-fit:contain;
+.archive-character .talent-detail-icon .talent-icon-circle img{
+  max-width:120px;max-height:120px;width:auto;height:auto;object-fit:contain;
 }
-.archive-character .talent-detail-left .talent-icon-no-img{
-  font-size:1.3rem;
-}
-.archive-character .talent-detail-name{
-  display:flex;flex-direction:column;align-items:flex-start;
-  gap:4px;
-  padding-left:4px;
-}
+.archive-character .talent-detail-text{flex:1 1 auto;display:flex;flex-direction:column;gap:6px;}
 .archive-character .talent-detail-type{
-  font-size:.62rem;font-family:var(--font-display,sans-serif);font-weight:700;
-  color:rgba(216,250,0,.85);
-  letter-spacing:.1em;text-transform:uppercase;
+  font-size:.6rem;font-family:var(--font-display,sans-serif);font-weight:700;
+  color:#00e5ff;text-transform:uppercase;letter-spacing:.15em;opacity:.85;
 }
 .archive-character .talent-detail-name h3{
-  margin:0;
-  font-family:var(--font-display,sans-serif);
-  font-size:.95rem;font-weight:700;
-  color:#d5ccb8;
-  letter-spacing:.04em;
+  margin:0;font-family:var(--font-display,sans-serif);font-size:1.05rem;font-weight:700;color:#ffffff;
+  letter-spacing:.06em;line-height:1.35;
 }
-.archive-character .talent-detail-sub{
-  font-size:.72rem;color:#d5ccb8;opacity:.6;
-  line-height:1.4;
-}
-.archive-character .talent-detail-right{
-  flex:1 1 auto;
-  display:flex;flex-direction:column;justify-content:center;
-  min-width:0;
+.archive-character .talent-detail-divider{
+  height:1px;background:linear-gradient(to right,var(--character-accent) 0%,rgba(255,255,255,.25) 45%,rgba(255,255,255,.12) 100%);
+  opacity:.7;flex:0 0 auto;
 }
 .archive-character .talent-desc{
-  font-size:.78rem;color:#d5ccb8;opacity:.75;
-  line-height:1.7;white-space:pre-line;
-  margin:0;
+  font-size:.8rem;color:#d5ccb8;opacity:.8;margin:0;padding:0;line-height:1.75;white-space:pre-line;
 }
-/* 水平滑动升级表（紧凑卡片） */
-.archive-character .talent-growth-scroll{
-  display:block;
+/* 升级数据：标题 + 等级轨道（水平）+ 数值区 */
+.archive-character .talent-growth{
   border-top:1px solid rgba(255,255,255,.06);
-  padding-top:10px;
-  margin-top:2px;
-  overflow:hidden;
+  margin-top:8px;
+}
+.archive-character .talent-growth-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:10px;min-height:46px;
+}
+.archive-character .talent-growth-title{
+  font-size:.6rem;font-family:var(--font-display,sans-serif);font-weight:700;
+  color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.12em;
 }
 .archive-character .talent-growth-track{
-  display:flex;
-  flex-direction:row;
-  flex-wrap:nowrap;
-  gap:10px;
-  overflow-x:auto;
-  overflow-y:hidden;
-  padding:4px 4px 6px;
-  scroll-behavior:smooth;
-  scrollbar-width:none;
-  -webkit-overflow-scrolling:touch;
+  display:flex;align-items:center;gap:10px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
 }
 .archive-character .talent-growth-track::-webkit-scrollbar{display:none}
-.archive-character .talent-stage-card{
-  flex:0 0 168px;
-  width:168px;
-  min-width:144px;
-  background:rgba(var(--character-accent-rgb) / .10);
-  border:1px solid rgba(var(--character-accent-rgb) / .28);
-  border-radius:2px;
-  padding:12px 16px;
-  gap:6px;
+/* 等级按钮：圆形，有轨道线串联 */
+.archive-character .talent-stage-btn{
+  flex:0 0 auto;position:relative;display:inline-flex;align-items:center;justify-content:center;
+  width:38px;height:38px;background:transparent;
+  font-family:var(--font-display,sans-serif);font-weight:700;font-size:.85rem;cursor:pointer;
+  color:#cbbba0;border:2px solid rgba(255,255,255,.25);transition:all .3s ease;
+  z-index:1;
+  border-radius:50%;
 }
-.archive-character .talent-stage-card[data-active="true"]{
-  box-shadow:inset 0 0 0 2px var(--character-accent);
+/* redesign-data-v3.css 有 body.data-shell :is(button,...){border-radius:0!important}（特异度 0,2,1），
+   这里用三个类（0,3,0）压回圆形 */
+.archive-character .talent-growth-track .talent-stage-btn{border-radius:50%!important}
+.archive-character .talent-stage-btn::before{
+  content:'';position:absolute;left:-22px;top:50%;transform:translateY(-50%) scaleY(1.4);
+  width:18px;height:2px;background:rgba(255,255,255,.15);z-index:0;pointer-events:none;
 }
-.archive-character .talent-stage-num{
-  display:inline-block;
-  font-family:var(--font-display,sans-serif);font-weight:800;
-  font-size:.95rem;
-  color:var(--character-accent);
-  letter-spacing:.04em;
-  align-self:flex-start;
+.archive-character .talent-stage-btn:first-child::before{display:none}
+.archive-character .talent-stage-btn:last-child::after{
+  content:'';position:absolute;right:-22px;top:50%;transform:translateY(-50%) scaleY(1.4);
+  width:18px;height:2px;background:rgba(255,255,255,.15);z-index:0;pointer-events:none;display:none;
 }
-.archive-character .talent-stage-num.is-core{
-  color:var(--accent-hot);
+.archive-character .talent-stage-btn.is-active{
+  background:var(--character-accent);color:#0b0d10;
+  border-color:var(--character-accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--character-accent) 20%,transparent);
 }
-.archive-character .talent-stage-rows{
-  list-style:none;padding:0;margin:0;
-  font-size:.8rem;color:#d5ccb8;
-  line-height:1.7;
-  columns:2;column-gap:24px;
+.archive-character .talent-stage-btn.is-core{
+  font-size:1rem;min-width:42px;color:var(--accent-hot);border-color:var(--accent-hot);
 }
-.archive-character .talent-stage-rows li{
-  white-space:pre-line;
+.archive-character .talent-stage-btn.is-core.is-active{background:var(--accent-hot);color:#0b0d10;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent-hot) 20%,transparent);}
+.archive-character .talent-growth-body{display:flex;flex-direction:column;}
+.archive-character .talent-stage-panel{display:none;}
+.archive-character .talent-stage-panel.is-active{display:block;}
+.archive-character .talent-stage-rows{list-style:none;padding:0;margin:0;columns:2;column-gap:20px;}
+.archive-character .talent-stage-rows li{white-space:pre-line;font-size:.82rem;color:#d5ccb8;opacity:.85;line-height:1.7;}
+@media(max-width:600px){
+  .archive-character .talent-detail{flex-direction:column;align-items:center;text-align:center;}
+  .archive-character .talent-detail-icon .talent-icon-circle{width:120px;height:120px;max-width:120px;max-height:120px;}
+  .archive-character .talent-detail-icon .talent-icon-circle img{max-width:80px;}
+  .archive-character .talent-detail-type{font-size:.55rem;}
+  .archive-character .talent-detail-name h3{font-size:.9rem;}
+  .archive-character .talent-growth{margin-top:4px;}
+  .archive-character .talent-growth-track{justify-content:center;}
+  .archive-character .talent-stage-btn{width:34px;height:34px;font-size:.75rem;}
+  .archive-character .talent-stage-btn::before{left:-18px;width:14px;}
+  .archive-character .talent-stage-btn:last-child::after{right:-18px;width:14px;}
+  .archive-character .talent-stage-rows{columns:1;}
 }
-.archive-character .talent-growth-tip{
-  font-size:.6rem;
-  color:#d5ccb8;opacity:.5;
-  text-align:center;
-  margin:0;
-  padding:2px 0 4px;
-}
+/* 技能模块底部来源说明 */
 .archive-character .talent-module .character-wiki-note{
   font-size:.62rem;color:#d5ccb8;opacity:.4;
   padding:8px 16px 12px;
   border-top:1px solid rgba(255,255,255,.06);
+  margin:0;
+}
+.archive-character .talent-desc{
+  font-size:.78rem;color:#d5ccb8;opacity:.75;
+  line-height:1.7;white-space:pre-line;
   margin:0;
 }
 /* 移动端适配 */
@@ -1661,18 +1649,8 @@ body.archive-character>:is(main,footer){position:relative;z-index:1}
   .archive-character .talent-icon-circle{max-width:52px;max-height:52px;}
   .archive-character .talent-icon-circle img{max-width:52px;max-height:52px;}
   .archive-character .talent-icon-label{font-size:.62rem;}
-  .archive-character .talent-detail{flex-direction:column;align-items:center;text-align:center;}
-  .archive-character .talent-detail-left{flex-direction:row;align-items:center;gap:14px;}
-  .archive-character .talent-detail-left .talent-icon-circle{width:100px;height:100px;}
-  .archive-character .talent-detail-left .talent-icon-circle img{width:100px;height:100px;}
-  .archive-character .talent-detail-name{align-items:center;}
-  .archive-character .talent-stage-card{width:140px;min-width:120px;}
   .archive-character .talent-panel{padding:12px;}
 }
-/* 技能倍率：卡片在横向轨道上并列，全部可见，水平滑动查看 */
-.archive-character .talent-stage-card{opacity:1}
-/* 等级导航 dots（已废弃，保留以防数据源遗留） */
-.archive-character .talent-stage-nav{display:none}
 /* 等级导航 dots */
 .archive-character .talent-stage-nav{
   display:flex;gap:4px;justify-content:center;

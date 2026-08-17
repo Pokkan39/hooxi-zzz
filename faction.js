@@ -279,7 +279,7 @@
       const color=agentColor(member,theme);
       return `<div class="fg-mcard" style="--mc:${escapeHtml(color)}" data-i="${index}" role="button" tabindex="0" aria-label="查看${escapeHtml(text(member?.name))}">
         <div class="ph">
-          ${rank?`<span class="mr ${rank==='S'?'s':rank==='A'?'a':''}">${escapeHtml(rank)}</span>`:''}
+          ${/^[SA]$/.test(rank)?`<img class="mr" src="assets/rank-${escapeHtml(rank.toLowerCase())}.png" alt="${escapeHtml(rank)}级"/>`:''}
           <img src="${escapeHtml(cardArt(member))}" alt="${escapeHtml(text(member?.name))}" loading="lazy"/>
         </div>
         <p class="mn">${escapeHtml(text(member?.name))}</p>
@@ -303,8 +303,8 @@
         img.alt=`${text(member?.name)}立绘`;
         const rank=text(member?.rank).toUpperCase();
         const rankBadge=$('#panelRank');
-        rankBadge.textContent=rank?`${rank} 级`:'—';
-        rankBadge.className='fg-rank '+(rank==='S'?'s':rank==='A'?'a':'');
+        rankBadge.innerHTML=/^[SA]$/.test(rank)?`<img class="fg-rank-img" src="assets/rank-${escapeHtml(rank.toLowerCase())}.png" alt="${escapeHtml(rank)}级"/>`:'—';
+        rankBadge.className='fg-rank';
         $('#panelNo').textContent=`AGENT No.${pad(index+1)} // ${requestedId.toUpperCase()}`;
         $('#agentName').textContent=text(member?.name);
         $('#agentEn').textContent=text(member?.englishName);

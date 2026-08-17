@@ -105,7 +105,7 @@
         : '')
       + '<b class="zzz-idcard-name">' + esc(agent.name) + '</b>'
       + '<span class="zzz-idcard-tags">'
-      + '<span class="zzz-rank" data-rank="' + esc(agent.rank) + '">' + esc(agent.rank) + '</span>'
+      + (/^[SA]$/i.test(String(agent.rank || '')) ? '<img class="zzz-rank-img" src="assets/rank-' + esc(String(agent.rank).toLowerCase()) + '.png" alt="' + esc(agent.rank) + '级"/>' : '')
       + attrIcon(agent.attribute)
       + (agent.specialty
         ? '<small style="color:var(--paper-dim);font:700 10px var(--font-mono);letter-spacing:.1em">'
@@ -133,7 +133,7 @@
         + esc(a.name) + '" loading="lazy" decoding="async" width="196" height="261"'
         + ' onerror="this.onerror=null;this.src=\'' + esc(a.avatar || '') + '\'"/>'
         + '<span class="zzz-card-bar">'
-        + '<span class="zzz-rank" data-rank="' + esc(a.rank) + '">' + esc(a.rank) + '</span>'
+        + (/^[SA]$/i.test(String(a.rank || '')) ? '<img class="zzz-rank-img" src="assets/rank-' + esc(String(a.rank).toLowerCase()) + '.png" alt="' + esc(a.rank) + '级"/>' : '')
         /* 参考图这里是玩家等级，但档案站没有等级概念，
            凭空写「60」等于编造数据，改放职业（真实字段）。
            长角色名移到卡片下沿单独一行，避免窄条溢出。 */

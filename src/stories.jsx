@@ -76,6 +76,13 @@ function field(value) {
   return text || "待核验";
 }
 
+/* 代理人品级 S/A 使用官方徽章素材（assets/rank-*.png，游戏内菱形徽记）；
+   「待公布」「I」等尚无官方品级图的条目保留文字形态，避免拼出不存在的 PNG。 */
+const RANK_IMG = Object.freeze({ S: "assets/rank-s.png", A: "assets/rank-a.png" });
+function rankImage(rank) {
+  return RANK_IMG[String(rank || "").toUpperCase()] || "";
+}
+
 function validRgb(value) {
   return Array.isArray(value) && value.length === 3
     && value.every((channel) => Number.isInteger(channel) && channel >= 0 && channel <= 255);
@@ -293,7 +300,9 @@ function CharacterInfo({ character, faction, favorite, onToggleFavorite, artSour
     <div className="agent-stage-info">
       <p className="agent-file-kicker">// {character.englishName || "AGENT FILE"} · {artSource === "gallery" ? "本地 GALLERY" : "DEFAULT 影画"}</p>
       <div className="agent-name-lockup">
-        <span className="agent-rank-mark" aria-label={`${character.rank || "未定"}级代理人`}>{character.rank || "—"}</span>
+        {rankImage(character.rank)
+          ? <span className="agent-rank-mark has-rank-img" aria-label={`${character.rank}级代理人`}><img src={rankImage(character.rank)} alt="" /></span>
+          : <span className="agent-rank-mark" aria-label={`${character.rank || "未定"}级代理人`}>{character.rank || "—"}</span>}
         <h2 id="selectedAgentName">{field(character.name)}</h2>
       </div>
       <div className="agent-selected-meta">
@@ -425,7 +434,12 @@ const CharacterCard = memo(function CharacterCard({ character, faction, index, s
       >
         <span className="agent-roster-index">{String(index + 1).padStart(2, "0")}</span>
         <span className="agent-card-image"><AgentImage character={character} kind="card" decorative /></span>
-        <span className="agent-card-grade" aria-hidden="true">{character.rank || "—"}</span>
+        {rankImage(character.rank)
+          ? <span className="agent-card-grade has-rank-img" aria-hidden="true"><img src={rankImage(character.rank)} alt="" /></span>
+          : <span className="agent-card-grade" aria-hidden="true">
+              <span className="rank-letter">{character.rank || "—"}</span>
+              <span className="rank-label">RANK</span>
+            </span>}
         {favorite ? <span className="agent-card-favorite" aria-hidden="true">FAV</span> : null}
         <span className="agent-card-copy">
           <b>{field(character.name)}</b>

@@ -225,18 +225,31 @@
   const growthBody=growthStages.length?`<div class="wiki-growth-slider" data-growth-slider><div class="wiki-growth-slider-head"><span>滑动查看职级</span><b data-growth-label>${esc(growthStages[0].name||'阶段 1')}</b></div><label class="wiki-growth-range"><span class="sr-only">职级晋升阶段</span><input type="range" min="0" max="${Math.max(growthStages.length-1,0)}" value="0" step="1" data-growth-range aria-valuetext="${esc(growthStages[0].name||'阶段 1')}"/></label><div class="wiki-growth-ticks" role="tablist" aria-label="职级晋升阶段">${growthStages.map((stage,index)=>`<button id="growth-stage-tab-${index}" type="button" role="tab" aria-selected="${index===0}" aria-controls="growth-stage-panel-${index}" tabindex="${index===0?'0':'-1'}" data-growth-stage="${index}" class="${index===0?'is-active':''}">${esc(stage.name||`阶段 ${index+1}`)}</button>`).join('')}</div><div class="character-growth-stages">${growthStages.map((stage,index)=>`<div id="growth-stage-panel-${index}" class="character-growth-stage" role="tabpanel" aria-labelledby="growth-stage-tab-${index}" data-growth-panel="${index}" ${index?'hidden':''}>${(stage.sections||[]).map(part=>`<section class="character-growth-section"><h3>${esc(part.name||part.header?.join(' / ')||'属性数据')}</h3>${part.header?.length?`<div class="character-growth-header">${part.header.map(value=>`<b>${esc(value)}</b>`).join('')}</div>`:''}<div class="character-growth-rows">${(part.rows||[]).map(row=>`<div class="character-growth-row">${row.map(cell=>growthCell(cell)).join('')}</div>`).join('')}</div></section>`).join('')}${stage.materials?.length?`<section class="character-growth-section"><h3>晋升材料</h3><div class="character-growth-materials">${growthMaterials(stage.materials)}</div></section>`:''}</div>`).join('')}</div><p class="character-wiki-note">数据来自米哈游绝区零百科快照；实际数值与消耗请以游戏内当前版本为准。</p></div>`:'<p class="character-empty">成长数据正在核验，暂未录入职级晋升阶段。</p>';
   const buildBody=`<div class="character-wiki-columns"><div class="character-wiki-block"><h3>签名音擎</h3>${list(character.build?.wEngines,'签名音擎待整理。')}</div><div class="character-wiki-block"><h3>驱动盘</h3>${list(character.build?.driveDiscs,'驱动盘方案待整理。')}</div><div class="character-wiki-block"><h3>主词条</h3>${list(character.build?.mainStats,'主词条待整理。')}</div><div class="character-wiki-block"><h3>副词条</h3>${list(character.build?.subStats,'副词条优先级待整理。')}</div><div class="character-wiki-block"><h3>技能优先级</h3>${list(character.combat?.skillPriority,'技能优先级待整理。')}</div><div class="character-wiki-block"><h3>配队方向</h3>${list(character.build?.teams,'配队建议待整理。')}</div></div><p class="character-wiki-note">${esc(character.build?.note||'攻略内容会标为玩家整理，并以游戏内实际版本为准。')}</p>`;
 
-  const profileFacts=`<div class="character-data-grid"><div><span>代理人编号</span><b>${esc(String(character.id).toUpperCase())}</b></div><div><span>稀有度</span><b>${esc(character.rank||'待确认')}</b></div><div><span>所属阵营</span><b>${esc(faction?.name||'待确认')}</b></div><div><span>作战属性</span><b>${(window.ZZZIcons?.attrIcon(character.attribute,'')||'')}${esc(character.attribute||'待补充')}</b></div><div><span>战斗特性</span><b>${(window.ZZZIcons?.attrIcon(character.specialty,'')||'')}${esc(character.specialty||'待补充')}</b></div><div><span>攻击类型</span><b>${esc(character.attackType||'待补充')}</b></div><div><span>实装日期</span><b>${esc(character.releaseDate||'待核验')}</b></div><div><span>生日</span><b>${esc(character.birthday||'待核验')}</b></div></div>`;
+  const profileFacts=`<div class="character-data-grid"><div><span>代理人编号</span><b>${esc(String(character.id).toUpperCase())}</b></div><div><span>稀有度</span><b>${/^[SA]$/i.test(String(character.rank||''))?`<img class="char-rank-img" src="assets/rank-${esc(String(character.rank).toLowerCase())}.png" alt="${esc(character.rank)} 级"/>`:esc(character.rank||'待确认')}</b></div><div><span>所属阵营</span><b>${esc(faction?.name||'待确认')}</b></div><div><span>作战属性</span><b>${(window.ZZZIcons?.attrIcon(character.attribute,'')||'')}${esc(character.attribute||'待补充')}</b></div><div><span>战斗特性</span><b>${(window.ZZZIcons?.attrIcon(character.specialty,'')||'')}${esc(character.specialty||'待补充')}</b></div><div><span>攻击类型</span><b>${esc(character.attackType||'待补充')}</b></div><div><span>实装日期</span><b>${esc(character.releaseDate||'待核验')}</b></div><div><span>生日</span><b>${esc(character.birthday||'待核验')}</b></div></div>`;
   const profileLong=`<details class="character-disclosure" data-archive-disclosure="profile-notes"><summary>角色印象与资料快照</summary><div class="character-wiki-block"><h3>角色印象</h3>${character.impression?prose(character.impression):`<p>${esc(character.summary||'印象待补充。')}</p>`}</div>${character.cv?`<div class="character-wiki-block"><h3>角色 CV / 语音摘录</h3>${prose(character.cv)}</div>`:''}<div class="character-wiki-block"><h3>资料快照</h3><p>更新于 ${esc(character.updatedAt||'待记录')}。本页优先维护角色关系导航与档案摘要。</p></div></details>`;
 
   /* ---------- 技能介绍（官方 Wiki role_talent 管道，agent-talents.js 生成） ---------- */
   const talentRecord=(window.agentTalents?.agents||{})[character.id];
   const talentSkills=(talentRecord?.skills||[]).filter(skill=>skill&&skill.name);
+  const SKILL_TYPE_ICONS={
+    '普通攻击':'assets/skill-types/普攻.png',
+    '闪避':'assets/skill-types/闪避.png',
+    '快速支援':'assets/skill-types/支援.png',
+    '特殊技':'assets/skill-types/特殊技.png',
+    '连携技':'assets/skill-types/终结.png',
+    '核心技':'assets/skill-types/核心.png',
+    '强化特殊技':'assets/skill-types/特殊技.png',
+    '招架支援':'assets/skill-types/闪避.png',
+    '终结技':'assets/skill-types/终结.png',
+    '冲刺攻击':'assets/skill-types/普攻.png',
+    '登场技':'assets/skill-types/普攻.png'
+  };
   const talentId=`character-talent-${String(character.id).replace(/[^a-z0-9_-]/gi,'-')}`;
   const talentTabs=talentSkills.map((skill,index)=>{
     const shortLabel=skill.name.split('：')[0]||skill.name.slice(0,4);
-    const hasIcon=!!skill.icon;
-    const iconHtml=hasIcon
-      ?`<span class="talent-icon-circle"><img src="${esc(skill.icon)}" alt="" loading="lazy" decoding="async"/></span>`
+    const typeIcon=SKILL_TYPE_ICONS[shortLabel];
+    const iconHtml=typeIcon
+      ?`<span class="talent-icon-circle"><img src="${esc(typeIcon)}" alt="" loading="lazy" decoding="async"/></span>`
       :`<span class="talent-icon-circle talent-icon-no-img" aria-hidden="true">${esc(shortLabel.slice(0,2))}</span>`;
     return `<button id="${talentId}-tab-${index}" type="button" role="tab" aria-controls="${talentId}-panel-${index}" aria-selected="${index===0?'true':'false'}" tabindex="${index===0?'0':'-1'}" class="talent-icon-tab${index===0?' is-active':''}" data-talent-tab="${index}" title="${esc(skill.name)}">${iconHtml}<span class="talent-icon-label">${esc(shortLabel)}</span></button>`;
   }).join('');
@@ -244,20 +257,22 @@
     const growth=(skill.growth||[]).filter(stage=>stage.rows?.length);
     const shortLabel=skill.name.split('：')[0]||skill.name;
     const nameSuffix=skill.name.includes('：')?skill.name.slice(skill.name.indexOf('：')+1):'';
-    const hasIcon=!!skill.icon;
-    // 滑动升级表：每个 growth stage 做成一个水平卡片
+    const typeIcon=SKILL_TYPE_ICONS[shortLabel];
+    // 升级数据：官方 Wiki 样式 —— 顶部等级轨道（圆形等级按钮）+ 选中等级数值区
     let growthHtml='';
     if(growth.length){
-      const stageCircles=growth.map((stage,si)=>{
+      const stageBtns=growth.map((stage,si)=>{
         const stageChar=esc(stage.name);
-        const isCore=stage.name.match(/^[A-F]$/);
-        // 每个 row 可能含 \n，分行渲染
-        const rowsHtml=stage.rows.map(row=>row.split('\n').map(line=>`<li>${esc(line)}</li>`).join('')).join('');
-        return `<div class="talent-stage-card${si===0?' is-active':''}" data-stage="${si}"><span class="talent-stage-num${isCore?' is-core':''}">${isCore?`S${stageChar}`:stageChar}</span><ul class="talent-stage-rows">${rowsHtml}</ul></div>`;
+        const isCore=/^[A-F]$/.test(stage.name);
+        return `<button type="button" class="talent-stage-btn${isCore?' is-core':''}${si===0?' is-active':''}" data-talent-stage="${si}" role="tab" aria-selected="${si===0?'true':'false'}" tabindex="${si===0?'0':'-1'}" aria-controls="${talentId}-p${index}-stage-${si}" aria-label="等级 ${stageChar}">${isCore?`S${stageChar}`:stageChar}</button>`;
       }).join('');
-      growthHtml=`<div class="talent-growth-scroll" aria-label="技能升级数据"><div class="talent-growth-track">${stageCircles}</div></div>`;
+      const stagePanels=growth.map((stage,si)=>{
+        const rowsHtml=stage.rows.map(row=>row.split('\n').map(line=>`<li>${esc(line)}</li>`).join('')).join('');
+        return `<div class="talent-stage-panel${si===0?' is-active':''}" id="${talentId}-p${index}-stage-${si}" data-talent-stage-panel="${si}" role="tabpanel" aria-label="等级 ${esc(stage.name)} 数值"${si===0?'':' hidden'}><ul class="talent-stage-rows">${rowsHtml}</ul></div>`;
+      }).join('');
+      growthHtml=`<div class="talent-growth" data-talent-growth><div class="talent-growth-head"><span class="talent-growth-title">技能升级数据</span><div class="talent-growth-track" role="tablist" aria-label="技能升级等级">${stageBtns}</div></div><div class="talent-growth-body">${stagePanels}</div></div>`;
     }
-    return `<div id="${talentId}-panel-${index}" class="talent-panel${index===0?' is-active':''}" role="tabpanel" aria-labelledby="${talentId}-tab-${index}" aria-hidden="${index===0?'false':'true'}" ${index===0?'':'hidden inert'} data-talent-panel="${index}"><div class="talent-detail"><div class="talent-detail-left"><span class="talent-big-icon">${hasIcon?`<span class="talent-icon-circle"><img src="${esc(skill.icon)}" alt="" width="120" height="120" loading="lazy" decoding="async"/></span>`:`<span class="talent-icon-circle talent-icon-no-img" aria-hidden="true">${esc(shortLabel.slice(0,2))}</span>`}</span><div class="talent-detail-name"><span class="talent-detail-type">${esc(shortLabel)}</span><h3>${esc(skill.name)}</h3>${nameSuffix?`<span class="talent-detail-sub">${esc(nameSuffix)}</span>`:''}</div></div><div class="talent-detail-right"><p class="talent-desc">${esc(skill.desc)}</p></div></div>${growthHtml}</div>`;
+    return `<div id="${talentId}-panel-${index}" class="talent-panel${index===0?' is-active':''}" role="tabpanel" aria-labelledby="${talentId}-tab-${index}" aria-hidden="${index===0?'false':'true'}" ${index===0?'':'hidden inert'} data-talent-panel="${index}"><div class="talent-detail"><div class="talent-detail-icon"><span class="talent-icon-circle">${typeIcon?`<img src="${esc(typeIcon)}" alt="" loading="lazy" decoding="async"/>`:`<span class="talent-icon-no-img" aria-hidden="true">${esc(shortLabel.slice(0,2))}</span>`}</span></div><div class="talent-detail-text"><span class="talent-detail-type">${esc(shortLabel)}</span><h3 class="talent-detail-name">${esc(skill.name)}</h3><div class="talent-detail-divider" aria-hidden="true"></div><p class="talent-desc">${esc(skill.desc)}</p></div></div>${growthHtml}</div>`;
   }).join('');
   const talentBody=talentSkills.length
     ?`<div class="talent-module" data-talent-module><div class="talent-icon-row" role="tablist" aria-label="技能列表">${talentTabs}</div><div class="talent-panels">${talentPanels}</div><p class="character-wiki-note">技能文案与成长数值来自米哈游绝区零百科快照；实际效果请以游戏内当前版本为准。</p></div>`
@@ -372,6 +387,34 @@
     go(0);
   };
 
+  // 技能升级等级轨道：每个技能面板内的圆形等级按钮切换下方数值
+  const bindTalentGrowth=()=>{
+    content.querySelectorAll('[data-talent-growth]').forEach(growth=>{
+      const btns=[...growth.querySelectorAll('[data-talent-stage]')];
+      const panels=[...growth.querySelectorAll('[data-talent-stage-panel]')];
+      if(!btns.length)return;
+      const select=(target,{focus=false}={})=>{
+        const selected=target?.dataset.talentStage??'0';
+        btns.forEach(btn=>{
+          const active=btn.dataset.talentStage===selected;
+          btn.classList.toggle('is-active',active);
+          btn.setAttribute('aria-selected',String(active));
+          btn.tabIndex=active?0:-1;
+        });
+        panels.forEach(panel=>{panel.hidden=panel.dataset.talentStagePanel!==selected;panel.classList.toggle('is-active',panel.dataset.talentStagePanel===selected)});
+        if(focus)btns.find(btn=>btn.dataset.talentStage===selected)?.focus();
+      };
+      btns.forEach(btn=>btn.addEventListener('click',()=>select(btn)));
+      growth.querySelector('[role="tablist"]')?.addEventListener('keydown',event=>{
+        const current=btns.findIndex(btn=>btn.classList.contains('is-active'));
+        const next={ArrowRight:current+1,ArrowDown:current+1,ArrowLeft:current-1,ArrowUp:current-1,Home:0,End:btns.length-1}[event.key];
+        if(next===undefined)return;
+        event.preventDefault();
+        select(btns[(next+btns.length)%btns.length],{focus:true});
+      });
+    });
+  };
+
   const archiveTablist=document.querySelector('.character-module-nav[role="tablist"]');
   const archiveTabs=[...(archiveTablist?.querySelectorAll(':scope > [role="tab"][data-character-nav]')||[])];
   const archivePanels=new Map([...content.querySelectorAll('.character-module[role="tabpanel"]')].map(panel=>[panel.id,panel]));
@@ -458,6 +501,7 @@
   });
   bindGallerySlider();
   bindTalentTabs();
+  bindTalentGrowth();
   selectGrowthStage(content.querySelector('[data-growth-stage].is-active')||content.querySelector('[data-growth-stage]'));
   const initialRoute=applyArchiveHash({animate:false});
   if(location.hash&&initialRoute.view==='dossier')requestAnimationFrame(()=>document.querySelector('#dossier')?.scrollIntoView({block:'start',behavior:'auto'}));

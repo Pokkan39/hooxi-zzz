@@ -314,13 +314,8 @@ body.archive-faction .archive-topbar nav a[aria-current]{color:var(--fg-ink) !im
 .fg-panel-faction span{font-size:13px;font-weight:800;letter-spacing:.14em;color:var(--fg-ink-dim)}
 .fg-panel-faction:hover span{color:var(--agent)}
 .fg-panel-rank-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.fg-rank{
-  font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;line-height:1;
-  padding:6px 14px 4px;transform:skewX(-8deg);box-shadow:4px 4px 0 rgba(0,0,0,.55);
-  background:#2a2a32;color:var(--fg-ink-dim);
-}
-.fg-rank.s{background:linear-gradient(135deg,#ffd76b,#ff9d3b);color:#231303}
-.fg-rank.a{background:linear-gradient(135deg,#d9b3ff,#9a6cf0);color:#1d0b33}
+.fg-rank{display:flex;align-items:center}
+.fg-rank-img{width:40px;height:40px;object-fit:contain;display:block}
 .fg-panel-no{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--fg-ink-faint)}
 .fg-panel h1{font-size:clamp(34px,4.6vw,60px);font-weight:900;line-height:1.05;text-shadow:5px 5px 0 rgba(0,0,0,.6);margin:0}
 .fg-panel .en-name{
@@ -397,12 +392,7 @@ body.archive-faction .archive-topbar nav a[aria-current]{color:var(--fg-ink) !im
 .fg-mcard:hover .ph img{transform:scale(1.1);filter:saturate(1.06) brightness(1.02)}
 .fg-mcard.active .ph img{transform:scale(1.1);filter:saturate(1.08) brightness(1.05)}
 .fg-mcard .ph::after{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(8,8,12,.16) 0%,transparent 30%,transparent 52%,rgba(8,8,12,.88))}
-.fg-mcard .mr{position:absolute;top:8px;left:8px;z-index:2;display:grid;place-items:center;width:26px;height:26px;
-  font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px;line-height:1;
-  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
-  box-shadow:0 0 0 1px rgba(0,0,0,.4)}
-.fg-mcard .mr.s{background:linear-gradient(160deg,#ffe79a,#f5b73a);color:#231303;text-shadow:0 1px 0 rgba(255,255,255,.35)}
-.fg-mcard .mr.a{background:linear-gradient(160deg,#d9c2ff,#9a6cf0);color:#1d0b33;text-shadow:0 1px 0 rgba(255,255,255,.3)}
+.fg-mcard .mr{position:absolute;top:8px;left:8px;z-index:2;width:26px;height:26px;display:block;object-fit:contain}
 .fg-mcard.active .mr{transform:scale(1.08);filter:drop-shadow(0 0 6px color-mix(in srgb,var(--mc) 70%,transparent))}
 .fg-mcard .mn{padding:10px 10px 12px;font-size:12.5px;font-weight:800;text-align:center;letter-spacing:.03em;line-height:1.3;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0;color:var(--fg-ink);
