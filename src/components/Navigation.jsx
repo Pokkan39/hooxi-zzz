@@ -25,7 +25,7 @@ export default function Navigation({ currentPage = 'events' }) {
           </a>
           {/* B站主页 */}
           <a
-            href="https://space.bilibili.com/HOOXI_UID"
+            href="https://space.bilibili.com/271887040"
             target="_blank"
             rel="noopener noreferrer"
             className="ik-bili-link"
