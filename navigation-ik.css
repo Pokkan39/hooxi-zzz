@@ -271,3 +271,17 @@
   }
 }
 
+/* ── B站主页链接 ── */
+.ik-bili-link {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 14px;
+  color: rgba(255, 255, 255, 0.45);
+  text-decoration: none;
+  transition: color 0.18s;
+  flex-shrink: 0;
+}
+.ik-bili-link:hover {
+  color: #fb7299;
+}
+
