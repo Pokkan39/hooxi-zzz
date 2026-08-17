@@ -637,3 +637,32 @@
 ### Notes
 - `F:/hooxi-zzz/docs/ZZZ-VISUAL-DESIGN-RESEARCH.md`：完全重写为 v2.0 扩展版，原有基础内容全部保留并扩展。
 - 回滚方式：`git checkout HEAD -- docs/ZZZ-VISUAL-DESIGN-RESEARCH.md` 可恢复至上一个已提交版本（即原始 16KB 版本）。
+
+## 2026-08-16 - Task: HOOXI 首页 ZZZ 视觉 DNA 强化
+
+### What was done
+新建 CSS 覆盖层并最小修改 HTML，向首页注入7类最高识别度的《绝区零》视觉 DNA：
+- 棋盘格横带（Hero 下方 + About 上方）：直接复刻 Random Play 录像店地面图案
+- 黄黑警示条纹分隔带（查档→阵营 + 阵营→卷轴之间）：ZZZ 工业警示风格
+- Hero CRT 扫描线增强：opacity .026 → .048，可感知级别
+- Section 头部 ZZZ 化：`//` 前缀 + Barlow Condensed 800 + 字间距 .22em
+- 卡片悬停扫光：阵营频道 `.faction-entry` + 档案卷轴 `.home-lane-card`
+- Hero 区 "RANDOM PLAY // NEW ERIDU" 水印前缀
+- About 区棋盘格背景纹理（background-image 叠加，低不透明度）
+
+### Testing
+- `zzz-home-dna.css`：151 行，8 类 CSS 规则全部确认存在（Node.js 脚本逐项检查）
+- `index.html`：5 处插入全部确认
+  - line 43：`<link href="zzz-home-dna.css?v=zzz-dna-r1"/>`
+  - line 138：`.zzz-checker-strip`（Hero 下方）
+  - line 151：`.zzz-hazard-strip`（查档→阵营）
+  - line 164：`.zzz-hazard-strip`（阵营→卷轴）
+  - line 227：`.zzz-checker-strip--footer`（About 上方）
+- 未做浏览器人工视觉验证（无本地服务器环境）；CSS 语法依赖人工开 F12 确认
+
+### Notes
+- `F:/hooxi-zzz/zzz-home-dna.css`：新建，全部 ZZZ 装饰层 CSS，151 行
+- `F:/hooxi-zzz/index.html`：修改，新增1个 `<link>` + 4个装饰 `<div>`
+- 回滚方式：
+  1. 删除 `zzz-home-dna.css`
+  2. 从 `index.html` 移除 `<link href="zzz-home-dna.css...">` 和4个 `.zzz-checker-strip`/`.zzz-hazard-strip` div
