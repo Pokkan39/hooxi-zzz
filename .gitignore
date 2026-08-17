@@ -42,6 +42,9 @@ tmp/
 # screenshots/ 是本机诊断截图目录（36 张、19.3MB），与上面同属调试产物。
 # 此前漏写该规则，若不补会随提交进入仓库。
 screenshots/
+# 例外：docs/screenshots/ 存放网站介绍文档的官方截图，与调试产物不同，需随文档入库。
+!docs/screenshots/
+!docs/screenshots/*.png
 
 # 正式发布包含 53 张项目方确认许可的 Toastertjie Default + 1 张蕾米埃尔官方 Wiki 素材转换 Default，共54张正式 Default。
 # Partial、Full 与运行包不入库。

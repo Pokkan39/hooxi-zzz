@@ -1,0 +1,87 @@
+name: Create Release Package
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'events.html'
+      - 'stories.html'
+      - 'assets/**'
+      - '*.css'
+      - '*.js'
+      - 'package.json'
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Get version from commit
+        id: version
+        run: |
+          VERSION=$(git rev-parse --short HEAD)
+          DATE=$(date +%Y%m%d)
+          echo "version=${DATE}-${VERSION}" >> $GITHUB_OUTPUT
+          echo "tag=v${DATE}-${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Create deployment package
+        run: |
+          mkdir -p release
+          cp -r dist/* release/
+          cd release
+          zip -r ../hooxi-zzz-deploy-${{ steps.version.outputs.version }}.zip .
+          cd ..
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Deploy Package ${{ steps.version.outputs.version }}
+          body: |
+            ## HOOXI 绝区零档案站 - 部署包
+            
+            **构建日期**: ${{ steps.version.outputs.version }}
+            **提交哈希**: ${{ github.sha }}
+            
+            ### 使用说明
+            
+            1. 下载 `hooxi-zzz-deploy-*.zip`
+            2. 解压到 Web 服务器根目录
+            3. 用浏览器访问 `index.html`
+            
+            ### 包含内容
+            
+            - 构建后的静态文件（所有 HTML/CSS/JS）
+            - 完整资源文件（图片、字体）
+            - 无 Git 历史、无开发文件
+            
+            ### 在线预览
+            
+            https://pokkan39.github.io/hooxi-zzz/
+          files: |
+            hooxi-zzz-deploy-${{ steps.version.outputs.version }}.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

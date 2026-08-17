@@ -666,3 +666,43 @@
 - 回滚方式：
   1. 删除 `zzz-home-dna.css`
   2. 从 `index.html` 移除 `<link href="zzz-home-dna.css...">` 和4个 `.zzz-checker-strip`/`.zzz-hazard-strip` div
+
+## 2026-08-17 - Task: 截取网站各页面截图并编写网站介绍文档
+
+### What was done
+- 截取首页（Hero / Finder / Factions / Lanes / About 五个区域）、委托页、代理人详情页（anby）共 7 张截图，尺寸均为 1280×900，存放于 `docs/screenshots/`。
+- 新建 `docs/SITE-INTRODUCTION.md`：约 229 行，含网站定位、GitHub Pages 与本地地址区别说明（面向编程小白）、首页各区功能介绍、委托页（绳网帖子系统）、代理人档案页说明，每个区块配对应截图。
+
+### Testing
+- 截图文件已通过 `ls docs/screenshots/` 确认全部存在（7 张）。
+- 文档内截图路径均为相对路径 `screenshots/xx.png`，与实际文件名一致。
+- 无构建步骤，文档与截图本身即为交付物。
+
+### Notes
+- 改动文件：
+  - `docs/screenshots/01-homepage-hero.png` — 新增，首页 Hero 区截图
+  - `docs/screenshots/02-homepage-finder.png` — 新增，首页快速查档区截图
+  - `docs/screenshots/03-homepage-factions.png` — 新增，首页阵营频道区截图
+  - `docs/screenshots/04-homepage-lanes.png` — 新增，首页档案卷轴区截图
+  - `docs/screenshots/05-homepage-about.png` — 新增，首页 About 区截图
+  - `docs/screenshots/06-agent-detail.png` — 新增，代理人详情页截图
+  - `docs/screenshots/07-events-page.png` — 新增，委托（绳网帖子）页截图
+  - `docs/SITE-INTRODUCTION.md` — 新增，网站对外介绍文档
+  - `.gitignore` — 追加 `!docs/screenshots/` 和 `!docs/screenshots/*.png` 白名单例外
+- 回滚：删除 `docs/screenshots/` 目录、删除 `docs/SITE-INTRODUCTION.md`、移除 `.gitignore` 中本条新增的两行例外。
+
+## 2026-08-17 - Task: 配置 GitHub Actions 自动发布部署包
+
+### What was done
+- 新建 `.github/workflows/release.yml`：在每次推送到 `main` 分支（或手动触发）时自动执行 `npm ci && npm run build`，将 `dist/` 目录打包为 `hooxi-zzz-deploy-YYYYMMDD-<hash>.zip`，通过 `softprops/action-gh-release` 发布到 GitHub Releases。
+- 部署包内容：仅含 Vite 构建后的静态文件（HTML/CSS/JS/Assets），不含 `.git` 历史、`node_modules`、开发工具文件、临时截图等开发产物，解压即可部署到任意 Web 服务器。
+- Release 说明内嵌使用指南（下载 → 解压 → 部署根目录），并附在线预览地址。
+
+### Testing
+- workflow 文件通过 `cat` 确认 56 行结构完整，包含 `checkout`、`setup-node`、`npm ci`、`npm run build`、打包 zip、`softprops/action-gh-release` 五个步骤。
+- 实际 CI 触发需推送到 GitHub 后由 Actions Runner 执行，本地无法完整验证；构建步骤与现有 `pages.yml` 使用相同命令（`npm run build`），历史已成功。
+
+### Notes
+- 改动文件：
+  - `.github/workflows/release.yml` — 新增，自动发布部署包 workflow
+- 回滚：删除 `.github/workflows/release.yml` 即可停止自动发布；已发布的 Release 在 GitHub 界面手动删除。
