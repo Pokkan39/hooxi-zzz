@@ -81,7 +81,7 @@ function renderHomeArchive(){
   if(status)status.textContent=`${factions.length} 阵营 · ${characters.length} 代理人 · ${mainline.length} 主线 · ${events.length} 活动 · ${behind.length} 幕后`;
   renderHomeModules(archive);
   const reels=[
-    ...pickLaneItems(mainline,2).map(item=>({...item,pageHref:'mainline.html',section:'主线'})),
+    ...pickLaneItems(mainline,2).map(item=>({...item,pageHref:'events.html',section:'主线'})),
     ...pickLaneItems(events,2).map(item=>({...item,pageHref:'events.html',section:'活动'})),
     ...pickLaneItems(behind,2).map(item=>({...item,pageHref:'behind-scenes.html',section:'幕后'}))
   ];

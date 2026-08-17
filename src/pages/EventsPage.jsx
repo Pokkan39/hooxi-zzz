@@ -88,7 +88,7 @@ export default function EventsPage() {
     // 一高一低交替：偶数索引为竖版大卡，奇数为横版小卡
     const tall = idx % 2 === 0;
     // 优先用 B站链接；baike.mihoyo.com 是死链，回退到 sourceUrl
-    const rawUrl = item.sourceUrl || item.wikiUrl || null;
+    const rawUrl = item.video || item.sourceUrl || item.wikiUrl || null;
     const url = rawUrl && rawUrl.includes('baike.mihoyo.com') ? null : rawUrl;
     return {
       id: item.id || idx,
