@@ -704,5 +704,21 @@
 
 ### Notes
 - 改动文件：
-  - `.github/workflows/release.yml` — 新增，自动发布部署包 workflow
+  - `.github/workflows/release.yml` — 新增,自动发布部署包 workflow
 - 回滚：删除 `.github/workflows/release.yml` 即可停止自动发布；已发布的 Release 在 GitHub 界面手动删除。
+
+## 2026-08-17 - Task: 修复主线卡片不可点击及首页卷轴跳转目标错误
+
+### What was done
+- 修复绳网页主线卡片点击无响应：`src/pages/EventsPage.jsx` 的 URL 提取逻辑补充 `item.video` 字段作为第一候选，使有 B 站链接的主线条目可正常跳转。原先只读取 `sourceUrl/wikiUrl` 且过滤掉 `baike.mihoyo.com` 链接，导致主线卡片全部变为 `href="#"` 不可点击。
+- 修复首页档案卷轴主线卡片跳转目标：`app.js` 中 `pickLaneItems(mainline)` 生成的卡片 `pageHref` 从硬编码的 `mainline.html` 改为 `events.html`，使首页点击主线卡片后正确跳转到绳网（委托）页面。
+
+### Testing
+- ✅ `npm run build` 构建成功，无报错。
+- ✅ 构建产物验证：grep 确认 `src/pages/EventsPage.jsx` 第 91 行为 `item.video || item.sourceUrl || item.wikiUrl`，`app.js` 第 84 行为 `pageHref:'events.html'`。
+
+### Notes
+- 改动文件：
+  - `src/pages/EventsPage.jsx` — 第 91 行 URL 提取优先读取 `video` 字段
+  - `app.js` — 第 84 行主线卡片 `pageHref` 从 `mainline.html` 改为 `events.html`
+- 回滚：`git checkout -- src/pages/EventsPage.jsx app.js` 恢复本轮改动；移除本条日志。
