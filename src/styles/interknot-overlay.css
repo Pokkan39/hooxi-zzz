@@ -1,0 +1,359 @@
+.ik-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.ik-overlay__backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.ik-overlay__stripe {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    40deg,
+    transparent,
+    transparent 3.5px,
+    rgba(255, 255, 255, 0.09) 4.5px,
+    rgba(255, 255, 255, 0.09) 7.5px,
+    transparent 8.5px
+  );
+}
+
+.ik-dialog {
+  position: relative;
+  width: 70%;
+  height: 70%;
+  transform: scale(1.1);
+  transform-origin: center;
+  z-index: 1;
+}
+
+.ik-dialog__outer {
+  width: 100%;
+  height: 100%;
+  padding: 4px;
+  background: #2D2C2D;
+  border-radius: 24px 0 24px 24px;
+  overflow: hidden;
+}
+
+.ik-dialog__inner {
+  width: 100%;
+  height: 100%;
+  padding: 4px;
+  background: #000;
+  border-radius: 22px 0 22px 22px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.ik-dialog__header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  gap: 8px;
+  flex-shrink: 0;
+  border-radius: 18px 0 0 0;
+  background:
+    url("/assets/images/tab-bg-point.webp") repeat,
+    linear-gradient(180deg, #161616 0%, #080808 100%);
+}
+
+.ik-dialog__header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ik-dialog__avatar-shell {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 3px solid #2d2d2d;
+  overflow: hidden;
+}
+
+.ik-dialog__avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 999px;
+  background: #1b1b1b;
+}
+
+.ik-dialog__author-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ik-dialog__author-name {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 20px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ik-dialog__author-sub {
+  font-size: 12px;
+  line-height: 16px;
+  color: #808080;
+}
+
+.ik-dialog__close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.ik-dialog__close:hover {
+  opacity: 0.85;
+  transform: scale(1.08);
+}
+
+.ik-dialog__close-img {
+  height: 32px;
+  width: auto;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+.ik-dialog__main {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ik-dialog__body {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  background: transparent;
+  border-radius: 0 0 18px 18px;
+}
+
+.ik-dialog__left {
+  flex: 3;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ik-dialog__left-scroll {
+  flex: 1;
+  overflow-y: auto;
+  margin: 16px 8px 16px 16px;
+  background: rgba(0, 0, 0, 0.85);
+  border-radius: 16px;
+  scrollbar-width: none;
+}
+
+.ik-dialog__left-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.ik-dialog__cover-wrap {
+  padding: 16px 24px 16px 16px;
+}
+
+.ik-dialog__cover-border {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border-radius: 12px;
+  border: 4px solid #313132;
+  overflow: hidden;
+  background: #0a0a0a;
+  cursor: default;
+}
+
+.ik-dialog__cover-border.is-clickable {
+  cursor: pointer;
+  animation: ik-cover-glow 2.2s ease-in-out infinite;
+}
+
+.ik-dialog__cover-border.is-clickable .ik-dialog__cover {
+  transform-origin: center center;
+  animation: ik-cover-breathe 2.2s ease-in-out infinite;
+}
+
+.ik-dialog__cover-border.is-clickable:hover .ik-dialog__cover,
+.ik-dialog__cover-border.is-clickable:focus-visible .ik-dialog__cover {
+  animation-play-state: paused;
+  transform: scale(1.06);
+}
+
+.ik-dialog__cover-badge {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 2;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(191, 255, 9, 0.92);
+  color: #111;
+  font-size: 12px;
+  font-weight: 800;
+  pointer-events: none;
+  letter-spacing: 0.02em;
+}
+
+@keyframes ik-cover-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.07); }
+}
+
+@keyframes ik-cover-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(191, 255, 9, 0.0); border-color: #313132; }
+  50% { box-shadow: 0 0 22px 2px rgba(191, 255, 9, 0.35); border-color: #bfff09; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ik-dialog__cover-border.is-clickable,
+  .ik-dialog__cover-border.is-clickable .ik-dialog__cover {
+    animation: none;
+  }
+}
+
+.ik-dialog__cover {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  background: #0a0a0a;
+}
+
+.ik-dialog__detail {
+  padding: 0 16px 32px;
+}
+
+.ik-dialog__title {
+  margin: 0 0 12px;
+  font-size: 22px;
+  line-height: 1.35;
+  color: #fff;
+}
+
+.ik-dialog__title-cat {
+  color: #5ac8fa;
+  margin-right: 8px;
+}
+
+.ik-dialog__content {
+  color: #d8d8d8;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.ik-dialog__content p {
+  margin: 0 0 10px;
+}
+
+.ik-dialog__source-hint {
+  margin-top: 8px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--ik-primary, #bfff09);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.ik-dialog__right {
+  flex: 2;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 16px 16px 16px 8px;
+  background: rgba(0, 0, 0, 0.85);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.ik-dialog__comments-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+
+.ik-dialog__comments-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.ik-dialog__comments-inner {
+  width: 100%;
+  min-height: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.ik-dialog__empty {
+  margin: 24px 8px;
+  color: #808080;
+  font-size: 14px;
+}
+
+.ik-dialog__right .ik-floor {
+  background: transparent;
+}
+
+.ik-dialog__right .ik-floor:first-child {
+  background: transparent;
+  border: none;
+}
+
+.ik-dialog__right .ik-floor:first-child .ik-floor-name {
+  color: var(--ik-accent);
+}
+
+@media (max-width: 900px) {
+  .ik-dialog {
+    width: 94%;
+    height: 88%;
+    transform: none;
+  }
+
+  .ik-dialog__body {
+    flex-direction: column;
+  }
+
+  .ik-dialog__left-scroll,
+  .ik-dialog__right {
+    margin: 8px 12px;
+  }
+}

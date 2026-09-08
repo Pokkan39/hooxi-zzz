@@ -34,7 +34,7 @@ jobs:
         run: npm ci
 
       - name: Build React pages
-        run: npm run build -- --config vite.config.js
+        run: npm run build
 
       - name: Check deploy inputs and output
         run: npm run test:deploy -- --strict-tracked

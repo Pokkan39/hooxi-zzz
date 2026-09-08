@@ -1,0 +1,238 @@
+/* ========== 绳网委托详情页 / 楼层层级 ========== */
+/* 复用 interknot.css 的 --ik-* 令牌, 本文件只写楼层结构 */
+
+.ik-post-page {
+  position: relative;
+  min-height: 100vh;
+  background: var(--ik-bg);
+  color: var(--ik-text);
+}
+
+.ik-post-container {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 96px 20px 120px;
+}
+
+/* ---- 顶部工具条 ---- */
+.ik-post-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.ik-post-back-btn {
+  padding: 8px 18px;
+  background: transparent;
+  color: var(--ik-text);
+  border: 1px solid var(--ik-muted);
+  border-radius: 999px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.ik-post-back-btn:hover {
+  border-color: var(--ik-primary);
+  color: var(--ik-primary);
+}
+
+.ik-post-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ik-post-views {
+  font-size: 13px;
+  color: var(--ik-muted);
+  font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+}
+
+.ik-post-source-btn {
+  display: inline-block;
+  padding: 8px 18px;
+  background: var(--ik-primary);
+  color: #000;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ik-post-source-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px rgba(191, 255, 9, 0.35);
+}
+
+/* ---- 帖子标题 ---- */
+.ik-post-title {
+  margin: 0 0 28px;
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1.4;
+  color: var(--ik-text);
+}
+
+/* ---- 楼层列表 ---- */
+.ik-floors {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ik-floor {
+  display: flex;
+  gap: 14px;
+  padding: 18px 20px;
+  background: var(--ik-bg-elevated);
+  border-radius: 16px 16px 16px 0;
+}
+
+/* 1F 楼主层视觉加重 */
+.ik-floor:first-child {
+  background: var(--ik-bg-card);
+  border: 1px solid rgba(191, 255, 9, 0.25);
+}
+
+.ik-floor-side {
+  flex: 0 0 auto;
+}
+
+.ik-floor-avatar-shell {
+  width: 52px;
+  height: 52px;
+  padding: 2px;
+  background: #1b1b1b;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.ik-floor-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.ik-floor-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ik-floor-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.ik-floor-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ik-accent);
+}
+
+.ik-floor:first-child .ik-floor-name {
+  color: var(--ik-primary);
+}
+
+.ik-floor-op-badge {
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #000;
+  background: var(--ik-primary);
+  border-radius: 4px;
+}
+
+.ik-floor-no {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--ik-muted);
+  font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+}
+
+.ik-floor-replyto {
+  margin: 0 0 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--ik-muted);
+  background: rgba(0, 229, 255, 0.08);
+  border-left: 3px solid var(--ik-accent);
+  border-radius: 0 6px 6px 0;
+}
+
+.ik-floor-replyto-name {
+  color: var(--ik-accent);
+}
+
+.ik-floor-body p {
+  margin: 0 0 8px;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--ik-text);
+  word-break: break-word;
+}
+
+.ik-floor-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---- 无对话兜底层 ---- */
+.ik-post-plain {
+  padding: 24px;
+  background: var(--ik-bg-elevated);
+  border-radius: 16px 16px 16px 0;
+}
+
+.ik-post-plain-summary {
+  margin: 0 0 18px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--ik-muted);
+}
+
+.ik-post-missing {
+  padding: 80px 24px;
+  text-align: center;
+  color: var(--ik-muted);
+  display: grid;
+  gap: 18px;
+  justify-items: center;
+}
+
+@media (max-width: 640px) {
+  .ik-post-container {
+    padding: 84px 14px 96px;
+  }
+
+  .ik-post-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .ik-post-title {
+    font-size: 20px;
+  }
+
+  .ik-floor {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .ik-floor-avatar-shell {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ik-post-source-btn,
+  .ik-post-back-btn {
+    transition: none !important;
+  }
+}

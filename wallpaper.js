@@ -34,6 +34,8 @@
   }
 
   const saved = readSaved();
+  // 未存过时默认开随机；只有明确写成 false 才关掉。
+  if (!saved) writeSaved({ random: true });
   // appliedId 是真正生效到主界面的那支；viewIndex 只是当前预览
   let appliedId = saved?.id && items.some((i) => i.id === saved.id) ? saved.id : null;
   let viewIndex = Math.max(0, items.findIndex((i) => i.id === appliedId));
@@ -128,7 +130,9 @@
     const item = items[viewIndex];
     if (!item) return;
     appliedId = item.id;
-    writeSaved({ id: item.id, video: item.video });
+    randomOn = false;
+    writeSaved({ id: item.id, video: item.video, random: false });
+    renderRandom(false);
     renderStage();
     renderChips();
     toast(`已将「${item.name}」设为主界面壁纸`);
@@ -148,7 +152,7 @@
     randomBtn.querySelector(".wp-switch-text").textContent = on ? "ON" : "OFF";
   }
 
-  let randomOn = Boolean(saved?.random);
+  let randomOn = saved?.random !== false;
   randomBtn?.addEventListener("click", () => {
     randomOn = !randomOn;
     writeSaved({ random: randomOn });

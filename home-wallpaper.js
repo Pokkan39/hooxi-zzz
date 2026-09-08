@@ -1,5 +1,5 @@
 (() => {
-  // 读取壁纸页保存的选择，在主界面循环播放该动态壁纸；开启随机播放时每次进入随机取一支。
+  // 默认随机播动态壁纸；指定片加载失败时换下一张。随机可用本地开关关掉。
   const STORAGE_KEY = "hooxi.wallpaper";
   const shell = document.querySelector(".game-shell");
   if (!shell) return;
@@ -9,18 +9,30 @@
     const raw = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (raw && typeof raw === "object") saved = raw;
   } catch {}
-  if (!saved) return;
 
   const items = Array.isArray(window.hooxiWallpapers?.items) ? window.hooxiWallpapers.items : [];
+  if (!items.length) return;
 
-  let src = "";
-  if (saved.random && items.length) {
-    src = items[Math.floor(Math.random() * items.length)].video;
-  } else if (typeof saved.video === "string") {
-    // 只接受站内相对路径，避免写入异常值时加载外部资源
-    src = /^assets\/wallpapers\/[\w-]+\.mp4$/i.test(saved.video) ? saved.video : "";
+  const okPath = (src) => typeof src === "string" && /^assets\/wallpapers\/[\w-]+\.mp4$/i.test(src);
+  const shuffle = (list) => {
+    const next = list.slice();
+    for (let i = next.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [next[i], next[j]] = [next[j], next[i]];
+    }
+    return next;
+  };
+
+  const randomOn = !saved || saved.random !== false;
+  let queue = [];
+  if (randomOn) {
+    queue = shuffle(items.map((item) => item.video).filter(okPath));
+  } else if (okPath(saved.video)) {
+    queue = [saved.video, ...items.map((item) => item.video).filter((src) => src !== saved.video && okPath(src))];
+  } else {
+    queue = shuffle(items.map((item) => item.video).filter(okPath));
   }
-  if (!src) return;
+  if (!queue.length) return;
 
   const video = document.createElement("video");
   video.className = "home-wallpaper";
@@ -30,7 +42,14 @@
   video.autoplay = true;
   video.playsInline = true;
   video.preload = "auto";
-  video.src = src;
+
+  let i = 0;
+  const tryNext = () => {
+    if (i >= queue.length) return;
+    video.src = queue[i++];
+    video.play().catch(() => {});
+  };
+  video.addEventListener("error", tryNext);
 
   shell.prepend(video);
   document.body.classList.add("has-bg-video", "has-home-wallpaper");
@@ -42,5 +61,5 @@
     legacy.removeAttribute("src");
     legacy.load();
   }
-  video.play().catch(() => {});
+  tryNext();
 })();

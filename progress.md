@@ -3627,3 +3627,54 @@ Playwright (1440x900, localhost:8081/stories.html) 实测：
 - 本轮只修绳网静态打开，未改绳网业务数据与楼层文案。
 - 用户已明确要求检查无问题后上传 git。
 
+## 2026-09-08 - Task: 默认开启随机壁纸，加载失败换下一张
+
+### What was done
+
+按用户反馈，视频壁纸加载失败，并要求默认开启随机壁纸。根因是首页原先必须读到已保存的指定片才播放；指定文件 404 或未保存时直接不播。本轮改为：未保存或未明确关掉随机时，每次进入主界面从 56 支里随机取一张；当前片加载失败则自动换下一张。选择页随机开关默认 ON。用户在选择页点「切换」指定某一张时，会关掉随机，避免首页仍乱换。
+
+### Testing
+
+- `node --check home-wallpaper.js`、`node --check wallpaper.js` 通过。
+- 浏览器实测 8899：清空 `localStorage` 后首页仍出现 `.home-wallpaper`，源为 `assets/wallpapers/koleda.mp4` 且在播。
+- 故意改成缺失文件 `__missing__.mp4` 后约 1 秒换成 `vivian.mp4` 并继续播放。
+- 壁纸选择页随机开关 `aria-checked=true`，文案 ON，并写入 `{random:true}`。
+
+### Notes
+
+改动文件清单:
+- `home-wallpaper.js` — 默认随机；失败换下一张。
+- `wallpaper.js` — 未保存时默认 random=true；指定「切换」时写入 random=false。
+- `index.html` — `home-wallpaper.js` 缓存戳 `wp-3`。
+- `wallpaper.html` — `wallpaper.js` 缓存戳 `wp-2`。
+
+回滚方式:
+- 还原上述四个文件本轮改动。
+
+范围说明:
+- 壁纸视频仍不入库；线上若没有 `assets/wallpapers/*.mp4`，随机也会失败换完队列后停播。本机 56 支文件存在。
+- 未执行 git 提交或推送。
+
+## 2026-09-08 - Task: 补齐 Pages 构建缺的 React 源文件
+
+### What was done
+
+上次推送后 GitHub Pages 部署失败，线上仍停在 8 月 17 日旧站。失败原因是 CI 找不到 `src/post-react.jsx`（该文件本机有、未入库），连带详情页/浮层/编辑页依赖也未跟踪。本轮把构建入口依赖的 7 个源文件入库，部署门禁改为认 `src/html/` 入口与 `post.html`，workflow 的 build 命令去掉会把参数传给发布脚本的 `--config`。本地 `npm run build` 与 `test:deploy --strict-tracked` 已通过。
+
+### Testing
+
+- `npm run build` 成功（52 modules）。
+- `npm run test:deploy -- --strict-tracked`：`DEPLOY_GATE_OK`，HTML 12/12，import 图 28 文件，Git 必需 220 已跟踪 220。
+
+### Notes
+
+改动文件清单:
+- `src/post-react.jsx` `src/pages/PostPage.jsx` `src/edit-react.jsx` `src/components/PostOverlay.jsx` `src/components/OverlayErrorBoundary.jsx` `src/styles/interknot-overlay.css` `src/styles/interknot-post.css` — 补入库。
+- `assets/images/close-btn.webp` — 门禁要求的关闭按钮图入库。
+- `scripts/check-deploy-tracking.mjs` — 入口改为 src/html，含 post。
+- `.github/workflows/pages.yml` — build 改为 `npm run build`。
+- 另含上一轮默认随机壁纸：`home-wallpaper.js` `wallpaper.js` `wallpaper.html` `index.html`。
+
+回滚方式:
+- 还原上述文件本轮提交。
+

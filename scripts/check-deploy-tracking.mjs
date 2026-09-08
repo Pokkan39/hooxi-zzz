@@ -17,8 +17,8 @@ const PUBLIC_HTML = [
   'cultivate.html',
   'tape-wall-sample.html'
 ];
-const ENTRY_HTML = ['events.html', 'create.html', 'edit.html'];
-const REQUIRED_HTML = [...new Set([...PUBLIC_HTML, 'create.html', 'edit.html'])];
+const ENTRY_HTML = ['src/html/events.html', 'src/html/create.html', 'src/html/edit.html', 'src/html/post.html'];
+const REQUIRED_HTML = [...new Set([...PUBLIC_HTML, 'create.html', 'edit.html', 'post.html'])];
 const errors = [];
 const warnings = [];
 
@@ -247,8 +247,8 @@ function checkViteConfig() {
     errors.push("vite.config.js 缺少 base: './'");
     ok = false;
   }
-  for (const entry of ['events', 'create', 'edit']) {
-    const entryPattern = new RegExp(`["']?${entry}["']?\\s*:\\s*resolve\\([^)]*["']${entry}\\.html["']`);
+  for (const entry of ['events', 'create', 'edit', 'post']) {
+    const entryPattern = new RegExp(`["']?${entry}["']?\\s*:\\s*resolve\\([^)]*["'](?:src/html/)?${entry}\\.html["']`);
     if (!entryPattern.test(source)) {
       errors.push(`vite.config.js 缺少 ${entry}.html 构建入口`);
       ok = false;
@@ -261,7 +261,7 @@ function checkWorkflow() {
   const source = readRepoFile('.github/workflows/pages.yml');
   if (source === null) return false;
   let ok = true;
-  const buildIndex = source.indexOf('npm run build -- --config vite.config.js');
+  const buildIndex = source.search(/npm run build(?:\s+--\s+--config vite\.config\.js)?/);
   const strictIndex = source.indexOf('npm run test:deploy -- --strict-tracked');
   if (buildIndex < 0 || strictIndex < 0 || strictIndex < buildIndex) {
     errors.push('pages workflow 必须在 build 后运行 npm run test:deploy -- --strict-tracked');
