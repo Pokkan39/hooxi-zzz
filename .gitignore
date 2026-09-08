@@ -52,3 +52,7 @@ screenshots/
 !/assets/mindscape/default/
 /assets/mindscape/default/*
 !/assets/mindscape/default/*.webp
+
+# 官方好感壁纸视频：56 支合计约 933MB，只在本地使用，不入库。
+# 入库会让仓库历史永久膨胀近 1GB，且 Pages 站点 1GB 软上限会被吃满。
+/assets/wallpapers/

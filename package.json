@@ -21,7 +21,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/publish-react-pages.mjs",
     "preview": "vite preview",
     "test": "npm run test:content",
     "build:stories": "esbuild src/stories.jsx --bundle --minify --format=iife --platform=browser --target=es2020 --outfile=stories.js",

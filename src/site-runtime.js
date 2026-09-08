@@ -18,6 +18,12 @@ export function mountReactApp(createRoot, app) {
   let readyFrame = 0;
 
   const reportError = (error) => {
+    console.error('React 页面渲染失败', error);
+    window.dispatchEvent(new CustomEvent('hooxi:app-error', {
+      detail: { message: error instanceof Error ? error.message : String(error) }
+    }));
+    // 首屏已经起来后，局部组件报错不能把整页拆掉
+    if (document.documentElement.dataset.appReady === 'true') return;
     if (failed) return;
     failed = true;
     cancelAnimationFrame(readyFrame);
@@ -37,10 +43,6 @@ export function mountReactApp(createRoot, app) {
       });
     }
 
-    console.error('React 页面渲染失败', error);
-    window.dispatchEvent(new CustomEvent('hooxi:app-error', {
-      detail: { message: error instanceof Error ? error.message : String(error) }
-    }));
   };
 
   try {

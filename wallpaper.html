@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>动态壁纸 // HOOXI 绝区零档案（粉丝非官方）</title>
+  <meta name="description" content="选择代理人主视觉作为主界面背景">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="wallpaper.css?v=wp-1">
+</head>
+<body class="wp-body">
+  <main class="wp-shell">
+    <!-- 预览区：铺满视口的当前壁纸 -->
+    <div class="wp-stage">
+      <video id="wpStage" class="wp-stage-video" muted loop playsinline preload="metadata"></video>
+      <div id="wpLoading" class="wp-loading" hidden>
+        <span class="wp-loading-spin" aria-hidden="true"></span>
+        <span class="wp-loading-text">壁纸视频较大，加载中…</span>
+      </div>
+      <div class="wp-stage-veil" aria-hidden="true"></div>
+    </div>
+
+    <!-- 顶栏：返回键 + 标题 + 随机播放开关 -->
+    <header class="wp-topbar">
+      <a class="wp-back" href="index.html" aria-label="返回主界面">
+        <img src="assets/icons/back.png" alt="">
+      </a>
+      <h1 class="wp-title">动态壁纸</h1>
+      <div class="wp-random">
+        <span id="wpRandomLabel" class="wp-random-label">随机播放</span>
+        <button id="wpRandom" class="wp-switch" type="button" role="switch" aria-checked="false" aria-labelledby="wpRandomLabel">
+          <span class="wp-switch-knob" aria-hidden="true"></span>
+          <span class="wp-switch-text" aria-hidden="true">OFF</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 当前壁纸信息 + 应用按钮 -->
+    <div class="wp-actionbar">
+      <div class="wp-meta">
+        <span id="wpName" class="wp-name"></span>
+        <span id="wpSize" class="wp-size"></span>
+      </div>
+      <button id="wpMute" class="wp-mute" type="button" aria-pressed="true" aria-label="开启声音">
+        <span class="wp-mute-icon" aria-hidden="true"></span>
+      </button>
+      <button id="wpApply" class="wp-apply" type="button">
+        <span class="wp-apply-icon" aria-hidden="true"></span>
+        <span class="wp-apply-text">切换</span>
+      </button>
+    </div>
+
+    <!-- 底部头像条 -->
+    <nav class="wp-rail" aria-label="代理人壁纸选择">
+      <button id="wpPrev" class="wp-arrow wp-arrow--prev" type="button" aria-label="上一批">❮</button>
+      <ul id="wpTrack" class="wp-track"></ul>
+      <button id="wpNext" class="wp-arrow wp-arrow--next" type="button" aria-label="下一批">❯</button>
+    </nav>
+
+    <p id="wpStatus" class="wp-status" role="status" aria-live="polite"></p>
+  </main>
+
+  <footer class="wp-footer">
+    <span>HOOXI 为粉丝非官方档案，与米哈游/HoYoverse 无隶属；壁纸美术版权归米哈游所有。</span>
+  </footer>
+
+  <script src="agent-catalog.js?v=wp-1"></script>
+  <script src="wallpaper-data.js?v=wp-1"></script>
+  <script src="wallpaper.js?v=wp-1"></script>
+</body>
+</html>

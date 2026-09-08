@@ -1,0 +1,451 @@
+/* 动态壁纸页：复刻游戏内壁纸替换界面。
+   结构为满屏预览 + 顶部黑条（返回/标题/随机播放）+ 右下切换控件 + 底部头像轮播条。 */
+
+:root {
+  --wp-lime: #b6f24a;
+  --wp-bar: rgba(12, 13, 15, .92);
+  --wp-rail-bg: #241d1b;
+}
+
+* { box-sizing: border-box; }
+
+.wp-body {
+  margin: 0;
+  min-height: 100vh;
+  background: #07080a;
+  color: #f5f6f7;
+  font-family: 'Noto Sans SC', Arial, sans-serif;
+  overflow: hidden;
+}
+
+.wp-shell {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* ---------- 预览区 ---------- */
+.wp-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #0b0d10;
+}
+
+.wp-stage-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  background: #0b0d10;
+  /* 切换时淡入，避免生硬跳变 */
+  animation: wpFade .32s ease;
+}
+
+/* 视频加载提示：官方也提示壁纸视频较大 */
+.wp-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 999px;
+  background: rgba(8, 10, 13, .82);
+  color: rgba(255, 255, 255, .82);
+  font-size: .82rem;
+  transform: translate(-50%, -50%);
+}
+
+.wp-loading-spin {
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255, 255, 255, .26);
+  border-top-color: var(--wp-lime);
+  border-radius: 50%;
+  animation: wpSpin .7s linear infinite;
+}
+
+@keyframes wpSpin { to { transform: rotate(360deg); } }
+
+@keyframes wpFade {
+  from { opacity: 0; transform: scale(1.015); }
+  to { opacity: 1; transform: none; }
+}
+
+/* 顶底压暗，保证黑条上的文字可读 */
+.wp-stage-veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(6, 7, 9, .55) 0, transparent 14%),
+    linear-gradient(0deg, rgba(6, 7, 9, .62) 0, transparent 22%);
+}
+
+/* 声音开关：视频默认静音，需用户主动开 */
+.wp-mute {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 50%;
+  background: rgba(16, 19, 22, .88);
+  cursor: pointer;
+  transition: border-color .15s, transform .15s;
+}
+
+.wp-mute-icon {
+  width: 19px;
+  height: 19px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23eef3f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M11 5 6 9H3v6h3l5 4z'/%3E%3Cpath d='m17 9 4 6M21 9l-4 6'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
+/* 开启声音后图标换成音波 */
+.wp-mute[aria-pressed="false"] { border-color: var(--wp-lime); }
+
+.wp-mute[aria-pressed="false"] .wp-mute-icon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b6f24a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M11 5 6 9H3v6h3l5 4z'/%3E%3Cpath d='M15.5 8.5a5 5 0 0 1 0 7'/%3E%3Cpath d='M18.5 5.5a9 9 0 0 1 0 13'/%3E%3C/svg%3E");
+}
+
+.wp-mute:hover { transform: scale(1.06); border-color: rgba(255, 255, 255, .42); }
+.wp-mute:active { transform: scale(.94); }
+
+.wp-mute:focus-visible {
+  outline: 2px solid var(--wp-lime);
+  outline-offset: 3px;
+}
+
+/* ---------- 顶栏 ---------- */
+.wp-topbar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px clamp(16px, 2.4vw, 34px);
+  background: var(--wp-bar);
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+.wp-back {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  aspect-ratio: 124 / 83;
+  transition: transform .15s, filter .15s;
+}
+
+.wp-back img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.wp-back:hover { transform: scale(1.06); filter: brightness(1.12); }
+.wp-back:active { transform: scale(.94); }
+
+.wp-title {
+  margin: 0;
+  font-size: clamp(1rem, 1.4vw, 1.22rem);
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.wp-random {
+  margin-inline-start: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 6px 5px 16px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 999px;
+  background: rgba(30, 33, 37, .9);
+}
+
+.wp-random-label {
+  font-size: .86rem;
+  font-weight: 700;
+}
+
+/* 拨杆开关：关时灰、开时点亮主色 */
+.wp-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: 86px;
+  height: 30px;
+  padding: 0 10px 0 4px;
+  border: 0;
+  border-radius: 999px;
+  background: #4a4f55;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+.wp-switch-knob {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #e9edf0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .45);
+  transition: transform .2s;
+}
+
+.wp-switch-text {
+  flex: 1;
+  color: #f0f3f5;
+  font: 800 .78rem/1 Arial, sans-serif;
+  letter-spacing: .06em;
+  text-align: center;
+}
+
+.wp-switch[aria-checked="true"] { background: var(--wp-lime); }
+.wp-switch[aria-checked="true"] .wp-switch-knob { transform: translateX(52px); }
+.wp-switch[aria-checked="true"] .wp-switch-text { color: #16200a; }
+
+/* 开启时文字让位给滑块，靠 flex 顺序反转实现左侧显示 */
+.wp-switch[aria-checked="true"] { padding: 0 4px 0 10px; flex-direction: row-reverse; }
+
+.wp-switch:focus-visible {
+  outline: 2px solid var(--wp-lime);
+  outline-offset: 3px;
+}
+
+/* ---------- 当前壁纸信息 + 切换按钮 ---------- */
+.wp-actionbar {
+  position: absolute;
+  right: clamp(16px, 2.4vw, 34px);
+  bottom: calc(var(--wp-rail-h, 128px) + 18px);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.wp-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: rgba(10, 12, 14, .74);
+}
+
+.wp-name {
+  font-size: .95rem;
+  font-weight: 700;
+}
+
+.wp-size {
+  font-size: .72rem;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, .52);
+}
+
+.wp-apply {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 26px 10px 14px;
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #33373c, #191c20);
+  color: #f4f6f7;
+  font-size: .95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .15s, border-color .15s, box-shadow .15s;
+}
+
+.wp-apply-icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ffcf1a;
+}
+
+/* 圆形循环箭头图标 */
+.wp-apply-icon::before {
+  content: "";
+  width: 17px;
+  height: 17px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23161616' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M20 12a8 8 0 1 1-2.5-5.8'/%3E%3Cpath d='M20 4v4.6h-4.6'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
+.wp-apply:hover {
+  border-color: var(--wp-lime);
+  box-shadow: 0 0 14px rgba(182, 242, 74, .38);
+}
+
+.wp-apply:active { transform: scale(.96); }
+
+.wp-apply.is-current {
+  border-color: var(--wp-lime);
+  color: var(--wp-lime);
+}
+
+/* ---------- 底部头像条 ---------- */
+.wp-rail {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: var(--wp-rail-h, 128px);
+  padding: 0 clamp(10px, 1.6vw, 24px);
+  background:
+    url("assets/ui/noise.png") 0 0 / 128px 128px,
+    linear-gradient(180deg, #2a221f, #1d1715);
+  border-top: 1px solid rgba(255, 255, 255, .08);
+}
+
+.wp-arrow {
+  flex: none;
+  width: 30px;
+  height: 54px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: rgba(255, 255, 255, .62);
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: color .15s, background .15s;
+}
+
+.wp-arrow:hover { color: #fff; background: rgba(255, 255, 255, .08); }
+.wp-arrow:disabled { opacity: .28; cursor: default; }
+
+.wp-track {
+  display: flex;
+  gap: clamp(8px, 1vw, 16px);
+  flex: 1;
+  margin: 0;
+  padding: 6px 2px;
+  list-style: none;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.wp-track::-webkit-scrollbar { display: none; }
+
+.wp-chip {
+  flex: none;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(58px, 4.6vw, 74px);
+  height: clamp(58px, 4.6vw, 74px);
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, .22);
+  border-radius: 50%;
+  background: #15181c;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .16s, border-color .16s, box-shadow .16s;
+}
+
+.wp-chip img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wp-chip:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, .5);
+}
+
+.wp-chip[aria-current="true"] {
+  border-color: var(--wp-lime);
+  box-shadow: 0 0 0 3px rgba(182, 242, 74, .26), 0 0 14px rgba(182, 242, 74, .45);
+}
+
+/* 已应用为主界面背景的角标 */
+.wp-chip.is-applied::after {
+  content: "";
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--wp-lime) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2314200a' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5 9.5 18 20 6.5'/%3E%3C/svg%3E") center/10px no-repeat;
+  box-shadow: 0 0 0 2px #1d1715;
+}
+
+.wp-chip:focus-visible {
+  outline: 2px solid var(--wp-lime);
+  outline-offset: 3px;
+}
+
+/* ---------- 状态提示与页脚 ---------- */
+.wp-status {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--wp-rail-h, 128px) + 22px);
+  z-index: 4;
+  margin: 0;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: rgba(10, 12, 14, .9);
+  border: 1px solid var(--wp-lime);
+  color: var(--wp-lime);
+  font-size: .84rem;
+  font-weight: 700;
+  transform: translate(-50%, 8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s, transform .2s;
+}
+
+.wp-status.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* 版权声明收进底部头像条左侧，避免压在壁纸画面上 */
+.wp-footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 4;
+  padding: 4px clamp(12px, 1.6vw, 22px);
+  max-width: 52ch;
+  color: rgba(255, 255, 255, .3);
+  font-size: .64rem;
+  line-height: 1.5;
+  pointer-events: none;
+}
+
+@media (max-width: 860px) {
+  .wp-rail { --wp-rail-h: 104px; }
+  .wp-footer { display: none; }
+  .wp-actionbar { gap: 10px; }
+  .wp-meta { padding: 6px 10px; }
+  .wp-random { padding-inline-start: 12px; }
+  .wp-random-label { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wp-stage-img { animation: none; }
+  .wp-chip, .wp-apply, .wp-status { transition: none; }
+}

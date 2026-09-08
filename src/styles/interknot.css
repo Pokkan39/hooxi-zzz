@@ -228,9 +228,23 @@ html {
     transition: none;
   }
   
-  .hooxi-event-card {
-    transition: none;
-  }
+.hooxi-event-card {
+  position: relative;
+  background: #060606;
+  border: 1.5px solid #2a2a2a;
+  border-radius: var(--ik-post-card-radius); /* 24px 24px 0 24px：右下直角，ZZZ 招牌不对称 */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.32s cubic-bezier(0.23, 1, 0.32, 1), background 0.22s, border-color 0.22s;
+}
+.hooxi-event-card:hover,
+.hooxi-event-card:focus-visible {
+  background: var(--ik-accent-green);
+  border-color: var(--ik-accent-green);
+  transform: translateY(-5px);
+  z-index: 5;
+}
 }
 
 /* ========== 主容器 ========== */
@@ -331,8 +345,8 @@ html {
 /* ========== 卡片样式 ========== */
 .hooxi-event-card {
   position: relative;
-  /* ZZZ 削角矩形：右下角 45° 斜切 */
-  border-radius: 12px 12px 0 12px;
+  /* ZZZ 招牌：右下直角，其余 24px 大圆角（对齐 root token） */
+  border-radius: var(--ik-post-card-radius);
   background: var(--ik-post-card-outer-bg);
   padding: var(--ik-post-card-padding);
   overflow: hidden;
@@ -346,8 +360,54 @@ html {
 }
 
 .hooxi-event-card:hover {
-  background: var(--ik-post-card-outer-bg);
-  box-shadow: 0 0 0 2px var(--ik-primary), 0 0 28px rgba(191, 255, 9, 0.18);
+  background: var(--ik-post-card-hover-bg);
+  box-shadow: 0 8px 28px rgba(191, 255, 9, 0.30);
+}
+
+.hooxi-event-card:hover .hooxi-event-card-title,
+.hooxi-event-card:hover .hooxi-event-card-title-cat,
+.hooxi-event-card:hover .hooxi-event-card-author-name {
+  color: #000;
+}
+
+.hooxi-event-card:hover .hooxi-event-card-author-divider {
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.hooxi-event-card:hover .hooxi-event-card-views,
+.hooxi-event-card:hover .hooxi-event-card-views-icon {
+  color: #000;
+  filter: none;
+  text-shadow: none;
+}
+
+.hooxi-event-card-source-btn {
+  margin-top: 10px;
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ik-primary);
+  background: transparent;
+  border: 1px solid var(--ik-primary);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.hooxi-event-card-source-btn:hover {
+  background: var(--ik-primary);
+  color: #000;
+}
+
+/* 触屏设备下保证最小触控高度，桌面视觉不变 */
+@media (hover: none), (pointer: coarse) {
+  .hooxi-event-card-source-btn {
+    min-height: 44px;
+  }
+}
+
+.hooxi-event-card:hover .hooxi-event-card-source-btn {
+  color: #000;
+  border-color: #000;
 }
 
 .hooxi-event-card-link {
@@ -362,29 +422,20 @@ html {
 /* 封面容器 */
 .hooxi-event-card-cover-wrap {
   position: relative;
-  overflow: hidden;
 }
 
 .hooxi-event-card-cover-frame {
   width: 100%;
-  background: transparent;
-  aspect-ratio: var(--ik-post-card-cover-aspect-ratio);
+  background: #111;
 }
 
 .hooxi-event-card-cover {
-  --ik-cover-scale: 1;
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
-  transform: scale(var(--ik-cover-scale));
-  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
-  will-change: transform;
-}
-
-.hooxi-event-card:hover .hooxi-event-card-cover {
-  --ik-cover-scale: 1.06;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  background: #111;
 }
 
 /* 浏览量浮层 */
@@ -521,11 +572,6 @@ html {
 
 .hooxi-event-card-edit-btn:hover svg {
   color: #000;
-}
-
-/* tall 卡片变体：封面竖版，明显更高 */
-.hooxi-event-card--tall .hooxi-event-card-cover-frame {
-  aspect-ratio: 0.75;
 }
 
 /* 标题 */

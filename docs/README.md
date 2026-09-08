@@ -38,7 +38,7 @@
 
 ## 游戏化档案界面
 
-正式首页现在是“午夜放映档案”七幕长卷：序幕·今晚放映、第一幕·选片、第二幕·演员表、第三幕·正片、第四幕·加映、第五幕·片后谈、片尾·关于档案；序幕保留 Dual Gate，正式查档为主行动，PLAY 录像店是可跳过的次行动。首页职责是把访客送入真实查档路径和代理人精选索引；主线、角色剧情、活动与幕后长列表仍由各自正式栏目承载。页面尾部磁带坞保留完整播放器功能，但作为文档流内的次级面板，不遮挡内容或成为主 CTA。
+正式首页现在是“午夜放映档案”七幕长卷：序幕·今晚放映、第一幕·选片、第二幕·演员表、第三幕·正片、第四幕·加映、第五幕·片后谈、片尾·关于档案；序幕保留 Dual Gate，正式查档为主行动，PLAY 录像店是可跳过的次行动。首页职责是把访客送入真实查档路径和代理人精选索引；主线、角色剧情、活动与幕后长列表仍由各自正式栏目承载。页面尾部磁带坞保留完整播放器功能，但作为文档流内的次级面板，不遮挡内容或成为主 CTA。游戏主界面 `index.html` 底部导航中，仓库点开后在首页展开浮层（材料道具 / 驱动仓库 / 音擎仓库 / 重要物品），不再跳转 `drive-disc-sample.html`。绳网（`events.html` / `post.html` / `create.html` / `edit.html`）的源页在 `src/html/`，`npm run build` 会把 Vite 产物发布到仓库根目录，因此 Python 静态服务和 GitHub Pages 都能直接打开，不再依赖加载未编译的 `.jsx`。格子数量/等级压在底部稀有度色条上，选中是整格外描边，音擎格内显示星级。仓库中文用游戏字，容量数字用游戏英文字。打开仓库整层滑入，换页格子错开弹出，选中格呼吸、图标轻浮，六角网待机。首页胶片持续上卷，NEW/角标/扫描线/信号条/经验条扫光、底栏选中呼吸都在播；系统「减少动态」不再掐死这些动画。页签用官方仓库原图抠的圆钮。音擎默认 0 级 1 星，侧栏可预览升级与升阶；缺 A 盒的驱动盘回退 wiki 圆图标，不再叠 CSS 假板。商店、成就、丽都城募、设置、调频、邮箱、通知点击后弹出「施工中」，不跳转样板页；录像店样板仍可由其他入口直接打开。
 
 首页长期 CSS 约定：伪元素只承担单一装饰职责；第二视觉职责必须落在具名 DOM 节点，不把内容或多个交互状态藏进同一个 `::before` / `::after`；`motion.css` 只表达状态、节奏和轻量转场，不定义最终几何；首页规则必须挂在 `.home-page` / `.home-act` 等首页作用域下，不向正式子页泄漏。Home / Feature Reel 的中文展示字体是明确例外，正文、导航和数据字段仍遵循全站字体 token。
 
@@ -68,7 +68,7 @@
 
 - 基础事实优先核对绝区零官方 / 米游社百科归档；攻略建议可参考 Prydwen 等站，但必须标记来源。
 - 不复制官方 wiki 整站或第三方长篇攻略；站内只保留结构化事实、短摘要和来源链接。材料总量、配装、词条和配队未完成核验时显示“待核验”，不得用推测数字填充。
-- `stories.html` 是图四三段式角色目录：左侧固定站点导航，中部显示当前角色的大舞台及基础/技能/装备信息，右侧显示 57 人人物卡网格；搜索与阵营筛选收进原生 `details` disclosure，选择角色时无需刷新即可同步舞台、URL 与详情入口。
+- `stories.html` 是图四三段式角色目录：左侧固定站点导航，中部显示当前角色的大舞台，右侧显示 57 人人物卡网格；工作台内舞台与名录桌面分栏为 7:3。顶栏下的「代理人工作台」标题带收成一条薄带（约 56px），舞台高度按真实顶栏 78px + 该薄带计算，避免底栏名字区被挤出视口。舞台与底栏用硬表面实底，不用毛玻璃。舞台不再显示 SELECTED AGENT / FILE 顶栏、AGENT SPEC 参数板，以及基础/技能/装备三钮；底部名字、阵营与完整档案入口仍保留。搜索与阵营筛选收进原生 `details` disclosure，选择角色时无需刷新即可同步舞台、URL 与详情入口。中部舞台按游戏代理人选择屏：`full` 彩图实底铺满可见舞台，不留右侧空黑块；角色名描边大字改到名录面板后面慢速走，不挡人物。工作台、名录、底栏、标题带共用同一套斜纹硬表面，标题带右侧和名录叠一层主题色斜切块；整页慢速描边水印压在工作台后、不挡人物。待机有可见的水平游移、亮度呼吸和主题色扫光，不叠前景立绘。试镜横幅（`assets/auditions/`，现行 34 条）不再作为工作台主画面——覆盖不全，没片的角色会空台、两套脸更突兀。57 人对照与本机游戏 `Gacha_*.usm` 盘点见 `artifacts/audition-entrance-inventory.json`；加密低分辨率卡池片、动态壁纸、角色 PV，以及本机那两条非绝区零 1080p 录像，均不接入舞台。
 - `faction.html` 展示阵营摘要与成员；角色详情统一使用 `character.html?id=<id>`。详情页的四个 Hash tab 始终只显示一个活动 panel，支持浏览器 history、方向键、Home/End、roving tabindex，并把旧 hash 映射到当前模块；角色模块导航不再创建内部限宽/限高滚动条，站点侧栏保留栏目链接、展开/收起，以及上一/下一栏目和浏览器后退/前进控制；来源、版权归属、粉丝非官方与无隶属边界常显在 tab panel 之外。材料图标从本地 wiki 镜像复制到 `assets/materials/<epId>.<ext>`，页面只加载同源 `icon`；无图标时降级为等级字母。档案图集从镜像按原格式（含 GIF）复制到 `assets/gallery/<agentId>/<nn>.<ext>`，每角色最多 8 张，镜像缺失项跳过；页面只加载同源图集，禁止热链。材料详情若来自 `/zzz/wiki/...`，规范化为 `https://baike.mihoyo.com/...`，仅在用户点击时外跳。
 - `character-sample.html`、`tech-direction-demos.html`、`cinematic-slice.html`、`prototype/` 等仍是隔离实验/样板，不替换正式档案首页。
 - 重新生成 enrichment：`python scripts/build-agent-enrichment.py`（读取 `F:/website-archives/zzz-wiki`，写出 `artifacts/agent-enrichment.json`、`agent-enrichment.js`，并本地化材料图标到 `assets/materials/`、档案图集到 `assets/gallery/`）。
@@ -117,20 +117,25 @@
 10. 确认无误后点击“导出当前文件”，用下载的 `data.js` 覆盖仓库根目录同名文件，并同步覆盖拖动导出的 `layout-data.js`。
 11. 执行 `git add`、`git commit`、`git push origin main`，等待 GitHub Pages 或绑定域名的托管服务更新。
 
+### 首页可视化编辑工作台（`edit.html`）
+
+`edit.html` 面向“直接照着真实首页改首页”的场景，与上面的 `editor.html` 档案编辑流程并存，互不替代。
+
+1. 打开 `edit.html`，中间会加载真实首页（`index.html?editorPreview=1`）；右上角显示 `PREVIEW READY` 表示预览已连接。
+2. 在左侧模块列表选择模块，或直接点击首页里的文字，右侧属性面板会定位到对应字段。
+3. 在右侧改主标题、简介、眉题即可实时看到首页变化；也可在首页里双击文字原位修改，失焦后自动回写草稿。
+4. 主视觉图片支持填写仓库路径、URL，或选择本地图片（本地图片以草稿形式保存，不写入仓库）。
+5. 布局按当前视口调整 X/Y/W/Z，会同时写入首页预览和本机布局草稿。
+6. 顶部可撤销/重做（也支持 `Ctrl/Cmd+Z`、`Ctrl/Cmd+Shift+Z`、`Ctrl/Cmd+Y`）、保存本机草稿、导出编辑 JSON。导出的 JSON 包含字段内容、布局数值、主视觉图片数据，以及 `layoutTargets` 模块映射，适合交给助手按结果复刻，不要求发布。
+7. 草稿只保存在当前浏览器（`hooxi:editor:home-draft:v1`、`hooxi:preview:data`），不会影响线上访客；导出后可直接把 JSON 文件交给助手，确认复刻结果后仍需按上面流程把正式数据落到仓库文件再推送。
+
 **部署机制与唯一的质量兜底（务必先读）**
 
-`.github/workflows/pages.yml` 是仓库唯一的工作流，触发条件只有 `push` 到 `main` 与手动 `workflow_dispatch`，步骤为 `upload-pages-artifact` 配 `path: .`，即把整个仓库全量上传并部署到 GitHub Pages。
+`.github/workflows/pages.yml` 是仓库唯一的 Pages 工作流，触发条件只有 `push` 到 `main` 与手动 `workflow_dispatch`。当前采用“完整静态站复制到 `_site` + Vite `events/create/edit` 的 `dist` 覆盖”的混合发布：先执行 `npm ci`，再执行 `npm run build -- --config vite.config.js`，把仓库根目录静态文件复制到 `_site`（排除 `.git`、`node_modules`、`dist`、`_site`），最后用 `dist/.` 覆盖合并并上传 `_site`。不得把发布路径改成只上传 `dist`。
 
-由此有两个后果，任何人推 `main` 或合并 PR 前都必须清楚：
+阶段 1 的本地验证必须把 `_site` 挂载在 `/hooxi-zzz/` 子路径下，而不是只验证根路径；重点检查 `http://127.0.0.1:4173/hooxi-zzz/events.html`、`create.html`、`edit.html` 的同源 JS/CSS/资源请求和页面回退行为。未实际推送前，只能表述为本地构建与验证完成，不能声称已线上部署。
 
-- **合并即上线。** 推到 `main` 的内容会直接成为线上站点，中间没有预发布环节。
-- **没有任何 CI 测试把关。** 该工作流不执行 `npm test`、不执行 `npm run test:ui`、不执行 `npm run test:formal`。在 Pull Request 上不会触发任何检查，PR 页面的 checks 列表是空的——这是「没有配置检查」，不是「检查通过」。
-
-所以质量兜底完全依赖本地。合并或直推 `main` 之前，至少跑完这三项并确认结果：
-
-- `npm test`：档案媒体校验、链接诚信、非官方边界
-- `npm run test:ui`：截图矩阵、深链、交互、首页发布与放映检查，须 `blockingFailures: 0`
-- `npm run test:formal`：正式站基线比对。它的作用是拦截未经授权的正式站改动，报 `GATE_FAIL` 时先分辨是「本次改动确实获得批准」还是「出现了不该有的偏离」；确属已批准的施工，才在用户明确同意后用 `--write` 推进基线，不可顺手重建。
+`npm run test:deploy` 默认对未跟踪的必需文件给出 warning；CI 在构建后使用 `npm run test:deploy -- --strict-tracked`，发现漏交付依赖会以错误阻止发布。该门禁不替代 `npm test`、`npm run test:ui` 与 `npm run test:formal`；合并或直推 `main` 前仍须按改动范围完成本地质量验证。
 
 后端有意关闭时，仅 editor 的 `/api/auth/session` 精确 connection-refused 控制台消息作为预期离线证据记录，不算阻断；其他控制台错误仍阻断。
 
@@ -145,6 +150,24 @@
 ## 音乐与自动播放说明
 
 播放器不会在页面加载时自动播放，也不会因编辑器、卡片或菜单操作而启动。只有点击底部播放按钮才会播放；默认音量为 25%，用户调整后会保存在当前浏览器。请只使用自己创作、获得授权或明确允许使用的音频地址。
+
+## 角色语音试听
+
+阵营详情页右侧面板的配音行支持试听中配语音：中配名字后面有播放按钮的角色可以点开听，点击播放、再点停止、切换角色自动停止，播放时会暂停站内 BGM 避免两路声音重叠。没有语音的角色不显示按钮，只显示配音名单。
+
+语音文件直接引用官方公开 CDN，本地不存储任何音频，仓库体积不受影响。当前 56 位角色中 38 位可试听（其余 18 位官方侧没有中配语音）。日配地址已采集但暂未启用：官方中文站会把中日语音一起加载，无法稳定区分语种归属，等有可靠办法再开。
+
+维护方式（官方调整路径导致试听失效时重跑）：
+
+```bash
+node scripts/collect-agent-voices.mjs              # 全量采集，约 20 分钟
+node scripts/collect-agent-voices.mjs --limit 4    # 小样试水，结果写独立文件不覆盖全量
+node scripts/clean-agent-voices.mjs --dry-run      # 复核体积与语种归属，只报告
+node scripts/clean-agent-voices.mjs                # 复核并写回
+node scripts/recollect-voice-gaps.mjs              # 只针对缺失角色补采
+```
+
+采集脚本会同时写 `artifacts/agent-voice-map.json`（源数据）和 `agent-voices.js`（页面引入的运行时映射表）。要临时关掉语音功能，删掉 `faction.html` 里引入 `agent-voices.js` 的那一行即可，按钮会全部不渲染，面板其余内容不受影响。
 
 ## 词条封面、角色立绘与 Wiki 字段
 

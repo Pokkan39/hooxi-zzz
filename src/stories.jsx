@@ -56,11 +56,6 @@ const GALLERY_FALLBACKS = Object.freeze({
   "zhu-yuan": "assets/gallery/zhu-yuan/03.webp",
 });
 const SAFE_THEME = [224, 180, 28];
-const CATEGORY_LINKS = [
-  { id: "basic", label: "基础", hash: "profile" },
-  { id: "skill", label: "技能", hash: "combat" },
-  { id: "gear", label: "装备", hash: "build" },
-];
 
 function readFavorites() {
   try {
@@ -76,12 +71,29 @@ function field(value) {
   return text || "待核验";
 }
 
-/* 代理人品级 S/A 使用官方徽章素材（assets/rank-*.png，游戏内菱形徽记）；
-   「待公布」「I」等尚无官方品级图的条目保留文字形态，避免拼出不存在的 PNG。 */
-const RANK_IMG = Object.freeze({ S: "assets/rank-s.png", A: "assets/rank-a.png" });
+/* 代理人品级 S/A/B 与「无限」使用官方徽章素材（assets/rank-*.png，游戏内菱形徽记）；
+   「待公布」等尚无官方品级图的条目保留文字形态，避免拼出不存在的 PNG。 */
+const RANK_IMG = Object.freeze({
+  S: "assets/rank-s.png",
+  A: "assets/rank-a.png",
+  B: "assets/rank-b.png",
+  "∞": "assets/rank-infinity.png"
+});
 function rankImage(rank) {
   return RANK_IMG[String(rank || "").toUpperCase()] || "";
 }
+/* 属性/特性/攻击类型图标：与 character.js 的 FIELD_ICONS 同源。
+   仅收录已核验的官方图，未取到的值不输出图标。 */
+const FIELD_ICON_FILES = Object.freeze({
+  "电": "assets/field-icons/electric.png",
+  "冰": "assets/field-icons/ice.png",
+  "火": "assets/field-icons/fire.png",
+  "以太": "assets/field-icons/ether.png",
+  "击破": "assets/field-icons/stun.png",
+  "支援": "assets/field-icons/support.png",
+  "斩击": "assets/field-icons/slash.png",
+  "打击": "assets/field-icons/strike.png"
+});
 
 function validRgb(value) {
   return Array.isArray(value) && value.length === 3
@@ -144,7 +156,7 @@ const PARALLAX_CHARS = new Set([
 function ParallaxArt({ character }) {
   const containerRef = useRef(null);
   const id = character?.id;
-  const hasLayers = id && PARALLAX_CHARS.has(id);
+  const hasLayers = Boolean(id) && PARALLAX_CHARS.has(id);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -246,41 +258,17 @@ function countGridColumns(grid) {
   return tracks + (inTrack ? 1 : 0) || 1;
 }
 
-function BackgroundHUD({ character, index, artSource }) {
+function BackgroundHUD({ character, artSource }) {
   const name = (character?.englishName || character?.name || "NO SIGNAL").toUpperCase();
   return (
     <>
       <div className="agent-stage-grid" aria-hidden="true" />
       <span className="agent-stage-backdrop-name" id="selectedAgentBackdropName" aria-hidden="true">{name}</span>
-      <div className="agent-stage-heading">
-        <span>// SELECTED AGENT</span>
-        <b id="selectedAgentIndex">FILE {character ? String(index + 1).padStart(2, "0") : "--"}</b>
-      </div>
       <div className="agent-stage-source" aria-hidden="true">
         <span>{artSource === "gallery" ? "LOCAL GALLERY" : "DEFAULT MINDSCAPE"}</span>
         <i />
       </div>
     </>
-  );
-}
-
-function CategoryMenu({ character }) {
-  const base = character ? `character.html?id=${encodeURIComponent(character.id)}` : "";
-  return (
-    <nav className="agent-category-menu" aria-label="代理人档案分类">
-      {CATEGORY_LINKS.map((category, index) => (
-        <a
-          key={category.id}
-          className={index === 0 ? "is-active" : ""}
-          href={base ? `${base}#${category.hash}` : undefined}
-          aria-disabled={base ? undefined : "true"}
-          tabIndex={base ? undefined : -1}
-        >
-          <span aria-hidden="true">0{index + 1}</span>
-          <b>{category.label}</b>
-        </a>
-      ))}
-    </nav>
   );
 }
 
@@ -330,7 +318,7 @@ function CharacterInfo({ character, faction, favorite, onToggleFavorite, artSour
   );
 }
 
-function CharacterPreview({ character, faction, index, favorite, onToggleFavorite, switching }) {
+function CharacterPreview({ character, faction, favorite, onToggleFavorite, switching }) {
   const art = character ? resolveCharacterArt(character.id) : { source: "default", path: "" };
   const portrait = character ? resolvePortrait(character.id) : { source: "portrait", path: "" };
   const compact = portrait.source === "card-fallback";
@@ -346,7 +334,7 @@ function CharacterPreview({ character, faction, index, favorite, onToggleFavorit
     >
       {character ? <ParallaxArt character={character} key={`art-${character.id}`} /> : null}
       <div className="agent-stage-visual">
-        <BackgroundHUD character={character} index={index} artSource={art.source} />
+        <BackgroundHUD character={character} artSource={art.source} />
         <div className={`agent-stage-portrait${compact ? " is-compact-card" : ""}`} key={`portrait-${character?.id}`} id="selectedAgentPortrait" data-stage-agent-id={character?.id || undefined} data-portrait-mode={compact ? "card-fallback" : "portrait"}>
           {character ? <AgentImage character={character} kind="portrait" decorative /> : <span className="agent-empty-mark">NO SIGNAL</span>}
         </div>
@@ -417,36 +405,80 @@ function FilterPanel({ query, factionId, factions, counts, onQuery, onFaction, o
 }
 
 const CharacterCard = memo(function CharacterCard({ character, faction, index, selected, favorite, onSelect }) {
+  const attrKey = String(character.attribute || "").trim();
+  const specKey = String(character.specialty || "").trim();
+  const attrIcon = FIELD_ICON_FILES[attrKey] || "";
+  const specIcon = FIELD_ICON_FILES[specKey] || "";
+  /* 选中瞬间播「信号加载 → 确认联系」过场：关键帧 1:1 照搬 lab A 方案，全套 0.32s 收尾；
+     selected 由 false→true 的沿置位，取消选中不触发；timer 到点清场 */
+  const [syncing, setSyncing] = useState(false);
+  const wasSelected = useRef(false);
+  useEffect(() => {
+    if (selected && !wasSelected.current) setSyncing(true);
+    wasSelected.current = selected;
+  }, [selected]);
+  useEffect(() => {
+    if (!syncing) return;
+    const timer = setTimeout(() => setSyncing(false), 340);
+    return () => clearTimeout(timer);
+  }, [syncing]);
+  /* 色散 ghost 取与 <img> 同一张首选图；无图条目不写变量，ghost 自然不显示 */
+  const ghostImage = localImageSources(character, "card")[0] || "";
   return (
     <li>
       <button
-        className={`agent-roster-card${selected ? " is-selected" : ""}`}
+        className={`agent-roster-card${selected ? " is-selected" : ""}${syncing ? " is-syncing" : ""}`}
         type="button"
         data-agent-id={character.id}
         data-rank={character.rank || ""}
         data-favorite={favorite ? "true" : "false"}
         aria-current={selected ? "true" : undefined}
         aria-pressed={selected}
-        aria-label={`选择${field(character.name)}，${faction?.name || "未分组"}，${character.rank || "未定"}级代理人${favorite ? "，已收藏" : ""}`}
+        aria-label={`选择${field(character.name)}，${faction?.name || "未分组"}，${character.rank || "未定"}级，${character.attribute || "待补充"}，${character.specialty || "待补充"}${favorite ? "，已收藏" : ""}`}
         aria-controls="selectedAgentStage"
         tabIndex={selected ? 0 : -1}
         onClick={() => onSelect(character.id)}
       >
-        <span className="agent-roster-index">{String(index + 1).padStart(2, "0")}</span>
-        <span className="agent-card-image"><AgentImage character={character} kind="card" decorative /></span>
-        {rankImage(character.rank)
-          ? <span className="agent-card-grade has-rank-img" aria-hidden="true"><img src={rankImage(character.rank)} alt="" /></span>
-          : <span className="agent-card-grade" aria-hidden="true">
-              <span className="rank-letter">{character.rank || "—"}</span>
-              <span className="rank-label">RANK</span>
-            </span>}
-        {favorite ? <span className="agent-card-favorite" aria-hidden="true">FAV</span> : null}
-        <span className="agent-card-copy">
-          <b>{field(character.name)}</b>
-          <small>{faction?.name || "未分组"}</small>
-          <em>{field(character.attribute)} / {field(character.specialty)}</em>
+        <span className="agent-card-image" style={ghostImage ? { "--img": `url("${ghostImage}")` } : undefined}>
+          <AgentImage character={character} kind="card" decorative />
+          {/* lab 方案 A「熔断单元」的 fx 层，顺序与 lab 的 fx() 一致 */}
+          <i className="agent-card-fx-grid" aria-hidden="true" />
+          <i className="agent-card-fx-blink" aria-hidden="true" />
+          <i className="agent-card-fx-blink b" aria-hidden="true" />
+          <i className="agent-card-fx-ghost" aria-hidden="true" />
+          {/* 过场 RGB 色散独立成层：lab 走 .art::before/::after，
+              正式站 .agent-card-image 的两个伪元素已被扫描带与底部渐变占用 */}
+          <i className="agent-card-fx-rgb" aria-hidden="true" />
         </span>
-        <span className="agent-card-selected-mark" aria-hidden="true">SELECT</span>
+        {/* A 专属结构：顶部能量轨 + 左上蚀刻编号 */}
+        <i className="agent-card-rail" aria-hidden="true" />
+        <span className="agent-card-etch" aria-hidden="true">
+          AGT-No.<b>{String(index + 1).padStart(2, "0")}</b> //<br />NEW ERIDU SQUAD
+        </span>
+        {syncing ? <span className="agent-card-syncmsg" aria-hidden="true" /> : null}
+        {/* A 的认证章：八角铆接金属座 + 铆钉 + CERT 蚀刻签，套在既有品级徽章外 */}
+        {rankImage(character.rank)
+          ? <span className="agent-card-grade has-rank-img" aria-hidden="true">
+              <i className="grade-mount" />
+              <img src={rankImage(character.rank)} alt="" />
+              <i className="grade-tag">CERT·{character.rank || "—"}·OK</i>
+            </span>
+          : <span className="agent-card-grade" aria-hidden="true">
+              <i className="grade-mount" />
+              <span className="rank-letter">{character.rank || "—"}</span>
+              <i className="grade-tag">CERT·{character.rank || "—"}·OK</i>
+            </span>}
+        {/* lab A 方案 footer：属性/职业图标 + 名字收进卡底通栏，不再叠右上 */}
+        <span className="agent-card-footer" aria-hidden="true">
+          {(attrIcon || specIcon) ? (
+            <span className="agent-card-meta-icons">
+              {attrIcon ? <img src={attrIcon} alt="" /> : null}
+              {specIcon ? <img src={specIcon} alt="" /> : null}
+            </span>
+          ) : null}
+          <span className="agent-card-name">{field(character.name)}</span>
+        </span>
+        {favorite ? <span className="agent-card-favorite" aria-hidden="true">FAV</span> : null}
       </button>
     </li>
   );
@@ -513,7 +545,6 @@ function StoriesApp() {
 
   const selected = characterById.get(selectedId) || null;
   const selectedFaction = selected ? factionById.get(selected.factionId) : null;
-  const selectedIndex = selected ? characters.indexOf(selected) : -1;
   const theme = resolveTheme(selectedId);
   const workbenchStyle = {
     "--character-theme-rgb": theme.css,
@@ -631,10 +662,11 @@ function StoriesApp() {
     const character = characterById.get(id);
     if (!character || id === selectedId) return;
     clearTimeout(switchTimer.current);
-    setSwitching(!reducedMotion);
+    const useWipe = !reducedMotion;
+    setSwitching(useWipe);
     setSelectedId(id);
     setStatus(`已选择${field(character.name)}，所属${field(factionById.get(character.factionId)?.name)}。`);
-    if (!reducedMotion) switchTimer.current = setTimeout(() => setSwitching(false), 860);
+    if (useWipe) switchTimer.current = setTimeout(() => setSwitching(false), 860);
   }, [characterById, factionById, reducedMotion, selectedId]);
 
   const toggleFavorite = useCallback(() => {
@@ -684,12 +716,10 @@ function StoriesApp() {
         <CharacterPreview
           character={selected}
           faction={selectedFaction}
-          index={selectedIndex}
           favorite={Boolean(selectedId && favorites.has(selectedId))}
           onToggleFavorite={toggleFavorite}
           switching={switching}
         />
-        <CategoryMenu character={selected} />
         <aside className="agent-roster-panel" aria-labelledby="agentDirectoryTitle">
           <div className="agent-roster-heading">
             <div>

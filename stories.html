@@ -26,10 +26,10 @@
   <link rel="stylesheet" href="theme-tokens.css?v=ink-wash-1"/>
   <link rel="stylesheet" href="multi-page.css?v=cold-gray-2"/>
   <link rel="stylesheet" href="motion.css?v=signal-ui-r3"/>
-  <link rel="stylesheet" href="theme-zzz.css?v=phase1-4"/>
+  <link rel="stylesheet" href="theme-zzz.css?v=stage-bg-2"/>
   <link rel="stylesheet" href="src/styles/navigation.css"/>
   <link rel="stylesheet" href="live-hud.css?v=hud-1"/>
-  <link rel="stylesheet" href="zzz-motion.css?v=phase4-1"/>
+  <link rel="stylesheet" href="zzz-motion.css?v=stage-breathe-1"/>
   <link rel="stylesheet" href="zzz-tv-transition.css?v=zzz-tv-r2"/>
   <link rel="stylesheet" href="game-feel.css?v=chr-persist-2"/>
   <meta name="theme-color" content="#08080c"/>
@@ -49,9 +49,9 @@
 body.archive-stories{
   --bg-0:#08080c;
   --bg-1:#0c1018;
-  --bg-2:#0f1420;
+  --bg-2:#10151d;
   --bg-soft:#0e1219;
-  --bg-panel:rgba(18,22,30,.7);
+  --bg-panel:rgba(18,22,30,.82);
   --text-1:#f0f2f4;
   --text-2:rgba(240,245,250,.6);
   --text-3:rgba(240,245,250,.5);
@@ -75,10 +75,11 @@ body.archive-stories{
 
 /* --- Topbar --- */
 .archive-stories .topbar{
-  background:rgba(8,8,12,.92) !important;
+  background:rgba(8,8,12,.96) !important;
   border-bottom:1px solid rgb(var(--character-theme-rgb,216 250 0) / .2) !important;
   box-shadow:0 1px 24px rgba(0,0,0,.6),0 0 1px rgb(var(--character-theme-rgb,216 250 0) / .15) !important;
-  backdrop-filter:blur(14px) saturate(1.3);
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
   transition:border-color .5s ease, box-shadow .5s ease;
 }
 .archive-stories .topbar:before{
@@ -98,32 +99,24 @@ body.archive-stories{
 /* --- Stories Workbench Bar (Title) --- */
 .archive-stories .stories-workbench-bar{
   position:relative;
-  background:linear-gradient(135deg,#08080c 0%,#0c1220 50%,#08080c 100%) !important;
-  border-bottom:2px solid rgb(var(--character-theme-rgb,216 250 0) / .3) !important;
-  padding:28px clamp(20px,4vw,52px) !important;
-  min-height:auto !important;
+  background:
+    repeating-linear-gradient(-45deg, rgba(255,255,255,.07) 0 1px, transparent 1px 6px),
+    linear-gradient(115deg, transparent 72%, rgb(var(--character-theme-rgb,216 250 0) / .22) 72.2%, rgb(var(--character-theme-rgb,216 250 0) / .22) 100%),
+    linear-gradient(90deg, rgb(var(--character-theme-rgb,216 250 0) / .1), transparent 32%),
+    #0a0a0c !important;
+  border-bottom:1px solid rgb(var(--character-theme-rgb,216 250 0) / .28) !important;
+  padding:6px clamp(16px,2.4vw,28px) !important;
+  height:56px !important;
+  min-height:56px !important;
+  max-height:56px !important;
   overflow:hidden;
   transition:border-color .5s ease;
 }
 .archive-stories .stories-workbench-bar::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  background:
-    radial-gradient(ellipse 600px 300px at 10% 80%,rgb(var(--character-theme-rgb,216 250 0) / .08),transparent),
-    radial-gradient(ellipse 400px 250px at 90% 20%,rgba(0,229,255,.06),transparent);
-  pointer-events:none;
-  transition:background .6s ease;
+  content:none;
 }
 .archive-stories .stories-workbench-bar::after{
-  content:'AGENT DATABASE // HOOXI';
-  position:absolute;
-  right:clamp(20px,4vw,52px);
-  bottom:8px;
-  color:rgba(0,229,255,.25);
-  font:700 9px/1 var(--font-mono,'Courier New',monospace);
-  letter-spacing:.15em;
-  pointer-events:none;
+  content:none;
 }
 .archive-stories .stories-workbench-context .eyebrow{
   color:#00e5ff !important;
@@ -131,8 +124,8 @@ body.archive-stories{
 }
 .archive-stories .stories-workbench-context h1{
   color:#f0f2f4 !important;
-  font-size:clamp(28px,3vw,42px) !important;
-  text-shadow:0 0 20px rgb(var(--character-theme-rgb,216 250 0) / .15);
+  font-size:clamp(20px,2vw,26px) !important;
+  text-shadow:none;
   transition:text-shadow .5s ease;
 }
 .archive-stories .stories-workbench-context>p:last-child{
@@ -143,6 +136,9 @@ body.archive-stories{
   border:1px solid var(--selected-agent-theme,#d8fa00) !important;
   color:var(--selected-agent-theme,#d8fa00) !important;
   clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%) !important;
+  min-height:32px !important;
+  height:32px !important;
+  padding:0 12px !important;
   transition:all .2s ease !important;
 }
 .archive-stories .stories-lane-action:hover{
@@ -154,18 +150,24 @@ body.archive-stories{
 
 /* --- Workbench Shell & Stage --- */
 .archive-stories .agent-workbench-shell{
-  background:#08080c !important;
+  background:
+    repeating-linear-gradient(-45deg, rgba(255,255,255,.045) 0 1px, transparent 1px 6px),
+    #08080c !important;
 }
 .archive-stories .agent-workbench{
   background:
-    radial-gradient(circle at 14% 22%,rgb(var(--character-theme-rgb,216 250 0) / .05),transparent 34%),
-    linear-gradient(135deg,#0a0e14,#08080c) !important;
+    repeating-linear-gradient(-45deg, rgba(255,255,255,.05) 0 1px, transparent 1px 6px),
+    radial-gradient(circle at 14% 22%,rgb(var(--character-theme-rgb,216 250 0) / .1),transparent 34%),
+    linear-gradient(135deg,#0c1018,#08080c) !important;
   transition:background .6s ease;
 }
 .archive-stories .agent-selected-stage{
   background:
-    radial-gradient(ellipse at calc(40% + var(--bg-drift-x,0)) calc(60% + var(--bg-drift-y,0)),rgb(var(--character-theme-rgb,216 250 0) / .12),transparent 55%),
-    linear-gradient(180deg,rgba(12,16,24,.9),#08080c) !important;
+    repeating-linear-gradient(-18deg,rgba(255,255,255,.028) 0 1px,transparent 1px 18px),
+    radial-gradient(ellipse at calc(40% + var(--bg-drift-x,0)) calc(60% + var(--bg-drift-y,0)),rgb(var(--character-theme-rgb,216 250 0) / .08),transparent 55%),
+    #08080c !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
   transition:background .6s ease;
 }
 .archive-stories .agent-stage-grid{
@@ -178,8 +180,12 @@ body.archive-stories{
 
 /* --- Agent Stage Info Panel --- */
 .archive-stories .agent-stage-info{
-  background:rgba(8,8,12,.95) !important;
-  border-top:1px solid rgb(var(--character-theme-rgb,216 250 0) / .12) !important;
+  background:
+    repeating-linear-gradient(-45deg, rgba(255,255,255,.055) 0 1px, transparent 1px 6px),
+    #0c1016 !important;
+  border-top:1px solid rgb(var(--character-theme-rgb,216 250 0) / .28) !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
   transition:border-color .5s ease;
 }
 .archive-stories .agent-stage-info .eyebrow{
@@ -239,9 +245,11 @@ body.archive-stories{
 
 /* --- Roster Panel --- */
 .archive-stories .agent-roster-panel{
-  background:linear-gradient(180deg,rgba(12,16,24,.97),rgba(8,8,12,.98)) !important;
-  border-left:1px solid rgb(var(--character-theme-rgb,216 250 0) / .1) !important;
-  box-shadow:-12px 0 48px rgba(0,0,0,.5) !important;
+  background:#0b0f15 !important;
+  border-left:1px solid rgb(var(--character-theme-rgb,216 250 0) / .28) !important;
+  box-shadow:inset 1px 0 rgba(255,255,255,.04) !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
   transition:border-color .5s ease;
 }
 .archive-stories .agent-roster-panel:before{
@@ -425,7 +433,7 @@ body.archive-stories{
 
 /* --- Footer --- */
 .archive-stories .archive-footer{
-  background:rgba(8,8,12,.95) !important;
+  background:rgba(22,27,36,.96) !important;
   border-top:1px solid rgba(255,255,255,.06) !important;
   color:rgba(240,245,250,.4) !important;
 }
@@ -437,7 +445,7 @@ body.archive-stories{
 
 /* --- Halftone & Glitch layers --- */
 .archive-stories .zzz-halftone{
-  opacity:.015 !important;
+  opacity:.045 !important;
 }
 .archive-stories .zzz-glitch-layer{
   mix-blend-mode:screen;
@@ -447,7 +455,7 @@ body.archive-stories{
 /* --- Responsive adjustments --- */
 @media(max-width:900px){
   .archive-stories .stories-workbench-bar{
-    padding:22px 20px !important;
+    padding:8px 16px !important;
   }
   .archive-stories .stories-workbench-bar::after{
     display:none;
@@ -455,13 +463,13 @@ body.archive-stories{
 }
 @media(max-width:760px){
   .archive-stories .stories-workbench-context h1{
-    font-size:24px !important;
+    font-size:20px !important;
   }
   .archive-stories .stories-workbench-bar{
-    padding:18px 14px !important;
+    padding:8px 14px !important;
     flex-direction:column !important;
     align-items:flex-start !important;
-    gap:14px !important;
+    gap:8px !important;
   }
   .archive-stories .agent-roster-panel{
     position:relative !important;
@@ -509,16 +517,16 @@ body.archive-stories{
 .archive-stories .agent-workbench{
   position:relative;
   background:
-    radial-gradient(circle at 14% 22%,rgb(var(--character-theme-rgb,216 250 0) / .07),transparent 34%),
-    linear-gradient(135deg,#0b0f16,#08080c) !important;
+    repeating-linear-gradient(-45deg, rgba(255,255,255,.06) 0 1px, transparent 1px 6px),
+    radial-gradient(circle at 14% 22%,rgb(var(--character-theme-rgb,216 250 0) / .1),transparent 34%),
+    linear-gradient(135deg,#0c1018,#08080c) !important;
 }
-/* 斜切撞色大三角 — 右上酸黄绿、左下品红,ZZZ招牌对撞 */
 .archive-stories .agent-workbench::before{
-  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
   background:
-    linear-gradient(115deg,transparent 62%,rgb(var(--character-theme-rgb,216 250 0) / .06) 62.2%,rgb(var(--character-theme-rgb,216 250 0) / .06) 78%,transparent 78.2%),
-    linear-gradient(115deg,transparent 78%,rgba(255,46,136,.05) 78.2%,rgba(255,46,136,.05) 92%,transparent 92.2%),
-    linear-gradient(-38deg,transparent 70%,rgba(0,229,255,.045) 70.2%,rgba(0,229,255,.045) 88%,transparent 88.2%);
+    linear-gradient(115deg,transparent 62%,rgb(var(--character-theme-rgb,216 250 0) / .14) 62.2%,rgb(var(--character-theme-rgb,216 250 0) / .14) 78%,transparent 78.2%),
+    linear-gradient(115deg,transparent 78%,rgba(255,46,136,.09) 78.2%,rgba(255,46,136,.09) 92%,transparent 92.2%),
+    linear-gradient(-38deg,transparent 70%,rgba(0,229,255,.07) 70.2%,rgba(0,229,255,.07) 88%,transparent 88.2%);
 }
 /* 噪点颗粒 + CRT扫描线 + 细网格叠加 */
 .archive-stories .agent-workbench::after{
@@ -528,11 +536,10 @@ body.archive-stories{
 }
 .archive-stories .zzz-scanlines{
   content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
-  background:repeating-linear-gradient(0deg,rgba(255,255,255,.028) 0 1px,transparent 1px 3px);
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.045) 0 1px,transparent 1px 3px);
 }
-/* 巨型滚动描边水印 */
-.zzz-bg-marquee{position:fixed;left:0;top:8%;width:100%;z-index:0;overflow:hidden;pointer-events:none;user-select:none;opacity:.5}
-.zzz-bg-marquee .zroll{display:flex;width:max-content;animation:zzzRoll 30s linear infinite;font:900 15vw/1 Consolas,monospace;letter-spacing:.02em;white-space:nowrap;color:transparent;-webkit-text-stroke:1.5px rgb(var(--character-theme-rgb,216 250 0) / .12)}
+.zzz-bg-marquee{position:fixed;left:0;top:7%;width:100%;z-index:1;overflow:hidden;pointer-events:none;user-select:none;opacity:.7}
+.zzz-bg-marquee .zroll{display:flex;width:max-content;animation:zzzRoll 90s linear infinite;font:900 13vw/1 Consolas,monospace;letter-spacing:.02em;white-space:nowrap;color:transparent;-webkit-text-stroke:2px rgb(var(--character-theme-rgb,216 250 0) / .28)}
 .zzz-bg-marquee.rev{top:auto;bottom:4%}
 .zzz-bg-marquee.rev .zroll{animation-direction:reverse;-webkit-text-stroke-color:rgba(255,46,136,.08)}
 @keyframes zzzRoll{to{transform:translateX(-50%)}}
@@ -540,16 +547,20 @@ body.archive-stories{
 /* 2) 代理人选择面板:深色档案柜 + 主题色描边 */
 .archive-stories .agent-roster-panel{
   background:
-    linear-gradient(180deg,rgba(14,18,26,.98),rgba(8,9,13,.99)) !important;
-  border-left:2px solid rgb(var(--character-theme-rgb,216 250 0) / .35) !important;
-  box-shadow:-16px 0 56px rgba(0,0,0,.65),inset 1px 0 0 rgba(255,255,255,.04) !important;
+    linear-gradient(115deg, transparent 64%, rgb(var(--character-theme-rgb,216 250 0) / .16) 64.2%, rgb(var(--character-theme-rgb,216 250 0) / .16) 78%, transparent 78.2%),
+    repeating-linear-gradient(-45deg, rgba(255,255,255,.07) 0 1px, transparent 1px 6px),
+    linear-gradient(#0b0f15,#08080c) !important;
+  border-left:1px solid rgb(var(--character-theme-rgb,216 250 0) / .28) !important;
+  box-shadow:inset 1px 0 rgba(255,255,255,.04) !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
 }
-/* 面板内 subtle 网格 */
 .archive-stories .agent-roster-scroll{
   background-image:
-    linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
-  background-size:28px 28px;
+    repeating-linear-gradient(-45deg, rgba(255,255,255,.06) 0 1px, transparent 1px 6px),
+    linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:auto, 28px 28px, 28px 28px;
 }
 
 /* 3) 代理人卡带:ZZZ 深色档案卡 — 斜切角 + 硬阴影 + 主题描边 */
@@ -575,15 +586,12 @@ body.archive-stories{
   background:linear-gradient(160deg,rgb(var(--character-theme-rgb,216 250 0) / .28),rgba(18,21,28,.96)) !important;
   box-shadow:8px 8px 0 rgb(var(--character-theme-rgb,216 250 0) / .5),0 0 28px rgb(var(--character-theme-rgb,216 250 0) / .45),inset 0 1px 0 rgba(255,255,255,.1) !important;
 }
-/* 卡带顶部警示条纹 */
+/* 卡带顶部斜纹警示条已移除：与下方扫描光带共用同一 ::before 且优先级更高，
+   会被扫描动画拖成 5px 斜纹移动亮带(ADS-60)；lab 参考帧顶部仅为主题色 border。 */
 .archive-stories .agent-roster-card .agent-card-image{position:relative}
-.archive-stories .agent-roster-card .agent-card-image::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:5px;z-index:3;
-  background:repeating-linear-gradient(-45deg,rgb(var(--character-theme-rgb,216 250 0)) 0 8px,#0b0b10 8px 16px);
-  opacity:0;transition:opacity .22s;
-}
-.archive-stories .agent-roster-card:hover .agent-card-image::before,
-.archive-stories .agent-roster-card.is-selected .agent-card-image::before{opacity:1}
+/* 静止选中态 RGB 分离应为 0：gf-chr 色散克隆层仅过场(.is-syncing)可见(ADS-61) */
+.archive-stories .agent-roster-card.is-selected:not(.is-syncing) .agent-card-image .gf-chr-r,
+.archive-stories .agent-roster-card.is-selected:not(.is-syncing) .agent-card-image .gf-chr-b{opacity:0 !important;transform:none !important}
 /* 头像去白底感:压暗默认,hover提亮 */
 .archive-stories .agent-roster-card .agent-card-image img{filter:saturate(.9) brightness(.9) contrast(1.04);transition:filter .25s,transform .35s cubic-bezier(.2,.9,.3,1.2)}
 .archive-stories .agent-roster-card:hover .agent-card-image img,
@@ -608,11 +616,350 @@ body.archive-stories{
 .archive-stories .agent-stage-backdrop-name{pointer-events:none}
 .archive-stories .agent-stage-art{border-radius:8px;box-shadow:0 24px 60px -18px rgba(0,0,0,.75)}
 .archive-stories .agent-stage-art::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:8px;box-shadow:inset 0 0 0 1px rgb(var(--character-theme-rgb,216 250 0) / .18),inset 0 1px 0 rgba(255,255,255,.12)}
-/* 影画背景层(沉底) */
-.archive-stories .stage-mindscape{position:absolute;inset:-6%;width:112%;height:112%;object-fit:cover;object-position:center 30%;z-index:0;pointer-events:none;opacity:0;transition:opacity .6s ease;filter:saturate(1.06) brightness(.95);border-radius:8px}
-.archive-stories .stage-mindscape.on{opacity:1}
-.archive-stories .agent-stage-portrait img{filter:drop-shadow(0 20px 36px rgba(0,0,0,.6))}
+.archive-stories .agent-stage-art .parallax-bg,
+.archive-stories .agent-stage-art .parallax-fg,
+.archive-stories .agent-stage-art > img:not(.stage-mindscape){display:none !important}
+.archive-stories .agent-stage-art::before{content:"" !important}
+.archive-stories .agent-stage-art .stage-mindscape{display:block !important}
+.archive-stories .agent-stage-portrait{display:none !important}
+.archive-stories .agent-stage-visual:after{content:none !important}
+.archive-stories .agent-stage-backdrop-name,
+.archive-stories .agent-stage-signal,
+.archive-stories .agent-stage-source{display:none !important}
+.archive-stories .agent-card-etch,
+.archive-stories .agent-card-rail,
+.archive-stories .agent-card-grade .grade-tag,
+.archive-stories .agent-card-grade .grade-mount{display:none !important}
+.archive-stories .agent-card-grade,
+.archive-stories .agent-card-grade.has-rank-img{
+  left:6px;bottom:8px;width:34px !important;height:34px !important;
+}
+.archive-stories .agent-card-grade.has-rank-img img{
+  inset:0;width:100%;height:100%;
+}
 .archive-stories .agent-selected-stage{overflow:hidden}
+
+/* ══ 卡片「熔断单元」：hover 常驻信号感 + 选中 0.5s 信号加载→确认联系（状态条 0.8s 收尾）══ */
+.archive-stories .agent-roster-card{--fx-rgb:var(--character-theme-rgb,216 250 0)}
+.archive-stories .agent-card-image{isolation:isolate}
+
+/* 扫描光带（借用未占用的 image::before，hover 即时起效） */
+.archive-stories .agent-card-image::before{
+  content:"";position:absolute;left:0;right:0;top:-30%;height:26%;z-index:3;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgb(var(--fx-rgb) / .18) 55%,rgba(255,255,255,.5) 78%,transparent);
+  mix-blend-mode:screen;opacity:0;
+}
+.archive-stories .agent-roster-card:hover .agent-card-image::before,
+.archive-stories .agent-roster-card:focus-visible .agent-card-image::before,
+.archive-stories .agent-roster-card.is-selected .agent-card-image::before{
+  opacity:1;animation:agentFxScan 2.6s linear infinite;animation-delay:-.8s;
+}
+@keyframes agentFxScan{0%{top:-30%}100%{top:115%}}
+
+/* ── A 的网格底纹 + 四角对角支架（照搬 lab .fx-grid） ── */
+.archive-stories .agent-card-fx-grid{
+  position:absolute;inset:0;z-index:0;opacity:0;transition:opacity .3s;pointer-events:none;
+  background:
+    linear-gradient(rgb(var(--fx-rgb) / .10) 1px,transparent 1px),
+    linear-gradient(90deg,rgb(var(--fx-rgb) / .10) 1px,transparent 1px);
+  background-size:20px 20px;
+  -webkit-mask:linear-gradient(#000,transparent 55%);
+  mask:linear-gradient(#000,transparent 55%);
+}
+.archive-stories .agent-roster-card:hover .agent-card-fx-grid,
+.archive-stories .agent-roster-card:focus-visible .agent-card-fx-grid,
+.archive-stories .agent-roster-card.is-selected .agent-card-fx-grid{opacity:1}
+.archive-stories .agent-card-fx-grid::before,
+.archive-stories .agent-card-fx-grid::after{
+  content:"";position:absolute;bottom:5px;width:14px;height:14px;opacity:.85;
+  border:0 solid rgb(var(--fx-rgb));
+}
+.archive-stories .agent-card-fx-grid::before{left:5px;border-left-width:2px;border-bottom-width:2px}
+.archive-stories .agent-card-fx-grid::after{right:5px;border-right-width:2px;border-bottom-width:2px}
+
+/* ── A 的满卡常驻 CRT 细横纹（照搬 lab .style-fuse .fx-blink 覆写版）
+      实测这层是 A 观感的最大来源：静态改变 24% 像素、hover 达 60% ── */
+.archive-stories .agent-card-fx-blink{
+  position:absolute;inset:0;z-index:3;pointer-events:none;opacity:.26;
+  background:repeating-linear-gradient(180deg,rgb(var(--fx-rgb) / .09) 0 1px,transparent 1px 3px);
+  /* 静态线收敛到卡片边缘：中央立绘主体（脸）不落线，避免横过面部显得突兀 */
+  -webkit-mask:radial-gradient(120% 95% at 50% 40%,transparent 38%,#000 75%);
+  mask:radial-gradient(120% 95% at 50% 40%,transparent 38%,#000 75%);
+}
+.archive-stories .agent-roster-card:hover .agent-card-fx-blink,
+.archive-stories .agent-roster-card:focus-visible .agent-card-fx-blink,
+.archive-stories .agent-roster-card.is-selected .agent-card-fx-blink{
+  /* 通电泛光是整块底色而非线条，不受静态遮罩限制 */
+  -webkit-mask:none;mask:none;
+  background:rgb(var(--fx-rgb) / .1);animation:agentFxVeil 4.2s linear infinite;
+}
+.archive-stories .agent-card-fx-blink.b{animation-duration:5.6s;animation-delay:-1.9s}
+@keyframes agentFxVeil{0%,100%{opacity:0}12%,88%{opacity:.3}50%{opacity:.08}}
+/* 过场期间细纹加密 */
+.archive-stories .agent-roster-card.is-syncing .agent-card-fx-blink{animation-duration:.2s}
+
+/* 立绘错位重影 + 选中期色散双通道：与 <img> 同源、同 scale/裁切对位 */
+.archive-stories .agent-card-fx-ghost{
+  position:absolute;inset:0;z-index:2;pointer-events:none;display:block;
+}
+.archive-stories .agent-card-fx-ghost::before,
+.archive-stories .agent-card-fx-ghost::after{
+  content:"";position:absolute;inset:0;
+  background:var(--img) center 9%/cover no-repeat;
+  transform:translate3d(var(--card-pan-x),calc(var(--card-pan-y) - 3%),0) scale(calc(var(--card-base-scale) + var(--card-interaction-scale)));
+  opacity:0;
+}
+.archive-stories .agent-roster-card:hover .agent-card-fx-ghost::before,
+.archive-stories .agent-roster-card:focus-visible .agent-card-fx-ghost::before{
+  animation:agentFxGlitch 2.2s steps(1,end) infinite;animation-delay:-.55s;
+}
+.archive-stories .agent-roster-card:hover .agent-card-fx-ghost::after,
+.archive-stories .agent-roster-card:focus-visible .agent-card-fx-ghost::after{
+  animation:agentFxGlitch 1.7s steps(1,end) infinite;animation-delay:-.9s;
+}
+@keyframes agentFxGlitch{
+  0%,5.5%,100%{opacity:0;filter:none;clip-path:none}
+  6%{opacity:.55;filter:drop-shadow(3px 0 0 rgba(255,60,90,.75));clip-path:inset(8% 0 62% 0)}
+  7.5%{opacity:.5;filter:drop-shadow(-3px 0 0 rgba(80,160,255,.75));clip-path:inset(52% 0 18% 0)}
+  9%{opacity:0;filter:none}
+  34%{opacity:.45;filter:drop-shadow(-3px 0 0 rgba(255,60,90,.7));clip-path:inset(30% 0 38% 0)}
+  36%{opacity:.4;filter:drop-shadow(3px 0 0 rgba(80,160,255,.7));clip-path:inset(64% 0 6% 0)}
+  38%{opacity:0;filter:none}
+}
+
+/* ── game-feel 的红/青通道克隆是各角色立绘的常态全息光效，保持原样不全局停用；
+      仅在 A 过场的 ~0.32s 内短暂让位，避免两套色散同帧叠加糊成红/青双影。
+      过场结束 class 移除后克隆自动恢复原态。不改共用脚本。 ── */
+.archive-stories .agent-roster-card.is-syncing .agent-card-image .gf-chr-r,
+.archive-stories .agent-roster-card.is-syncing .agent-card-image .gf-chr-b{
+  opacity:0!important;animation:none!important;
+}
+
+/* ── A 的过场 RGB 色散：红移-左 / 青移-右，screen 合成，零点对位 = 信号锁定
+      照搬 lab .art::before/::after 的滤镜与 syncR/syncC 关键帧；
+      transform 基准与立绘 img 一致（携带 pan/base/interaction 变量），偏移只走 translate ── */
+.archive-stories .agent-card-fx-rgb{
+  position:absolute;inset:0;z-index:2;pointer-events:none;display:block;
+}
+.archive-stories .agent-roster-card.is-syncing .agent-card-fx-rgb::before,
+.archive-stories .agent-roster-card.is-syncing .agent-card-fx-rgb::after{
+  content:"";position:absolute;inset:0;
+  background:var(--img) center 9%/cover no-repeat;
+  transform:translate3d(var(--card-pan-x),calc(var(--card-pan-y) - 3%),0) scale(calc(var(--card-base-scale) + var(--card-interaction-scale)));
+  mix-blend-mode:screen;
+}
+.archive-stories .agent-roster-card.is-syncing .agent-card-fx-rgb::before{
+  filter:sepia(1) saturate(9) hue-rotate(-50deg) brightness(1.08);
+  animation:agentSyncR .32s steps(1,end) both;
+}
+.archive-stories .agent-roster-card.is-syncing .agent-card-fx-rgb::after{
+  filter:sepia(1) saturate(9) hue-rotate(160deg) brightness(1.08);
+  animation:agentSyncC .32s steps(1,end) both;
+}
+@keyframes agentSyncR{ /* 红通道：左偏 -8px 起 → 递减 → 归零消散 */
+  0%  {translate:-8px 0;opacity:.92}
+  20% {translate:-6px 0}
+  40% {translate:-4px 0}
+  60% {translate:-2px 0}
+  80% {translate:-1px 0}
+  90% {translate:0 0}
+  100%{translate:none;opacity:0}
+}
+@keyframes agentSyncC{ /* 青通道镜像：右偏 +8px 起 */
+  0%  {translate:8px 0;opacity:.92}
+  20% {translate:6px 0}
+  40% {translate:4px 0}
+  60% {translate:2px 0}
+  80% {translate:1px 0}
+  90% {translate:0 0}
+  100%{translate:none;opacity:0}
+}
+
+/* 立绘全程静止（基准 transform 不变、无位移无缩放）：0%~84% 压暗让位留残影，
+   85%~100% 对位瞬间恢复 = 信号捕获。只作用于真图，排除 game-feel 的通道克隆 */
+.archive-stories .agent-roster-card.is-syncing .agent-card-image img:not(.gf-chr-r):not(.gf-chr-b){animation:agentSyncImg .32s steps(1,end) both}
+@keyframes agentSyncImg{
+  0%,84%{transform:translate3d(var(--card-pan-x),calc(var(--card-pan-y) - 3%),0) scale(calc(var(--card-base-scale) + var(--card-interaction-scale)));filter:brightness(.24) contrast(.95) blur(2px);opacity:.12}
+  85%,100%{transform:translate3d(var(--card-pan-x),calc(var(--card-pan-y) - 3%),0) scale(calc(var(--card-base-scale) + var(--card-interaction-scale)));filter:none;opacity:1}
+}
+
+/* 整卡抖动：位移最大 ±4px，56% 后收敛到 ±1px，72% 起停止 */
+.archive-stories .agent-roster-card.is-syncing .agent-card-image{animation:agentSyncShake .32s steps(1,end) both}
+@keyframes agentSyncShake{
+  0%{translate:0 0}
+  8%{translate:-4px 2px}
+  16%{translate:3px -2px}
+  24%{translate:-3px -2px}
+  32%{translate:4px 1px}
+  40%{translate:-2px 3px}
+  48%{translate:3px -1px}
+  56%{translate:-1px 1px}
+  64%{translate:1px -1px}
+  72%,100%{translate:0 0}
+}
+
+/* 两次白闪：接触帧 + 锁定帧（照搬 lab 的 inset box-shadow 写法：
+   闪光透过被压暗的立绘透出来，而非盖在内容之上；fill 不锁，结束回落选中辉光） */
+.archive-stories .agent-roster-card.is-syncing{animation:agentSyncFlash .32s steps(1,end)}
+@keyframes agentSyncFlash{
+  0%{box-shadow:inset 0 0 0 999px rgba(255,255,255,.5)}
+  12%{box-shadow:none}
+  72%{box-shadow:inset 0 0 0 999px rgba(255,255,255,.28)}
+  80%,100%{box-shadow:none}
+}
+
+/* 过场期间扫描带改为 lab syncScan：top 在 -14% 与 120% 之间 5 段折返硬切，
+   替换常态 agentScanBand 动画 */
+.archive-stories .agent-roster-card.is-syncing .agent-card-image::before{animation:agentSyncScan .32s steps(1,end) both}
+@keyframes agentSyncScan{
+  0%,16.9%  {top:-14%}
+  17%,33.9% {top:120%}
+  34%,50.9% {top:-14%}
+  51%,67.9% {top:120%}
+  68%,84.9% {top:-14%}
+  85%,100%  {top:120%}
+}
+
+/* 状态消息：CONNECT → SYNC → LINK OK + 进度条（容器位置保留 bottom:115px） */
+.archive-stories .agent-card-syncmsg{
+  position:absolute;left:8px;right:8px;bottom:115px;z-index:9;pointer-events:none;
+  padding:6px 8px;background:rgba(6,8,6,.78);border-left:2px solid rgb(var(--fx-rgb));
+}
+.archive-stories .agent-card-syncmsg::before{
+  content:"▸ CONNECT ▂▃▂";display:block;white-space:nowrap;
+  font:700 8.5px/1 "Consolas","Courier New",monospace;letter-spacing:.16em;
+  color:rgb(var(--fx-rgb));text-shadow:0 0 6px rgb(var(--fx-rgb) / .7);
+  animation:agentSyncMsgTxt .32s steps(1,end) both;
+}
+@keyframes agentSyncMsgTxt{
+  0% {content:"▸ CONNECT ▂▃▂"}
+  38%{content:"▸ SYNC ▅▇▅"}
+  74%{content:"✓ LINK OK"}
+  100%{content:"✓ LINK OK"}
+}
+.archive-stories .agent-card-syncmsg::after{
+  content:"";display:block;margin-top:4px;height:3px;
+  background:repeating-linear-gradient(90deg,rgb(var(--fx-rgb)) 0 6px,rgb(var(--fx-rgb) / .25) 6px 8px);
+  animation:agentSyncMsgBar .32s linear both;
+}
+@keyframes agentSyncMsgBar{
+  0%,61.9%{clip-path:inset(0 100% 0 0)}
+  62%,71.9%{clip-path:inset(0 55% 0 0)}
+  72%,81.9%{clip-path:inset(0 22% 0 0)}
+  82%,100%{clip-path:inset(0 0 0 0)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .archive-stories .agent-card-image::before,
+  .archive-stories .agent-card-fx-ghost::before,
+  .archive-stories .agent-card-fx-ghost::after,
+  .archive-stories .agent-card-fx-blink,
+  .archive-stories .agent-roster-card.is-syncing,
+  .archive-stories .agent-roster-card.is-syncing .agent-card-image,
+  .archive-stories .agent-roster-card.is-syncing .agent-card-image img:not(.gf-chr-r):not(.gf-chr-b),
+  .archive-stories .agent-roster-card.is-syncing .agent-card-fx-rgb::before,
+  .archive-stories .agent-roster-card.is-syncing .agent-card-fx-rgb::after,
+  .archive-stories .agent-card-syncmsg::before,
+  .archive-stories .agent-card-syncmsg::after{animation:none}
+  /* 动态层整体隐去；静态的网格底纹与 CRT 细横纹保留，它们本身不动 */
+  .archive-stories .agent-card-fx-ghost,
+  .archive-stories .agent-card-fx-rgb{display:none}
+}
+
+/* ── lab A 方案卡底通栏：属性/职业图标 + 名字收进 footer，不再叠卡面右上；
+      Lv 徽章已随 jsx 一并移除（DOM 无此节点，无需隐藏规则） ── */
+.archive-stories .agent-card-footer{
+  position:absolute;left:0;right:0;bottom:0;z-index:6;
+  display:flex;align-items:center;gap:6px;
+  min-height:30px;padding:5px 10px 6px;
+  background:linear-gradient(180deg,rgba(6,8,10,.55),rgba(6,8,10,.92));
+  pointer-events:none;
+}
+/* 底缘 2px 品级色 → 亮发丝收尾；左缘 3px 短切 */
+.archive-stories .agent-card-footer::before{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:linear-gradient(90deg,rgb(var(--fx-rgb)),rgb(var(--fx-rgb) / .85) 70%,rgba(255,255,255,.6));
+}
+.archive-stories .agent-card-footer::after{
+  content:"";position:absolute;left:0;top:5px;bottom:5px;width:3px;
+  background:rgb(var(--fx-rgb));
+}
+/* 覆盖 theme-zzz 的右上竖排角标定位：footer 内改行式小图标 */
+.archive-stories .agent-card-footer .agent-card-meta-icons{
+  position:static;flex-direction:row;gap:4px;
+  margin-left:5px;flex:none;
+}
+.archive-stories .agent-card-footer .agent-card-meta-icons img{width:16px;height:16px}
+.archive-stories .agent-card-name{
+  flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font:800 11px/1.25 var(--font-mono,monospace);letter-spacing:.08em;
+  color:#eef1f4;text-shadow:0 1px 3px rgba(0,0,0,.85);
+}
+
+/* ══ A · FUSE UNIT 熔断单元 装饰层（移植 prototype/agent-card-lab lab A 样式 224-274 行）══
+   jsx 早已输出 rail / etch / grade-mount / grade-tag 结构，此前样式缺失导致认证章裸奔成横跨大字；
+   此处补齐，并用 !important 覆盖 theme-zzz.css 5473 的 auto 尺寸与 4893 竖徽章定位。 */
+/* 顶部能量轨：4px 刻度轨 + 两端端子，hover/选中时轨道发光 */
+.archive-stories .agent-card-rail{
+  position:absolute;top:0;left:16px;right:0;height:4px;z-index:6;overflow:hidden;
+  background:
+    repeating-linear-gradient(90deg,rgba(0,0,0,.55) 0 1px,transparent 1px 9px),
+    linear-gradient(90deg,rgb(var(--fx-rgb)),rgb(var(--fx-rgb) / .22) 88%,transparent);
+}
+.archive-stories .agent-card-rail::before{ /* 轨道两端端子 */
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(rgb(var(--fx-rgb)),rgb(var(--fx-rgb))) left/5px 100% no-repeat,
+    linear-gradient(rgb(var(--fx-rgb)),rgb(var(--fx-rgb))) right/5px 100% no-repeat;
+}
+.archive-stories .agent-roster-card:hover .agent-card-rail,
+.archive-stories .agent-roster-card.is-selected .agent-card-rail{box-shadow:0 0 14px 2px rgb(var(--fx-rgb) / .9)}
+/* 左上蚀刻编号 */
+.archive-stories .agent-card-etch{
+  position:absolute;top:11px;left:12px;z-index:7;
+  font:700 6.5px/1.9 "Consolas","Courier New",monospace;letter-spacing:.24em;
+  color:rgba(240,242,245,.4);text-transform:uppercase;
+}
+.archive-stories .agent-card-etch b{color:rgb(var(--fx-rgb) / .9);font-weight:700}
+/* 认证章：统一收进左下 44×44 铆接金属座，叠在底部通栏上沿 */
+.archive-stories .agent-card-grade,
+.archive-stories .agent-card-grade.has-rank-img{
+  position:absolute;left:8px;bottom:8px;z-index:7;
+  width:44px !important;height:44px !important;padding:0 !important;
+}
+.archive-stories .agent-card-grade .grade-mount{
+  position:absolute;inset:2px;display:block;
+  background:linear-gradient(160deg,#2b2f36,#17191d 75%);
+  clip-path:polygon(50% 0,90% 10%,100% 50%,90% 90%,50% 100%,10% 90%,0 50%,10% 10%);
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.9),inset 0 -1px 2px rgba(255,255,255,.14);
+}
+.archive-stories .agent-card-grade .grade-mount::before{ /* 铆钉两枚 */
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(circle 1.6px at 22% 22%,#c8ccd4 0 1.2px,rgba(0,0,0,.7) 1.7px,transparent 2px),
+    radial-gradient(circle 1.6px at 78% 78%,#c8ccd4 0 1.2px,rgba(0,0,0,.7) 1.7px,transparent 2px);
+}
+.archive-stories .agent-card-grade.has-rank-img img{
+  position:absolute;inset:-3px;width:calc(100% + 6px);height:calc(100% + 6px);
+  object-fit:contain;filter:drop-shadow(0 3px 4px rgba(0,0,0,.8));
+}
+.archive-stories .agent-card-grade .grade-tag{ /* 章上蚀刻签 */
+  position:absolute;left:50%;bottom:100%;transform:translateX(-50%);
+  margin-bottom:2px;width:66px;text-align:center;font-style:normal;
+  font:700 5.5px/1 "Consolas","Courier New",monospace;letter-spacing:.22em;
+  color:rgba(240,242,245,.38);
+}
+/* 无官方品级图回退：撤六边形底，rank-letter 收进金属座居中 */
+.archive-stories .agent-card-grade:not(.has-rank-img){clip-path:none;background:none;box-shadow:none;display:block !important}
+.archive-stories .agent-card-grade:not(.has-rank-img) .rank-letter{
+  position:absolute;inset:0;display:grid;place-items:center;
+  font:900 22px/1 'Barlow Condensed','Microsoft YaHei','PingFang SC',var(--font-display,sans-serif);color:#e8eaee;
+  text-shadow:0 1px 2px rgba(0,0,0,.8);-webkit-text-stroke:0;
+}
+/* 回退分支只会出现多字品级（待公布/—，单字 S/A/B/∞ 均有官方图），统一缩号防溢出章座；
+   中文在 5.5px 下糊成团，tag 稍放大并收紧字距 */
+.archive-stories .agent-card-grade:not(.has-rank-img) .rank-letter{font-size:13px;letter-spacing:.06em}
+.archive-stories .agent-card-grade:not(.has-rank-img) .grade-tag{font-size:7.5px;letter-spacing:.1em;overflow:hidden}
 
   </style>
 </head>
@@ -676,14 +1023,14 @@ body.archive-stories{
     </section>
     <div id="storiesRoot"></div>
   </main>
-  <footer class="archive-footer"><span class="footer-disclaimer" data-unofficial-boundary>HOOXI 为粉丝非官方档案，与米哈游/HoYoverse 无隶属；本页为角色目录索引，相关游戏设定与角色内容版权归米哈游所有。</span><span>HOOXI // ZZZ AGENT ARCHIVE</span></footer>
+  <footer class="archive-footer"><span class="footer-disclaimer" data-unofficial-boundary>HOOXI 为粉丝非官方档案，与米哈游/HoYoverse 无隶属；本页为角色目录索引，舞台使用角色影画，相关游戏设定、角色内容与影像素材版权归米哈游所有，资料来源为游戏内容与官方公开资料。</span><span>HOOXI // ZZZ AGENT ARCHIVE</span></footer>
   <script src="data.js?v=s1-1"></script>
   <script src="agent-enrichment.js?v=archive-3"></script>
   <script src="agent-catalog.js?v=archive-3"></script>
   <script src="agent-xray.js?v=archive-3"></script>
-  <script src="stories.js?v=sunna-portrait-1"></script>
+  <script src="stories.js?v=stage-art-1"></script>
   <script>(function(){var el=document.getElementById('storiesRoot');if(!el)return;var mo=new MutationObserver(function(){if(el.firstElementChild){mo.disconnect();window.dispatchEvent(new Event('hooxi:app-ready'));}});mo.observe(el,{childList:true});if(el.firstElementChild)window.dispatchEvent(new Event('hooxi:app-ready'));})();</script>
-  <script src="stories-mindscape.js?v=ms-5"></script>
+  <script src="stories-mindscape.js?v=ms-unify-3"></script>
   <script src="assets/vendor/gsap/gsap.min.js?v=gsap-3-15-0"></script>
   <script src="zzz-motion.js?v=zzz-motion-r7"></script>
   <script src="zzz-motion-notice.js?v=zzz-motion-notice-r1"></script>

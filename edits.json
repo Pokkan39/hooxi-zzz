@@ -1,0 +1,40 @@
+{
+  "version": 2,
+  "positions": {
+    "nav": {
+      "x": 0,
+      "y": 0
+    },
+    "resources": {
+      "x": 10,
+      "y": 2
+    }
+  },
+  "images": {
+    "bg:avatar": "assets/uploads/20260819-220205-7342.png"
+  },
+  "crops": {},
+  "texts": {
+    "nav9": "丽都城募",
+    "nav11": "调频",
+    "nickname": "HOOXI",
+    "dennies": "114514",
+    "film": "1919810"
+  },
+  "theme": {
+    "icon": 1.15,
+    "avatar": 45,
+    "back": 76,
+    "tilt": 0,
+    "resource": 116,
+    "nickname": 21,
+    "levelNum": 33,
+    "topbarPad": 12,
+    "evGap": 8,
+    "evSpeed": 29
+  },
+  "bg": {
+    "src": "assets/bg/ellen.mp4",
+    "dim": 0
+  }
+}

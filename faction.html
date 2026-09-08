@@ -104,8 +104,8 @@
           <i class="hf-corner tl"></i><i class="hf-corner tr"></i>
           <i class="hf-corner bl"></i><i class="hf-corner br"></i>
           <span class="hf-axis x"></span><span class="hf-axis y"></span>
-          <span class="hf-coord">N 41° E — / NEW ERIDU SECTOR MAP</span>
-          <span class="hf-coord b">HOLLOW INVESTIGATION / FACTION INDEX</span>
+          <span class="hf-coord">SECTOR SCAN // NEW ERIDU — FACTION GRID</span>
+          <span class="hf-coord b">HOLLOW INVESTIGATION / FACTION INDEX — ARCHIVE 04</span>
         </div>
         <div class="fg-bg-marquee fg-marquee" id="dirMarquee" aria-hidden="true"></div>
         <div class="fg-bg-marquee fg-marquee rev thin" id="dirMarquee2" aria-hidden="true"></div>
@@ -120,7 +120,7 @@
           </div>
           <p id="factionNotice" class="fg-notice" role="status" hidden></p>
         </div>
-        <div class="fg-hero-scan" aria-hidden="true"><span>SCROLL</span><i></i></div>
+        <div class="fg-hero-scan" aria-hidden="true"><span>SCROLL</span><i></i><i></i></div>
       </div>
       <div class="fg-dir-stage" id="factionDirStage">
         <div class="fg-dir-bg" aria-hidden="true">
@@ -152,6 +152,12 @@
       <section class="fg-stage" aria-labelledby="agentName">
         <div class="fg-stage-bg" aria-hidden="true">
           <div class="fg-stage-slash"></div>
+          <div class="fg-reel">
+            <div class="fg-reel-band lit"><span class="fg-reel-word" id="reelWordA"></span></div>
+            <div class="fg-reel-band film"></div>
+            <div class="fg-reel-band lit alt"><span class="fg-reel-word" id="reelWordB"></span></div>
+            <div class="fg-reel-band film thin"></div>
+          </div>
           <div class="fg-stage-halftone"></div>
           <img class="fg-stage-ghost" id="stageGhostEmblem" alt=""/>
           <div class="fg-bg-marquee fg-marquee rev" id="stageMarquee"></div>
@@ -166,10 +172,16 @@
           <h1 id="agentName"></h1>
           <p class="en-name" id="agentEn"></p>
           <div class="fg-chips" id="agentChips"></div>
+          <dl class="fg-dossier" id="agentDossier"></dl>
           <p class="fg-desc" id="agentDesc"></p>
           <div class="fg-actions">
             <a class="fg-btn primary" id="btnChar" href="#"><span>进入角色档案 →</span></a>
             <a class="fg-btn ghost" id="btnWiki" href="#" target="_blank" rel="noreferrer"><span>官方 WIKI ↗</span></a>
+          </div>
+          <div class="fg-switch" id="agentSwitch">
+            <button class="fg-switch-arrow" id="switchPrev" type="button" aria-label="上一位角色">‹</button>
+            <div class="fg-switch-list" id="switchList" role="tablist" aria-label="阵营成员切换"></div>
+            <button class="fg-switch-arrow" id="switchNext" type="button" aria-label="下一位角色">›</button>
           </div>
         </aside>
       </section>
@@ -224,6 +236,7 @@
 
   <script src="src/data.js?v=lane-stories-1"></script>
   <script src="agent-enrichment.js?v=archive-3"></script>
+  <script src="agent-voices.js?v=voice-1"></script>
   <script src="agent-catalog.js?v=archive-3"></script>
   <script src="agent-colors.js?v=agent-colors-1"></script>
   <script src="faction.js?v=game-ui-1"></script>

@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import { siteUrl, navigateSite } from '../site-runtime.js';
 
-const EventCard = forwardRef(({ event, isAdmin }, ref) => {
+const EventCard = forwardRef(({ event, isAdmin, onOpen }, ref) => {
   const coverSrc = siteUrl(event.cover || event.portrait || null);
   const avatarSrc = siteUrl(event.avatar || '/assets/images/default-avatar.webp');
   const authorName = event.author || event.poster || 'HOOXI';
@@ -13,13 +13,18 @@ const EventCard = forwardRef(({ event, isAdmin }, ref) => {
     navigateSite(`edit.html?id=${event.id}`);
   };
 
+  const handleOpen = (e) => {
+    if (!onOpen) return;
+    e.preventDefault();
+    onOpen(event);
+  };
+
   return (
     <article className={`hooxi-event-card${event.tall ? ' hooxi-event-card--tall' : ''}`} data-category={event.category} ref={ref}>
-      <a 
-        href={event.url || '#'}
+      <a
+        href={siteUrl(`post.html?id=${encodeURIComponent(event.id)}`)}
         className="hooxi-event-card-link"
-        target={event.url ? '_blank' : undefined}
-        rel={event.url ? 'noopener noreferrer' : undefined}
+        onClick={handleOpen}
       >
         {isAdmin && (
           <button 

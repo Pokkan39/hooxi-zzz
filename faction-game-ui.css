@@ -125,6 +125,54 @@ body.archive-faction .archive-topbar nav a[aria-current]{color:var(--fg-ink) !im
 .fg-hero .mono{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.16em;color:var(--fg-ink-faint)}
 .fg-notice{margin-top:14px;color:var(--fg-ink-dim);border-left:3px solid var(--fg-red);padding:8px 14px;background:rgba(255,70,70,.07);font-size:13px}
 
+/* ── Hero 战术取景框（四角标 / 坐标轴 / 坐标文） ── */
+.fg-hero::before{
+  content:'';position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 4px);
+}
+.fg-emblem-field{display:none}
+.fg-hero-frame{
+  position:absolute;inset:clamp(12px,1.6vw,24px);z-index:2;pointer-events:none;
+  border:1px solid rgba(255,255,255,.1);
+}
+.fg-hero-frame .hf-corner{position:absolute;width:26px;height:26px;border:3px solid var(--faction-theme);filter:drop-shadow(0 0 6px color-mix(in srgb,var(--faction-theme) 45%,transparent))}
+.fg-hero-frame .hf-corner.tl{top:-2px;left:-2px;border-right:0;border-bottom:0}
+.fg-hero-frame .hf-corner.tr{top:-2px;right:-2px;border-left:0;border-bottom:0}
+.fg-hero-frame .hf-corner.bl{bottom:-2px;left:-2px;border-right:0;border-top:0}
+.fg-hero-frame .hf-corner.br{bottom:-2px;right:-2px;border-left:0;border-top:0}
+.fg-hero-frame .hf-axis{position:absolute;background:rgba(255,255,255,.07)}
+.fg-hero-frame .hf-axis.x{left:44px;right:44px;top:50%;height:1px}
+.fg-hero-frame .hf-axis.y{top:44px;bottom:44px;left:50%;width:1px}
+.fg-hero-frame .hf-coord{
+  position:absolute;top:10px;left:16px;
+  font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--fg-ink-faint);
+}
+.fg-hero-frame .hf-coord.b{top:auto;left:auto;bottom:10px;right:16px;color:color-mix(in srgb,var(--faction-theme) 62%,transparent)}
+
+/* ── Hero 主标题主题色下切线（ZZZ 标题高亮条） ── */
+.fg-hero h1 .zh{position:relative;display:inline-block;z-index:1}
+.fg-hero h1 .zh::after{
+  content:'';position:absolute;z-index:-1;left:-.08em;right:-.14em;bottom:-.04em;height:.32em;
+  background:var(--faction-theme);transform:skewX(-14deg);
+  box-shadow:5px 5px 0 rgba(0,0,0,.5);
+}
+
+/* ── Hero 底部 SCROLL 引导箭头 ── */
+.fg-hero-scan{
+  position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:2;
+  display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;
+}
+.fg-hero-scan span{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.34em;color:var(--fg-ink-faint)}
+.fg-hero-scan i{
+  display:block;width:10px;height:10px;
+  border-right:2px solid var(--faction-theme);border-bottom:2px solid var(--faction-theme);
+  transform:rotate(45deg);
+  animation:fgHeroScanChevron 1.7s var(--fg-ease) infinite;
+}
+.fg-hero-scan i:last-child{margin-top:-4px;animation-delay:.2s}
+@keyframes fgHeroScanChevron{0%{opacity:0}45%{opacity:.95}100%{opacity:0}}
+
 /* ═══ 目录页阵营海报卡 ═══ */
 .fg-dir-stage{position:relative;isolation:isolate}
 .fg-dir-bg{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
@@ -144,9 +192,10 @@ body.archive-faction .archive-topbar nav a[aria-current]{color:var(--fg-ink) !im
 .fg-dir-marquee .mi{font-size:clamp(70px,10vw,150px);-webkit-text-stroke-width:1.5px}
 .fg-dir-marquee.rev{top:auto;bottom:14%}
 .fg-dir-marquee.rev .mi{font-size:clamp(46px,6vw,88px);-webkit-text-stroke-color:rgba(255,255,255,.05)}
-.fg-dir-grid{position:relative;display:flex;flex-direction:column;gap:clamp(18px,3vh,30px);padding:clamp(22px,4vh,40px) clamp(16px,4vw,48px) 56px;max-width:1360px;margin:0 auto}
+.fg-dir-grid{position:relative;display:flex;flex-direction:column;gap:clamp(18px,3vh,30px);padding:clamp(22px,4vh,40px) clamp(16px,4vw,48px) 56px;max-width:1360px;margin:0 auto;counter-reset:fgcard}
 .fg-fcard{
   --h:212px;
+  counter-increment:fgcard;
   position:relative;display:flex;align-items:stretch;min-height:var(--h);overflow:hidden;
   background:linear-gradient(100deg,#15151b 34%,color-mix(in srgb,var(--fc) 16%,#15151b) 78%,color-mix(in srgb,var(--fc) 30%,#15151b));
   border:1px solid var(--fg-line);border-radius:6px;
@@ -167,7 +216,8 @@ body.archive-faction .archive-topbar nav a[aria-current]{color:var(--fg-ink) !im
   transform:scaleY(0);transform-origin:top;transition:transform .3s var(--fg-ease);
 }
 .fg-fcard:hover{border-color:color-mix(in srgb,var(--fc) 65%,transparent);
-  box-shadow:0 22px 60px rgba(0,0,0,.55),0 0 44px color-mix(in srgb,var(--fc) 18%,transparent)}
+  box-shadow:0 22px 60px rgba(0,0,0,.55),0 0 44px color-mix(in srgb,var(--fc) 26%,transparent);
+  filter:brightness(1.07)}
 .fg-fcard:hover::after{transform:scaleY(1)}
 .fg-fcard-en{
   position:absolute;right:16px;top:50%;transform:translateY(-50%) skewX(-6deg);z-index:0;
@@ -180,6 +230,11 @@ body.archive-faction .archive-topbar nav a[aria-current]{color:var(--fg-ink) !im
   -webkit-text-stroke-color:color-mix(in srgb,var(--fc) 45%,transparent)}
 .fg-fcard-body{position:relative;z-index:2;flex:1;min-width:0;padding:clamp(20px,3vw,32px);
   display:flex;flex-direction:column;justify-content:center;gap:10px}
+.fg-fcard-body::after{
+  content:'NO.' counter(fgcard,decimal-leading-zero);position:absolute;top:8px;right:18px;
+  font-family:'Space Mono',monospace;font-size:15px;font-weight:700;letter-spacing:.18em;
+  color:color-mix(in srgb,var(--fc) 58%,transparent);pointer-events:none;
+}
 .fg-fcard-top{display:flex;align-items:center;gap:12px}
 .fg-fcard-emblem{
   width:58px;height:58px;flex:none;padding:7px;background:#fff;border-radius:10px;
@@ -196,9 +251,16 @@ body.archive-faction .archive-topbar nav a[aria-current]{color:var(--fg-ink) !im
 .fg-fcard-foot{display:flex;align-items:center;gap:14px;margin-top:4px}
 .fg-fcard-count{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.14em;
   padding:4px 12px;border:1px solid color-mix(in srgb,var(--fc) 55%,transparent);color:var(--fc);transform:skewX(-8deg)}
-.fg-fcard-cta{font-size:13px;font-weight:800;letter-spacing:.1em;color:var(--fg-ink)}
-.fg-fcard-cta::after{content:'→';margin-left:8px;color:var(--fc);display:inline-block;transition:transform .3s var(--fg-ease)}
-.fg-fcard:hover .fg-fcard-cta::after{transform:translateX(6px)}
+.fg-fcard-cta{
+  display:inline-flex;align-items:center;transform:skewX(-8deg) translateX(2px);
+  padding:7px 20px;font-size:13px;font-weight:900;letter-spacing:.12em;
+  color:var(--fc);border:2px solid color-mix(in srgb,var(--fc) 72%,transparent);
+  background:color-mix(in srgb,var(--fc) 8%,transparent);
+  transition:background .25s var(--fg-ease),box-shadow .3s var(--fg-ease);
+}
+.fg-fcard-cta::after{content:'→';margin-left:8px;color:var(--fc);display:inline-block;transform:skewX(8deg);transition:transform .3s var(--fg-ease)}
+.fg-fcard:hover .fg-fcard-cta{background:var(--fc);color:#14140a;box-shadow:4px 4px 0 rgba(0,0,0,.55)}
+.fg-fcard:hover .fg-fcard-cta::after{color:#14140a;transform:skewX(8deg) translateX(6px)}
 .fg-fcard-arts{position:relative;flex:0 0 34%;z-index:1}
 .fg-fcard-arts .fig{position:absolute;inset:-12% -8%;display:flex;justify-content:flex-end;
   transform:rotate(3deg);transition:transform .55s var(--fg-ease)}
@@ -250,10 +312,11 @@ body.archive-faction .archive-topbar nav a[aria-current]{color:var(--fg-ink) !im
   position:relative;z-index:2;flex:0 0 var(--stub-w);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
   padding:18px 6px;
-  background:linear-gradient(180deg,color-mix(in srgb,var(--fc) 20%,#101014),#101014 72%);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--fc) 18%,#0c0c10),#0c0c10 72%);
+  border-left:1px solid color-mix(in srgb,var(--fc) 30%,transparent);
   transition:background .3s;
 }
-.fg-ticket:hover .fg-ticket-stub{background:linear-gradient(180deg,color-mix(in srgb,var(--fc) 30%,#101014),#101014 72%)}
+.fg-ticket:hover .fg-ticket-stub{background:linear-gradient(180deg,color-mix(in srgb,var(--fc) 34%,#0c0c10),#0c0c10 72%)}
 .stub-serial{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--fg-ink-dim)}
 .stub-admit{
   writing-mode:vertical-rl;font-family:'Barlow Condensed',sans-serif;font-weight:800;
@@ -294,12 +357,64 @@ body.archive-faction .archive-topbar nav a[aria-current]{color:var(--fg-ink) !im
   mask-image:radial-gradient(circle,#000 55%,transparent 71%);
 }
 .fg-stage-ghost{position:absolute;left:8%;top:50%;transform:translateY(-50%);width:min(30vw,380px);opacity:.1;filter:grayscale(1) brightness(2)}
+/* ── 立绘背后的倾斜胶片条带（明片基/暗片基交替 + 竖排主题色大字，缓慢漂移）── */
+.fg-reel{position:absolute;left:-4%;top:0;bottom:0;width:64%;display:flex;gap:clamp(10px,1.6vw,26px);
+  transform:skewX(-9deg);pointer-events:none}
+.fg-reel-band{position:relative;overflow:hidden;flex:0 0 auto;width:clamp(84px,10vw,150px);
+  margin-top:-14%;margin-bottom:-14%}
+/* 明片基：主题色薄底，承载竖排大字 */
+.fg-reel-band.lit{
+  background:linear-gradient(180deg,
+    color-mix(in srgb,var(--agent) 16%,transparent),
+    color-mix(in srgb,var(--agent) 7%,transparent) 52%,
+    transparent);
+  border-left:1px solid color-mix(in srgb,var(--agent) 20%,transparent);
+  border-right:1px solid color-mix(in srgb,var(--agent) 12%,transparent);
+}
+.fg-reel-band.lit.alt{width:clamp(76px,9.6vw,150px)}
+/* 暗片基：黑片基 + 两侧齿孔列（沿用站内 EVENTS 胶片的齿孔做法）*/
+.fg-reel-band.film{width:clamp(30px,3.6vw,56px);background:rgba(6,7,10,.5)}
+.fg-reel-band.film.thin{width:clamp(20px,2.4vw,36px)}
+.fg-reel-band.film::before,.fg-reel-band.film::after{
+  content:'';position:absolute;top:0;bottom:0;width:5px;border-radius:2px;
+  background-image:repeating-linear-gradient(180deg,
+    rgba(236,241,247,.16) 0 7px,transparent 7px 22px);
+  animation:fg-reel-roll 26s linear infinite;
+}
+.fg-reel-band.film::before{left:5px}
+.fg-reel-band.film::after{right:5px}
+/* 竖排大字：文案复制两份，纵向位移一份高度即无缝 */
+.fg-reel-word{position:absolute;left:50%;top:0;
+  writing-mode:vertical-rl;text-orientation:mixed;white-space:pre;
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(44px,5.4vw,88px);letter-spacing:.08em;
+  color:color-mix(in srgb,var(--agent) 52%,transparent);
+  transform:translate(-50%,0);
+  animation:fg-reel-word 34s linear infinite;
+}
+.fg-reel-band.lit.alt .fg-reel-word{animation-duration:48s;animation-direction:reverse;
+  color:transparent;-webkit-text-stroke:1.5px color-mix(in srgb,var(--agent) 40%,transparent)}
+@keyframes fg-reel-roll{to{background-position-y:22px}}
+@keyframes fg-reel-word{to{transform:translate(-50%,-50%)}}
 .fg-stage-slash{position:absolute;width:42%;height:150%;left:-6%;top:-25%;
   background:linear-gradient(180deg,color-mix(in srgb,var(--agent) 10%,transparent),transparent);
   transform:skewX(-9deg)}
-.fg-stage-portrait{position:relative;flex:0 0 52%;display:flex;align-items:flex-end;justify-content:center;z-index:1}
+/* min-width:0 必须显式写：flex 项默认 min-width:auto 会按内容撑开，
+   放开 img 的 max-width 后立绘变宽会把这个盒子从 52% 顶到 624px，反过来压缩右侧面板宽度。
+   透明边距补偿的 scale 挂在这层而非 img 上：img 的 transform 被 hover 视差占用，
+   在 img 上改 transform-origin 会连带改掉视差的旋转轴心。 */
+.fg-stage-portrait{position:relative;flex:0 0 52%;min-width:0;display:flex;align-items:flex-end;justify-content:center;z-index:1;
+  scale:var(--port-trim,1);transform-origin:bottom center;transition:scale .4s var(--fg-ease)}
 .fg-stage-portrait img{
-  height:min(72vh,720px);max-width:100%;object-fit:contain;object-position:bottom;
+  /* 原为 height:min(72vh,720px);max-width:100%。max-width:100% 让容器宽度成了真正的瓶颈：
+     1280px 视口下容器仅 539px，期望的 648px 高需要 576px 宽，于是只画到 606px，
+     object-fit:contain 把差额留成空白 —— 写了高度上限却用不到。
+     放开 max-width 后立绘按自身比例撑到目标高度，超出的只是两侧透明边距（人物本体仍在容器内），
+     因此不必从右侧面板挪宽度，面板尺寸保持原样。 */
+  height:min(78vh,760px);max-width:none;object-fit:contain;object-position:bottom;
+  /* 立绘 PNG 自带透明边距且各张不一（实测 57 张：顶部 0.2%~21.3%，宽度占比 36.3%~93.6%），
+     统一放大会把边距满的那几张裁掉。改由 JS 逐张量出不透明边界后写入 --port-trim 按张补偿，
+     全部贴底对齐（实测 57 张底部边距一致为 0.1%），故以底边为缩放锚点。 */
   filter:drop-shadow(0 24px 44px rgba(0,0,0,.65));
   transition:transform .5s var(--fg-ease),opacity .35s var(--fg-ease),filter .4s;
 }
@@ -328,17 +443,464 @@ body.archive-faction .archive-topbar nav a[aria-current]{color:var(--fg-ink) !im
 .fg-chip{font-size:12.5px;font-weight:800;letter-spacing:.08em;padding:5px 14px;
   border:1px solid var(--fg-line);background:rgba(255,255,255,.04);transform:skewX(-8deg)}
 .fg-chip b{color:var(--agent);transition:color .45s}
-.fg-desc{margin-top:16px;font-size:14px;line-height:1.85;color:var(--fg-ink-dim);max-width:52ch;
-  border-left:3px solid var(--fg-red);padding-left:14px}
-.fg-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+/* 图标单独回正，胶囊内文字保留原有斜切不动 */
+.fg-chip .fi{width:15px;height:15px;object-fit:contain;vertical-align:-3px;margin-right:5px;
+  display:inline-block;transform:skewX(8deg)}
+/* 属性胶囊提到主色实心，与其余胶囊拉开层级（官方页把属性放在基础属性区首位）*/
+.fg-chip.attr{border-color:color-mix(in srgb,var(--agent) 52%,transparent);
+  background:color-mix(in srgb,var(--agent) 13%,rgba(255,255,255,.04))}
+/* ── 档案条 = 磁带盒背标（J-card）：三层权重，不是四行等权表格 ──
+   出处：站点关键词已是「磁带档案馆」（成员切换条 CUNNING TAPES、立绘区胶片轨），
+   专武/生日/实装/配音正好对应 J-card 的 A 面主标题、日期钢印、演职员表。
+   不加外框：外层 .fg-panel 已有边框，再套一层是盒中盒。 */
+.fg-dossier{margin:16px 0 0;max-width:56ch}
+/* 第一层 专武 = A 面主标题：整行、主色竖标签、rank 决定收边 */
+/* 主色只做左侧色条脊背（磁带盒标签色条），不承载文字：
+   实测 57 位角色主色多为中等饱和度，深字/浅字压实底两头都有 22/49 位不达 4.5:1，
+   让主色脱离文字承载后，对比度与主色亮度解耦，全员安全。 */
+.fg-dos-hero{position:relative;display:flex;align-items:stretch;gap:0;
+  background-color:#16161c;
+  background-image:linear-gradient(45deg,rgba(255,255,255,.05) 25%,transparent 25% 75%,rgba(255,255,255,.05) 75%);
+  background-size:6px 6px;
+  border:1px solid var(--fg-line);border-left:5px solid var(--agent);
+  box-shadow:3px 3px 0 rgba(0,0,0,.4);
+  transition:border-left-color .45s}
+.fg-dos-hero dt{flex:none;display:flex;align-items:center;padding:0 10px;
+  font-size:9.5px;font-weight:900;letter-spacing:.14em;
+  color:var(--fg-ink);
+  background:color-mix(in srgb,var(--agent) 16%,#1b1b22);
+  border-right:1px solid var(--fg-line);
+  transition:background .45s}
+.fg-dos-hero dd{margin:0;min-width:0;padding:9px 12px;
+  font-family:'Space Mono',monospace;font-size:12.5px;line-height:1.45;font-weight:700;
+  color:var(--fg-ink);word-break:break-word}
+/* rank 收边：S 金 / A 银，沿用游戏内等级配色，不另造语言 */
+.fg-dos-hero.grade-s{border-top-color:rgba(255,199,64,.5);border-right-color:rgba(255,199,64,.5);
+  border-bottom-color:rgba(255,199,64,.5)}
+.fg-dos-hero.grade-a{border-top-color:rgba(198,162,232,.42);border-right-color:rgba(198,162,232,.42);
+  border-bottom-color:rgba(198,162,232,.42)}
+/* 第二层 生日/实装 = 日期钢印：等宽数字、无格子，只用一条主色短竖线起头 */
+.fg-dos-stamps{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:11px;padding-left:2px}
+.fg-stamp{display:flex;align-items:baseline;gap:7px}
+/* 钢印/演职员标签统一用 .52 透明度（约 4.6:1）：
+   基础色 --fg-ink-faint(.34) 实测仅 2.92:1，9px 小字不享受大字 3:1 豁免 */
+.fg-stamp dt{font-size:9px;font-weight:900;letter-spacing:.18em;color:rgba(244,244,246,.52);
+  border-left:2px solid color-mix(in srgb,var(--agent) 55%,transparent);padding-left:6px;
+  transition:border-color .45s}
+.fg-stamp dd{margin:0;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;
+  letter-spacing:.04em;color:var(--fg-ink-dim)}
+/* 第三层 配音 = 演职员表：压到最低层，只有播放按钮保留高亮 */
+.fg-dos-cv{display:flex;align-items:baseline;gap:8px;margin-top:9px;padding-left:2px}
+.fg-dos-cv dt{flex:none;font-size:9px;font-weight:900;letter-spacing:.18em;color:rgba(244,244,246,.52)}
+.fg-dos-cv dt::after{content:"";display:inline-block;width:14px;height:1px;
+  margin-left:6px;vertical-align:3px;background:var(--fg-line)}
+/* 配音是真人姓名，属正文信息，压层级但不能压到读不清：
+   实测 --fg-ink-faint(.34) 仅 2.92:1，不达 4.5:1，改用 .58 →约 5.4:1 */
+.fg-dos-cv dd{margin:0;min-width:0;font-family:'Space Mono',monospace;font-size:11.5px;line-height:1.6;
+  color:rgba(244,244,246,.58);word-break:break-word}
+.fg-dos-cv dd i{font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.1em;
+  color:color-mix(in srgb,var(--agent) 78%,transparent);margin-right:4px;transition:color .45s}
+.fg-dos-cv dd em{font-style:normal;color:rgba(244,244,246,.22);margin:0 5px}
+/* 语音试听按钮：只在该语种有语音时渲染，播放中转主色实心 */
+.fg-cv-play{margin-left:5px;padding:0;width:15px;height:15px;flex:none;
+  display:inline-flex;align-items:center;justify-content:center;vertical-align:-2px;
+  font-size:7px;line-height:1;cursor:pointer;
+  color:var(--agent);background:transparent;
+  border:1px solid color-mix(in srgb,var(--agent) 55%,transparent);border-radius:50%;
+  transition:background .2s,color .2s,border-color .2s}
+.fg-cv-play:hover{background:color-mix(in srgb,var(--agent) 22%,transparent)}
+.fg-cv-play.playing{background:var(--agent);color:#14140a;border-color:var(--agent)}
+.fg-cv-play:focus-visible{outline:2px solid var(--agent);outline-offset:2px}
+/* 引述区 = 角色词条卡：45° 对角网格纹理 + 三层描边硬投影，阵营母题在其上叠加 */
+.fg-desc{position:relative;margin-top:20px;padding:14px 16px 14px 20px;max-width:56ch;
+  font-size:14px;line-height:1.85;color:var(--fg-ink-dim);
+  background-color:rgba(255,255,255,.03);
+  background-image:linear-gradient(45deg,rgba(255,255,255,.05) 25%,transparent 25% 75%,rgba(255,255,255,.05) 75%),
+    linear-gradient(45deg,rgba(255,255,255,.05) 25%,transparent 25% 75%,rgba(255,255,255,.05) 75%);
+  background-position:0 0,3px 3px;background-size:6px 6px;
+  border:1px solid var(--fg-line);border-left:4px solid var(--agent);
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.14),inset 0 0 0 1px rgba(0,0,0,.5),4px 4px 0 rgba(0,0,0,.4)}
+.fg-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+/* 按钮 = Walkman 按键：斜切 + bevel 斜面 + 按压下沉 */
 .fg-btn{display:inline-flex;align-items:center;gap:10px;text-decoration:none;
   font-weight:900;font-size:14px;letter-spacing:.1em;padding:12px 26px;transform:skewX(-8deg);
-  transition:transform .25s var(--fg-ease),box-shadow .25s,background .45s,color .3s,border-color .3s}
+  transition:transform .12s var(--fg-ease),box-shadow .12s,background .45s,color .3s,border-color .3s}
 .fg-btn>*{transform:skewX(8deg)}
-.fg-btn.primary{background:var(--agent);color:#14140a;box-shadow:5px 5px 0 rgba(0,0,0,.55)}
-.fg-btn.primary:hover{transform:skewX(-8deg) translate(-2px,-2px);box-shadow:8px 8px 0 rgba(0,0,0,.55)}
-.fg-btn.ghost{background:transparent;color:var(--fg-ink);border:1.5px solid var(--fg-ink-faint)}
+.fg-btn.primary{background:var(--agent);color:#14140a;
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.4),inset 0 -3px 0 rgba(0,0,0,.3),5px 5px 0 rgba(0,0,0,.55)}
+.fg-btn.primary:hover{transform:skewX(-8deg) translate(-2px,-2px);
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.4),inset 0 -3px 0 rgba(0,0,0,.3),8px 8px 0 rgba(0,0,0,.55)}
+.fg-btn.primary:active{transform:skewX(-8deg) translate(2px,2px);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.25),inset 0 -2px 0 rgba(0,0,0,.3),2px 2px 0 rgba(0,0,0,.55)}
+.fg-btn.ghost{color:var(--fg-ink);border:1.5px solid var(--fg-line);
+  background-color:rgba(255,255,255,.03);
+  background-image:linear-gradient(45deg,rgba(255,255,255,.05) 25%,transparent 25% 75%,rgba(255,255,255,.05) 75%);
+  background-size:6px 6px;box-shadow:inset 0 1px 2px rgba(255,255,255,.1),4px 4px 0 rgba(0,0,0,.35)}
 .fg-btn.ghost:hover{border-color:var(--agent);color:var(--agent)}
+
+/* 面板下方快捷切换条 = 磁带票根：机能小标签 + 45° 切角卡 + 斜切面箭头 */
+.fg-switch{position:relative;display:flex;align-items:center;gap:8px;margin-top:22px;padding-top:20px;border-top:1px dashed var(--fg-line)}
+.fg-switch::before{content:"AGENT DECK //";position:absolute;top:-8px;left:2px;padding:1px 8px;
+  background:#15151b;border:1px solid var(--fg-line);
+  font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.22em;color:var(--fg-ink-faint)}
+.fg-switch[hidden]{display:none}
+.fg-switch-list{display:flex;gap:8px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:thin;padding:3px 2px}
+.fg-switch-item{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:58px;padding:4px 3px 5px;
+  background:rgba(255,255,255,.05);border:1px solid var(--fg-line);cursor:pointer;font:inherit;color:var(--fg-ink-dim);
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%);
+  transition:border-color .18s,background .18s,transform .18s,box-shadow .18s}
+.fg-switch-item img{width:44px;height:44px;object-fit:cover;object-position:top center;background:#111}
+.fg-switch-item span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;line-height:1.1}
+.fg-switch-item:hover{border-color:var(--agent);transform:translateY(-2px)}
+.fg-switch-item.active{border-color:var(--agent);background:color-mix(in srgb,var(--agent) 16%,#17171d);
+  box-shadow:inset 0 0 0 1px var(--agent),inset 0 0 14px -6px var(--agent)}
+.fg-switch-item.active span{color:var(--agent);font-weight:700}
+.fg-switch-item:focus-visible{outline:2px solid var(--agent);outline-offset:2px}
+.fg-switch-arrow{flex:0 0 auto;width:28px;height:44px;background:rgba(255,255,255,.06);border:1px solid var(--fg-line);
+  color:var(--fg-ink);font-size:18px;line-height:1;cursor:pointer;transform:skewX(-8deg);
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.14),3px 3px 0 rgba(0,0,0,.4);
+  transition:border-color .18s,color .18s,background .18s}
+.fg-switch-arrow:hover{border-color:var(--agent);color:var(--agent);background:rgba(255,255,255,.1)}
+.fg-switch-arrow:focus-visible{outline:2px solid var(--agent);outline-offset:2px}
+@media (max-width:900px){
+  .fg-switch-item{width:52px}
+  .fg-switch-item img{width:38px;height:38px}
+}
+
+/* ═══ 阵营母题：面板"物件语言"按 body[data-motif] 切换 ═══ */
+/* 白祇重工：蓝图网格 + 顶部警示条纹 + 四角铆钉 */
+body[data-motif="belobog"] .fg-desc{padding-top:26px;
+  background-image:linear-gradient(color-mix(in srgb,var(--faction-theme) 15%,transparent) 1px,transparent 1px),
+    linear-gradient(90deg,color-mix(in srgb,var(--faction-theme) 15%,transparent) 1px,transparent 1px);
+  background-size:22px 22px;color:#d8d2c4;letter-spacing:.04em}
+body[data-motif="belobog"] .fg-desc::before{content:"";position:absolute;top:0;left:0;right:0;height:10px;
+  background:repeating-linear-gradient(45deg,var(--faction-theme) 0 8px,#17150f 8px 16px);
+  box-shadow:0 1px 0 rgba(0,0,0,.6)}
+body[data-motif="belobog"] .fg-desc::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(circle 2px at 2px 2px,var(--faction-theme) 96%,transparent 100%),
+    radial-gradient(circle 2px at 2px 2px,var(--faction-theme) 96%,transparent 100%),
+    radial-gradient(circle 2px at 2px 2px,var(--faction-theme) 96%,transparent 100%),
+    radial-gradient(circle 2px at 2px 2px,var(--faction-theme) 96%,transparent 100%);
+  background-repeat:no-repeat;
+  background-position:6px 18px,calc(100% - 6px) 18px,6px calc(100% - 6px),calc(100% - 6px) calc(100% - 6px)}
+/* 狡兔屋：黄色胶带斜贴的"名片"，街头随手一贴 */
+body[data-motif="cunning-hares"] .fg-desc{overflow:visible}
+body[data-motif="cunning-hares"] .fg-desc::before{
+  content:"CUNNING HARES · HOME SERVICE · NO MONEY NO HONEY";
+  position:absolute;top:-11px;left:-16px;width:160px;padding:2px 6px;transform:rotate(-6deg);
+  background:var(--faction-theme);color:#1a1600;
+  font-family:'Space Mono',monospace;font-size:8.5px;font-weight:700;letter-spacing:.08em;
+  white-space:nowrap;overflow:hidden;box-shadow:2px 2px 0 rgba(0,0,0,.45)}
+
+/* ── 面板级母题覆盖：让阵营差异覆盖整屏右栏，而非只在引述卡 ── */
+/* 白祇重工：整块面板 = 施工蓝图板（细网格 + 角标铆钉 + 长条警示线 + 钢印切角） */
+body[data-motif="belobog"] .fg-panel{
+  position:relative;
+  background-color:rgba(255,255,255,.01);
+  background-image:linear-gradient(color-mix(in srgb,var(--faction-theme) 7%,transparent) 1px,transparent 1px),
+    linear-gradient(90deg,color-mix(in srgb,var(--faction-theme) 7%,transparent) 1px,transparent 1px);
+  background-size:32px 32px;
+  border:2px solid color-mix(in srgb,var(--faction-theme) 38%,transparent);
+  padding:26px clamp(16px,2.4vw,30px);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.6),6px 6px 0 rgba(0,0,0,.38)}
+body[data-motif="belobog"] .fg-panel::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;
+  background:repeating-linear-gradient(45deg,var(--faction-theme) 0 12px,#17150f 12px 24px);
+  box-shadow:0 1px 0 rgba(0,0,0,.7)}
+/* 角标铆钉：略加大并提亮，让 1280 宽度下也可见 */
+body[data-motif="belobog"] .fg-panel::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(circle 3.5px at 3.5px 3.5px,var(--faction-theme) 88%,transparent 100%),
+    radial-gradient(circle 3.5px at 3.5px 3.5px,var(--faction-theme) 88%,transparent 100%),
+    radial-gradient(circle 3.5px at 3.5px 3.5px,var(--faction-theme) 88%,transparent 100%),
+    radial-gradient(circle 3.5px at 3.5px 3.5px,var(--faction-theme) 88%,transparent 100%);
+  background-repeat:no-repeat;
+  background-position:14px 14px,calc(100% - 14px) 14px,14px calc(100% - 14px),calc(100% - 14px) calc(100% - 14px)}
+/* 重工的芯片是窄边钢印；主按钮加倍切角，更加机械感 */
+body[data-motif="belobog"] .fg-chip{
+  border:1px solid color-mix(in srgb,var(--faction-theme) 70%,transparent);
+  background:color-mix(in srgb,var(--faction-theme) 6%,transparent);
+  color:color-mix(in srgb,var(--faction-theme) 78%,#f2f2f2);
+  padding:6px 14px;font-size:11px;letter-spacing:.18em;border-radius:2px}
+body[data-motif="belobog"] .fg-btn.primary{
+  clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.6),inset 0 -3px 0 rgba(0,0,0,.45),inset 0 0 0 1px rgba(0,0,0,.3)}
+body[data-motif="belobog"] .fg-switch::before{content:"BLUEPRINT DECK //"}
+/* 面板底部收尾：一条主题色细线呼应顶部警示带 */
+body[data-motif="belobog"] .fg-switch-tabs{background:linear-gradient(180deg,color-mix(in srgb,var(--faction-theme) 14%,transparent) 0,color-mix(in srgb,var(--faction-theme) 5%,transparent) 100%)}
+/* 狡兔屋：面板是街头贴纸墙（细点阵、虚线框、 斜贴胶带 + 城区感剪纸） */
+body[data-motif="cunning-hares"] .fg-panel{
+  position:relative;
+  background-color:rgba(255,255,255,.012);
+  background-image:radial-gradient(circle at center,color-mix(in srgb,var(--faction-theme) 10%,transparent) .9px,transparent 1.1px);
+  background-size:14px 14px;
+  border:2px dashed color-mix(in srgb,var(--faction-theme) 30%,transparent);
+  padding:22px clamp(16px,2.4vw,30px);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.45),5px 5px 0 rgba(0,0,0,.32)}
+/* 左上角压一片"撕边"提示胶带，像人手贴上的包装用胶 */
+body[data-motif="cunning-hares"] .fg-panel::before{content:"";position:absolute;top:8px;left:-12px;width:110px;height:18px;
+  transform:rotate(7deg);
+  background:linear-gradient(135deg,var(--faction-theme) 0% 92%,transparent 92%),
+    linear-gradient(135deg,color-mix(in srgb,var(--faction-theme) 58%,transparent) 12% 92%,color-mix(in srgb,var(--faction-theme) 58%,transparent) 96%);
+  box-shadow:-2px 2px 0 rgba(0,0,0,.5);opacity:.98}
+body[data-motif="cunning-hares"] .fg-panel::after{content:"";position:absolute;top:6px;right:-14px;width:60px;height:70px;
+  transform:rotate(-6deg);
+  background:var(--faction-theme);opacity:.95;
+  box-shadow:-2px 3px 0 rgba(0,0,0,.45);
+  clip-path:polygon(15% 0,85% 0,100% 85%,85% 100%,10% 85%,0 20% )}
+/* 兔窝的芯片是浅色贴纸：亮黄底 + 白描边 + 硬投影 */
+body[data-motif="cunning-hares"] .fg-chip{
+  background:var(--faction-theme);color:#221a00;border:2px solid #f5f2e8;
+  border-radius:3px;padding:5px 14px;font-size:11px;
+  box-shadow:2px 2px 0 rgba(0,0,0,.45);letter-spacing:.12em}
+body[data-motif="cunning-hares"] .fg-chip b{color:#221a00}
+body[data-motif="cunning-hares"] .fg-btn.primary{border:2.5px solid #f5f2e8}
+body[data-motif="cunning-hares"] .fg-switch::before{content:"CUNNING TAPES //"}
+
+/* ── 成员卡槽母题覆盖：重工=蓝图铭牌，兔窝=贴纸墙 ── */
+/* 重工：方角卡片 + 照片取景框角标 + UNIT 编号 + 钢印名牌 */
+body[data-motif="belobog"] .fg-member-row{counter-reset:munit}
+body[data-motif="belobog"] .fg-mcard{
+  counter-increment:munit;border-radius:4px;
+  border-color:color-mix(in srgb,var(--faction-theme) 28%,var(--fg-line));
+  background:linear-gradient(180deg,color-mix(in srgb,var(--faction-theme) 5%,transparent) 0,transparent 40%),var(--fg-raise)}
+body[data-motif="belobog"] .fg-mcard .ph::before{
+  content:"";position:absolute;inset:6px;z-index:2;pointer-events:none;opacity:.8;
+  background:
+    linear-gradient(var(--faction-theme),var(--faction-theme)) top left/12px 2px no-repeat,
+    linear-gradient(var(--faction-theme),var(--faction-theme)) top left/2px 12px no-repeat,
+    linear-gradient(var(--faction-theme),var(--faction-theme)) top right/12px 2px no-repeat,
+    linear-gradient(var(--faction-theme),var(--faction-theme)) top right/2px 12px no-repeat,
+    linear-gradient(var(--faction-theme),var(--faction-theme)) bottom left/12px 2px no-repeat,
+    linear-gradient(var(--faction-theme),var(--faction-theme)) bottom left/2px 12px no-repeat,
+    linear-gradient(var(--faction-theme),var(--faction-theme)) bottom right/12px 2px no-repeat,
+    linear-gradient(var(--faction-theme),var(--faction-theme)) bottom right/2px 12px no-repeat}
+body[data-motif="belobog"] .fg-mcard .mn{
+  font-family:'Space Mono',monospace;font-weight:700;letter-spacing:.05em;
+  border-top:1px dashed color-mix(in srgb,var(--faction-theme) 30%,transparent);
+  background-image:linear-gradient(color-mix(in srgb,var(--faction-theme) 7%,transparent) 1px,transparent 1px),
+    linear-gradient(90deg,color-mix(in srgb,var(--faction-theme) 7%,transparent) 1px,transparent 1px);
+  background-size:12px 12px}
+body[data-motif="belobog"] .fg-mcard .mn::before{
+  content:"UNIT-" counter(munit,decimal-leading-zero) " //";
+  color:color-mix(in srgb,var(--faction-theme) 80%,#8b93a3);font-size:10px}
+body[data-motif="belobog"] .fg-member-row::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--faction-theme) 45%,#3a3a44)}
+/* 兔窝：白边贴纸卡 + 名牌底缘阵营色下划线（轻点缀，不夺立绘） */
+body[data-motif="cunning-hares"] .fg-mcard{
+  border-radius:6px;
+  border:2px solid #f5f2e8;
+  box-shadow:0 2px 0 rgba(255,255,255,.04) inset,3px 4px 0 rgba(0,0,0,.5),0 10px 22px -14px rgba(0,0,0,.9)}
+body[data-motif="cunning-hares"] .fg-mcard .mn{
+  border-top:2px solid #f5f2e8;
+  box-shadow:0 -3px 0 -1px var(--faction-theme) inset}
+body[data-motif="cunning-hares"] .fg-member-row::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--faction-theme) 45%,#3a3a44)}
+
+/* ── 全阵营 DECK 成员卡母题 ── */
+/* 维多利亚家政：象牙银托卡 + 衬线名牌 + 金线分隔 */
+body[data-motif="victoria-housekeeping"] .fg-mcard{border-radius:10px;
+  border-color:color-mix(in srgb,#e8e0cd 55%,var(--fg-line));
+  box-shadow:0 1px 0 rgba(232,224,205,.12) inset,0 12px 26px -14px rgba(0,0,0,.9)}
+body[data-motif="victoria-housekeeping"] .fg-mcard .ph::before{content:"";position:absolute;inset:7px;z-index:2;pointer-events:none;
+  border:1px solid color-mix(in srgb,#e8e0cd 55%,transparent)}
+body[data-motif="victoria-housekeeping"] .fg-mcard .mn{font-family:Georgia,'Times New Roman',serif;font-weight:700;
+  background:#efe9db;color:#2b2620;border-top:2px solid color-mix(in srgb,var(--faction-theme) 60%,transparent)}
+/* 卡吕冬之子：废土公路卡 + 斜切警示角 + 名牌路中虚线 */
+body[data-motif="sons-of-calydon"] .fg-mcard{border-radius:2px;
+  clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%)}
+body[data-motif="sons-of-calydon"] .fg-mcard .mn{background:#17140f;
+  border-top:2px dashed color-mix(in srgb,var(--faction-theme) 75%,transparent);
+  font-family:'Space Mono',monospace;text-transform:uppercase}
+/* 对空六课：竖边防务色带 + 课组编号铭牌 */
+body[data-motif="section-6"] .fg-member-row{counter-reset:munit}
+body[data-motif="section-6"] .fg-mcard{counter-increment:munit;border-radius:4px;
+  border-left:4px solid var(--faction-theme)}
+body[data-motif="section-6"] .fg-mcard .mn{font-family:'Space Mono',monospace;letter-spacing:.06em}
+body[data-motif="section-6"] .fg-mcard .mn::before{content:"OP-" counter(munit,decimal-leading-zero) " / ";
+  color:var(--faction-theme);font-size:10px}
+/* 刑侦特勤：证物档案卡 + 顶部双打孔 + EXHIBIT 编号 */
+body[data-motif="criminal-investigation-srt"] .fg-member-row{counter-reset:munit}
+body[data-motif="criminal-investigation-srt"] .fg-mcard{counter-increment:munit;border-radius:3px;
+  background:#f0ead9;box-shadow:0 2px 0 rgba(0,0,0,.5),0 10px 22px -14px rgba(0,0,0,.9)}
+body[data-motif="criminal-investigation-srt"] .fg-mcard .ph{margin:8px 8px 0;background:#12120e}
+body[data-motif="criminal-investigation-srt"] .fg-mcard .ph::before{content:"";position:absolute;top:5px;left:50%;width:10px;height:10px;margin-left:-5px;
+  z-index:2;border-radius:50%;background:#1c1a14;box-shadow:inset 0 1px 2px rgba(0,0,0,.8)}
+body[data-motif="criminal-investigation-srt"] .fg-mcard .mn{background:transparent;color:#2a2620;border-top:none;
+  font-family:'Space Mono',monospace;font-weight:700}
+body[data-motif="criminal-investigation-srt"] .fg-mcard .mn::before{content:"EXHIBIT-" counter(munit,decimal-leading-zero) " // ";
+  color:#8a2b1f;font-size:10px}
+/* 奥波勒斯小队：军牌边角孔 + 点阵军毯底 */
+body[data-motif="obol-squad"] .fg-mcard{border-radius:2px;border-color:color-mix(in srgb,var(--faction-theme) 30%,var(--fg-line))}
+body[data-motif="obol-squad"] .fg-mcard::after{content:"";position:absolute;top:6px;right:6px;width:9px;height:9px;z-index:3;
+  border-radius:50%;background:#0a0a10;box-shadow:0 0 0 1px color-mix(in srgb,var(--faction-theme) 55%,transparent)}
+body[data-motif="obol-squad"] .fg-mcard .mn{background-image:radial-gradient(circle at center,color-mix(in srgb,var(--faction-theme) 14%,transparent) 1px,transparent 1.2px);
+  background-size:7px 7px;font-family:'Space Mono',monospace;text-transform:uppercase;font-size:11px}
+/* 星空歌姬：虹彩描边 + 名牌星芒 */
+body[data-motif="stars-of-lyra"] .fg-mcard{border-radius:14px;border:1px solid transparent;
+  background:linear-gradient(var(--fg-raise),var(--fg-raise)) padding-box,
+    conic-gradient(from 20deg,#ff7ad9,#8f7bff,#67d8ff,#a3ffb0,#ffe08a,#ff7ad9) border-box}
+body[data-motif="stars-of-lyra"] .fg-mcard .ph::before{content:"";position:absolute;top:6px;right:8px;width:10px;height:10px;z-index:2;
+  background:radial-gradient(circle,var(--faction-theme) 30%,transparent 70%);
+  clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+body[data-motif="stars-of-lyra"] .fg-mcard .mn{background:linear-gradient(90deg,color-mix(in srgb,var(--faction-theme) 22%,transparent),transparent 70%);
+  border-top:1px solid color-mix(in srgb,var(--faction-theme) 45%,transparent)}
+/* 嘲鸠：天鹅绒怪盗卡 + 双线金框 + 火漆点 */
+body[data-motif="mockingbird"] .fg-mcard{border-radius:6px;background:var(--fg-raise);
+  border-color:color-mix(in srgb,#c9a44a 40%,var(--fg-line))}
+body[data-motif="mockingbird"] .fg-mcard::after{content:"";position:absolute;inset:4px;z-index:3;pointer-events:none;
+  border:1px solid color-mix(in srgb,#c9a44a 45%,transparent);border-radius:3px}
+body[data-motif="mockingbird"] .fg-mcard .ph::before{content:"";position:absolute;bottom:10px;right:10px;width:14px;height:14px;z-index:2;
+  border-radius:50%;background:radial-gradient(circle at 35% 35%,#e05c4a,#8a1e12 70%);
+  box-shadow:0 1px 3px rgba(0,0,0,.7)}
+body[data-motif="mockingbird"] .fg-mcard .mn{font-family:Georgia,serif;letter-spacing:.08em;
+  border-top:1px solid color-mix(in srgb,#c9a44a 45%,transparent)}
+/* 云栖山：纸符竖签 + 红绳压条 + 米纸名牌 */
+body[data-motif="yunkui-summit"] .fg-mcard{border-radius:4px;background:#efe6d0;color:#33291c;
+  box-shadow:0 2px 0 rgba(0,0,0,.45),0 10px 22px -14px rgba(0,0,0,.9)}
+body[data-motif="yunkui-summit"] .fg-mcard .ph{margin:0 0 0 10px}
+body[data-motif="yunkui-summit"] .fg-mcard::after{content:"";position:absolute;top:0;bottom:0;left:5px;width:3px;z-index:2;
+  background:linear-gradient(180deg,#b03a2c,#d09a5a)}
+body[data-motif="yunkui-summit"] .fg-mcard .mn{background:transparent;color:#33291c;border-top:1px dashed #b07a45;padding-left:18px}
+/* 怪异小屋：泛白旧照卡 + 抖动细框 + 手写名牌 */
+body[data-motif="spook-shack"] .fg-mcard{border-radius:2px;border:2px solid #dadcd2;transform:rotate(-.6deg);
+  filter:saturate(.9);box-shadow:0 3px 0 rgba(0,0,0,.5)}
+body[data-motif="spook-shack"] .fg-mcard:nth-child(even){transform:rotate(.5deg)}
+body[data-motif="spook-shack"] .fg-mcard .ph img{filter:saturate(.75) contrast(1.05)}
+body[data-motif="spook-shack"] .fg-mcard .mn{font-style:italic;letter-spacing:.1em;
+  border-top:2px solid #dadcd2;background:#d9dbd0;color:#3a3c34}
+/* 合规审查局：红头许可章 + 削减角 */
+body[data-motif="krampus-compliance-authority"] .fg-mcard{border-radius:6px;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);
+  border-color:color-mix(in srgb,#d24545 35%,var(--fg-line))}
+body[data-motif="krampus-compliance-authority"] .fg-mcard .ph::before{content:"";position:absolute;top:8px;right:8px;width:30px;height:30px;z-index:2;
+  border:2px solid #d24545;border-radius:50%;opacity:.85;transform:rotate(-12deg);
+  background:radial-gradient(circle,transparent 55%,#d24545 58% 64%,transparent 67%)}
+body[data-motif="krampus-compliance-authority"] .fg-mcard .mn{font-family:'Space Mono',monospace;
+  border-top:2px solid color-mix(in srgb,#d24545 45%,transparent)}
+/* 妄想天使：柔光泡泡卡 + 云感圆角 */
+body[data-motif="angels-of-delusion"] .fg-mcard{border-radius:18px;border:1px solid transparent;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--faction-theme) 10%,var(--fg-raise)),var(--fg-raise)) padding-box,
+    linear-gradient(135deg,color-mix(in srgb,var(--faction-theme) 70%,#fff),color-mix(in srgb,var(--faction-theme) 30%,#fff)) border-box;
+  box-shadow:0 4px 18px -8px color-mix(in srgb,var(--faction-theme) 35%,transparent)}
+body[data-motif="angels-of-delusion"] .fg-mcard .ph::before{content:"";position:absolute;bottom:8px;left:10px;width:44px;height:18px;z-index:2;
+  border-radius:12px;background:radial-gradient(circle at 30% 50%,rgba(255,255,255,.55),transparent 70%),
+  radial-gradient(circle at 70% 40%,rgba(255,255,255,.4),transparent 70%)}
+/* 都市秩序部：金属盾纹描线 + 徽章孔 */
+body[data-motif="metropolitan-order-division"] .fg-mcard{border-radius:6px;
+  border:1px solid color-mix(in srgb,#9aa7b8 45%,var(--fg-line));
+  box-shadow:0 1px 0 rgba(154,167,184,.15) inset,0 12px 26px -14px rgba(0,0,0,.95)}
+body[data-motif="metropolitan-order-division"] .fg-mcard .mn{font-family:'Space Mono',monospace;font-weight:700;
+  background:linear-gradient(180deg,color-mix(in srgb,#9aa7b8 14%,transparent),transparent);
+  border-top:2px solid color-mix(in srgb,#9aa7b8 40%,transparent)}
+/* 白银军：拉丝金属名牌 + 顶置吊环 */
+body[data-motif="defense-force-silver-squad"] .fg-member-row{counter-reset:munit}
+body[data-motif="defense-force-silver-squad"] .fg-mcard{counter-increment:munit;border-radius:3px}
+body[data-motif="defense-force-silver-squad"] .fg-mcard .ph::before{content:"";position:absolute;top:4px;left:50%;width:8px;height:8px;margin-left:-4px;z-index:2;
+  border-radius:50%;background:#101014;box-shadow:0 0 0 2px color-mix(in srgb,#c8cdd6 70%,transparent)}
+body[data-motif="defense-force-silver-squad"] .fg-mcard .mn{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.08em;
+  background:linear-gradient(100deg,#4a4f58 0%,#767d89 18%,#4a4f58 36%,#666d78 55%,#43484f 100%);color:#dfe3ea}
+body[data-motif="defense-force-silver-squad"] .fg-mcard .mn::before{content:"SV-" counter(munit,decimal-leading-zero) " · ";color:#aeb5c1;font-size:10px}
+/* 对外战略部：琥珀终端卡 + 顶部扫描线 */
+body[data-motif="external-strategy-department"] .fg-mcard{border-radius:6px;
+  border-color:color-mix(in srgb,var(--faction-theme) 26%,var(--fg-line))}
+body[data-motif="external-strategy-department"] .fg-mcard .ph::before{content:"";position:absolute;left:0;right:0;top:0;height:22%;z-index:2;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--faction-theme) 22%,transparent),transparent);
+  border-bottom:1px solid color-mix(in srgb,var(--faction-theme) 45%,transparent)}
+body[data-motif="external-strategy-department"] .fg-mcard .mn{font-family:'Space Mono',monospace;
+  color:color-mix(in srgb,var(--faction-theme) 85%,#f2f2f2);
+  border-top:1px solid color-mix(in srgb,var(--faction-theme) 34%,transparent)}
+/* 派厄同：绳网故障卡 + 错位双影描边 */
+body[data-motif="phaethon"] .fg-mcard{border-radius:8px;
+  border-color:color-mix(in srgb,var(--faction-theme) 30%,var(--fg-line));
+  box-shadow:2px 2px 0 color-mix(in srgb,var(--faction-theme) 45%,transparent),
+    -2px -2px 0 rgba(103,216,255,.35),0 10px 22px -14px rgba(0,0,0,.9)}
+body[data-motif="phaethon"] .fg-mcard .ph::before{content:"";position:absolute;left:0;right:0;top:30%;height:2px;z-index:2;
+  background:color-mix(in srgb,var(--faction-theme) 55%,transparent);
+  clip-path:polygon(0 0,40% 0,40% 100%,0 100%);transform:translateX(2px)}
+body[data-motif="phaethon"] .fg-mcard .mn{font-family:'Space Mono',monospace}
+/* 达亚特盟约：圣纹细金框 + 顶部棱形 */
+body[data-motif="covenant-of-dayat"] .fg-mcard{border-radius:10px;
+  border-color:color-mix(in srgb,var(--faction-theme) 34%,var(--fg-line));
+  box-shadow:0 1px 0 color-mix(in srgb,var(--faction-theme) 14%,transparent) inset,0 12px 26px -14px rgba(0,0,0,.9)}
+body[data-motif="covenant-of-dayat"] .fg-mcard .ph::before{content:"";position:absolute;top:6px;left:50%;width:8px;height:8px;margin-left:-4px;z-index:2;
+  transform:rotate(45deg);background:var(--faction-theme);box-shadow:0 0 8px color-mix(in srgb,var(--faction-theme) 70%,transparent)}
+body[data-motif="covenant-of-dayat"] .fg-mcard .mn{letter-spacing:.12em;font-variant:small-caps;
+  border-top:1px solid color-mix(in srgb,var(--faction-theme) 36%,transparent)}
+/* 浅底名牌的英文副行：基础色是给深底用的浅灰，压在米/象牙底上会隐形，
+   故这四个浅底母题改用深色半透明，保留副行弱于主名的层级 */
+body[data-motif="victoria-housekeeping"] .fg-mcard .mn i,
+body[data-motif="criminal-investigation-srt"] .fg-mcard .mn i,
+body[data-motif="yunkui-summit"] .fg-mcard .mn i,
+body[data-motif="spook-shack"] .fg-mcard .mn i{color:rgba(43,38,32,.74)}
+
+/* ── 档案条材质家族：18 个阵营按"物件材质"归 5 组，不逐阵营造 18 套 ──
+   分组依据是各阵营成员卡已有的母题物件，材质语言直接继承，不另编视觉出处。
+   初版把 5 组底色都压在深灰里微调，实测最大通道差仅 3.9%、对比度比 1.001~1.043:1，
+   低于人眼可辨阈值（>5% 亮度差），等于没做。本版按"真的是不同材质"重做：
+   纸质家族翻成浅底纸面（沿用成员卡已有的 #efe9db/#2b2620 浅底深字方案），
+   其余四组拉开色温并把纹理提到可见强度（透明度 4.5%→10~16%，尺度与角度各不相同）。 */
+
+/* 家族一 工业蓝图：白祇重工/卡吕冬之子/第六课/白银小队 —— 冷蓝底 + 阵营色蓝图网格 + 警示切角 */
+body:is([data-motif="belobog"],[data-motif="sons-of-calydon"],[data-motif="section-6"],[data-motif="defense-force-silver-squad"]) .fg-dos-hero{
+  background-color:#101a26;
+  background-image:linear-gradient(color-mix(in srgb,var(--faction-theme) 34%,transparent) 1px,transparent 1px),
+    linear-gradient(90deg,color-mix(in srgb,var(--faction-theme) 34%,transparent) 1px,transparent 1px);
+  background-size:8px 8px}
+body:is([data-motif="belobog"],[data-motif="sons-of-calydon"],[data-motif="section-6"],[data-motif="defense-force-silver-squad"]) .fg-dos-hero dt{
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%);
+  background:color-mix(in srgb,var(--agent) 26%,#162434)}
+
+/* 家族二 胶带涂鸦：狡兔屋/怪啖屋/妄想天使 —— 牛皮暖底 + 粗斜纹 + 斜切胶带标签 */
+body:is([data-motif="cunning-hares"],[data-motif="spook-shack"],[data-motif="angels-of-delusion"]) .fg-dos-hero{
+  background-color:#2a2015;
+  background-image:linear-gradient(45deg,rgba(255,236,190,.14) 25%,transparent 25% 75%,rgba(255,236,190,.14) 75%);
+  background-size:8px 8px}
+body:is([data-motif="cunning-hares"],[data-motif="spook-shack"],[data-motif="angels-of-delusion"]) .fg-dos-hero dt{
+  transform:skewX(-11deg);margin-left:-2px;padding:0 13px;
+  background:color-mix(in srgb,var(--agent) 30%,#3a2c1b)}
+
+/* 家族三 纸质档案：维多利亚家政/刑侦特勤组/云岿山/达识结社 —— 浅底纸面 + 深字 + 虚线骑缝
+   这是唯一翻浅底的一组，也是拉开阵营差异最有效的一手：
+   浅底深字方案直接沿用成员卡（#efe9db 底 / #2b2620 字），不另造配色。 */
+body:is([data-motif="victoria-housekeeping"],[data-motif="criminal-investigation-srt"],[data-motif="yunkui-summit"],[data-motif="covenant-of-dayat"]) .fg-dos-hero{
+  background-color:#e9e2cf;
+  background-image:none;
+  border:1px dashed rgba(43,38,32,.34);border-left:5px solid var(--agent);
+  box-shadow:2px 2px 0 rgba(0,0,0,.28)}
+body:is([data-motif="victoria-housekeeping"],[data-motif="criminal-investigation-srt"],[data-motif="yunkui-summit"],[data-motif="covenant-of-dayat"]) .fg-dos-hero dt{
+  color:#2b2620;background:color-mix(in srgb,var(--agent) 24%,#dcd4bd);
+  border-right:1px dashed rgba(43,38,32,.3)}
+body:is([data-motif="victoria-housekeeping"],[data-motif="criminal-investigation-srt"],[data-motif="yunkui-summit"],[data-motif="covenant-of-dayat"]) .fg-dos-hero dd{
+  color:#221e18}
+/* 浅底上金/银收边会消失，改用深色描边保留 rank 区分 */
+body:is([data-motif="victoria-housekeeping"],[data-motif="criminal-investigation-srt"],[data-motif="yunkui-summit"],[data-motif="covenant-of-dayat"]) .fg-dos-hero.grade-s{
+  border-top-color:#a8791b;border-right-color:#a8791b;border-bottom-color:#a8791b}
+body:is([data-motif="victoria-housekeeping"],[data-motif="criminal-investigation-srt"],[data-motif="yunkui-summit"],[data-motif="covenant-of-dayat"]) .fg-dos-hero.grade-a{
+  border-top-color:#6b5a86;border-right-color:#6b5a86;border-bottom-color:#6b5a86}
+body:is([data-motif="victoria-housekeeping"],[data-motif="criminal-investigation-srt"],[data-motif="yunkui-summit"],[data-motif="covenant-of-dayat"]) .fg-stamp dt{
+  border-left-style:dotted;border-left-width:3px}
+
+/* 家族四 冷光电子：法厄同/反舌鸟/天琴座/外务筹策局 —— 近黑冷底 + 密扫描线 + 标签强发光 */
+body:is([data-motif="phaethon"],[data-motif="mockingbird"],[data-motif="stars-of-lyra"],[data-motif="external-strategy-department"]) .fg-dos-hero{
+  background-color:#08080d;
+  background-image:repeating-linear-gradient(0deg,rgba(190,230,255,.13) 0 1px,transparent 1px 3px)}
+body:is([data-motif="phaethon"],[data-motif="mockingbird"],[data-motif="stars-of-lyra"],[data-motif="external-strategy-department"]) .fg-dos-hero dt{
+  background:color-mix(in srgb,var(--agent) 22%,#0d0d14);
+  box-shadow:0 0 14px color-mix(in srgb,var(--agent) 70%,transparent),
+    inset 0 0 0 1px color-mix(in srgb,var(--agent) 45%,transparent)}
+
+/* 家族五 金属军规：奥波勒斯小队/坎卜斯黑枝/都市秩序部 —— 中性枪灰 + 粗拉丝 + 四角铆钉 */
+body:is([data-motif="obol-squad"],[data-motif="krampus-compliance-authority"],[data-motif="metropolitan-order-division"]) .fg-dos-hero{
+  background-color:#33353a;
+  background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.10) 0 1px,transparent 1px 5px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),3px 3px 0 rgba(0,0,0,.45)}
+body:is([data-motif="obol-squad"],[data-motif="krampus-compliance-authority"],[data-motif="metropolitan-order-division"]) .fg-dos-hero dt{
+  background:color-mix(in srgb,var(--agent) 22%,#41444a)}
+body:is([data-motif="obol-squad"],[data-motif="krampus-compliance-authority"],[data-motif="metropolitan-order-division"]) .fg-dos-hero::after{
+  content:"";position:absolute;top:4px;right:5px;width:5px;height:5px;border-radius:50%;
+  background:#9aa0aa;box-shadow:0 0 0 1px rgba(0,0,0,.5),0 22px 0 #9aa0aa,0 22px 0 1px rgba(0,0,0,.5)}
+
+@media (max-width:900px){
+  body[data-motif="belobog"] .fg-panel,
+  body[data-motif="cunning-hares"] .fg-panel{padding:16px 12px}
+}
 
 /* 阵营小结 */
 .fg-brief{
@@ -362,7 +924,7 @@ body.archive-faction .archive-topbar nav a[aria-current]{color:var(--fg-ink) !im
 .fg-member-row::-webkit-scrollbar{height:6px}
 .fg-member-row::-webkit-scrollbar-thumb{background:#3a3a44;border-radius:3px}
 .fg-mcard{
-  position:relative;flex:0 0 124px;scroll-snap-align:start;cursor:pointer;
+  position:relative;flex:0 0 144px;scroll-snap-align:start;cursor:pointer;
   background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,0) 34%),var(--fg-raise);
   border:1px solid var(--fg-line);border-radius:12px;overflow:hidden;
   box-shadow:0 2px 0 rgba(255,255,255,.04) inset,0 10px 22px -14px rgba(0,0,0,.9);
@@ -387,16 +949,34 @@ body.archive-faction .archive-topbar nav a[aria-current]{color:var(--fg-ink) !im
 .fg-mcard.active::after{content:'';position:absolute;left:0;right:0;top:0;height:5px;z-index:4;
   background:repeating-linear-gradient(-45deg,var(--mc) 0 8px,#101014 8px 16px);
   box-shadow:0 1px 8px color-mix(in srgb,var(--mc) 70%,transparent)}
-.fg-mcard .ph{position:relative;height:138px;overflow:hidden;background:#0a0a10}
+.fg-mcard .ph{position:relative;height:196px;overflow:hidden;background:#0a0a10}
 .fg-mcard .ph img{width:100%;height:100%;object-fit:cover;object-position:top center;transition:transform .5s var(--fg-ease),filter .4s;filter:saturate(.92) brightness(.94)}
 .fg-mcard:hover .ph img{transform:scale(1.1);filter:saturate(1.06) brightness(1.02)}
 .fg-mcard.active .ph img{transform:scale(1.1);filter:saturate(1.08) brightness(1.05)}
-.fg-mcard .ph::after{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(8,8,12,.16) 0%,transparent 30%,transparent 52%,rgba(8,8,12,.88))}
-.fg-mcard .mr{position:absolute;top:8px;left:8px;z-index:2;width:26px;height:26px;display:block;object-fit:contain}
+.fg-mcard .ph::after{content:'';position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg,rgba(8,8,12,.18) 0%,transparent 26%,transparent 44%,rgba(8,8,12,.72) 74%,rgba(8,8,12,.95))}
+.fg-mcard .ph img.mr{position:absolute;top:7px;left:7px;z-index:3;width:34px;height:34px;display:block;object-fit:contain;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.75));transition:transform .28s var(--fg-ease),filter .28s}
 .fg-mcard.active .mr{transform:scale(1.08);filter:drop-shadow(0 0 6px color-mix(in srgb,var(--mc) 70%,transparent))}
-.fg-mcard .mn{padding:10px 10px 12px;font-size:12.5px;font-weight:800;text-align:center;letter-spacing:.03em;line-height:1.3;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0;color:var(--fg-ink);
+/* 属性/特性图标：右上竖排。只用 webp 批次（无底彩色字形，深底可读）；
+   PNG 批次是黑色字形+烘死圆底，为浅底数据表设计，压深色卡面会糊掉，故不混用 */
+.fg-mcard .mk{position:absolute;top:7px;right:7px;z-index:3;display:flex;flex-direction:column;gap:4px}
+.fg-mcard .mk .fi{width:22px;height:22px;display:block;object-fit:contain;padding:3px;border-radius:50%;
+  background:rgba(8,8,12,.7);box-shadow:0 1px 3px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.12) inset}
+/* 属性·特性文字行：完整通道（57/57 齐全），图标只作快速识别的点缀 */
+.fg-mcard .mt{position:absolute;left:0;right:0;bottom:7px;z-index:3;text-align:center;
+  font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.08em;color:rgba(255,255,255,.85);
+  text-shadow:0 1px 3px rgba(0,0,0,.9);transition:color .25s}
+.fg-mcard.active .mt{color:color-mix(in srgb,var(--mc) 72%,#fff)}
+.fg-mcard .mn{padding:8px 8px 10px;font-size:12.5px;font-weight:800;text-align:center;letter-spacing:.03em;line-height:1.25;
+  overflow:hidden;margin:0;color:var(--fg-ink);
   border-top:1px solid var(--fg-line);background:linear-gradient(180deg,rgba(255,255,255,.03),transparent);transition:color .25s}
+/* 英文名副行：中文名换行也不挤掉，英文名超长才省略。
+   8.5px 小字，取色比站内 --fg-ink-faint 稍实，保证深底上也过小字对比度线 */
+.fg-mcard .mn i{display:block;margin-top:3px;font-style:normal;font-family:'Space Mono',monospace;
+  font-size:8.5px;font-weight:400;letter-spacing:.08em;
+  color:color-mix(in srgb,var(--fg-ink) 56%,transparent);text-transform:uppercase;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fg-mcard.active .mn{color:var(--mc)}
 
 /* ═══ 目录/详情通用 ═══ */
@@ -448,6 +1028,7 @@ body.archive-faction .faction-empty{color:var(--fg-ink-faint) !important}
 }
 @media (prefers-reduced-motion:reduce){
   .fg-marquee-track{animation:none}
+  .fg-reel-word,.fg-reel-band.film::before,.fg-reel-band.film::after{animation:none}
   body.archive-faction *{transition-duration:.01ms !important;animation-duration:.01ms !important}
 }
 
@@ -484,8 +1065,25 @@ body.archive-faction .faction-empty{color:var(--fg-ink-faint) !important}
 
 
 /* ── 返回目录按钮 ── */
-.fg-back-bar{padding:16px 0 0;width:min(1200px,calc(100% - 40px));margin:0 auto;}
-.fg-back-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:9999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:rgba(255,255,255,.65);font-size:13px;font-weight:600;text-decoration:none;transition:color .18s,border-color .18s,background .18s;}
+/* 原为 static，滚出首屏后就再也看不到（页面高 2000px+，下半页无任何返回入口）。
+   两个坑：
+   1) sticky 不生效 —— body 有全站生效的 overflow-x:hidden，会让 overflow-y 计算成 auto、
+      body 自身成为滚动容器，sticky 于是吸在 body 上而非视口。不动全站 body 规则。
+   2) 站点导航条 .ik-header 高 78px、z-index:100，比返回键高。若无条件 fixed 在 top:14，
+      页面顶部时返回键会被压在 HOOXI 标志底下（实测命中的是 .ik-brand__title）。
+   故：页面顶部时保持在流内（位于导航条下方，不打架），
+   由 JS 加 .is-floating 后才升为 fixed，此时导航条已滚走，z-index 取 101 压住它。 */
+/* z-index:3 —— 立绘区是 z-index:1、面板是 2，放大后的立绘（含其透明边距）会盖住流内的返回键
+   并吃掉点击，必须抬到两者之上。min-height 预留按钮高度，避免升为 fixed 脱离文档流时内容跳动。 */
+.fg-back-bar{position:relative;z-index:3;padding:16px 0 0;width:min(1200px,calc(100% - 40px));margin:0 auto;min-height:38px;}
+/* position 必须带 !important：全站命中反馈（zzz-motion.js 的点击涟漪）会在 pointerdown 时
+   对命中的 a/button 写内联 style.position='relative' 且不再移除，内联样式优先级高于类规则，
+   于是按钮在按下瞬间从 fixed 掉回 relative、跟着页面滚走，光标落到别处 —— 点击因此不跳转。
+   这里只覆盖 position 一项，其余保持原样。 */
+.fg-back-bar.is-floating .fg-back-btn{position:fixed !important;top:14px;left:max(20px,calc(50% - 600px));z-index:101;}
+/* 常驻悬浮后按钮会压在立绘等亮内容上，原本近乎透明的底色（白 4%）不够读，
+   改为深色半透明 + 背景模糊，保证任何背景下都可读 */
+.fg-back-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:9999px;border:1px solid rgba(255,255,255,.2);background:rgba(12,12,16,.82);backdrop-filter:blur(6px);color:rgba(255,255,255,.82);font-size:13px;font-weight:600;text-decoration:none;transition:color .18s,border-color .18s,background .18s;}
 .fg-back-btn:hover{color:#fff;border-color:var(--agent,rgba(255,255,255,.4));background:rgba(255,255,255,.08);}
 .fg-back-btn svg{flex-shrink:0;transition:transform .18s;}
 .fg-back-btn:hover svg{transform:translateX(-3px);}

@@ -1,9 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import IkZzzMarquee from '../components/IkZzzMarquee';
 import IkOnline from '../components/IkOnline';
 import CategoryTabs from '../components/CategoryTabs';
 import EventCard from '../components/EventCard';
+import PostOverlay from '../components/PostOverlay';
+import OverlayErrorBoundary from '../components/OverlayErrorBoundary';
 import Navigation from '../components/Navigation';
 import { interknotAvatars } from '../data/interknot-avatars.js';
 import { navigateSite } from '../site-runtime.js';
@@ -21,13 +23,14 @@ const CATEGORIES = [
 
 export default function EventsPage() {
   const [activeCategory, setActiveCategory] = useState('all');
+  const [openEvent, setOpenEvent] = useState(null);
   const cardRefs = useRef([]);
   const containerRef = useRef(null);
 
   // 模拟在线人数（实际应从后端获取）
   const [onlineData] = useState({
     count: 127,
-    avatars: interknotAvatars.slice(0, 5).map(a => a.portrait)
+    avatars: interknotAvatars.slice(0, 5).map(a => a.interknotAvatar || a.avatar)
   });
 
   // 检查管理员权限
@@ -71,37 +74,48 @@ export default function EventsPage() {
     }))
   ];
 
-  // 将数据写入 localStorage 供编辑页使用
+  // 将数据写入 localStorage 供编辑页使用；配额满时不能把列表页打崩
   useEffect(() => {
-    if (allItems.length > 0) {
+    if (allItems.length === 0) return;
+    try {
       localStorage.setItem('events', JSON.stringify(allItems));
+    } catch (err) {
+      console.warn('events 本地缓存写入失败', err);
     }
   }, []);
 
-  // 根据分类筛选
+  const itemList = useMemo(() => allItems, []);
   const filteredEvents = activeCategory === 'all'
-    ? allItems
-    : allItems.filter(item => item.categoryTag === activeCategory);
+    ? itemList
+    : itemList.filter(item => item.categoryTag === activeCategory);
 
-  const EVENTS = filteredEvents.map((item, idx) => {
+  const EVENTS = useMemo(() => filteredEvents.map((item, idx) => {
     const agent = interknotAvatars[idx % interknotAvatars.length];
-    // 一高一低交替：偶数索引为竖版大卡，奇数为横版小卡
-    const tall = idx % 2 === 0;
+    // 有楼层对话的帖子：卡片发帖人显示该帖真实楼主，避免与详情页署名不一致
+    const opAuthor = item.dialogue?.post?.author || null;
+    const opAgent = opAuthor
+      ? interknotAvatars.find(a => a.id === opAuthor.avatarRef || a.id === opAuthor.id)
+      : null;
+    const opHandle = opAuthor ? (opAgent?.handle || opAuthor.name) : null;
+    // 高度由 banner 自然宽高比决定（见 EventCard onLoad），不再按位置分配
     // 优先用 B站链接；baike.mihoyo.com 是死链，回退到 sourceUrl
-    const rawUrl = item.video || item.sourceUrl || item.wikiUrl || null;
-    const url = rawUrl && rawUrl.includes('baike.mihoyo.com') ? null : rawUrl;
+    const url = item.video || item.sourceUrl || item.wikiUrl || null;
     return {
       id: item.id || idx,
       title: item.title || '未命名',
       cover: item.cover || item.portrait || null,
-      avatar: item.avatar || agent.avatar || '/assets/images/default-avatar.webp',
-      poster: item.poster || agent.name,
+      avatar: opAuthor
+        ? (opAgent?.interknotAvatar || opAgent?.avatar || '/assets/images/default-avatar.webp')
+        : (item.avatar || agent.interknotAvatar || agent.avatar || '/assets/images/default-avatar.webp'),
+      dialogue: item.dialogue || null,
+      summary: item.summary || '',
+      poster: opHandle || item.poster || item.author || agent.handle || agent.name,
+      author: opHandle || item.author || null,
       category: item.categoryTag,
       views: `${Math.floor((idx * 7 + 13) % 20 + 10) / 10}K`,
-      url,
-      tall
+      url
     };
-  });
+  }), [filteredEvents]);
 
   useEffect(() => {
     cardRefs.current.forEach((card) => {
@@ -165,6 +179,7 @@ export default function EventsPage() {
                 key={event.id}
                 event={event}
                 isAdmin={isAdmin}
+                onOpen={setOpenEvent}
                 onEdit={handleEdit}
                 ref={el => cardRefs.current[idx] = el}
               />
@@ -172,6 +187,11 @@ export default function EventsPage() {
           </div>
         </div>
       </div>
+      {openEvent && (
+        <OverlayErrorBoundary onClose={() => setOpenEvent(null)}>
+          <PostOverlay event={openEvent} onClose={() => setOpenEvent(null)} />
+        </OverlayErrorBoundary>
+      )}
     </>
   );
 }
