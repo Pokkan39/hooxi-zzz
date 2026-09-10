@@ -67,17 +67,23 @@
     const v = $('#bg-video');
     const shade = $('#bg-shade');
     if (!v) return;
-    const src = state.bg.src || '';
+    let src = state.bg.src || '';
+    // 本地壁纸/背景视频不入库，线上请求只会 404；已有首页壁纸时不再叠第二路视频。
+    if (document.body.classList.contains('has-home-wallpaper')) src = '';
+    if (src && !/^(localhost|127\.0\.0\.1)$/i.test(location.hostname) && /assets\/(bg|wallpapers)\//i.test(src)) src = '';
     const r = document.documentElement.style;
     r.setProperty('--bg-dim', String(num(state.bg.dim, 35) / 100));
     if (!src) {
       v.hidden = true;
       if (shade) shade.hidden = true;
       v.removeAttribute('src');
-      v.load();
-      document.body.classList.remove('has-bg-video');
+      if (!document.body.classList.contains('has-home-wallpaper')) {
+        v.load();
+        document.body.classList.remove('has-bg-video');
+      }
       return;
     }
+    v.preload = 'none';
     if (v.getAttribute('src') !== src) v.setAttribute('src', src);
     v.hidden = false;
     if (shade) shade.hidden = false;

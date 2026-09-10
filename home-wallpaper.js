@@ -1,8 +1,11 @@
 (() => {
-  // 默认随机播动态壁纸；指定片加载失败时换下一张。随机可用本地开关关掉。
+  // 壁纸目录被 gitignore，线上 56 条全 404。非本机不探测、不请求。
+  // 本机最多播 1 条；失败即停，不再换下一张。
   const STORAGE_KEY = "hooxi.wallpaper";
   const shell = document.querySelector(".game-shell");
   if (!shell) return;
+  if (!/^(localhost|127\.0\.0\.1)$/i.test(location.hostname)) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   let saved = null;
   try {
@@ -14,42 +17,32 @@
   if (!items.length) return;
 
   const okPath = (src) => typeof src === "string" && /^assets\/wallpapers\/[\w-]+\.mp4$/i.test(src);
-  const shuffle = (list) => {
-    const next = list.slice();
-    for (let i = next.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [next[i], next[j]] = [next[j], next[i]];
-    }
-    return next;
-  };
-
   const randomOn = !saved || saved.random !== false;
-  let queue = [];
-  if (randomOn) {
-    queue = shuffle(items.map((item) => item.video).filter(okPath));
-  } else if (okPath(saved.video)) {
-    queue = [saved.video, ...items.map((item) => item.video).filter((src) => src !== saved.video && okPath(src))];
-  } else {
-    queue = shuffle(items.map((item) => item.video).filter(okPath));
+  let src = "";
+  if (!randomOn && okPath(saved.video)) src = saved.video;
+  else {
+    const pool = items.map((item) => item.video).filter(okPath);
+    if (pool.length) src = pool[Math.floor(Math.random() * pool.length)];
   }
-  if (!queue.length) return;
+  if (!src) return;
 
   const video = document.createElement("video");
   video.className = "home-wallpaper";
   video.setAttribute("aria-hidden", "true");
   video.muted = true;
   video.loop = true;
-  video.autoplay = true;
   video.playsInline = true;
-  video.preload = "auto";
-
-  let i = 0;
-  const tryNext = () => {
-    if (i >= queue.length) return;
-    video.src = queue[i++];
-    video.play().catch(() => {});
-  };
-  video.addEventListener("error", tryNext);
+  video.preload = "none";
+  video.addEventListener("error", () => {
+    video.removeAttribute("src");
+    video.load();
+    video.remove();
+    document.body.classList.remove("has-home-wallpaper");
+  }, { once: true });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) video.pause();
+    else video.play().catch(() => {});
+  });
 
   shell.prepend(video);
   document.body.classList.add("has-bg-video", "has-home-wallpaper");
@@ -59,7 +52,8 @@
   if (legacy) {
     legacy.hidden = true;
     legacy.removeAttribute("src");
-    legacy.load();
+    legacy.pause();
   }
-  tryNext();
+  video.src = src;
+  video.play().catch(() => {});
 })();

@@ -83,21 +83,7 @@ function init(){
   injectMiniPlayer();
   updateAccentColor();
   observeTheme();
-  // 恢复状态 — 必须在 loadedmetadata 后 seek，否则浏览器忽略 currentTime
-  if(PLAYLIST[state.trackIndex] && PLAYLIST[state.trackIndex].src){
-    var restoreTime = state.time || 0;
-    var restorePlaying = !!state.playing;
-    audio.addEventListener('loadedmetadata', function onMeta(){
-      audio.removeEventListener('loadedmetadata', onMeta);
-      if(restoreTime > 0){
-        try { audio.currentTime = restoreTime; } catch(e){}
-      }
-      if(restorePlaying){
-        audio.play().catch(function(){});
-      }
-    });
-    loadTrack(state.trackIndex, false);
-  }
+  // 不在进页时请求音频；点播放再 loadTrack。
   // 定期保存
   setInterval(saveState, 2000);
   // 页面离开时保存
@@ -111,7 +97,7 @@ function init(){
 /* ---- Audio 元素 ---- */
 function createAudio(){
   audio = document.createElement('audio');
-  audio.preload = 'metadata';
+  audio.preload = 'none';
   audio.volume = 0.7;
   audio.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;';
   document.body.appendChild(audio);

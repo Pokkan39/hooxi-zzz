@@ -3678,3 +3678,161 @@ Playwright (1440x900, localhost:8081/stories.html) 实测：
 回滚方式:
 - 还原上述文件本轮提交。
 
+## 2026-09-08 - Task: 降低首页与绳网卡顿
+
+### What was done
+
+用户反馈整站打开太卡。主因有三：首页随机壁纸失败时会连打最多 56 次大视频；仓库约 250KB 脚本和 3.5MB 游戏字体一进首页就加载；绳网对 313 张卡同时做 GSAP 进场动画。本轮改为：壁纸失败最多换 3 次；仓库与字体点开再加载；绳网去掉 GSAP 进场，封面保持懒加载。
+
+### Testing
+
+- `node --check home-wallpaper.js`、`node --check warehouse-boot.js` 通过。
+- `npm run build` 成功；绳网页脚本由 `events-BGyp6FnD.js` 84KB 降为 `events-DruGChOu.js` 13.5KB。
+- 浏览器实测 8901 首页：首屏脚本只有 `warehouse-boot.js`，无 `warehouse.js` / 字体；壁纸播 `pan-yinhu.mp4`。点仓库后才加载 `disc-sets.js` `wengine-data.js` `mat-data.js` `warehouse.js` 与字体，浮层标题为「材料道具」。
+- 绳网 313 张卡、311 张封面 `loading=lazy`，控制台 0。
+
+### Notes
+
+改动文件清单:
+- `home-wallpaper.js` — 失败最多试 4 支，preload=metadata。
+- `warehouse-boot.js` — 新建。点仓库再加载数据脚本与字体。
+- `index.html` — 去掉仓库四份脚本预加载，改为 boot；壁纸缓存戳 `wp-4`。
+- `style.css` — 首页不再声明仓库字体 @font-face。
+- `src/pages/EventsPage.jsx` — 去掉 GSAP 进场。
+- 根目录 `events.html` 等 — 随 `npm run build` 更新。
+
+回滚方式:
+- 还原上述文件；`index.html` 恢复四份仓库脚本引用。
+
+范围说明:
+- 绳网数据包 `interknot-BmDwI52t.js` 约 630KB 仍在，未拆包。线上无壁纸 mp4 时仍会失败数次后停播。
+- 未执行 git 提交或推送。
+
+## 2026-09-08 - Task: 绳网卡片加封面加载占位
+
+### What was done
+
+按用户要求，每张绳网卡片在封面未出来前显示骨架占位，避免懒加载时空一块。封面框锁住宽高比，扫光占位盖在图上；`onLoad` 后加 `is-loaded` 收掉占位。头像同样处理。
+
+### Testing
+
+- `npm run build` 成功，产物 `events-DsRH_AvO.js` / `interknot-dChYPPXx.css`。
+- 浏览器实测 8901：313 张卡都有封面框；未加载 275 张 `::after` 动画为 `hooxi-skel`；已加载 38 张占位 `display:none`。封面框 `aspect-ratio` 为 1.576。
+
+### Notes
+
+改动文件清单:
+- `src/components/EventCard.jsx` — 封面/头像加载状态，无封面也保留占位框。
+- `src/styles/interknot.css` — 骨架扫光与封面框定高。
+- 根目录 `events.html` 等 — 随 `npm run build` 更新 hashed CSS/JS。
+
+回滚方式:
+- 还原上述源文件后执行 `npm run build`。
+
+范围说明:
+- 只动绳网卡片。首页胶片三张卡本身就有图，未加骨架。
+- 未执行 git 提交或推送。
+
+## 2026-09-08 - Task: RuiC 全息卡展示页（爱丽丝样板）
+
+### What was done
+
+按用户要求用已安装的 `ruic-card-skill` 做一张可打开的展示页供验收。没有出图 API，主体用站内爱丽丝透明立绘，背景用影画裁成 2:3，线稿由立绘描边，文字层用 skill 自带排版脚本。官方 Blender 下载返回 403，未装系统 Blender；按同一套 `web_front/web_back/web_edge` 材质名写了卡牌 GLB，再套 skill 的 Three.js 查看器。
+
+### Testing
+
+- `validate_assets.py` 通过：四层均为 1024×1536，subject/text 有真实透明。
+- `node prototype/ruic-card-alice/web/server.mjs` 提供 `http://127.0.0.1:4173/`。
+- 浏览器：标题「爱丽丝 · 白相」；四层 PNG 均 1024×1536 且加载成功；点翻面 `rotateY` 从 0 到约 3.13；无失败网络。无头环境无 WebGL，走 CSS-3D 分层兜底（页面提示「已用轻量 3D 模式」）。本机 Chrome 开硬件加速会走完整着色器。
+
+### Notes
+
+改动文件清单:
+- `prototype/ruic-card-alice/` — 样板工程（四层 PNG、`card-config.json`、`web/` 查看器）。
+- `.agents/skills/ruic-card-skill/` — 本轮安装的 skill，未改 skill 源码。
+
+回滚方式:
+- 删除 `prototype/ruic-card-alice/`。
+
+范围说明:
+- 这是独立展示页，未改 `stories.html` 右侧花名册。
+- 未执行 git 提交或推送。未把 Blender 便携包或壁纸视频入库。
+
+
+## 2026-09-09 - Task: 首页 HUD 入场、绿框与跳页 CRT 切场（首轮）
+
+### What was done
+按《绝区零》风格计划首轮，只在现有游戏主界面上叠一层能看见的动效：顶栏/底栏/活动板入场、中间活动卡荧光绿可视框、跳页 CRT 切场、轻按压缩放。未引入新素材，未改胶片几何与仓库浮层。未提交 git。
+
+### Testing
+- `node --check app.js`、`node --check home-events.js` 通过。
+- 本机 `_srv.js` 5173：`node .tmp/verify-hud-r1.mjs` 输出 `HUD_R1_PASS`，控制台 0。
+- 1440×900：入场动画名为 hudSlideTop / hudSlideBot / hudSlidePanel；可视卡 `is-active` 为 1，边框 `rgb(216, 255, 40)`，外发光存在。
+- 触发 `__hooxiHudGo` 后 `.hud-cut.is-on` 可见；`prefers-reduced-motion: reduce` 时入场 animation=none、切场 display=none，胶片 transform 仍在。
+- 截图：`.tmp/hud-r1.png`。
+
+### Notes
+改动文件清单:
+- `style.css` — 入场、可视卡绿框、按压、CRT 切场；减动效只关本层入场/切场。
+- `app.js` — 跳页走 CRT 切场；按压态；暴露 `__hooxiHudGo`。
+- `home-events.js` — 活动卡进绳网改走同一切场。
+- `index.html` — CSS/活动脚本缓存戳。
+- `docs/README.md` — 同步 HUD 入场与切场口径。
+- `.tmp/verify-hud-r1.mjs` — 本轮验证脚本。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。`index.html` 缓存戳改回 `style.css` 与 `home-events.js?v=he-3`。
+
+## 2026-09-09 - Task: 首页 HUD 视觉补齐（入场错开 / 绿框呼吸 / 开机扫描 / CRT）并验证
+
+### What was done
+在游戏主界面上只补视觉动效：顶栏/底栏/活动板入场，底栏 12 个入口错开，可视卡荧光绿框呼吸，开机扫描落在 `.game-shell::after` 并接待机 CRT 呼吸。`home-fx` / `site-motion` 接到游戏壳，但关掉抢层画布、信号场、magnet、按压态和顶栏 condensed。未改胶片几何、仓库浮层、`_site/`。未提交 git。
+
+### Testing
+- `http://127.0.0.1:5173/index.html` 返回 200。
+- `node --check site-motion.js`、`node --check home-fx.js` 通过。
+- `node .tmp/verify-hud-r2.mjs` 输出 `HUD_R2_PASS`，控制台 0。
+- 1440×900：入场 `hudSlideTop` / `hudSlideBot` / `hudSlidePanel`；开机层 `hudBootScan, hudCrtIdle`；可视卡 1 张，边框 `rgb(216, 255, 40)`，动画 `hudLimeBreath`；底栏 delay 0.16s–0.6s 共 12 项。
+- 无 `.hooxi-signal-field`、无 `.home-fx-canvas`、顶栏无 `is-condensed`。
+- 触发 `__hooxiHudGo` 后 `.hud-cut.is-on` 可见且动画 `hudCut`；`prefers-reduced-motion: reduce` 时入场/开机 animation=none、切场 display=none，胶片 transform 仍在。
+- 截图：`.tmp/hud-r2.png`。
+
+### Notes
+改动文件清单:
+- `style.css` — HUD 入场、12 项底栏 delay、绿框呼吸、开机扫描与 CRT 待机。
+- `index.html` — `style.css` / `site-motion.js` / `home-fx.js` 缓存戳 `hud-3`。
+- `home-fx.js` — 游戏壳 `init` 早退，不挂画布/切场。
+- `site-motion.js` — 游戏壳不注入 magnet 样式、信号场、按压与 condensed。
+- `docs/README.md` — 同步 HUD 入场与抢层关闭口径。
+- `.tmp/verify-hud-r2.mjs` — 本轮浏览器验证。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。`index.html` 缓存戳改回 `hud-2` 或更早版本。
+
+## 2026-09-09 - Task: 修别人打开网站加载慢
+
+### What was done
+别人打开的是 GitHub Pages，不是本机 5173。线上首页会连试缺失壁纸视频、再拉 16MB 活动原图，首屏被失败媒体拖住。本轮改为：线上不探测、不请求 `assets/wallpapers/`；本机最多播 1 条，失败即停；编辑器背景视频线上不再套用缺失 mp4；角色页不再一打开就请求 OGG；本地服务支持 Range 与中文路径。未提交 git。
+
+### Testing
+- 线上旧站对照：`https://pokkan39.github.io/hooxi-zzz/` 约 18.66MB、14 个失败请求，活动封面仍是 16.31MB PNG，壁纸 mp4 连续 404。
+- 修复后本机模拟别人打开（非 localhost 主机名）：壁纸请求 0、背景视频请求 0、失败 0、传输 1.84MB，DOMContentLoaded 115ms。
+- 本机有壁纸：只播 1 条 mp4，活动封面走 webp，纹理 `assets/ui/纹理.png` 200。
+- `node .tmp/verify-load-fix.mjs` 输出 `LOAD_FIX_PASS`：活动栏 6 张卡、仓库浮层「材料道具」、爪印进 `wallpaper.html`、减少动态不播壁纸、角色页安比无 OGG 404。
+- `node --check`：`home-wallpaper.js` `edits-apply.js` `_srv.js` `zzz-global-player.js` 通过。
+- 缺口：线上要等推送后才会变快；当前 Pages 仍是旧脚本。
+
+### Notes
+改动文件清单:
+- `home-wallpaper.js` — 非本机不请求壁纸；本机最多 1 条，失败即停。
+- `edits-apply.js` — 线上不套用缺失背景视频；已有壁纸时不叠第二路。
+- `_srv.js` — Range 流式读取；解码中文路径。
+- `zzz-global-player.js` — 进页不预载音频。
+- `index.html` / `character.html` — 缓存戳。
+- `docs/README.md` — 线上不依赖本地壁纸目录。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。`index.html` 壁纸缓存戳改回 `wp-5`，`character.html` 播放器戳改回 `gp-1`。

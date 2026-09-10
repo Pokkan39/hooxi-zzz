@@ -6,20 +6,19 @@
   const revealSelector='.path-card,.home-agent-card,.home-lane-card,.chapter,.archive-group,.page-timeline-item,.page-card,.agent-roster-card,.agent-file-card,.agent-entry,.faction-entry,.faction-card,.faction-story-card,.faction-member,.faction-relationship,.faction-project-card,.character-hero-main,.character-media-cover,.character-content-card,.character-gallery-item,.related-record,.section-plate';
   const magnetSelector='.button,.icon-button,.player-control,.playlist-button,.play-button,.lane-chip,.deck-btn,.side-btn,.cassette-close,.cassette-mini,.agent-orbit-button,.agent-clear-button';
   const pressSelector='button,.button,.icon-button,.player-control,.playlist-button,.play-button,.lane-chip,.deck-btn,.side-btn,.cassette-close,.cassette-mini,.agent-orbit-button,.agent-clear-button,[data-fx]';
-  const nativePageTransitions=CSS.supports?.('view-transition-name: none')&&matchMedia('(prefers-reduced-motion: no-preference)').matches;
   const mutationRoots=new Set();
   const pressedPointers=new Map();
   let revealObserver=null;
   let mutationFrame=0;
   let pointerFrame=0;
   let scrollFrame=0;
-  let hideTimer=0;
-  let navigating=false;
   let latestPointer=null;
   let currentMagnet=null;
   let motionFeaturesBound=false;
 
   root.classList.add('motion-ready');
+
+  const gameHud=!!document.querySelector('.game-shell');
 
   const engineStyles=document.createElement('style');
   engineStyles.textContent=`
@@ -35,7 +34,6 @@
     html.motion-ready .hooxi-signal-field{
       transform:translate3d(var(--hooxi-signal-x),calc(var(--hooxi-signal-y) + var(--hooxi-signal-scroll)),0) scale(var(--hooxi-signal-depth));
     }
-    html.motion-ready .hooxi-route-loader__track i{transform:scaleX(var(--site-progress))}
     html.motion-ready :is(.character-content-card,.character-gallery-item,.related-record)[data-motion-surface]{
       transition:
         transform 360ms var(--motion-curve,cubic-bezier(.16,1,.3,1)),
@@ -48,47 +46,13 @@
       }
     }
   `;
-  document.head.append(engineStyles);
+  if(!gameHud) document.head.append(engineStyles);
 
   const signalField=document.createElement('div');
   signalField.className='hooxi-signal-field';
   signalField.setAttribute('aria-hidden','true');
 
-  const routeLoader=document.createElement('div');
-  routeLoader.className='hooxi-route-loader';
-  routeLoader.setAttribute('role','status');
-  routeLoader.setAttribute('aria-live','polite');
-  routeLoader.setAttribute('aria-atomic','true');
-  routeLoader.setAttribute('aria-hidden','true');
-  routeLoader.dataset.state='idle';
-  routeLoader.innerHTML='<div class="hooxi-route-loader__frame"><div class="hooxi-route-loader__head"><strong>HOOXI <i>//</i></strong><b>LOADING</b></div><p><span data-route-status>ARCHIVE CHANNEL / READY</span><b data-route-progress>100</b></p><div class="hooxi-route-loader__track" aria-hidden="true"><i></i></div></div>';
-
-  document.body.prepend(signalField);
-  document.body.append(routeLoader);
-
-  const status=routeLoader.querySelector('[data-route-status]');
-  const progress=routeLoader.querySelector('[data-route-progress]');
-
-  const setLoader=(state,message,value)=>{
-    clearTimeout(hideTimer);
-    routeLoader.classList.remove('is-entering','is-leaving','is-running');
-    routeLoader.classList.add('is-active',`is-${state}`);
-    routeLoader.dataset.state=state;
-    routeLoader.setAttribute('aria-hidden','false');
-    status.textContent=message;
-    progress.textContent=value;
-    requestAnimationFrame(()=>routeLoader.classList.add('is-running'));
-  };
-
-  const hideLoader=()=>{
-    clearTimeout(hideTimer);
-    routeLoader.classList.remove('is-active','is-entering','is-leaving','is-running');
-    routeLoader.dataset.state='idle';
-    routeLoader.setAttribute('aria-hidden','true');
-    status.textContent='ARCHIVE CHANNEL / READY';
-    progress.textContent='100';
-    navigating=false;
-  };
+  if (!gameHud) document.body.prepend(signalField);
 
   const revealElement=element=>{
     if(element.classList.contains('is-revealed'))return;
@@ -182,7 +146,7 @@
     root.style.setProperty('--hooxi-signal-y',`${((y-.5)*6).toFixed(2)}px`);
 
     const source=latestPointer.target instanceof Element?latestPointer.target:null;
-    const magnet=finePointer.matches&&latestPointer.pointerType!=='touch'?source?.closest(magnetSelector):null;
+    const magnet=!gameHud&&finePointer.matches&&latestPointer.pointerType!=='touch'?source?.closest(magnetSelector):null;
     if(currentMagnet&&currentMagnet!==magnet)resetMagnet(currentMagnet);
     if(!magnet)return;
     const rect=magnet.getBoundingClientRect();
@@ -205,7 +169,7 @@
     const range=Math.max(root.scrollHeight-innerHeight,1);
     const ratio=Math.max(0,Math.min(1,top/range));
     root.style.setProperty('--site-progress',String(Number(ratio.toFixed(4))));
-    document.querySelector('.topbar')?.classList.toggle('is-condensed',top>24);
+    if(!gameHud) document.querySelector('.topbar')?.classList.toggle('is-condensed',top>24);
     if(!includeSignal)return;
     root.style.setProperty('--hooxi-signal-scroll',`${(ratio*10).toFixed(2)}px`);
     root.style.setProperty('--hooxi-signal-depth',String((.99+ratio*.02).toFixed(3)));
@@ -216,8 +180,10 @@
     scrollFrame=requestAnimationFrame(()=>applyScroll(true));
   };
 
-  addEventListener('scroll',updateScroll,{passive:true});
-  addEventListener('resize',updateScroll,{passive:true});
+  if(!gameHud){
+    addEventListener('scroll',updateScroll,{passive:true});
+    addEventListener('resize',updateScroll,{passive:true});
+  }
 
   const releasePressed=pointerId=>{
     const target=pressedPointers.get(pointerId);
@@ -232,6 +198,7 @@
   };
 
   const pressDown=event=>{
+    if(gameHud)return;
     const target=event.target instanceof Element?event.target.closest(pressSelector):null;
     if(!target)return;
     releasePressed(event.pointerId);
@@ -281,30 +248,9 @@
 
   refresh(document);
   ensureRevealObserver();
-  enableMotionFeatures();
-  applyScroll(true);
-
-  document.addEventListener('click',event=>{
-    if(navigating||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
-    const anchor=event.target.closest?.('a[href]');
-    if(!anchor||anchor.hasAttribute('target')||anchor.hasAttribute('download'))return;
-
-    let target;
-    try{target=new URL(anchor.href,location.href)}catch{return}
-    if(!['http:','https:'].includes(target.protocol)||target.origin!==location.origin)return;
-    const pageName=target.pathname.split('/').pop()||'';
-    if(pageName.includes('.')&&!pageName.endsWith('.html'))return;
-    const sameDocument=target.pathname===location.pathname&&target.search===location.search;
-    if((sameDocument&&target.hash)||target.href===location.href||nativePageTransitions)return;
-
-    event.preventDefault();
-    navigating=true;
-    setLoader('leaving','ARCHIVE ROUTE / SIGNAL HANDOFF','72');
-    hideTimer=setTimeout(()=>location.assign(target.href),220);
-  });
-
-  addEventListener('pageshow',event=>{
-    if(event.persisted||routeLoader.dataset.state==='leaving')hideLoader();
-    updateScroll();
-  });
+  if(!gameHud){
+    enableMotionFeatures();
+    applyScroll(true);
+    addEventListener('pageshow',updateScroll);
+  }
 })();

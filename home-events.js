@@ -18,6 +18,8 @@
     if (img) {
       img.src = item.cover;
       img.alt = `${item.title} 封面`;
+      img.decoding = "async";
+      if (i > 0) img.loading = "lazy";
     }
 
     // 卡片按官方样式只显示 h3 i 一行，标签/副标题/描述在 CSS 里是隐藏的；
@@ -42,7 +44,9 @@
   });
 
   const go = () => {
-    window.location.href = "events.html";
+    const href = "events.html";
+    if (typeof window.__hooxiHudGo === "function") window.__hooxiHudGo(href);
+    else window.location.href = href;
   };
 
   reel.addEventListener("click", (event) => {

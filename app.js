@@ -97,6 +97,30 @@
     if (e.key === 'Escape' && mask && !mask.hidden) closeWip();
   });
 
+  const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const goWithCut = (href) => {
+    if (!href) return;
+    if (reduced()) { location.href = href; return; }
+    let layer = document.querySelector('.hud-cut');
+    if (!layer) {
+      layer = document.createElement('div');
+      layer.className = 'hud-cut';
+      layer.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(layer);
+    }
+    layer.classList.add('is-on');
+    setTimeout(() => { location.href = href; }, 280);
+  };
+  window.__hooxiHudGo = goWithCut;
+
+  const shell = document.querySelector('.game-shell');
+  if (shell) {
+    const press = (on) => shell.classList.toggle('is-press', on);
+    shell.addEventListener('pointerdown', () => { if (!reduced()) press(true); });
+    window.addEventListener('pointerup', () => press(false));
+    window.addEventListener('pointercancel', () => press(false));
+  }
+
   const page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
   items.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -110,11 +134,11 @@
       const href = (btn.getAttribute('data-href') || '').trim();
       if (!href) return;
       const dest = href.split('?')[0].split('/').pop().toLowerCase();
-      if (dest && dest !== page && dest !== 'index.html') location.href = href;
+      if (dest && dest !== page && dest !== 'index.html') goWithCut(href);
     });
   });
 
   document.getElementById('bg-switch')?.addEventListener('click', () => {
-    location.href = 'wallpaper.html';
+    goWithCut('wallpaper.html');
   });
 })();
