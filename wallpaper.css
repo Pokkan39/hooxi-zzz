@@ -32,16 +32,22 @@
   background: #0b0d10;
 }
 
-.wp-stage-video {
+.wp-stage-video,
+.wp-stage-poster {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
   background: #0b0d10;
-  /* 切换时淡入，避免生硬跳变 */
   animation: wpFade .32s ease;
 }
+.wp-stage-poster {
+  position: absolute;
+  inset: 0;
+}
+.wp-stage-poster[hidden],
+.wp-stage-video[hidden] { display: none; }
 
 /* 视频加载提示：官方也提示壁纸视频较大 */
 .wp-loading {

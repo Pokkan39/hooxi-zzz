@@ -4201,3 +4201,54 @@ Playwright (1440x900, localhost:8081/stories.html) 实测：
 
 回滚方式:
 - 还原上述文件本轮改动。index.html 脚本戳改回 wp-6。
+
+
+## 2026-09-11 - Task: 首页加载遮罩与公开站壁纸回退
+
+### What was done
+公开站没有 56 条好感壁纸，先探测再失败又慢又只剩黑屏。本轮首页套角色页同款加载遮罩，视频出画再揭开。公开站不再探测 wallpapers，直接播 lucy.mp4。壁纸页视频缺失时改显示角色立绘，不再报加载失败。56 条壁纸仍不入库。未提交 git、未上线。
+
+### Testing
+- node .tmp/verify-home-loader.mjs 输出 HOME_LOADER_PASS。
+- 本机首页：出现 site-loading 遮罩，出画后 site-ready，视频 paused=false。
+- 拦掉 wallpapers 后：落到 assets/home-video/lucy.mp4，遮罩仍能收起。
+- 拦掉 wallpapers 打开 wallpaper.html：预览为 portraits/<id>-portrait.webp，不再显示加载失败。
+- 缓存戳 home-wallpaper.js?v=wp-8、site-loader.js?v=home-1、wallpaper.js?v=wp-3。需硬刷新。
+
+### Notes
+改动文件清单:
+- index.html — 接入角色页同款加载遮罩；媒体 404 不判整页失败；缓存戳 wp-8。
+- home-wallpaper.js — 公开站直接播 lucy.mp4；playing 后发 hooxi:home-ready。
+- site-loader.js — 游戏首页等视频出画再揭开，最长 12 秒。
+- wallpaper.html / wallpaper.js / wallpaper.css — 缺视频改显示立绘。
+- docs/README.md — 同步公开站口径。
+- progress.md — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。index.html 去掉加载遮罩，脚本戳改回 wp-7。
+
+
+## 2026-09-11 - Task: 公开站播齐 56 条 720p 壁纸
+
+### What was done
+56 条原片约 933MB，Pages 装不下。本轮压成 720p/30fps 无声循环片，合计 135MB，放到 GitHub Release wallpapers-720p，不进仓库。公开站首页和壁纸页走这条地址；本机仍播本地原片。失败才显示立绘。未上线前需提交推送。
+
+### Testing
+- 压缩 56/56，合计 135.4MB。
+- Release 直链 ellen.mp4 可播，1280x720。
+- node .tmp/verify-wp-public.mjs 输出 WP_PUBLIC_PASS。
+- 本机首页 site-ready，视频 paused=false。
+- 壁纸页 56 个头像，本机播本地 mp4。
+- 缓存戳 wallpaper-data.js?v=wp-4、home-wallpaper.js?v=wp-9、wallpaper.js?v=wp-4。需硬刷新。
+
+### Notes
+改动文件清单:
+- wallpaper-data.js — 增加 publicBase；mb 改为 720p 体积。
+- home-wallpaper.js — 公开站随机播 Release 720p。
+- wallpaper.js / wallpaper.html — 公开站播 Release，失败显示立绘。
+- index.html — 缓存戳 wp-9 / wp-4。
+- docs/README.md — 同步公开站 720p 口径。
+- progress.md — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。Release tag wallpapers-720p 可另删。

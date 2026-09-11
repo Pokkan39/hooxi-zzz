@@ -4,6 +4,7 @@
   const items = Array.isArray(data.items) ? data.items : [];
 
   const stage = document.querySelector("#wpStage");
+  const poster = document.querySelector("#wpPoster");
   const loading = document.querySelector("#wpLoading");
   const track = document.querySelector("#wpTrack");
   const nameEl = document.querySelector("#wpName");
@@ -16,6 +17,21 @@
   const nextBtn = document.querySelector("#wpNext");
 
   if (!items.length || !stage || !track) return;
+
+  const host = location.hostname;
+  const local = host === "localhost" || host === "127.0.0.1" || host === "[::1]"
+    || /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\.)/.test(host);
+  const PUBLIC_BASE = typeof data.publicBase === "string" && data.publicBase
+    ? data.publicBase
+    : "https://github.com/Pokkan39/hooxi-zzz/releases/download/wallpapers-720p/";
+  const videoOf = (item) => local ? item.video : PUBLIC_BASE + item.id + ".mp4";
+
+  const portraitOf = (item) => `assets/portraits/${item.id}-portrait.webp`;
+  const showPoster = (item) => {
+    if (!poster) return;
+    poster.src = portraitOf(item);
+    poster.hidden = false;
+  };
 
   function readSaved() {
     try {
@@ -52,14 +68,6 @@
   function renderStage() {
     const item = items[viewIndex];
     if (!item) return;
-    if (loading) {
-      loading.hidden = false;
-      loading.querySelector(".wp-loading-text").textContent = "壁纸视频较大，加载中…";
-      loading.querySelector(".wp-loading-spin").style.display = "";
-    }
-    stage.src = item.video;
-    stage.load();
-    stage.play().catch(() => {});
     if (nameEl) nameEl.textContent = item.name;
     if (sizeEl) sizeEl.textContent = item.mb ? `${item.mb} MB` : "";
     if (applyBtn) {
@@ -67,21 +75,28 @@
       applyBtn.classList.toggle("is-current", isCurrent);
       applyBtn.querySelector(".wp-apply-text").textContent = isCurrent ? "使用中" : "切换";
     }
+    showPoster(item);
+    stage.hidden = false;
+    if (loading) {
+      loading.hidden = false;
+      loading.querySelector(".wp-loading-text").textContent = "壁纸视频加载中…";
+      loading.querySelector(".wp-loading-spin").style.display = "";
+    }
+    stage.src = videoOf(item);
+    stage.load();
+    stage.play().catch(() => {});
   }
 
-  // canplay 可能在换源后立即触发，用 playing/timeupdate 兜底确保提示条一定收起
-  ["canplay", "playing", "timeupdate"].forEach((evt) => {
-    stage.addEventListener(evt, () => {
-      if (loading) loading.hidden = true;
-    });
+  stage.addEventListener("playing", () => {
+    if (loading) loading.hidden = true;
+    if (poster) poster.hidden = true;
+    stage.hidden = false;
   });
 
   stage.addEventListener("error", () => {
-    if (loading) {
-      loading.hidden = false;
-      loading.querySelector(".wp-loading-text").textContent = "该壁纸视频加载失败";
-      loading.querySelector(".wp-loading-spin").style.display = "none";
-    }
+    if (loading) loading.hidden = true;
+    stage.hidden = true;
+    if (poster) poster.hidden = false;
   });
 
   function renderChips() {

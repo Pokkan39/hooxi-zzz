@@ -127,6 +127,23 @@
     return near.decode().catch(()=>{});
   };
 
+  const waitForGameHome=()=>{
+    if(!document.querySelector('.game-shell'))return Promise.resolve();
+    if(document.documentElement.dataset.homeReady==='true')return Promise.resolve();
+    return new Promise(resolve=>{
+      let done=false;
+      const finish=()=>{
+        if(done)return;
+        done=true;
+        clearTimeout(timer);
+        window.removeEventListener('hooxi:home-ready',finish);
+        resolve();
+      };
+      window.addEventListener('hooxi:home-ready',finish,{once:true});
+      const timer=setTimeout(finish,12000);
+    });
+  };
+
   const onDomReady=()=>{
     if(finished)return;
     if(document.getElementById('root')||document.getElementById('storiesRoot')){
@@ -144,7 +161,9 @@
       }
       return;
     }
-    const wait=root.querySelector('body.home-page')?waitForHomeHero():Promise.resolve();
+    const wait=document.querySelector('.game-shell')
+      ?waitForGameHome()
+      :root.querySelector('body.home-page')?waitForHomeHero():Promise.resolve();
     wait.finally(()=>afterTwoFrames(ready));
   };
 
