@@ -1,10 +1,9 @@
 (() => {
-  // 壁纸目录被 gitignore，线上 56 条全 404。非本机不探测、不请求。
-  // 本机最多播 1 条；失败即停，不再换下一张。
+  // 好感壁纸目录被 gitignore，线上没有。最多试 1 条壁纸；失败改播入库首页片。
   const STORAGE_KEY = "hooxi.wallpaper";
+  const FALLBACK = "assets/home-video/lucy.mp4";
   const shell = document.querySelector(".game-shell");
   if (!shell) return;
-  if (!/^(localhost|127\.0\.0\.1)$/i.test(location.hostname)) return;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   let saved = null;
@@ -14,31 +13,40 @@
   } catch {}
 
   const items = Array.isArray(window.hooxiWallpapers?.items) ? window.hooxiWallpapers.items : [];
-  if (!items.length) return;
-
   const okPath = (src) => typeof src === "string" && /^assets\/wallpapers\/[\w-]+\.mp4$/i.test(src);
   const randomOn = !saved || saved.random !== false;
-  let src = "";
-  if (!randomOn && okPath(saved.video)) src = saved.video;
+  const queue = [];
+  if (!randomOn && okPath(saved.video)) queue.push(saved.video);
   else {
     const pool = items.map((item) => item.video).filter(okPath);
-    if (pool.length) src = pool[Math.floor(Math.random() * pool.length)];
+    if (pool.length) queue.push(pool[Math.floor(Math.random() * pool.length)]);
   }
-  if (!src) return;
+  queue.push(FALLBACK);
 
   const video = document.createElement("video");
   video.className = "home-wallpaper";
   video.setAttribute("aria-hidden", "true");
   video.muted = true;
+  video.autoplay = true;
   video.loop = true;
   video.playsInline = true;
-  video.preload = "none";
-  video.addEventListener("error", () => {
+  video.preload = "metadata";
+  let i = 0;
+  const fail = () => {
     video.removeAttribute("src");
     video.load();
     video.remove();
-    document.body.classList.remove("has-home-wallpaper");
-  }, { once: true });
+    document.body.classList.remove("has-home-wallpaper", "has-bg-video");
+  };
+  const tryNext = () => {
+    if (i >= queue.length) {
+      fail();
+      return;
+    }
+    video.src = queue[i++];
+    video.play().catch(() => {});
+  };
+  video.addEventListener("error", tryNext);
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) video.pause();
     else video.play().catch(() => {});
@@ -54,6 +62,5 @@
     legacy.removeAttribute("src");
     legacy.pause();
   }
-  video.src = src;
-  video.play().catch(() => {});
+  tryNext();
 })();

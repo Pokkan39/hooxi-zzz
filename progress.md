@@ -4178,3 +4178,26 @@ Playwright (1440x900, localhost:8081/stories.html) 实测：
 
 回滚方式:
 - 还原 stories.html 本轮 agent-card-grade / agent-card-footer / agent-card-name 改动。
+
+
+## 2026-09-11 - Task: 修首页视频其它设备打不开
+
+### What was done
+其它设备打开首页没有视频，是因为脚本只在 localhost 才播，局域网 IP 直接跳过。本轮去掉这道门：先试 1 条本地壁纸，失败改播入库的 lucy.mp4。56 条好感壁纸仍不入库。未提交 git、未上线。
+
+### Testing
+- node .tmp/verify-home-video.mjs 输出 HOME_VIDEO_PASS。
+- 127.0.0.1：播 wallpapers/*.mp4，paused=false。
+- 拦掉 wallpapers 后：落到 assets/home-video/lucy.mp4，paused=false。
+- 局域网 10.80.68.19：同样能播壁纸，paused=false。
+- lucy.mp4 HEAD 200，13MB。缓存戳 home-wallpaper.js?v=wp-7。需硬刷新。
+
+### Notes
+改动文件清单:
+- home-wallpaper.js — 去掉仅 localhost 才播；壁纸失败改播 lucy.mp4。
+- index.html — 缓存戳 wp-7。
+- docs/README.md — 同步非本机回退口径。
+- progress.md — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。index.html 脚本戳改回 wp-6。
