@@ -3836,3 +3836,345 @@ Playwright (1440x900, localhost:8081/stories.html) 实测：
 
 回滚方式:
 - 还原上述文件本轮改动。`index.html` 壁纸缓存戳改回 `wp-5`，`character.html` 播放器戳改回 `gp-1`。
+
+## 2026-09-10 - Task: 仓库浮层还原度与选中反馈
+
+### What was done
+仓库四类数据和入口未改。补了标题层级（WAREHOUSE // 分类）、格子重量、选中确认和减动效终态。局部样式点开仓库才加载。未提交 git。
+
+### Testing
+- 基线：1280/768/390/reduced 仓库 106 格、无横向溢出；角色页安比五 Tab、减动效不播 reveal。
+- `node --check warehouse.js warehouse-boot.js` 通过。
+- `node .tmp/verify-warehouse-ui.mjs` 输出 `WH_UI_PASS`：材料 106、驱动盘 360 且强化到等级3、音擎 95、重要物品 57、Escape 关闭、390px 无横溢、reduced-motion animation=none。
+
+### Notes
+改动文件清单:
+- `index.html` — 仓库标题加 kicker；boot 缓存戳 wh-2。
+- `warehouse-boot.js` — 点开仓库时加载 `warehouse-ui.css`。
+- `warehouse.js` — 分类英文标识、容量计数、选中 `aria-current` 与确认动画。
+- `warehouse-ui.css` — 新增局部 HUD 样式与减动效。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动，删除 `warehouse-ui.css`。`index.html` boot 戳改回 `wh-1`。
+
+## 2026-09-10 - Task: 角色档案页质感与 Tab 切换
+
+### What was done
+角色数据未改。补局部 HUD 样式：返回条、身份块、Tab 选中、图集当前项。技能 Tab 进入正式路由。panel 切换动画改为真实入场后再清除。未提交 git。
+
+### Testing
+- `node --check character.js character-reveal.js` 通过。
+- `node .tmp/verify-character-live.mjs` 输出 `CHAR_LIVE_PASS`：安比五 Tab、技能 hash=#talents 且 media 隐藏、剧情可切、#growth 落到资料、艾莲五 Tab、390px 无横溢、reduced-motion 不播 reveal。
+
+### Notes
+改动文件清单:
+- `character.html` — 加载 `character-live-ui.css`；`character.js` 缓存戳 live-1。
+- `character.js` — talents 路由；panel 入场等 animationend。
+- `character-live-ui.css` — 新增局部样式与减动效。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动，删除 `character-live-ui.css`。`character.html` 脚本戳改回 `skill-icons-1`。
+
+## 2026-09-10 - Task: 切走标签页暂停仓库/角色常驻动效
+
+### What was done
+页面 hidden 时给 html 加 `is-page-hidden`，仓库格子呼吸/蜂窝网和角色跑马灯/光晕暂停。不改导航结构。未提交 git。
+
+### Testing
+- `node --check site-motion.js` 通过。
+- 复跑 `WH_UI_PASS` 与 `CHAR_LIVE_PASS`。
+
+### Notes
+改动文件清单:
+- `site-motion.js` — visibilitychange 切换 `is-page-hidden`。
+- `warehouse-ui.css` / `character-live-ui.css` — hidden 时 animation-play-state:paused。
+- `index.html` / `character.html` — site-motion 缓存戳 live-pause-1。
+- `warehouse-boot.js` — warehouse-ui 缓存戳 wh-ui-2。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。`index.html` site-motion 戳改回 `hud-3`，`character.html` 改回 `signal-ui-r3`。
+
+## 2026-09-10 - Task: 代理人工作台选人变色扩面
+
+### What was done
+工作台选人后，主题色从细边扩展到顶栏高亮、标题竖线、eyebrow、完整档案按钮、筛选按钮、舞台光和名录边。材质加厚，不改数据结构。未提交 git。
+
+### Testing
+- `node .tmp/verify-stories-theme.mjs` 输出 `STORIES_THEME_PASS`。
+- 爱丽丝 rgb 245 206 123，安比 189 213 45；顶栏 Tab、h1 竖线、eyebrow、完整档案按钮、选中卡边均随角色变化。
+
+### Notes
+改动文件清单:
+- `stories.html` — 选人变色覆盖层：顶栏/标题/按钮/舞台光跟主题色。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 还原 `stories.html` 本轮新增的「选人变色扩面」样式块。
+
+## 2026-09-10 - Task: 角色档案来源模块加厚
+
+### What was done
+完整档案「来源」不再是竖排空盒。来源行改成标签/标题/前往三列档案条，模块框加斜纹和主题色边。数据和五个 Tab 合同未改。未提交 git。
+
+### Testing
+- `node --check character.js` 通过。
+- `node .tmp/verify-character-related.mjs` 输出 `RELATED_UI_PASS`：#related 可见、5 条来源、桌面三列、窄屏单列、切回影像后 related 隐藏、无横溢。
+
+### Notes
+改动文件清单:
+- `character.js` — 来源链接包进 `related-record-list`。
+- `character-live-ui.css` — 模块框、资料卡、来源行加厚。
+- `character.html` — 缓存戳 live-2。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。`character.html` 样式戳改回 `live-1`，脚本戳改回 `live-1`。
+
+## 2026-09-10 - Task: 来源行按类型区分并加模块角标
+
+### What was done
+来源行补序号，并按官方/百科/第三方/攻略区分底色、标签和边线。五个档案模块加角标和更厚的斜纹框。数据和 Tab 合同未改。未提交 git。
+
+### Testing
+- `node --check character.js` 通过。
+- `node .tmp/verify-character-related.mjs` 输出 `RELATED_UI_PASS`：5 条来源、桌面四列、窄屏两列、切回影像后 related 隐藏。
+- 本机截图 `.tmp/related-now.png`：官方实心标签、百科内描、第三方虚线、攻略斜纹。
+
+### Notes
+改动文件清单:
+- `character.js` — 来源行写入 `data-source-kind` 与序号。
+- `character-live-ui.css` — 类型样式、模块角标、资料卡切角。
+- `character.html` — 缓存戳 live-3。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。`character.html` 样式/脚本戳改回 `live-2`。
+
+## 2026-09-10 - Task: 修绳网页 404 并把导航改回绳网
+
+### What was done
+本机点「委托」打不开，是因为本地服务去不存在的 dist/events.html。改为优先读仓库根目录的 events.html。顶栏标签从「委托」改回「绳网」，页面标题本来就是绳网档案。未提交 git。
+
+### Testing
+- http://127.0.0.1:5173/events.html 200。
+- `node .tmp/verify-events-open.mjs` 输出 `EVENTS_OPEN_PASS`：标题「绳网档案」、顶栏 首页/绳网/阵营/代理人、root 有内容、stories 顶栏同步为绳网、无 4xx。
+
+### Notes
+改动文件清单:
+- `_srv.js` — 不再强制把 events/create/edit/post 指到 dist 根。
+- `src/components/Navigation.jsx` — 顶栏标签改回绳网。
+- `stories.html` / `faction.html` / `faction-redesign.html` / `behind-scenes.html` / `agents.html` / `cultivate.html` / `mainline.html` — 静态顶栏同步。
+- `assets/interknot-atgT69Fj.js` / `assets/interknot-BmDwI52t.js` / `dist/assets/interknot-atgT69Fj.js` — 已发布包顶栏同步。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。重启 `node _srv.js`。
+
+## 2026-09-11 - Task: 首页施工中提示加厚到站点 HUD 质感
+
+### What was done
+首页邮箱/通知等「施工中」提示从偏空的 CRT 框，改成同一套黄绿 HUD 终端面板：切角框、警示带、标题旁 404 印章、四列状态条、日志、进度条和返回同排。数据和入口未改。未提交 git。
+
+### Testing
+- `node .tmp/verify-wip-ui.mjs` 输出 `WIP_UI_PASS`。
+- 1280×900：四列状态条、切角框、Escape 关闭；无横向溢出。
+- 390px：状态条两列、返回全宽；无横向溢出。
+- `prefers-reduced-motion: reduce` 时开机/警示带/扫描/进度条 animation=none。
+- 截图：`.tmp/wip-now.png`、`.tmp/wip-390.png`。
+- 缓存戳 `style.css?v=wip-6`。需硬刷新。未跑全站 `npm run test:ui` / `test:formal`。
+
+### Notes
+改动文件清单:
+- `index.html` — 施工中面板改成标题+印章、四列状态、底栏进度/返回；CSS 戳 wip-6。
+- `style.css` — 四列状态条、标题旁大号 404、底栏并排；窄屏两列；减动效关动画。
+- `docs/README.md` — 同步施工中终端面板口径。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。`index.html` CSS 戳改回 `wip-3`。
+
+## 2026-09-11 - Task: 按 wiki 补齐仓库缺口并铺满仓库背景
+
+### What was done
+对照 bili《材料筛选》只补差集 3 条，不整表重写编号。仓库浮层背景改为整幅 `wh-graffiti.webp` cover 铺满，顶底涂鸦条仍叠在上下沿。驱动盘 30 套、音擎 95 把与 wiki 筛选页一致，未改。未提交 git。
+
+### Testing
+- `node .tmp/verify-wh-roster.mjs` 输出 `WH_ROSTER_PASS`。
+- 材料 166 项、材料页 109 格（含谐振核心仪 / 高维数据：深蚀回路 / 刻命残蜕）；驱动盘 360；音擎 95；重要物品 57。
+- 仓库 overlay `background-image` 含 `wh-graffiti.webp`，`background-size` 含 `cover`。截图 `.tmp/wh-cover-now.png`。
+- 缓存戳 `style.css?v=wh-cover-1`、`warehouse-boot.js?v=wh-cover-1`、`mat-data.js?v=mat-166`。需硬刷新。
+
+### Notes
+改动文件清单:
+- `mat-data.js` — 追加 3 条 wiki 差集；m001–m163 编号未动。
+- `assets/mat/m164.webp` `m165.webp` `m166.webp` — wiki 图标仍为红链，站内占位图。
+- `style.css` — 仓库背景改为整幅 cover + 顶底条。
+- `warehouse.js` — 头注释改为材料条目来自 wiki，数量仍为演示。
+- `warehouse-boot.js` / `index.html` — 缓存戳。
+- `docs/README.md` — 同步仓库差集与铺满口径。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动，删除 `assets/mat/m164.webp` `m165.webp` `m166.webp`。`index.html` CSS 戳改回 `wip-6`。
+
+## 2026-09-11 - Task: 按 wiki 更新角色花名册到当前可玩版本
+
+### What was done
+对照 bili《角色图鉴》当前可玩名单，花名册从 57 人补到 59 人：克拉蕾、希格莉德。新增两个阵营 logo。克拉蕾未确认字段保持「待公布」。未提交 git、未上线。
+
+### Testing
+- 同上 `WH_ROSTER_PASS`：`archiveData.characters` 59、阵营 20；工作台卡片 59。
+- 克拉蕾 / 希格莉德 card、portrait 本地存在；角色页 `character.html?id=sigrid` 可见姓名、冰、强攻。
+- 缓存戳 `agent-catalog.js?v=roster-59`、`agent-enrichment.js?v=roster-59`。需硬刷新。
+
+### Notes
+改动文件清单:
+- `agent-catalog.js` — snapshotDate 2026-09-11；补克拉蕾、希格莉德与两个阵营。
+- `agent-enrichment.js` — 补两人结构化摘要、CV、图集与 wiki 外链。
+- `agent-colors.js` — 补两人主题色。
+- `assets/portraits/claret-*` `sigrid-*`、`assets/icons/flynn-atelier.png` `airspace-patrol.png`、`assets/gallery/claret/01.webp` `sigrid/01.webp` — 本地立绘 / logo / 图集。
+- `stories.html` `character.html` `faction.html` `wallpaper.html` — 缓存戳与 59 人描述。
+- `docs/README.md` — 同步 59 人 / 20 阵营合同。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动，删除新增立绘、logo 与 gallery。脚本戳改回 `archive-3` / `remielle-1`。
+
+## 2026-09-11 - Task: 仓库最上沿改成涂鸦墙，不再挡在顶栏后面
+
+### What was done
+上一轮整幅 graffiti 只铺在顶栏下面，最上沿仍是首页深色点阵顶栏。本轮浮层铺满视口（含顶栏后方），顶/底涂鸦条叠在整幅图之上；打开仓库时顶栏改透底，关掉后还原。未提交 git。
+
+### Testing
+- `node .tmp/verify-top-edge.mjs` 输出 `TOP_EDGE_PASS`。
+- overlay `top=0`、`padding-top=81px`；第一层背景为 `wh-graffiti-top.webp`，整幅 `wh-graffiti.webp` 为 cover。
+- 打开仓库顶栏 `background-image=none`；Escape 关闭后顶栏还原，overlay hidden。
+- 截图 `.tmp/wh-top-now.png`、`.tmp/wh-full-now.png`。缓存戳 `style.css?v=wh-cover-3`。需硬刷新。
+
+### Notes
+改动文件清单:
+- `style.css` — 浮层 inset 0；顶底条叠在 cover 之上；打开仓库顶栏透底。
+- `index.html` — CSS 戳 wh-cover-3。
+- `docs/README.md` — 同步铺满视口与顶底条在上口径。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。`index.html` CSS 戳改回 `wh-cover-1`。
+
+
+## 2026-09-11 - Task: 按差集补齐角色页缺口并本机验收
+
+### What was done
+对照 bili wiki 只补已确认差集：克拉蕾特性「锋御」；希格莉德写入详细情报、合作备注与晋阶材料；三人图集改为同源本地对象。未确认技能 / 克拉蕾专属音擎 / 蕾米埃尔资料仍显示「待公布」，不编造。未提交 git、未上线。
+
+### Testing
+- node .tmp/verify-wiki-gaps.mjs 输出 WIKI_GAPS_PASS。
+- 花名册 59；工作台计数 59 / 59。
+- 克拉蕾页：特性锋御，攻击类型/音擎待公布，图集 assets/gallery/claret/01.webp，技能空。
+- 希格莉德页：冰 / 强攻 / 穿透，专属音擎「骁骑礼赞」，剧情含德拉叙尔，晋阶 7 档，材料图标走 assets/materials/。
+- 蕾米埃尔页：未确认字段待公布，图集含 00.gif / 01.webp。
+- 缓存戳 agent-catalog.js?v=wiki-gaps-1、agent-enrichment.js?v=wiki-gaps-1。需硬刷新。
+
+### Notes
+改动文件清单:
+- agent-catalog.js — 图集兼容 string 路径；克拉蕾特性「锋御」。
+- agent-enrichment.js — 希格莉德剧情/留言/晋阶；三人图集改为本地对象；佩洛伊斯空印象改为「待公布」。
+- character.html / stories.html / faction.html / wallpaper.html — 缓存戳 wiki-gaps-1。
+- docs/README.md — 同步差集口径。
+- progress.md — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。脚本戳改回 roster-59。
+
+
+## 2026-09-11 - Task: 对照 wiki 再补确认项并本机验收
+
+### What was done
+上一轮差集后再对照 bili 摘录，只补已确认内容：克拉蕾写入官方介绍与锋御晋阶材料名；希格莉德补官方介绍、技能升级材料，以及已命名技能「敛枪式」「冰凌卷地」（描述仍为待公布）。未命名技能、克拉蕾数值、40/50 被截断的认证章全称均不编造。未提交 git、未上线。
+
+### Testing
+- node .tmp/verify-wiki-gaps.mjs 输出 WIKI_GAPS_PASS。
+- 克拉蕾页可见官方介绍、初阶锋御认证章；技能仍空。
+- 希格莉德页可见官方介绍+详细情报；技能仅两条已命名；描述为待公布。
+- 缓存戳 agent-enrichment.js / agent-catalog.js / agent-talents.js 均为 wiki-gaps-2。需硬刷新。
+
+### Notes
+改动文件清单:
+- agent-enrichment.js — 克拉蕾官方介绍与晋阶；希格莉德官方介绍与技能材料合计。
+- agent-talents.js — 仅写入希格莉德两条已确认技能名。
+- character.html / stories.html / faction.html / wallpaper.html — 缓存戳 wiki-gaps-2。
+- docs/README.md — 同步本轮确认项口径。
+- progress.md — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。脚本戳改回 wiki-gaps-1 / talent-r1。
+
+
+## 2026-09-11 - Task: 克拉蕾影画背景走本地 gallery 回退
+
+### What was done
+克拉蕾角色页没有影画背景，是因为 Default 影画包没有她。按现有 gallery 回退，把克拉蕾、希格莉德接到本地立绘图集。技能 wiki 仍是空模板，未编造。未提交 git、未上线。
+
+### Testing
+- node .tmp/verify-claret-art.mjs 输出 CLARET_ART_PASS。
+- 克拉蕾 / 希格莉德 keyart 源为 gallery，图为 assets/gallery/<id>/01.webp。
+- 克拉蕾技能仍显示暂未录入。
+- 缓存戳 archive-tools.js?v=art-fallback-1。需硬刷新。
+
+### Notes
+改动文件清单:
+- archive-tools.js — CHARACTER_GALLERY_FALLBACKS 补 claret / sigrid。
+- character.html — archive-tools 缓存戳 art-fallback-1。
+- docs/README.md — 同步 Default 缺失走 gallery 回退口径。
+- progress.md — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。archive-tools 戳改回 char-anim-2。
+
+
+## 2026-09-11 - Task: 按官方绳网公告补三人确认项并本机验收
+
+### What was done
+对照完整角色页后，只把米游社官方更新公告和官方会员册已核对字段写入档案：蕾米埃尔补 S / 流明 / 异常、实装 2026-07-29、专属音擎「空羽复归之诗」及官方介绍；克拉蕾专属音擎改为「猩红渴望」，并补会员册备注。希格莉德身份字段本轮无新增官方差集。技能描述、攻击类型、蕾米埃尔 CV / 生日、克拉蕾 40/50 认证章全称均不编造。未提交 git、未上线。
+
+### Testing
+- node .tmp/verify-wiki-gaps.mjs 输出 WIKI_GAPS_PASS。
+- 花名册 59。
+- 蕾米埃尔页：作战属性流明、战斗特性异常、音擎空羽复归之诗、剧情含节杖军；技能仍空；CV 待公布。
+- 克拉蕾页：锋御、音擎猩红渴望；攻击类型待公布；技能仍空。
+- 希格莉德页：冰 / 强攻 / 穿透、骁骑礼赞、敛枪式 / 冰凌卷地描述仍为待公布。
+- 缓存戳 agent-catalog.js / agent-enrichment.js 为 wiki-gaps-3。需硬刷新。
+
+### Notes
+改动文件清单:
+- agent-catalog.js — 蕾米埃尔写入 S/流明/异常/空羽复归之诗/2026-07-29；克拉蕾专武猩红渴望；zh 增加流明。
+- agent-enrichment.js — 蕾米埃尔官方介绍与会员册备注；克拉蕾会员册备注与摘要。
+- character.html / stories.html / faction.html / wallpaper.html — 缓存戳 wiki-gaps-3。
+- .tmp/verify-wiki-gaps.mjs — 验收改为核官方确认项，禁止未确认技能。
+- docs/README.md — 同步官方公告确认口径。
+- progress.md — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。脚本戳改回 wiki-gaps-2。
+
+
+## 2026-09-11 - Task: 修工作台名录卡名字被 RANK 挡住
+
+### What was done
+名录卡 RANK 徽章原先贴在底栏里，把名字前几个字挡住。本轮把徽章抬到通栏上方，底栏锁 40px，名字改两行显示。未推送。
+
+### Testing
+- 本机 5173 stories.html：前 6 张卡 grade 与名字矩形不相交，徽章 bottom=46px，底栏高 40px。
+- 安比、爱芮、浅羽悠真等短名完整可见。
+- 截图 .tmp/roster-names-fix-3.png。
+
+### Notes
+改动文件清单:
+- stories.html — RANK 徽章抬到通栏上方；底栏锁高；名字两行。
+- progress.md — 追加本轮记录。
+
+回滚方式:
+- 还原 stories.html 本轮 agent-card-grade / agent-card-footer / agent-card-name 改动。

@@ -13,7 +13,7 @@
   <script>(function(w,d){var r=d.documentElement;if(w.__hooxiSiteLoaderBoot)return;var b=w.__hooxiSiteLoaderBoot={startedAt:Date.now(),degraded:false,finished:false};var done=function(s){if(b.finished)return;b.finished=true;clearTimeout(b.timer);r.classList.remove('site-loading','site-booting','site-loader-finishing');r.dataset.siteLoaderState=s;r.classList.add(s==='degraded'?'site-degraded':'site-ready');};var fail=function(e){if(b.finished)return;var t=e&&e.target;if(e&&e.type==='error'&&t&&/^(IMG|SCRIPT|LINK)$/.test(t.tagName)){var a=t.tagName==='LINK'?'href':'src',u=t.getAttribute(a);if(u==null||u==='')return;}b.degraded=true;r.dataset.siteLoaderState='degraded';r.classList.add('site-degraded');if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.degrade();else done('degraded');};b.finish=done;b.fail=fail;r.classList.add('site-loading','site-booting');w.addEventListener('error',fail,true);w.addEventListener('unhandledrejection',fail,true);b.timer=setTimeout(function(){if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.forceFinish();else done(b.degraded?'degraded':'timeout');},4500);})(window,document);</script>
   <script src="./site-loader.js" defer></script>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <meta name="description" content="按姓名与阵营浏览 57 位代理人，并进入完整角色档案。HOOXI 为粉丝非官方剧情档案站。"/>
+  <meta name="description" content="按姓名与阵营浏览 59 位代理人，并进入完整角色档案。HOOXI 为粉丝非官方剧情档案站。"/>
   <meta property="og:type" content="website"/>
   <meta property="og:site_name" content="HOOXI 绝区零档案（粉丝非官方）"/>
   <meta property="og:title" content="角色与阵营 // HOOXI（粉丝非官方）"/>
@@ -632,7 +632,7 @@ body.archive-stories{
 .archive-stories .agent-card-grade .grade-mount{display:none !important}
 .archive-stories .agent-card-grade,
 .archive-stories .agent-card-grade.has-rank-img{
-  left:6px;bottom:8px;width:34px !important;height:34px !important;
+  left:6px;bottom:46px;width:34px !important;height:34px !important;
 }
 .archive-stories .agent-card-grade.has-rank-img img{
   inset:0;width:100%;height:100%;
@@ -870,8 +870,9 @@ body.archive-stories{
       Lv 徽章已随 jsx 一并移除（DOM 无此节点，无需隐藏规则） ── */
 .archive-stories .agent-card-footer{
   position:absolute;left:0;right:0;bottom:0;z-index:6;
-  display:flex;align-items:center;gap:6px;
-  min-height:30px;padding:5px 10px 6px;
+  display:flex;align-items:center;gap:4px;
+  height:40px;min-height:40px;max-height:40px;box-sizing:border-box;
+  padding:4px 6px 5px;
   background:linear-gradient(180deg,rgba(6,8,10,.55),rgba(6,8,10,.92));
   pointer-events:none;
 }
@@ -886,13 +887,15 @@ body.archive-stories{
 }
 /* 覆盖 theme-zzz 的右上竖排角标定位：footer 内改行式小图标 */
 .archive-stories .agent-card-footer .agent-card-meta-icons{
-  position:static;flex-direction:row;gap:4px;
-  margin-left:5px;flex:none;
+  position:static;flex-direction:row;gap:3px;
+  margin-left:0;flex:none;
 }
-.archive-stories .agent-card-footer .agent-card-meta-icons img{width:16px;height:16px}
+.archive-stories .agent-card-footer .agent-card-meta-icons img{width:12px;height:12px}
 .archive-stories .agent-card-name{
-  flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  font:800 11px/1.25 var(--font-mono,monospace);letter-spacing:.08em;
+  flex:1;min-width:0;overflow:hidden;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  white-space:normal;text-overflow:ellipsis;
+  font:800 12px/1.15 var(--font-display,sans-serif);letter-spacing:0;
   color:#eef1f4;text-shadow:0 1px 3px rgba(0,0,0,.85);
 }
 
@@ -924,8 +927,8 @@ body.archive-stories{
 /* 认证章：统一收进左下 44×44 铆接金属座，叠在底部通栏上沿 */
 .archive-stories .agent-card-grade,
 .archive-stories .agent-card-grade.has-rank-img{
-  position:absolute;left:8px;bottom:8px;z-index:7;
-  width:44px !important;height:44px !important;padding:0 !important;
+  position:absolute;left:6px;bottom:46px;z-index:7;
+  width:36px !important;height:36px !important;padding:0 !important;
 }
 .archive-stories .agent-card-grade .grade-mount{
   position:absolute;inset:2px;display:block;
@@ -960,6 +963,119 @@ body.archive-stories{
    中文在 5.5px 下糊成团，tag 稍放大并收紧字距 */
 .archive-stories .agent-card-grade:not(.has-rank-img) .rank-letter{font-size:13px;letter-spacing:.06em}
 .archive-stories .agent-card-grade:not(.has-rank-img) .grade-tag{font-size:7.5px;letter-spacing:.1em;overflow:hidden}
+
+/* ── 选人变色扩面：顶栏/标题/按钮/舞台光跟主题色，材质加厚 ── */
+.archive-stories .ik-header{
+  border-bottom:2px solid rgb(var(--character-theme-rgb,216 250 0) / .45);
+  box-shadow:0 10px 28px rgba(0,0,0,.45),0 0 24px rgb(var(--character-theme-rgb,216 250 0) / .12);
+  transition:border-color .45s ease,box-shadow .45s ease;
+}
+.archive-stories .ik-header-tabs{
+  border-color:rgb(var(--character-theme-rgb,216 250 0) / .38);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.archive-stories .ik-header-tab.is-active .ik-tab-highlight{
+  color:var(--selected-agent-theme,#d8fa00);
+  animation:ik-tab-highlight-scale 700ms linear infinite;
+  filter:drop-shadow(0 0 10px rgb(var(--character-theme-rgb,216 250 0) / .55));
+  transition:color .4s ease,filter .4s ease;
+}
+.archive-stories .ik-brand__title{
+  color:#f4f6f8;
+  text-shadow:0 0 18px rgb(var(--character-theme-rgb,216 250 0) / .28);
+}
+.archive-stories .ik-search-shell{
+  border:1px solid rgb(var(--character-theme-rgb,216 250 0) / .28);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
+}
+.archive-stories .ik-search-action{color:var(--selected-agent-theme,#d8fa00)}
+
+.archive-stories .stories-workbench-bar{
+  box-shadow:inset 0 -1px 0 rgba(255,255,255,.08),0 8px 22px rgba(0,0,0,.28);
+}
+.archive-stories .stories-workbench-context .eyebrow{
+  color:var(--selected-agent-theme,#d8fa00) !important;
+  text-shadow:0 0 10px rgb(var(--character-theme-rgb,216 250 0) / .45);
+}
+.archive-stories .stories-workbench-context h1{
+  color:#f7f8f4 !important;
+  text-shadow:0 0 22px rgb(var(--character-theme-rgb,216 250 0) / .22);
+  padding-left:12px;
+  border-left:4px solid var(--selected-agent-theme,#d8fa00);
+}
+.archive-stories .stories-lane-action{
+  background:rgb(var(--character-theme-rgb,216 250 0) / .12) !important;
+  box-shadow:3px 3px 0 rgb(var(--character-theme-rgb,216 250 0) / .35);
+}
+.archive-stories .stories-lane-action:hover{
+  background:var(--selected-agent-theme,#d8fa00) !important;
+  color:#08080c !important;
+}
+
+.archive-stories .agent-selected-stage{
+  box-shadow:inset 0 0 0 1px rgb(var(--character-theme-rgb,216 250 0) / .18);
+}
+.archive-stories .agent-selected-stage::before{
+  background:radial-gradient(ellipse 78% 70% at 42% 58%,rgb(var(--character-theme-rgb,216 250 0) / .22),transparent 72%) !important;
+}
+.archive-stories .agent-workbench-shell::after{
+  background:radial-gradient(ellipse 58% 80% at 28% 48%,rgb(var(--character-theme-rgb,216 250 0) / .12),transparent 62%) !important;
+}
+.archive-stories .agent-stage-grid{
+  opacity:.16 !important;
+}
+.archive-stories .agent-stage-info{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 -18px 40px rgb(var(--character-theme-rgb,216 250 0) / .08);
+}
+.archive-stories .agent-file-kicker,
+.archive-stories .agent-stage-info .eyebrow{
+  color:var(--selected-agent-theme,#d8fa00) !important;
+  letter-spacing:.12em;
+}
+.archive-stories .agent-name-lockup h2,
+.archive-stories .agent-stage-info h2{
+  text-shadow:0 0 24px rgb(var(--character-theme-rgb,216 250 0) / .28);
+}
+.archive-stories .agent-selected-meta{
+  border-color:rgb(var(--character-theme-rgb,216 250 0) / .28) !important;
+  background:rgb(var(--character-theme-rgb,216 250 0) / .08) !important;
+}
+.archive-stories .agent-selected-meta small{
+  color:var(--selected-agent-theme,#d8fa00) !important;
+}
+.archive-stories .agent-loadout-line span{
+  color:var(--selected-agent-theme,#d8fa00);
+}
+.archive-stories .agent-deep-links a:not(:first-child){
+  border-color:rgb(var(--character-theme-rgb,216 250 0) / .32) !important;
+}
+.archive-stories .agent-stage-favorite[aria-pressed="true"],
+.archive-stories .agent-orbit-button.is-active{
+  border-color:var(--selected-agent-theme,#d8fa00) !important;
+  background:var(--selected-agent-theme,#d8fa00) !important;
+  color:#08080c !important;
+}
+.archive-stories .agent-orbit-button:not(.is-active),
+.archive-stories .agent-stage-favorite:not([aria-pressed="true"]){
+  border-color:rgb(var(--character-theme-rgb,216 250 0) / .4) !important;
+  color:var(--selected-agent-theme,#d8fa00) !important;
+}
+.archive-stories .agent-roster-heading .eyebrow{
+  color:var(--selected-agent-theme,#d8fa00) !important;
+}
+.archive-stories .agent-roster-heading h2{
+  text-shadow:0 0 18px rgb(var(--character-theme-rgb,216 250 0) / .2);
+}
+.archive-stories .agent-roster-panel{
+  box-shadow:inset 8px 0 24px rgb(var(--character-theme-rgb,216 250 0) / .08) !important;
+}
+.archive-stories .archive-footer{
+  border-top-color:rgb(var(--character-theme-rgb,216 250 0) / .28) !important;
+}
+
+@media (prefers-reduced-motion:reduce){
+  .archive-stories .ik-header-tab.is-active .ik-tab-highlight{animation:none}
+}
 
   </style>
 </head>
@@ -998,7 +1114,7 @@ body.archive-stories{
           </a>
           <a href="events.html" role="tab" class="ik-header-tab ik-header-tab--middle">
             <svg class="ik-tab-highlight ik-tab-highlight--middle" viewBox="0 0 121.4 42" aria-hidden="true"><path d="M 105.08 0 A 10 10 0 0 1 113.99 14.54 L 104.45 33.26 A 16 16 0 0 1 90.2 42 L 16.32 42 A 10 10 0 0 1 7.41 27.46 L 16.95 8.74 A 16 16 0 0 1 31.2 0 Z" fill="currentColor"/></svg>
-            <span class="ik-header-tab__content">委托</span>
+            <span class="ik-header-tab__content">绳网</span>
           </a>
           <a href="faction.html" role="tab" class="ik-header-tab ik-header-tab--middle">
             <svg class="ik-tab-highlight ik-tab-highlight--middle" viewBox="0 0 121.4 42" aria-hidden="true"><path d="M 105.08 0 A 10 10 0 0 1 113.99 14.54 L 104.45 33.26 A 16 16 0 0 1 90.2 42 L 16.32 42 A 10 10 0 0 1 7.41 27.46 L 16.95 8.74 A 16 16 0 0 1 31.2 0 Z" fill="currentColor"/></svg>
@@ -1025,8 +1141,8 @@ body.archive-stories{
   </main>
   <footer class="archive-footer"><span class="footer-disclaimer" data-unofficial-boundary>HOOXI 为粉丝非官方档案，与米哈游/HoYoverse 无隶属；本页为角色目录索引，舞台使用角色影画，相关游戏设定、角色内容与影像素材版权归米哈游所有，资料来源为游戏内容与官方公开资料。</span><span>HOOXI // ZZZ AGENT ARCHIVE</span></footer>
   <script src="data.js?v=s1-1"></script>
-  <script src="agent-enrichment.js?v=archive-3"></script>
-  <script src="agent-catalog.js?v=archive-3"></script>
+  <script src="agent-enrichment.js?v=wiki-gaps-3"></script>
+  <script src="agent-catalog.js?v=wiki-gaps-3"></script>
   <script src="agent-xray.js?v=archive-3"></script>
   <script src="stories.js?v=stage-art-1"></script>
   <script>(function(){var el=document.getElementById('storiesRoot');if(!el)return;var mo=new MutationObserver(function(){if(el.firstElementChild){mo.disconnect();window.dispatchEvent(new Event('hooxi:app-ready'));}});mo.observe(el,{childList:true});if(el.firstElementChild)window.dispatchEvent(new Event('hooxi:app-ready'));})();</script>
