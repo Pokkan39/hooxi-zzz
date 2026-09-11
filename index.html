@@ -10,8 +10,8 @@
     .hooxi-site-loader img{width:360px;height:auto;opacity:1}
     @media (prefers-reduced-motion:reduce){.hooxi-site-loader{transition:none}}
   </style>
-  <script>(function(w,d){var r=d.documentElement;if(w.__hooxiSiteLoaderBoot)return;var b=w.__hooxiSiteLoaderBoot={startedAt:Date.now(),degraded:false,finished:false};var done=function(s){if(b.finished)return;b.finished=true;clearTimeout(b.timer);r.classList.remove('site-loading','site-booting','site-loader-finishing');r.dataset.siteLoaderState=s;r.classList.add(s==='degraded'?'site-degraded':'site-ready');};var fail=function(e){if(b.finished)return;var t=e&&e.target;if(!(t&&/^(IMG|SCRIPT|LINK)$/.test(t.tagName)))return;var a=t.tagName==='LINK'?'href':'src',u=t.getAttribute(a);if(u==null||u==='')return;b.degraded=true;r.dataset.siteLoaderState='degraded';r.classList.add('site-degraded');if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.degrade();else done('degraded');};b.finish=done;b.fail=fail;r.classList.add('site-loading','site-booting');w.addEventListener('error',fail,true);w.addEventListener('unhandledrejection',fail,true);b.timer=setTimeout(function(){if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.forceFinish();else done(b.degraded?'degraded':'timeout');},12000);})(window,document);</script>
-  <script src="./site-loader.js?v=home-1" defer></script>
+  <script>(function(w,d){var r=d.documentElement;if(w.__hooxiSiteLoaderBoot)return;var b=w.__hooxiSiteLoaderBoot={startedAt:Date.now(),degraded:false,finished:false};var done=function(s){if(b.finished)return;b.finished=true;clearTimeout(b.timer);r.classList.remove('site-loading','site-booting','site-loader-finishing');r.dataset.siteLoaderState=s;r.classList.add(s==='degraded'?'site-degraded':'site-ready');};var fail=function(e){if(b.finished)return;var t=e&&e.target;if(!(t&&/^(SCRIPT|LINK)$/.test(t.tagName)))return;var a=t.tagName==='LINK'?'href':'src',u=t.getAttribute(a);if(u==null||u==='')return;b.degraded=true;r.dataset.siteLoaderState='degraded';r.classList.add('site-degraded');if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.degrade();else done('degraded');};b.finish=done;b.fail=fail;r.classList.add('site-loading','site-booting');w.addEventListener('error',fail,true);w.addEventListener('unhandledrejection',fail,true);b.timer=setTimeout(function(){if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.forceFinish();else done(b.degraded?'degraded':'timeout');},12000);})(window,document);</script>
+  <script src="./site-loader.js?v=home-2" defer></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>绝区零 · 主界面</title>
   <link rel="icon" href="data:,">
@@ -149,8 +149,8 @@
   </main>
   <script src="edits-apply.js?v=load-1"></script>
   <script src="home-events-data.js?v=he-3"></script>
-  <script src="wallpaper-data.js?v=wp-4"></script>
-  <script src="home-wallpaper.js?v=wp-9"></script>
+  <script src="wallpaper-data.js?v=wp-5"></script>
+  <script src="home-wallpaper.js?v=wp-10"></script>
   <script src="app.js"></script>
   <script src="home-events.js?v=he-4"></script>
   <script src="warehouse-boot.js?v=wh-1"></script>

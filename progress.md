@@ -4252,3 +4252,29 @@ Playwright (1440x900, localhost:8081/stories.html) 实测：
 
 回滚方式:
 - 还原上述文件本轮改动。Release tag wallpapers-720p 可另删。
+
+## 2026-09-11 - Task: 首页加载遮罩可见并改公开站 1080p
+
+### What was done
+公开站首页加载动画看不见，是活动封面 404 被当成整页失败，遮罩立刻揭掉。本轮图片失败不再掐加载；遮罩至少亮约 1.2 秒，视频出画再揭开。56 条压成 1080p/30fps 无声循环片，合计 537MB，放到 GitHub Release wallpapers-1080p，不进仓库。公开站改播这条地址；本机仍播本地原片。
+
+### Testing
+- node .tmp/verify-home-loader.mjs 输出 HOME_LOADER_PASS。
+- 本机首页遮罩可见约 1.3 秒后 site-ready，视频 paused=false，图片 404 不判 degraded。
+- 拦掉 wallpapers 后落到 assets/home-video/lucy.mp4。
+- 拦掉 wallpapers 打开 wallpaper.html：预览为 portraits/<id>-portrait.webp。
+- Release wallpapers-1080p 56 条，537MB；ellen.mp4 可播 1920x1080。
+- node .tmp/verify-wp-public.mjs 输出 WP_PUBLIC_PASS。
+- 缓存戳 site-loader.js?v=home-2、wallpaper-data.js?v=wp-5、home-wallpaper.js?v=wp-10、wallpaper.js?v=wp-5。需硬刷新。
+
+### Notes
+改动文件清单:
+- index.html — 图片 404 不再判整页失败；缓存戳 home-2 / wp-5 / wp-10。
+- site-loader.js — 首页遮罩至少亮 1.2 秒。
+- wallpaper-data.js — publicBase 改为 wallpapers-1080p，mb 改为 1080p 体积。
+- home-wallpaper.js / wallpaper.js / wallpaper.html — 公开站走 1080p Release。
+- docs/README.md — 同步公开站 1080p 口径。
+- progress.md — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。Release tag wallpapers-1080p 可另删。公开站回 720p 把 publicBase 改回 wallpapers-720p。

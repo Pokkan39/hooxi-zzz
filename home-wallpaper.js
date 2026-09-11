@@ -1,11 +1,11 @@
 (() => {
-  // 本机播本地原片；公开站播 Release 720p，不探测 gitignore 的 wallpapers。
+  // 本机播本地原片；公开站播 Release 1080p，不探测 gitignore 的 wallpapers。
   const STORAGE_KEY = "hooxi.wallpaper";
   const FALLBACK = "assets/home-video/lucy.mp4";
   const data = window.hooxiWallpapers || {};
   const PUBLIC_BASE = typeof data.publicBase === "string" && data.publicBase
     ? data.publicBase
-    : "https://github.com/Pokkan39/hooxi-zzz/releases/download/wallpapers-720p/";
+    : "https://github.com/Pokkan39/hooxi-zzz/releases/download/wallpapers-1080p/";
   const shell = document.querySelector(".game-shell");
   const done = () => {
     document.documentElement.dataset.homeReady = "true";

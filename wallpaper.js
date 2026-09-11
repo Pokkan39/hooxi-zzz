@@ -23,7 +23,7 @@
     || /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\.)/.test(host);
   const PUBLIC_BASE = typeof data.publicBase === "string" && data.publicBase
     ? data.publicBase
-    : "https://github.com/Pokkan39/hooxi-zzz/releases/download/wallpapers-720p/";
+    : "https://github.com/Pokkan39/hooxi-zzz/releases/download/wallpapers-1080p/";
   const videoOf = (item) => local ? item.video : PUBLIC_BASE + item.id + ".mp4";
 
   const portraitOf = (item) => `assets/portraits/${item.id}-portrait.webp`;
