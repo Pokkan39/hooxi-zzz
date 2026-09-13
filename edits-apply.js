@@ -26,6 +26,7 @@
   const applyImages = () => {
     $$('[data-img]').forEach((el) => {
       const src = state.images[el.dataset.img];
+      if (src && /assets\/uploads\//i.test(src)) return;
       if (src) {
         if (!el.dataset.orig) el.dataset.orig = el.getAttribute('src');
         el.setAttribute('src', src);
@@ -39,6 +40,7 @@
     $$('[data-bgimg]').forEach((el) => {
       const src = state.images[`bg:${el.dataset.bgimg}`];
       const glyph = el.querySelector('[data-text],span');
+      if (src && /assets\/uploads\//i.test(src)) return;
       if (src) {
         el.style.backgroundImage = `url("${src}")`;
         el.style.backgroundSize = 'cover';

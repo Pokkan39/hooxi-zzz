@@ -6,7 +6,7 @@ window.hooxiHomeEvents = {
   "version": [
     {
       "title": "玛瑟尔游乐岛入口物资宝箱位置",
-      "cover": "assets/wiki/events/event-86f65ca1a20b60d4de99ee3852134bce_4914853-2a4cd75125ef.webp",
+      "cover": "assets/wiki/events/event-86f65ca1a20b60d4de99ee3852134bce_6217968-979757792a0a.webp",
       "url": "https://www.miyoushe.com/zzz/article/75188865",
       "tag": "2.8 版本活动"
     },
@@ -18,7 +18,7 @@ window.hooxiHomeEvents = {
     },
     {
       "title": "玛瑟尔游乐岛启程配给宝箱位置",
-      "cover": "assets/wiki/events/event-c68443c447b7384d30e9dd783e905abb_4660529-ed243716f826.webp",
+      "cover": "assets/wiki/events/event-c68443c447b7384d30e9dd783e905abb_4761691-54c3dd23d432.webp",
       "url": "https://www.miyoushe.com/zzz/article/75190745",
       "tag": "2.8 版本活动"
     }

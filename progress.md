@@ -4348,3 +4348,38 @@ Playwright (1440x900, localhost:8081/stories.html) 实测：
 
 回滚方式:
 - `git revert` 本轮提交。
+
+## 2026-09-13 - Task: 全站体检并修优先项（工作台超时/空台、首页封面 404）
+
+### What was done
+
+对照用户已提未修项和公开站实况做了全站体检，并先修本轮能验收的优先项。工作台舞台改由 React 直接铺已入库 default 影画，加载超时从 4.5 秒拉到 12 秒，花名册一出来就揭遮罩，避免再卡在 timeout。首页活动封面改走已入库 wiki webp，不再请求未入库样例图；`edits.json` 的 uploads 头像覆盖线上不套用。角色页不再请求未入库的 k2/k3 成对影画，缺图回退单张影画。阵营页接入本地语音表，图片 404 不再把整页判失败。HUD / 胶片 / 扫描线未拆。未提交、未推送。
+
+### Testing
+
+- 本机 5173：`node .tmp/verify-checkup-p0.mjs` 输出 `CHECKUP_P0_PASS`。
+- 首页 site-ready，封面全部为 wiki webp，无 neon-party / uploads 404；绿框 `hudLimeBreath`、扫描线 `scanDrift` 仍在；壁纸在播。
+- 工作台 59 卡；安比 A、丽娜 S；舞台 `assets/mindscape/default/anby.webp` 且 `.stage-mindscape.on`；加载状态 ready，非 timeout。
+- 角色页安比 keyart 为 default 影画，未请求 k2/k3。
+- 阵营页 `agentVoices` 可读，未 degraded。
+
+### Notes
+
+改动文件清单:
+- `src/stories.jsx` / `stories.js` — 舞台由 React 写入 `.stage-mindscape`。
+- `stories.html` — 超时 12 秒；花名册出现即 `app-ready`。
+- `index.html` / `home-events-data.js` — 活动封面改已入库 wiki webp。
+- `edits-apply.js` — 忽略 `assets/uploads/` 覆盖。
+- `archive-tools.js` / `character.html` — 跳过未入库 k2/k3；图片 404 不判失败；超时 12 秒。
+- `faction.html` — 接入 `agent-voices.js`；图片 404 不判失败；超时 12 秒。
+- `docs/README.md` — 同步封面、舞台、k2/k3 口径。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。`stories.js` 还原后执行 `npm run build:stories`。
+- `index.html` 活动数据戳改回 `he-3` / `load-1`；工作台脚本戳改回 `rank-swap-1`。
+
+范围说明:
+- 未提交 git、未上线。公开站仍是上一版，工作台超时和首页封面 404 线上还在。
+- 未入库但本机已有、下次选择性推送需带上：`assets/field-icons/*.png|webp`、`agent-voices.js`。
+- 未做：绳网 GSAP 进场、活动栏改成绳网时间线最新三帖、Pages 4GB 产物治理。

@@ -153,6 +153,28 @@ const PARALLAX_CHARS = new Set([
   "nicole-demara","lighter","caesar","lycaon","koleda"
 ]);
 
+function StageMindscape({ id }) {
+  const sources = useMemo(() => [
+    `${DEFAULT_ART_ROOT}/${encodeURIComponent(id)}.webp`,
+    GALLERY_FALLBACKS[id],
+    `assets/portraits/${encodeURIComponent(id)}-portrait.webp`,
+  ].filter(Boolean), [id]);
+  const [sourceIndex, setSourceIndex] = useState(0);
+  useEffect(() => setSourceIndex(0), [id]);
+  const src = sources[sourceIndex];
+  if (!src) return null;
+  return (
+    <img
+      className="stage-mindscape on"
+      src={src}
+      alt=""
+      aria-hidden="true"
+      decoding="async"
+      onError={() => setSourceIndex((index) => index + 1)}
+    />
+  );
+}
+
 function ParallaxArt({ character }) {
   const containerRef = useRef(null);
   const id = character?.id;
@@ -200,16 +222,16 @@ function ParallaxArt({ character }) {
     const base = `assets/gallery/${id}/layers`;
     return (
       <div className="agent-stage-art agent-stage-art--parallax" ref={containerRef} aria-hidden="true">
+        <StageMindscape id={id} />
         <img className="parallax-bg" src={`${base}/bg.webp`} alt="" />
         <img className="parallax-fg" src={`${base}/fg.webp`} alt="" />
       </div>
     );
   }
 
-  // Fallback: single image
   return (
     <div className="agent-stage-art" aria-hidden="true">
-      <AgentImage character={character} kind="art" decorative />
+      <StageMindscape id={id} />
     </div>
   );
 }

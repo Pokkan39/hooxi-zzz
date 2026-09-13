@@ -568,8 +568,12 @@
     art.setAttribute('aria-hidden', 'true');
     art.style.setProperty('--acc', rec && validRgb(rec.c) ? rec.c.join(',') : '200,60,80');
 
-    // X-ray 双层：am(单色)为底层常驻，ac(彩色)为上层跟随鼠标透出
-    var hasXrayPair = rec && rec.am && rec.ac;
+    // X-ray 双层：am(单色)为底层常驻，ac(彩色)为上层跟随鼠标透出。
+    // k2/k3 官方成对 PNG 未入库（单张约 1MB），公开站会 404；缺图时回退单张影画。
+    var xraySrcOk = function (src) {
+      return typeof src === 'string' && src && !/\/k[23]\.(png|jpe?g|webp)$/i.test(src);
+    };
+    var hasXrayPair = rec && xraySrcOk(rec.am) && xraySrcOk(rec.ac);
     var image = document.createElement('img');
     image.className = 'd-keyart-image';
     image.src = hasXrayPair ? rec.am : resolved.path;
