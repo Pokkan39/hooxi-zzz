@@ -50,9 +50,10 @@
     var id = currentAgentId(stage);
     if (!id) return;
     applyMarquee(stage, id);
+    if (art.querySelector('.stage-mindscape--color')) return;
     var ms = art.querySelector('.stage-mindscape');
-    // Pages 只入库 default 影画；full/ 被 gitignore，公开站拉不到会空台。
     var queue = [
+      'assets/mindscape/full/' + encodeURIComponent(id) + '.webp',
       'assets/mindscape/default/' + encodeURIComponent(id) + '.webp',
       'assets/gallery/' + encodeURIComponent(id) + '/01.webp',
       'assets/portraits/' + encodeURIComponent(id) + '-portrait.webp'

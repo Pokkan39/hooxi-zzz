@@ -46,12 +46,15 @@ screenshots/
 !docs/screenshots/
 !docs/screenshots/*.png
 
-# 正式发布包含 53 张项目方确认许可的 Toastertjie Default + 1 张蕾米埃尔官方 Wiki 素材转换 Default，共54张正式 Default。
-# Partial、Full 与运行包不入库。
+# 正式发布含 54 张 Default + 54 张 Full。舞台用 Full 彩色正图，同图青/品红只做左右边缘残影。
+# Partial 与运行包不入库。
 /assets/mindscape/*
 !/assets/mindscape/default/
 /assets/mindscape/default/*
 !/assets/mindscape/default/*.webp
+!/assets/mindscape/full/
+/assets/mindscape/full/*
+!/assets/mindscape/full/*.webp
 
 # 官方好感壁纸视频：56 支合计约 933MB，只在本地使用，不入库。
 # 入库会让仓库历史永久膨胀近 1GB，且 Pages 站点 1GB 软上限会被吃满。

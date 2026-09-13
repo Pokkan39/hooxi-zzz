@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 
 const FAVORITES_KEY = "hooxi:favorite-agents";
 const DEFAULT_ART_ROOT = "assets/mindscape/default";
+const FULL_ART_ROOT = "assets/mindscape/full";
 const GALLERY_FALLBACKS = Object.freeze({
   "alice": "assets/gallery/alice/08.webp",
   "anby": "assets/gallery/anby/01.webp",
@@ -101,8 +102,7 @@ function validRgb(value) {
 }
 
 function resolveCharacterArt(id) {
-  if (GALLERY_FALLBACKS[id]) return { source: "gallery", path: GALLERY_FALLBACKS[id] };
-  return { source: "default", path: `${DEFAULT_ART_ROOT}/${encodeURIComponent(id)}.webp` };
+  return { source: "full", path: `${FULL_ART_ROOT}/${encodeURIComponent(id)}.webp` };
 }
 
 function resolvePortrait(id) {
@@ -154,24 +154,42 @@ const PARALLAX_CHARS = new Set([
 ]);
 
 function StageMindscape({ id }) {
-  const sources = useMemo(() => [
-    `${DEFAULT_ART_ROOT}/${encodeURIComponent(id)}.webp`,
+  const encoded = encodeURIComponent(id);
+  const colorSources = useMemo(() => [
+    `${FULL_ART_ROOT}/${encoded}.webp`,
+    `${DEFAULT_ART_ROOT}/${encoded}.webp`,
     GALLERY_FALLBACKS[id],
-    `assets/portraits/${encodeURIComponent(id)}-portrait.webp`,
-  ].filter(Boolean), [id]);
-  const [sourceIndex, setSourceIndex] = useState(0);
-  useEffect(() => setSourceIndex(0), [id]);
-  const src = sources[sourceIndex];
-  if (!src) return null;
+    `assets/portraits/${encoded}-portrait.webp`,
+  ].filter(Boolean), [id, encoded]);
+  const [colorIndex, setColorIndex] = useState(0);
+  useEffect(() => setColorIndex(0), [id]);
+  const colorSrc = colorSources[colorIndex];
+  if (!colorSrc) return null;
   return (
-    <img
-      className="stage-mindscape on"
-      src={src}
-      alt=""
-      aria-hidden="true"
-      decoding="async"
-      onError={() => setSourceIndex((index) => index + 1)}
-    />
+    <>
+      <img
+        className="stage-mindscape stage-mindscape--trail stage-mindscape--trail-c on"
+        src={colorSrc}
+        alt=""
+        aria-hidden="true"
+        decoding="async"
+      />
+      <img
+        className="stage-mindscape stage-mindscape--trail stage-mindscape--trail-m on"
+        src={colorSrc}
+        alt=""
+        aria-hidden="true"
+        decoding="async"
+      />
+      <img
+        className="stage-mindscape stage-mindscape--color on"
+        src={colorSrc}
+        alt=""
+        aria-hidden="true"
+        decoding="async"
+        onError={() => setColorIndex((index) => index + 1)}
+      />
+    </>
   );
 }
 
@@ -287,7 +305,7 @@ function BackgroundHUD({ character, artSource }) {
       <div className="agent-stage-grid" aria-hidden="true" />
       <span className="agent-stage-backdrop-name" id="selectedAgentBackdropName" aria-hidden="true">{name}</span>
       <div className="agent-stage-source" aria-hidden="true">
-        <span>{artSource === "gallery" ? "LOCAL GALLERY" : "DEFAULT MINDSCAPE"}</span>
+        <span>{artSource === "gallery" ? "LOCAL GALLERY" : artSource === "full" ? "FULL MINDSCAPE" : "DEFAULT MINDSCAPE"}</span>
         <i />
       </div>
     </>
@@ -308,7 +326,7 @@ function CharacterInfo({ character, faction, favorite, onToggleFavorite, artSour
   const base = `character.html?id=${encodeURIComponent(character.id)}`;
   return (
     <div className="agent-stage-info">
-      <p className="agent-file-kicker">// {character.englishName || "AGENT FILE"} · {artSource === "gallery" ? "本地 GALLERY" : "DEFAULT 影画"}</p>
+      <p className="agent-file-kicker">// {character.englishName || "AGENT FILE"} · {artSource === "gallery" ? "本地 GALLERY" : artSource === "full" ? "FULL 影画" : "DEFAULT 影画"}</p>
       <div className="agent-name-lockup">
         {rankImage(character.rank)
           ? <span className="agent-rank-mark has-rank-img" aria-label={`${character.rank}级代理人`}><img src={rankImage(character.rank)} alt="" /></span>

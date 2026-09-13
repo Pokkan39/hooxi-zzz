@@ -4472,6 +4472,29 @@ body.archive-faction{
   transition:opacity .45s ease;
 }
 .archive-stories .agent-stage-art .stage-mindscape.on{opacity:1}
+.archive-stories .agent-stage-art .stage-mindscape.stage-mindscape--color{
+  z-index:3;
+  mix-blend-mode:normal;
+  animation:stories-mindscape-drift 8.4s ease-in-out infinite alternate;
+}
+.archive-stories .agent-stage-art .stage-mindscape.stage-mindscape--trail{
+  z-index:4;
+  mix-blend-mode:screen;
+  opacity:0;
+}
+.archive-stories .agent-stage-art .stage-mindscape.stage-mindscape--trail.on{opacity:.42}
+.archive-stories .agent-stage-art .stage-mindscape.stage-mindscape--trail-c{
+  filter:grayscale(1) contrast(1.15) brightness(.9) sepia(1) saturate(9) hue-rotate(152deg);
+  -webkit-mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.55) 7%,transparent 15%);
+  mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.55) 7%,transparent 15%);
+  animation:stories-sande-c 1.6s ease-in-out infinite alternate;
+}
+.archive-stories .agent-stage-art .stage-mindscape.stage-mindscape--trail-m{
+  filter:grayscale(1) contrast(1.15) brightness(.9) sepia(1) saturate(9) hue-rotate(-45deg);
+  -webkit-mask-image:linear-gradient(270deg,#000 0%,rgba(0,0,0,.55) 7%,transparent 15%);
+  mask-image:linear-gradient(270deg,#000 0%,rgba(0,0,0,.55) 7%,transparent 15%);
+  animation:stories-sande-m 1.6s ease-in-out infinite alternate;
+}
 .archive-stories .agent-roster-panel .agent-stage-marquee{
   position:absolute;
   z-index:0;
@@ -5553,6 +5576,10 @@ body[data-theme="ink-wash"].subpage .archive-stories .agent-selected-meta > *{
   filter:saturate(1.08) contrast(1.08) brightness(1.08);
   transition:opacity .45s ease;
 }
+.archive-stories .agent-stage-art--parallax .stage-mindscape.stage-mindscape--trail{
+  z-index:4;
+  mix-blend-mode:screen;
+}
 .archive-stories .agent-stage-art--parallax::after{
   content:"";
 }
@@ -5585,6 +5612,14 @@ body[data-theme="ink-wash"].subpage .archive-stories .agent-selected-meta > *{
     filter:saturate(1.12) contrast(1.1) brightness(1.12);
   }
 }
+@keyframes stories-sande-c{
+  from{transform:translate3d(-1.6%,0,0) scale(1.18)}
+  to{transform:translate3d(-3.2%,0,0) scale(1.18)}
+}
+@keyframes stories-sande-m{
+  from{transform:translate3d(1.6%,0,0) scale(1.18)}
+  to{transform:translate3d(3.2%,0,0) scale(1.18)}
+}
 @keyframes stories-stage-marquee{
   from{transform:translateX(0)}
   to{transform:translateX(-50%)}
@@ -5602,6 +5637,14 @@ body[data-theme="ink-wash"].subpage .archive-stories .agent-selected-meta > *{
   .archive-stories .agent-stage-art .stage-mindscape{
     transform:scale(1.18);
     filter:saturate(1.08) contrast(1.08) brightness(1.08);
+  }
+  .archive-stories .agent-stage-art .stage-mindscape.stage-mindscape--trail-c{
+    transform:translate3d(-2.2%,0,0) scale(1.18);
+    opacity:.32;
+  }
+  .archive-stories .agent-stage-art .stage-mindscape.stage-mindscape--trail-m{
+    transform:translate3d(2.2%,0,0) scale(1.18);
+    opacity:.32;
   }
 }
 

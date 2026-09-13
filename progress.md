@@ -4383,3 +4383,87 @@ Playwright (1440x900, localhost:8081/stories.html) 实测：
 - 未提交 git、未上线。公开站仍是上一版，工作台超时和首页封面 404 线上还在。
 - 未入库但本机已有、下次选择性推送需带上：`assets/field-icons/*.png|webp`、`agent-voices.js`。
 - 未做：绳网 GSAP 进场、活动栏改成绳网时间线最新三帖、Pages 4GB 产物治理。
+
+## 2026-09-13 - Task: 工作台舞台改成彩色在前、橙调 Default 垫后拖影
+
+### What was done
+
+用户截图里舞台只剩橙调 Default，是因为公开站不入库彩色 `full/`。本轮改成双层：彩色 Full 在前，橙调 Default 垫在后面做拖影；缺彩色才回退单张。`.gitignore` 放行 54 张 Full（约 16MB）。未提交、未推送。
+
+### Testing
+
+- `npm run build:stories` 成功。
+- `node .tmp/verify-stage-ghost.mjs` 输出 `STAGE_GHOST_PASS`。
+- 本机 5173 橘福福：彩色 `assets/mindscape/full/ju-fufu.webp` z=2 opacity=1；橙调 ghost `assets/mindscape/default/ju-fufu.webp` z=1 opacity=0.55、mix-blend=screen。
+- 截图 `.tmp/stage-ghost-fufu.png`。
+
+### Notes
+
+改动文件清单:
+- `src/stories.jsx` / `stories.js` — 舞台双层：color + ghost。
+- `stories-mindscape.js` — React 已写双层时不再覆盖；兜底优先 full。
+- `theme-zzz.css` / `stories.html` — 拖影层样式与缓存戳。
+- `.gitignore` — 放行 `assets/mindscape/full/*.webp`。
+- `docs/README.md` / `progress.md` — 同步舞台双层口径。
+
+回滚方式:
+- 还原上述文件本轮改动。`stories.js` 还原后执行 `npm run build:stories`。
+- `.gitignore` 改回只放行 default。
+
+范围说明:
+- 未提交 git。公开站仍是单层橙调 Default，要上线需提交 54 张 full webp。
+
+## 2026-09-13 - Task: 舞台改成同图青品红残影，去掉橙调垫底
+
+### What was done
+
+上一轮双层把橙调 Default 垫在彩色后面，构图对不上、残影几乎看不见，底栏还写 DEFAULT。本轮去掉橙调垫底，三层都用同一张彩色影画：正图在下，青/品红残影叠在上面左右拉开。底栏改成 FULL 影画。未提交、未推送。
+
+### Testing
+
+- `npm run build:stories` 成功。
+- `node .tmp/verify-stage-ghost.mjs` 输出 `STAGE_GHOST_PASS`。
+- 本机 5173 橘福福：三层同源 `assets/mindscape/full/ju-fufu.webp`；残影 z=4 压过正图 z=2；kicker 为 `// Ju Fufu · FULL 影画`；无 `.stage-mindscape--ghost`。
+- 实拍 `.tmp/stage-sande-fufu.png`：左右可见青/品红残影，底栏不再写 DEFAULT。
+
+### Notes
+
+改动文件清单:
+- `src/stories.jsx` / `stories.js` — 舞台三层同图；底栏 FULL 影画。
+- `theme-zzz.css` — 残影叠在正图上，青/品红拉开加亮。
+- `stories.html` — 缓存戳 `stage-sande-3`；描边抬到残影之上。
+- `.tmp/verify-stage-ghost.mjs` — 验收改为同图残影在上、kicker 含 FULL。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。`stories.js` 还原后执行 `npm run build:stories`。
+- `stories.html` 缓存戳改回 `stage-sande-1`。
+
+范围说明:
+- 未提交 git、未上线。公开站仍是单层橙调 Default；要上线需提交本轮站点文件和 54 张 full webp。
+
+## 2026-09-13 - Task: 修正舞台残影层级，不再盖住彩色正图
+
+### What was done
+
+上一轮把青/品红整层叠在彩色正图上面，原画被洗花。本轮正图改回不透明最前层；同图青/品红只从左右约 15% 边缘露出，中间主体不再染色。底栏仍是 FULL 影画。未提交、未推送。
+
+### Testing
+
+- `node .tmp/verify-stage-ghost.mjs` 输出 `STAGE_GHOST_PASS`。
+- 本机 5173 橘福福：三层同源 `assets/mindscape/full/ju-fufu.webp`；正图 z=3、`mix-blend=normal`；残影 z=4 且 mask 为左右线性渐变；kicker 为 `// Ju Fufu · FULL 影画`。
+- 实拍 `.tmp/stage-sande-fufu.png`：中间彩色正图可读，不再整幅青品红洗色。
+
+### Notes
+
+改动文件清单:
+- `theme-zzz.css` — 正图抬到最前；残影只留左右边缘。
+- `stories.html` — 缓存戳 `stage-sande-5`。
+- `.tmp/verify-stage-ghost.mjs` — 验收改为正图 normal、残影有左右 mask。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动。`stories.html` 缓存戳改回 `stage-sande-3`。
+
+范围说明:
+- 未提交 git、未上线。

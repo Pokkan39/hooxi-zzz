@@ -26,7 +26,7 @@
   <link rel="stylesheet" href="theme-tokens.css?v=ink-wash-1"/>
   <link rel="stylesheet" href="multi-page.css?v=cold-gray-2"/>
   <link rel="stylesheet" href="motion.css?v=signal-ui-r3"/>
-  <link rel="stylesheet" href="theme-zzz.css?v=stage-bg-2"/>
+  <link rel="stylesheet" href="theme-zzz.css?v=stage-sande-5"/>
   <link rel="stylesheet" href="src/styles/navigation.css"/>
   <link rel="stylesheet" href="live-hud.css?v=hud-1"/>
   <link rel="stylesheet" href="zzz-motion.css?v=stage-breathe-1"/>
@@ -615,7 +615,7 @@ body.archive-stories{
 /* 舞台立绘静态样式 */
 .archive-stories .agent-stage-backdrop-name{pointer-events:none}
 .archive-stories .agent-stage-art{border-radius:8px;box-shadow:0 24px 60px -18px rgba(0,0,0,.75)}
-.archive-stories .agent-stage-art::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:8px;box-shadow:inset 0 0 0 1px rgb(var(--character-theme-rgb,216 250 0) / .18),inset 0 1px 0 rgba(255,255,255,.12)}
+.archive-stories .agent-stage-art::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;border-radius:8px;box-shadow:inset 0 0 0 1px rgb(var(--character-theme-rgb,216 250 0) / .18),inset 0 1px 0 rgba(255,255,255,.12)}
 .archive-stories .agent-stage-art .parallax-bg,
 .archive-stories .agent-stage-art .parallax-fg,
 .archive-stories .agent-stage-art > img:not(.stage-mindscape){display:none !important}
@@ -1144,9 +1144,9 @@ body.archive-stories{
   <script src="agent-enrichment.js?v=wiki-gaps-3"></script>
   <script src="agent-catalog.js?v=wiki-gaps-3"></script>
   <script src="agent-xray.js?v=archive-3"></script>
-  <script src="stories.js?v=stage-ms-1"></script>
+  <script src="stories.js?v=stage-sande-5"></script>
   <script>(function(){var el=document.getElementById('storiesRoot');if(!el)return;var done=false;var go=function(){if(done)return;done=true;mo.disconnect();document.documentElement.dataset.appReady='true';window.dispatchEvent(new Event('hooxi:app-ready'));};var check=function(){if(el.querySelector('.stage-mindscape.on')||el.querySelector('.agent-roster-card'))go();};var mo=new MutationObserver(check);mo.observe(el,{childList:true,subtree:true,attributes:true,attributeFilter:['class','src']});check();})();</script>
-  <script src="stories-mindscape.js?v=ms-unify-4"></script>
+  <script src="stories-mindscape.js?v=ms-ghost-1"></script>
   <script src="assets/vendor/gsap/gsap.min.js?v=gsap-3-15-0"></script>
   <script src="zzz-motion.js?v=zzz-motion-r7"></script>
   <script src="zzz-motion-notice.js?v=zzz-motion-notice-r1"></script>
