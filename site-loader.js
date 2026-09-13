@@ -129,13 +129,7 @@
 
   const waitForGameHome=()=>{
     if(!document.querySelector('.game-shell'))return Promise.resolve();
-    const minMs=1200;
-    const started=Date.now();
-    const hold=()=>{
-      const left=minMs-(Date.now()-started);
-      return left>0?new Promise(r=>setTimeout(r,left)):Promise.resolve();
-    };
-    if(document.documentElement.dataset.homeReady==='true')return hold();
+    if(document.documentElement.dataset.homeReady==='true')return Promise.resolve();
     return new Promise(resolve=>{
       let done=false;
       const finish=()=>{
@@ -147,7 +141,7 @@
       };
       window.addEventListener('hooxi:home-ready',finish,{once:true});
       const timer=setTimeout(finish,12000);
-    }).then(hold);
+    });
   };
 
   const onDomReady=()=>{

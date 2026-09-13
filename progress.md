@@ -4278,3 +4278,20 @@ Playwright (1440x900, localhost:8081/stories.html) 实测：
 
 回滚方式:
 - 还原上述文件本轮改动。Release tag wallpapers-1080p 可另删。公开站回 720p 把 publicBase 改回 wallpapers-720p。
+
+## 2026-09-11 - Task: 公开站回退到 720p
+
+### What was done
+按用户要求，网站回到改成 720p 的那一版。公开站继续播 GitHub Release wallpapers-720p 的 56 条 720p 循环片；本机仍播本地原片。1080p 片源与加载遮罩最短亮 1.2 秒的改动一并撤回。
+
+### Testing
+- 工作区相关文件与提交 3d88767 对齐：wallpaper-data.js 的 publicBase 为 wallpapers-720p。
+- 缓存戳 site-loader.js?v=home-1、wallpaper-data.js?v=wp-4、home-wallpaper.js?v=wp-9、wallpaper.js?v=wp-4。
+
+### Notes
+改动文件清单:
+- index.html / site-loader.js / home-wallpaper.js / wallpaper.js / wallpaper-data.js / wallpaper.html / docs/README.md — 回到 720p 公开站口径。
+- progress.md — 追加本轮记录。
+
+回滚方式:
+- 还原上述文件本轮改动，或把 publicBase 再改回 wallpapers-1080p。
