@@ -504,6 +504,7 @@ html body.data-shell.data-cultivate .faq-index{
   <link rel="stylesheet" href="redesign-core-v3.css?v=hallmark-v3"/>
   <link rel="stylesheet" href="redesign-data-v3.css?v=hallmark-v3"/>
   <link rel="stylesheet" href="navigation-ik.css">
+  <link rel="stylesheet" href="cultivate-threads.css?v=ct-1">
 </head>
 <body class="subpage archive-cultivate archive-shell data-shell data-cultivate">
   <div class="hooxi-site-loader" data-site-loader role="status" aria-live="polite" aria-label="HOOXI 加载中">
@@ -537,7 +538,7 @@ html body.data-shell.data-cultivate .faq-index{
           </a>
           <a href="events.html" role="tab" class="ik-header-tab ik-header-tab--middle">
             <svg class="ik-tab-highlight ik-tab-highlight--middle" viewBox="0 0 121.4 42" aria-hidden="true"><path d="M 105.08 0 A 10 10 0 0 1 113.99 14.54 L 104.45 33.26 A 16 16 0 0 1 90.2 42 L 16.32 42 A 10 10 0 0 1 7.41 27.46 L 16.95 8.74 A 16 16 0 0 1 31.2 0 Z" fill="currentColor"/></svg>
-            <span class="ik-header-tab__content">委托</span>
+            <span class="ik-header-tab__content">绳网</span>
           </a>
           <a href="faction.html" role="tab" class="ik-header-tab ik-header-tab--middle">
             <svg class="ik-tab-highlight ik-tab-highlight--middle" viewBox="0 0 121.4 42" aria-hidden="true"><path d="M 105.08 0 A 10 10 0 0 1 113.99 14.54 L 104.45 33.26 A 16 16 0 0 1 90.2 42 L 16.32 42 A 10 10 0 0 1 7.41 27.46 L 16.95 8.74 A 16 16 0 0 1 31.2 0 Z" fill="currentColor"/></svg>
@@ -556,29 +557,30 @@ html body.data-shell.data-cultivate .faq-index{
     <section class="archive-hero" aria-labelledby="pageTitle">
       <p class="eyebrow">HOOXI 非官方档案</p>
       <h1 id="pageTitle">代理人养成索引</h1>
-      <p>本页是问答与素材索引，而非数值 Wiki；具体数值以游戏内与官方百科为准。</p>
+      <p>养成问答以绳网求助帖形式整理，配素材索引；本页不是数值 Wiki，具体数值以游戏内与官方百科为准。</p>
     </section>
 
     <section class="cultivate-directory" aria-labelledby="directoryTitle">
       <div class="section-head">
         <h2 id="directoryTitle">检索索引</h2>
-        <p>搜索问题、答案、素材名称、简述与来源元数据。</p>
+        <p>搜索求助帖标题、楼层回复、素材名称、简述与来源元数据。</p>
       </div>
       <form class="cultivate-search-form" role="search" action="cultivate.html" method="get">
         <label for="cultivateQuery">检索</label>
-        <input id="cultivateQuery" name="q" type="search" autocomplete="off" placeholder="输入问题、素材名或来源关键词"/>
+        <input id="cultivateQuery" name="q" type="search" autocomplete="off" placeholder="输入问题、素材名或来源关键词，如「镀剂」「音擎」"/>
         <button id="cultivateClear" type="button">清空</button>
         <output id="cultivateResultCount" for="cultivateQuery" aria-live="polite">正在读取索引…</output>
       </form>
     </section>
 
-    <section class="cultivate-faq" aria-labelledby="faqTitle">
+    <section class="cultivate-threads" aria-labelledby="threadsTitle">
       <div class="section-head">
-        <h2 id="faqTitle">常见问答</h2>
-        <p>保留市民指南中的全部问答，答案使用原生折叠结构。</p>
+        <h2 id="threadsTitle">绳网 · 求助</h2>
+        <p>市民指南的问答按主题归成求助帖，点开帖子查看逐层回复。</p>
       </div>
-      <div id="faqList" class="cultivate-faq-list"></div>
-      <p id="faqEmpty" class="cultivate-empty" hidden>没有匹配的问答。</p>
+      <p id="boardNote" class="ct-board-note"></p>
+      <div id="threadList" class="ct-list"></div>
+      <p id="threadEmpty" class="cultivate-empty" hidden>没有匹配的求助帖。</p>
     </section>
 
     <section class="cultivate-materials" aria-labelledby="matTitle">
@@ -605,14 +607,14 @@ html body.data-shell.data-cultivate .faq-index{
     <span class="footer-disclaimer" data-unofficial-boundary>HOOXI 为粉丝非官方档案，与米哈游/HoYoverse 无隶属；本页来源为本地官方百科镜像索引，相关本地图标及养成图等美术版权归米哈游所有。</span>
   </footer>
 
-  <script src="cultivate-data.js?v=wiki-cu-1"></script>
-  <script src="cultivate.js?v=cultivate-light-4"></script>
+  <script src="cultivate-data.js?v=ct-1"></script>
+  <script src="cultivate.js?v=ct-1"></script>
   <script src="assets/vendor/gsap/gsap.min.js?v=gsap-3-15-0"></script>
   <script src="zzz-motion.js?v=zzz-motion-r7"></script>
   <script src="zzz-motion-notice.js?v=zzz-motion-notice-r1"></script>
   <script src="zzz-tv-transition.js?v=zzz-tv-r2"></script>
   <script src="theme-switcher.js?v=theme-switcher-r1"></script>
-  <script src="game-feel.js?v=gf-1"></script>
+  <script src="game-feel.js?v=chr-io-1"></script>
   <script src="subpage-motion.js?v=sp-2"></script>
   <script src="zzz-audio-catalog.js?v=voice-p2"></script>
   <script src="zzz-player.js?v=voice-p2"></script>

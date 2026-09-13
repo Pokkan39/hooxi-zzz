@@ -363,8 +363,10 @@
      所有入口共用同一素材 resolver；主题色优先级严格为 i → l → c。
      运行时只把变量写到角色页 body 与首屏，不污染 documentElement。 */
   var CHARACTER_GALLERY_FALLBACKS = Object.freeze({
+    claret: 'assets/gallery/claret/01.webp',
     norma: 'assets/gallery/norma/05.png',
     pyrois: 'assets/gallery/pyrois/05.png',
+    sigrid: 'assets/gallery/sigrid/01.webp',
     velina: 'assets/gallery/velina/06.png'
   });
 

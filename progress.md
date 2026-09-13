@@ -4295,3 +4295,56 @@ Playwright (1440x900, localhost:8081/stories.html) 实测：
 
 回滚方式:
 - 还原上述文件本轮改动，或把 publicBase 再改回 wallpapers-1080p。
+
+## 2026-09-13 - Task: 修工作台 S/A 徽章对调与空舞台
+
+### What was done
+工作台 S/A 看起来对调，是徽章 PNG 文件反了，花名册 rank 字段本身没错。本轮把 rank-s / rank-a 对调回来。舞台空、加载过快，是因为影画去拉未入库的 full/，立绘又被 CSS 藏掉，公开站空台；React 一挂上就揭遮罩。本轮改走已入库 default 影画，缺图再回落到图集/立绘；图片 404 不再判整页失败；遮罩等到舞台影画亮起再揭。未提交 git、未上线。
+
+### Testing
+- 本机 5173：`node .tmp/verify-stories-rank-stage.mjs` 输出 `STORIES_RANK_STAGE_PASS`。
+- 安比卡片与舞台徽章均为 `rank-a.png`，data-rank=A；丽娜均为 `rank-s.png`，data-rank=S。
+- 安比/丽娜舞台 `.stage-mindscape.on` 源为 `assets/mindscape/default/<id>.webp`，未请求 `mindscape/full/`。
+- 加载遮罩先出现 site-loading，影画亮起后 site-ready，未 degraded。
+- `npm run build:stories` 已重打包 `stories.js`。缓存戳 stories.js?v=rank-swap-1、stories-mindscape.js?v=ms-unify-4。需硬刷新。
+
+### Notes
+改动文件清单:
+- `assets/rank-s.png` / `assets/rank-a.png` — 对调文件内容，S 为橙、A 为紫。
+- `src/stories.jsx` / `stories.js` — 徽章加缓存戳 rank-swap-1。
+- `stories-mindscape.js` — 舞台优先 default 影画，不再请求 full/。
+- `stories.html` — 忽略图片 404；等 `.stage-mindscape.on` 再发 app-ready；脚本缓存戳。
+- `docs/README.md` — 同步工作台舞台走 default、不拉 full/ 口径。
+- `progress.md` — 追加本轮记录。
+
+回滚方式:
+- 再对调一次 `assets/rank-s.png` 与 `assets/rank-a.png`。
+- 还原 `src/stories.jsx` 后执行 `npm run build:stories`。
+- 还原 `stories-mindscape.js` / `stories.html` 本轮改动；脚本戳改回 stage-art-1 / ms-unify-3。
+
+## 2026-09-13 - Task: 修卡顿并保住既有效果后推送
+
+### What was done
+公开站卡，主要是切走标签页后胶片/扫描线仍在空转、壁纸 preload=auto、工作台一开页就给整列卡克隆色散层；舞台空是去拉未入库 full 影画。本轮不拆 HUD 入场、绿框呼吸、开机扫描、CRT、胶片跑马灯和色散本身：切走标签页暂停常驻动画；壁纸改 metadata；色散进视野再克隆；舞台走已入库 default 影画；S/A 徽章图对调回来；误删的 route-loader 已从 HEAD 救回。仓库手感、59 人花名册与角色入场一并带上，避免线上仍像缺效果。未整包提交工作区样板/调试文件。
+
+### Testing
+- `node .tmp/verify-site-perf-keep.mjs` 输出 `SITE_PERF_KEEP_PASS`。
+- 首页 site-ready；胶片 6 张；绿框 `hudLimeBreath`、扫描线 `scanDrift`、开机层 `hudBootScan, hudCrtIdle` 仍在。
+- `is-page-hidden` 时扫描线与绿框 animation-play-state=paused。
+- 壁纸 preload=metadata，本机仍播 wallpapers。
+- 工作台 59 卡；色散克隆 9/59；安比 A + default 影画；未请求 mindscape/full。
+- `node .tmp/verify-stories-rank-stage.mjs` 先前已 `STORIES_RANK_STAGE_PASS`。
+
+### Notes
+改动文件清单（本轮提交范围，不含样板/调试）：
+- `app.js` / `style.css` / `index.html` — 胶片 hidden 停 rAF；切页暂停扫描线/绿框/CRT；图片 404 不判整页失败。
+- `home-wallpaper.js` — preload 改为 metadata。
+- `game-feel.js` — 色散进视野再克隆。
+- `site-motion.js` — 切页加 is-page-hidden。
+- `stories-mindscape.js` / `stories.html` / `src/stories.jsx` / `stories.js` / `assets/rank-*.png` — 舞台 default 影画；S/A 徽章对调。
+- `warehouse-boot.js` / `warehouse.js` / `warehouse-ui.css` / `mat-data.js` / `assets/mat/m164-m166.webp` — 仓库手感与差集材料。
+- 角色/花名册相关：`agent-catalog.js` 等、克拉蕾/希格莉德立绘与 logo、`character.html` 入场样式脚本。
+- `docs/README.md` / `progress.md` — 同步口径。
+
+回滚方式:
+- `git revert` 本轮提交。

@@ -1,4 +1,4 @@
-/* 仓库浮层：材料 / 驱动盘 / 音擎。驱动盘与音擎数值来自 wiki，材料为演示数据。 */
+/* 仓库浮层：材料 / 驱动盘 / 音擎。驱动盘、音擎与材料条目来自 bili wiki 筛选页本地化；材料数量为演示。 */
 (() => {
   const overlay = document.getElementById('wh-overlay');
   const inspect = document.getElementById('wh-inspect');
@@ -116,6 +116,8 @@
   let tab = 'mat';
   let sel = 0;
   const LABELS = { mat:'材料道具', disc:'驱动仓库', engine:'音擎仓库', key:'重要物品' };
+  const KICK = { mat:'MAT', disc:'DRIVE DISC', engine:'W-ENGINE', key:'KEY ITEM' };
+  const kicker = document.getElementById('wh-kicker');
   const ACTIONS = { mat:'道具处理', disc:'拆解', engine:'回收', key:'' };
   const CAP = { disc:3000, engine:2000 };
 
@@ -170,7 +172,12 @@
   const getLinks = (get) => String(get||'').split(/[、,，]/).map(s=>s.trim()).filter(Boolean);
 
   function paintSel(){
-    grid.querySelectorAll('.wh-cell').forEach(b => b.classList.toggle('is-sel', +b.dataset.i===sel));
+    grid.querySelectorAll('.wh-cell').forEach(b => {
+      const on = +b.dataset.i === sel;
+      b.classList.toggle('is-sel', on);
+      b.setAttribute('aria-current', on ? 'true' : 'false');
+      if (on) kick(b, 'is-confirm');
+    });
   }
 
   function detailMat(m){
@@ -411,7 +418,8 @@
   function draw(){
     const items = itemsOf();
     const cap = CAP[tab];
-    title.innerHTML = cap ? `${LABELS[tab]} <i>[ ${items.length} / ${cap} ]</i>` : (LABELS[tab] || '仓库');
+    if (kicker) kicker.textContent = `WAREHOUSE // ${KICK[tab] || 'STORAGE'}`;
+    title.innerHTML = cap ? `${LABELS[tab]} <i>[ ${items.length} / ${cap} ]</i>` : `${LABELS[tab] || '仓库'} <i>[ ${items.length} ]</i>`;
     action.hidden = !ACTIONS[tab];
     if (ACTIONS[tab]) action.querySelector('span').textContent = ACTIONS[tab];
     funnel.hidden = tab!=='disc';

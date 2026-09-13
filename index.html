@@ -10,12 +10,12 @@
     .hooxi-site-loader img{width:360px;height:auto;opacity:1}
     @media (prefers-reduced-motion:reduce){.hooxi-site-loader{transition:none}}
   </style>
-  <script>(function(w,d){var r=d.documentElement;if(w.__hooxiSiteLoaderBoot)return;var b=w.__hooxiSiteLoaderBoot={startedAt:Date.now(),degraded:false,finished:false};var done=function(s){if(b.finished)return;b.finished=true;clearTimeout(b.timer);r.classList.remove('site-loading','site-booting','site-loader-finishing');r.dataset.siteLoaderState=s;r.classList.add(s==='degraded'?'site-degraded':'site-ready');};var fail=function(e){if(b.finished)return;var t=e&&e.target;if(!(t&&/^(IMG|SCRIPT|LINK)$/.test(t.tagName)))return;var a=t.tagName==='LINK'?'href':'src',u=t.getAttribute(a);if(u==null||u==='')return;b.degraded=true;r.dataset.siteLoaderState='degraded';r.classList.add('site-degraded');if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.degrade();else done('degraded');};b.finish=done;b.fail=fail;r.classList.add('site-loading','site-booting');w.addEventListener('error',fail,true);w.addEventListener('unhandledrejection',fail,true);b.timer=setTimeout(function(){if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.forceFinish();else done(b.degraded?'degraded':'timeout');},12000);})(window,document);</script>
+  <script>(function(w,d){var r=d.documentElement;if(w.__hooxiSiteLoaderBoot)return;var b=w.__hooxiSiteLoaderBoot={startedAt:Date.now(),degraded:false,finished:false};var done=function(s){if(b.finished)return;b.finished=true;clearTimeout(b.timer);r.classList.remove('site-loading','site-booting','site-loader-finishing');r.dataset.siteLoaderState=s;r.classList.add(s==='degraded'?'site-degraded':'site-ready');};var fail=function(e){if(b.finished)return;var t=e&&e.target;if(e&&e.type==='error'&&t&&t.tagName==='IMG')return;if(!(t&&/^(SCRIPT|LINK)$/.test(t.tagName)))return;var a=t.tagName==='LINK'?'href':'src',u=t.getAttribute(a);if(u==null||u==='')return;b.degraded=true;r.dataset.siteLoaderState='degraded';r.classList.add('site-degraded');if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.degrade();else done('degraded');};b.finish=done;b.fail=fail;r.classList.add('site-loading','site-booting');w.addEventListener('error',fail,true);w.addEventListener('unhandledrejection',fail,true);b.timer=setTimeout(function(){if(w.__hooxiSiteLoader)w.__hooxiSiteLoader.forceFinish();else done(b.degraded?'degraded':'timeout');},12000);})(window,document);</script>
   <script src="./site-loader.js?v=home-1" defer></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>绝区零 · 主界面</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="style.css?v=hud-3">
+  <link rel="stylesheet" href="style.css?v=live-pause-2">
 </head>
 <body>
   <div class="hooxi-site-loader" data-site-loader role="status" aria-live="polite" aria-label="HOOXI 加载中">
@@ -80,7 +80,7 @@
       </aside>
     </section>
     <section class="wh-overlay" id="wh-overlay" aria-label="仓库" hidden>
-      <div class="wh-titlebar"><h2 id="wh-title">材料道具</h2></div>
+      <div class="wh-titlebar"><p class="wh-kicker" id="wh-kicker">WAREHOUSE</p><h2 id="wh-title">材料道具</h2></div>
       <div class="wh-body">
         <div class="wh-grid-wrap"><div class="wh-grid" id="wh-grid" role="list"></div></div>
         <div class="wh-side">
@@ -129,19 +129,39 @@
         <div class="wip-hazard" aria-hidden="true"></div>
         <div class="wip-screen">
           <div class="wip-scan" aria-hidden="true"></div>
-          <div class="wip-num" aria-hidden="true">404</div>
-          <div class="wip-gear" aria-hidden="true"></div>
-          <p class="wip-kicker" aria-hidden="true">HOOXI SYSTEM // <span id="wip-code">MAILBOX</span></p>
-          <h2 class="wip-title" id="wip-title">施工中</h2>
-          <p class="wip-title-en" aria-hidden="true">UNDER CONSTRUCTION</p>
-          <p class="wip-desc" id="wip-desc">
-            <span class="wip-zh">该功能尚未开放，我们正在赶工。</span>
-            <span class="wip-en">This section is not available yet. Work in progress.</span>
-          </p>
-          <div class="wip-bar" aria-hidden="true"><i></i></div>
-          <button class="wip-close" type="button" id="wip-close">
-            <span class="wip-zh">返回</span><span class="wip-en">BACK</span>
-          </button>
+          <div class="wip-head">
+            <p class="wip-kicker">HOOXI SYSTEM // <span id="wip-code">MAILBOX</span></p>
+          </div>
+          <div class="wip-hero">
+            <div class="wip-copy">
+              <h2 class="wip-title" id="wip-title">施工中</h2>
+              <p class="wip-title-en">UNDER CONSTRUCTION</p>
+              <p class="wip-desc" id="wip-desc">
+                <span class="wip-zh">该功能尚未开放，我们正在赶工。</span>
+                <span class="wip-en">This section is not available yet. Work in progress.</span>
+              </p>
+            </div>
+            <span class="wip-num" aria-hidden="true">404</span>
+          </div>
+          <dl class="wip-board" aria-hidden="true">
+            <div><dt>MODULE</dt><dd id="wip-mod">MAILBOX</dd></div>
+            <div><dt>STATUS</dt><dd>OFFLINE</dd></div>
+            <div><dt>SIGNAL</dt><dd>LOST</dd></div>
+            <div><dt>ETA</dt><dd>--:--</dd></div>
+          </dl>
+          <pre class="wip-log" aria-hidden="true" id="wip-log">> handshake timeout
+> channel locked
+> return to HUD</pre>
+          <div class="wip-foot">
+            <div class="wip-progress">
+              <span>BUILD</span>
+              <div class="wip-bar"><i></i></div>
+              <b>34%</b>
+            </div>
+            <button class="wip-close" type="button" id="wip-close">
+              <span class="wip-zh">返回</span><span class="wip-en">BACK</span>
+            </button>
+          </div>
         </div>
         <div class="wip-hazard wip-hazard--bottom" aria-hidden="true"></div>
       </div>
@@ -150,11 +170,11 @@
   <script src="edits-apply.js?v=load-1"></script>
   <script src="home-events-data.js?v=he-3"></script>
   <script src="wallpaper-data.js?v=wp-4"></script>
-  <script src="home-wallpaper.js?v=wp-9"></script>
-  <script src="app.js"></script>
+  <script src="home-wallpaper.js?v=wp-11"></script>
+  <script src="app.js?v=live-pause-2"></script>
   <script src="home-events.js?v=he-4"></script>
-  <script src="warehouse-boot.js?v=wh-1"></script>
-  <script src="site-motion.js?v=hud-3"></script>
+  <script src="warehouse-boot.js?v=wh-cover-1"></script>
+  <script src="site-motion.js?v=live-pause-1"></script>
   <script src="home-fx.js?v=hud-3"></script>
 </body>
 </html>

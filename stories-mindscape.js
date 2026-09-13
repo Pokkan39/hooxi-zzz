@@ -43,7 +43,7 @@
     for (var i = 0; i < spans.length; i++) spans[i].textContent = line;
   }
 
-  // 彩色 full 影画铺舞台。缺 full 时回落到 mindscape。
+  // 公开站只入库 default 影画；缺图再回落到图集/立绘。
   function applyMindscape(stage) {
     var art = stage && stage.querySelector(ART_SEL);
     if (!art) return;
@@ -51,9 +51,13 @@
     if (!id) return;
     applyMarquee(stage, id);
     var ms = art.querySelector('.stage-mindscape');
-    var full = 'assets/mindscape/full/' + encodeURIComponent(id) + '.webp';
-    var fallback = 'assets/mindscape/' + encodeURIComponent(id) + '-mindscape.webp';
-    if (ms && ms.getAttribute('data-cur') === full) return;
+    // Pages 只入库 default 影画；full/ 被 gitignore，公开站拉不到会空台。
+    var queue = [
+      'assets/mindscape/default/' + encodeURIComponent(id) + '.webp',
+      'assets/gallery/' + encodeURIComponent(id) + '/01.webp',
+      'assets/portraits/' + encodeURIComponent(id) + '-portrait.webp'
+    ];
+    if (ms && queue.indexOf(ms.getAttribute('data-cur') || '') !== -1) return;
     if (!ms) {
       ms = document.createElement('img');
       ms.className = 'stage-mindscape';
@@ -67,15 +71,17 @@
       ms.setAttribute('data-cur', src);
       requestAnimationFrame(function () { ms.classList.add('on'); });
     }
-    var probe = new Image();
-    probe.onload = function () { show(full); };
-    probe.onerror = function () {
-      var fb = new Image();
-      fb.onload = function () { show(fallback); };
-      fb.onerror = function () { ms.classList.remove('on'); };
-      fb.src = fallback;
-    };
-    probe.src = full;
+    function tryNext(i) {
+      if (i >= queue.length) {
+        ms.classList.remove('on');
+        return;
+      }
+      var probe = new Image();
+      probe.onload = function () { show(queue[i]); };
+      probe.onerror = function () { tryNext(i + 1); };
+      probe.src = queue[i];
+    }
+    tryNext(0);
   }
 
   var prevStage = null;

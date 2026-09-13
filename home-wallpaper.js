@@ -64,7 +64,7 @@
   video.autoplay = true;
   video.loop = true;
   video.playsInline = true;
-  video.preload = "auto";
+  video.preload = "metadata";
   let i = 0;
   let settled = false;
   const settle = () => {

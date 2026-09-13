@@ -1,0 +1,83 @@
+/* Warehouse HUD overlay. Scoped to .wh-overlay / .wh-inspect. */
+.wh-titlebar {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 10px clamp(14px, 3vw, 38px) 6px;
+}
+.wh-kicker {
+  margin: 0;
+  font-family: 'ZzzEN', 'ZzzZH', sans-serif;
+  font-size: 10px;
+  letter-spacing: .22em;
+  color: #8d929b;
+  white-space: nowrap;
+}
+.wh-titlebar h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  color: #e8ebef;
+}
+.wh-titlebar h2 i {
+  font-family: 'ZzzEN', 'ZzzZH', sans-serif;
+  color: var(--lime, #d8ff28);
+  font-size: 13px;
+  letter-spacing: .08em;
+}
+
+.wh-slot {
+  box-shadow: inset 0 0 0 2.5px #4a4e56, inset 0 -18px 0 rgba(0, 0, 0, .28), 0 6px 10px rgba(0, 0, 0, .35);
+}
+.wh-cell.is-sel .wh-slot {
+  box-shadow: inset 0 0 0 2.5px #4a4e56, 0 0 0 3px var(--lime, #d8ff28), 0 0 16px rgba(216, 255, 40, .35);
+}
+.wh-cell.is-confirm .wh-slot {
+  animation: wh-confirm .28s cubic-bezier(.16, 1, .3, 1);
+}
+@keyframes wh-confirm {
+  from { transform: scale(.94); }
+  to { transform: none; }
+}
+.wh-cell:focus-visible .wh-slot {
+  box-shadow: inset 0 0 0 2.5px #4a4e56, 0 0 0 3px var(--cyan, #21d8ff);
+}
+.wh-tab:focus-visible {
+  outline: 3px solid var(--cyan, #21d8ff);
+  outline-offset: 3px;
+}
+
+.wh-detail-frame {
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, .12), inset 0 0 0 2px #0b0d11, inset 0 0 0 3px rgba(216, 255, 40, .12);
+}
+.wh-dt-label {
+  color: var(--lime, #d8ff28);
+}
+
+html.is-page-hidden .wh-overlay:not([hidden]),
+html.is-page-hidden .wh-overlay::before,
+html.is-page-hidden .wh-cell.is-sel .wh-slot,
+html.is-page-hidden .wh-cell.is-sel .wh-wicon,
+html.is-page-hidden .wh-cell.is-sel .wh-case,
+html.is-page-hidden .wh-new,
+html.is-page-hidden .wh-ins-art--disc .wh-case {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wh-overlay:not([hidden]),
+  .wh-overlay.is-enter,
+  .wh-overlay::before,
+  .wh-inspect:not([hidden]),
+  .wh-cell.is-sel .wh-slot,
+  .wh-cell.is-sel .wh-wicon,
+  .wh-cell.is-sel .wh-case,
+  .wh-cell.is-confirm .wh-slot,
+  .wh-grid.is-in .wh-cell,
+  .wh-detail.is-swap,
+  .wh-tab.is-active,
+  .wh-new,
+  .wh-ins-art--disc .wh-case {
+    animation: none !important;
+  }
+}

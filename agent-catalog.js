@@ -1,5 +1,5 @@
 (()=>{
-  const snapshotDate='2026-07-29';
+  const snapshotDate='2026-09-11';
   const remielleWikiUrl='https://baike.mihoyo.com/zzz/wiki/content/2076/detail?mhy_presentation_style=fullscreen';
   const sourceLinks={
     official:'https://zenless.hoyoverse.com/',
@@ -24,7 +24,9 @@
     'defense-force-silver-squad':'防卫军白银小队，保留军旅痕迹与高强度训练背景。',
     'external-strategy-department':'外务筹策相关编制，偏重情报、协调与特殊勤务。',
     'phaethon':'绳匠「法厄同」一侧的档案入口，串联录像店与城市委托线。',
-    'covenant-of-dayat':'达识结社名称及蕾米埃尔·丹的成员关系由其官方角色百科页确认；独立阵营资料待官方公布。'
+    'covenant-of-dayat':'达识结社名称及蕾米埃尔·丹的成员关系由其官方角色百科页确认；独立阵营资料待官方公布。',
+    'flynn-atelier':'罗斯凯利法·弗林特工坊，克拉蕾所属编制；wiki 阵营页事实待官方独立条目补齐。',
+    'airspace-patrol':'罗斯凯利法·空域巡戍局，希格莉德所属编制；wiki 阵营页事实待官方独立条目补齐。'
   };
   const factionLogos={
     'cunning-hares':'assets/icons/cunning-hares.png',
@@ -44,10 +46,12 @@
     'defense-force-silver-squad':'assets/icons/defense-force-silver-squad.png',
     'external-strategy-department':'assets/icons/external-strategy-department.png',
     'phaethon':'assets/icons/phaethon.png',
-    'covenant-of-dayat':'assets/icons/covenant-of-dayat.png'
+    'covenant-of-dayat':'assets/icons/covenant-of-dayat.png',
+    'flynn-atelier':'assets/icons/flynn-atelier.png',
+    'airspace-patrol':'assets/icons/airspace-patrol.png'
   };
   const factions=[
-    ['cunning-hares','狡兔屋','#f3d33b'],['belobog','白祇重工','#ef6e3a'],['victoria-housekeeping','维多利亚家政','#bfc9dc'],['sons-of-calydon','卡吕冬之子','#e65031'],['section-6','对空洞特别行动部第六课','#65bce8'],['criminal-investigation-srt','刑侦特勤组','#3aaad8'],['obol-squad','奥波勒斯小队','#db3848'],['stars-of-lyra','天琴座','#f6a3cc'],['mockingbird','「反舌鸟」','#8169c7'],['yunkui-summit','云岿山','#d9b553'],['spook-shack','怪啖屋','#6bb68d'],['krampus-compliance-authority','「坎卜斯黑枝」','#a55555'],['angels-of-delusion','「妄想天使」','#ef8fc0'],['metropolitan-order-division','都市秩序部','#5b86b8'],['defense-force-silver-squad','防卫军・白银小队','#b8c3d1'],['external-strategy-department','外务筹策局','#988bc4'],['phaethon','「法厄同」','#e6c33b'],['covenant-of-dayat','达识结社','#cdb586']
+    ['cunning-hares','狡兔屋','#f3d33b'],['belobog','白祇重工','#ef6e3a'],['victoria-housekeeping','维多利亚家政','#bfc9dc'],['sons-of-calydon','卡吕冬之子','#e65031'],['section-6','对空洞特别行动部第六课','#65bce8'],['criminal-investigation-srt','刑侦特勤组','#3aaad8'],['obol-squad','奥波勒斯小队','#db3848'],['stars-of-lyra','天琴座','#f6a3cc'],['mockingbird','「反舌鸟」','#8169c7'],['yunkui-summit','云岿山','#d9b553'],['spook-shack','怪啖屋','#6bb68d'],['krampus-compliance-authority','「坎卜斯黑枝」','#a55555'],['angels-of-delusion','「妄想天使」','#ef8fc0'],['metropolitan-order-division','都市秩序部','#5b86b8'],['defense-force-silver-squad','防卫军・白银小队','#b8c3d1'],['external-strategy-department','外务筹策局','#988bc4'],    ['phaethon','「法厄同」','#e6c33b'],['covenant-of-dayat','达识结社','#cdb586'],['flynn-atelier','罗斯凯利法·弗林特工坊','#c72828'],['airspace-patrol','罗斯凯利法·空域巡戍局','#3c6ccc']
   ].map(([id,name,theme])=>{
     const wikiId=({
       'cunning-hares':'547',
@@ -86,6 +90,7 @@
     ['burnice','柏妮思·怀特','Burnice White','sons-of-calydon','S','Fire','Anomaly','Pierce','2024-10-16','Flamemaker Shaker','May 23rd'],
     ['caesar','凯撒·金','Caesar King','sons-of-calydon','S','Physical','Defense','Slash / Strike','2024-09-25','Tusks of Fury','March 16th'],
     ['cissia','希希芙','Cissia','metropolitan-order-division','S','Electric','Attack','Slash','2026-04-15','Serpentine Seeker','January 10th'],
+    ['claret','克拉蕾','Claret Flint','flynn-atelier','S','Electric','锋御','待公布','2026-09-09','猩红渴望','待公布'],
     ['corin','可琳·威克斯','Corin Wickes','victoria-housekeeping','A','Physical','Attack','Slash','2024-07-04','Housekeeper','June 2nd'],
     ['dialyn','琉音','Dialyn','krampus-compliance-authority','S','Physical','Stun','Slash','2025-11-26','Yesterday Calls','May 28th'],
     ['ellen','艾莲·乔','Ellen Joe','victoria-housekeeping','S','Ice','Attack','Slash','2024-07-04','Deep Sea Visitor','January 4th'],
@@ -109,11 +114,12 @@
     ['piper','派派·韦尔','Piper Wheel','sons-of-calydon','A','Physical','Anomaly','Slash','2024-07-04','Roaring Ride','October 21st'],
     ['promeia','普罗米娅','Promeia','krampus-compliance-authority','S','Ice','Anomaly','Slash','2026-05-06','Frostfall Sickle','December 23rd'],
     ['pulchra','波可娜·费雷尼','Pulchra Fellini','sons-of-calydon','A','Physical','Stun','Slash','2025-03-12','Box Cutter','June 19th'],
-    ['pyrois','佩洛伊斯','Pyrois','phaethon','I','Ether','Attack','Slash','2026-06-17','Sol Exuvia','待核验'],
+    ['pyrois','佩洛伊斯','Pyrois','phaethon','∞','Ether','Attack','Slash','2026-06-17','Sol Exuvia','待核验'],
     ['qingyi','青衣','Qingyi','criminal-investigation-srt','S','Electric','Stun','Strike','2024-08-14','Ice-Jade Teapot','January 1st'],
-    ['remielle','蕾米埃尔·丹','REMIELLE','covenant-of-dayat','待公布','待公布','待公布','待公布','待公布','待公布','待公布'],
+    ['remielle','蕾米埃尔·丹','REMIELLE','covenant-of-dayat','S','Lumen','Anomaly','待公布','2026-07-29','空羽复归之诗','待公布'],
     ['seed','「席德」','Seed','obol-squad','S','Electric','Attack','Slash / Strike','2025-09-04','Cordis Germina','November 22nd'],
     ['seth','赛斯·洛威尔','Seth Lowell','criminal-investigation-srt','A','Electric','Defense','Slash','2024-09-04','Peacekeeper - Specialized','April 8th'],
+    ['sigrid','希格莉德','Sigrid de L\'Azur','airspace-patrol','S','Ice','Attack','Pierce','2026-08-19','骁骑礼赞','April 23rd'],
     ['soldier-0-anby','零号·安比','Soldier 0 - Anby','defense-force-silver-squad','S','Electric','Attack','Slash','2025-03-12','Severed Innocence','February 20th'],
     ['soldier-11','11号','Soldier 11','obol-squad','S','Fire','Attack','Slash','2024-07-04','The Brimstone','March 21st'],
     ['soukaku','苍角','Soukaku','section-6','A','Ice','Support','Slash','2024-07-04','Bashful Demon','January 23rd'],
@@ -131,7 +137,7 @@
     ['zhao','照','Zhao','krampus-compliance-authority','S','Ice','Defense','Slash','2025-12-30','Half-Sugar Bunny','October 14'],
     ['zhu-yuan','朱鸢','Zhu Yuan','criminal-investigation-srt','S','Ether','Attack','Pierce','2024-07-24','Riot Suppressor Mark VI','September 1st']
   ];
-  const zh={Physical:'物理',Fire:'火',Ice:'冰',Electric:'电',Ether:'以太',Frost:'烈霜','Auric Ink':'玄墨','Honed Edge':'霜锋',Wind:'风',Attack:'强攻',Stun:'击破',Anomaly:'异常',Support:'支援',Defense:'防护',Rupture:'命破',Slash:'斩击',Strike:'打击',Pierce:'穿透'};
+  const zh={Physical:'物理',Fire:'火',Ice:'冰',Electric:'电',Ether:'以太',Frost:'烈霜','Auric Ink':'玄墨','Honed Edge':'霜锋',Wind:'风',Lumen:'流明',Attack:'强攻',Stun:'击破',Anomaly:'异常',Support:'支援',Defense:'防护',Rupture:'命破',Slash:'斩击',Strike:'打击',Pierce:'穿透','锋御':'锋御'};
   const firstLine=value=>{
     const text=String(value||'').replace(/\r/g,'').trim();
     if(!text) return '';
@@ -206,7 +212,7 @@
     const factionName=factions.find(item=>item.id===factionId)?.name||'待核验阵营';
     const impression=String(enrich.impression||'').trim();
     const summary=id==='remielle'
-      ?'蕾米埃尔·丹是达识结社成员；更多代理人资料待官方公布。'
+      ?'蕾米埃尔·丹是达识结社成员，S级流明异常代理人。'
       :(firstLine(impression)||`${name}是${factionName}的${zh[specialty]||specialty}代理人。`);
     const personalStories=(enrich.personalStories||[]).filter(item=>item&&item.summary).map(item=>({
       title:item.title||'角色故事',
@@ -227,15 +233,17 @@
     }));
     const gallery=(enrich.gallery||[]).map(item=>{
       if(!item) return null;
-      // 仅保留同源本地图集；丢弃远程热链，避免 ||item.image 把外链带回页面。
-      const image=mediaUrl(item.image||item.url||item.src)||'';
+      // 仅保留同源本地图集；兼容 string 路径；丢弃远程热链。
+      const raw=typeof item==='string'?item:(item.image||item.url||item.src);
+      const image=mediaUrl(raw)||'';
       if(!image) return null;
-      return {...item,image};
+      return typeof item==='string'?{image,title:'档案图'}:{...item,image};
     }).filter(Boolean);
     const wikiDetail=enrich.wikiUrl||(enrich.wikiId?`https://baike.mihoyo.com/zzz/wiki/content/${enrich.wikiId}/detail`:'');
+    const wikiIsBili=/wiki\.biligame\.com/.test(wikiDetail);
     const sources=[
       {label:'绝区零官方资料',url:sourceLinks.official,type:'官方资料'},
-      {label:'米哈游绝区零百科',url:wikiDetail||sourceLinks.wiki,type:id==='remielle'?'官方百科':'资料汇总'}
+      {label:wikiIsBili?'bili 绝区零WIKI':'米哈游绝区零百科',url:wikiDetail||sourceLinks.wiki,type:id==='remielle'?'官方百科':wikiIsBili?'百科':'资料汇总'}
     ];
     if(id!=='remielle') sources.push({
       label:'Prydwen 角色卡面与攻略',
@@ -255,6 +263,7 @@
       avatar:card,
       headshot:card,
       portrait:localPortrait(id),
+      mindscape:mindscapeMap[id]?`assets/portraits/${mindscapeMap[id]}`:'',
       iconUrl:wikiIcon,
       headerImgUrl:wikiHeader,
       summary,

@@ -30,7 +30,7 @@
 
 **用户本轮要求 vs 现况对照**（难看/不协调/配色/模块少；先对齐再按 skill 重构）见 [`USER-REQ-VS-STATUS-2026-07-19.md`](USER-REQ-VS-STATUS-2026-07-19.md)。**不等于施工授权。**
 
-**正式站缺口清单**（产品 Spec vs 现况、原型边界、D1–D8 决策板、施工包 C1–C5；skill 复查摘要）见 [`HOOXI-FORMAL-SITE-GAP-CHECKLIST.md`](HOOXI-FORMAL-SITE-GAP-CHECKLIST.md)。**C1–C4 与现行美术覆盖（18 阵营 logo + 57 角色卡面）已落地**；**P1 品牌可读（7 页 SEO TDK + favicon + 首页轻量关于）已落地**；正式首页当前采用“午夜放映档案”七幕长卷，不再采用 2026-07-19 的 10 模块（6 LIVE / 4 LOCK）模块墙事实。主线页 `?lane=` 车道切换与正式档案可读性继续保留；C5 本阶段不做。本站不是官方 wiki 整站复刻。
+**正式站缺口清单**（产品 Spec vs 现况、原型边界、D1–D8 决策板、施工包 C1–C5；skill 复查摘要）见 [`HOOXI-FORMAL-SITE-GAP-CHECKLIST.md`](HOOXI-FORMAL-SITE-GAP-CHECKLIST.md)。**C1–C4 与现行美术覆盖（20 阵营 logo + 59 角色卡面）已落地**；**P1 品牌可读（7 页 SEO TDK + favicon + 首页轻量关于）已落地**；正式首页当前采用“午夜放映档案”七幕长卷，不再采用 2026-07-19 的 10 模块（6 LIVE / 4 LOCK）模块墙事实。主线页 `?lane=` 车道切换与正式档案可读性继续保留；C5 本阶段不做。本站不是官方 wiki 整站复刻。
 
 对照审核稿 §3 的**抛砖视觉 Demo**（非正式站）：[`../prototype/visual-review-demos/`](../prototype/visual-review-demos/README.md)。五版可切换：门面档案为主 / 门面进店为主 / 主线终端 / 角色阵营墙 / PLAY 店内 2D。**仅讨论视觉，不替换正式首页。**
 
@@ -38,7 +38,7 @@
 
 ## 游戏化档案界面
 
-正式首页现在是“午夜放映档案”七幕长卷：序幕·今晚放映、第一幕·选片、第二幕·演员表、第三幕·正片、第四幕·加映、第五幕·片后谈、片尾·关于档案；序幕保留 Dual Gate，正式查档为主行动，PLAY 录像店是可跳过的次行动。首页职责是把访客送入真实查档路径和代理人精选索引；主线、角色剧情、活动与幕后长列表仍由各自正式栏目承载。页面尾部磁带坞保留完整播放器功能，但作为文档流内的次级面板，不遮挡内容或成为主 CTA。游戏主界面 `index.html` 底部导航中，仓库点开后在首页展开浮层（材料道具 / 驱动仓库 / 音擎仓库 / 重要物品），不再跳转 `drive-disc-sample.html`。绳网（`events.html` / `post.html` / `create.html` / `edit.html`）的源页在 `src/html/`，`npm run build` 会把 Vite 产物发布到仓库根目录，因此 Python 静态服务和 GitHub Pages 都能直接打开，不再依赖加载未编译的 `.jsx`。格子数量/等级压在底部稀有度色条上，选中是整格外描边，音擎格内显示星级。仓库中文用游戏字，容量数字用游戏英文字。打开仓库整层滑入，换页格子错开弹出，选中格呼吸、图标轻浮，六角网待机。首页胶片持续上卷，NEW/角标/扫描线/信号条/经验条扫光、底栏选中呼吸都在播；系统「减少动态」不再掐死这些动画。页签用官方仓库原图抠的圆钮。音擎默认 0 级 1 星，侧栏可预览升级与升阶；缺 A 盒的驱动盘回退 wiki 圆图标，不再叠 CSS 假板。商店、成就、丽都城募、设置、调频、邮箱、通知点击后弹出「施工中」，不跳转样板页；录像店样板仍可由其他入口直接打开。2026-09-09 起游戏主界面补一层轻量 HUD 入场与跳页 CRT 切场，中间活动卡恢复荧光绿可视框；底栏 12 个入口错开入场，开机扫描落在 `.game-shell::after` 并接待机 CRT 呼吸。`home-fx` / `site-motion` 接到游戏壳，但关掉抢层画布、信号场、magnet、`is-pressed` 与顶栏 `is-condensed`。系统「减少动态」只关掉这层入场、切场和按压缩放，胶片上卷与原有待机动效仍按上一轮口径播放。GitHub Pages 不包含本地好感壁纸视频（`assets/wallpapers/` 被 gitignore），公开站播 GitHub Release `wallpapers-720p` 的 56 条 720p 循环片；本机仍播本地原片。首页使用与角色页相同的加载遮罩，视频出画后再揭开。动态壁纸页公开站同样走 Release，失败时显示角色立绘。
+正式首页现在是“午夜放映档案”七幕长卷：序幕·今晚放映、第一幕·选片、第二幕·演员表、第三幕·正片、第四幕·加映、第五幕·片后谈、片尾·关于档案；序幕保留 Dual Gate，正式查档为主行动，PLAY 录像店是可跳过的次行动。首页职责是把访客送入真实查档路径和代理人精选索引；主线、角色剧情、活动与幕后长列表仍由各自正式栏目承载。页面尾部磁带坞保留完整播放器功能，但作为文档流内的次级面板，不遮挡内容或成为主 CTA。游戏主界面 `index.html` 底部导航中，仓库点开后在首页展开浮层（材料道具 / 驱动仓库 / 音擎仓库 / 重要物品），不再跳转 `drive-disc-sample.html`。绳网（`events.html` / `post.html` / `create.html` / `edit.html`）的源页在 `src/html/`，`npm run build` 会把 Vite 产物发布到仓库根目录，因此 Python 静态服务和 GitHub Pages 都能直接打开，不再依赖加载未编译的 `.jsx`。格子数量/等级压在底部稀有度色条上，选中是整格外描边，音擎格内显示星级。仓库中文用游戏字，容量数字用游戏英文字。打开仓库整层滑入，换页格子错开弹出，选中格呼吸、图标轻浮，六角网待机。首页胶片持续上卷，NEW/角标/扫描线/信号条/经验条扫光、底栏选中呼吸都在播；系统「减少动态」不再掐死这些动画。页签用官方仓库原图抠的圆钮。音擎默认 0 级 1 星，侧栏可预览升级与升阶；缺 A 盒的驱动盘回退 wiki 圆图标，不再叠 CSS 假板。商店、成就、丽都城募、设置、调频、邮箱、通知点击后弹出「施工中」终端面板（切角框、警示带、四列状态条、日志、进度与返回），不跳转样板页；录像店样板仍可由其他入口直接打开。2026-09-09 起游戏主界面补一层轻量 HUD 入场与跳页 CRT 切场，中间活动卡恢复荧光绿可视框；底栏 12 个入口错开入场，开机扫描落在 `.game-shell::after` 并接待机 CRT 呼吸。`home-fx` / `site-motion` 接到游戏壳，但关掉抢层画布、信号场、magnet、`is-pressed` 与顶栏 `is-condensed`。系统「减少动态」只关掉这层入场、切场和按压缩放，胶片上卷与原有待机动效仍按上一轮口径播放。GitHub Pages 不包含本地好感壁纸原片（`assets/wallpapers/` 被 gitignore）。公开站播 GitHub Release `wallpapers-720p` 的 56 条 720p 循环片；本机仍播本地原片。首页使用与角色页相同的加载遮罩，视频出画后再揭开。动态壁纸页公开站同样走 Release，失败时显示角色立绘。
 
 首页长期 CSS 约定：伪元素只承担单一装饰职责；第二视觉职责必须落在具名 DOM 节点，不把内容或多个交互状态藏进同一个 `::before` / `::after`；`motion.css` 只表达状态、节奏和轻量转场，不定义最终几何；首页规则必须挂在 `.home-page` / `.home-act` 等首页作用域下，不向正式子页泄漏。Home / Feature Reel 的中文展示字体是明确例外，正文、导航和数据字段仍遵循全站字体 token。
 
@@ -62,13 +62,13 @@
 
 1. `data.js`：保留主线 / 支线 / 活动等剧情条目；`factions` 与 `characters` 默认可为空，只放本地覆盖。
 2. `agent-enrichment.js`：从本地归档 `website-archives/zzz-wiki` 抽取的代理人印象、个人故事摘要、图集、来源链接及职级晋升阶段（纯文本属性与有限材料字段，不向浏览器透传 Wiki HTML；结构化摘要，不是整站复制）。
-3. `agent-catalog.js`：维护 57 名代理人与 18 个阵营的稳定 ID、已确认属性、阵营关系，并把 enrichment 合并进 `window.archiveData`。
+3. `agent-catalog.js`：维护 59 名代理人与 20 个阵营的稳定 ID、已确认属性、阵营关系，并把 enrichment 合并进 `window.archiveData`。
 
-当前 `snapshotDate` 为 **2026-07-29**。第 57 名角色蕾米埃尔的官方 Wiki 编号为 `2076`，英文名为 `REMIELLE`；她与达识结社的关系由官方角色页佐证，独立阵营资料仍待公布。蕾米埃尔尚未确认的等级、属性、特性、攻击类型、实装日期、生日、专属音擎、CV 等字段统一显示“待公布”，不得用推测值补齐。
+当前 `snapshotDate` 为 **2026-09-11**。对照 bili wiki《角色图鉴》当前可玩名单，补入克拉蕾、希格莉德。蕾米埃尔的官方 Wiki 编号为 `2076`，英文名为 `REMIELLE`；她与达识结社的关系由官方角色页佐证，独立阵营资料仍待公布。米游社官方 3.1 更新公告已确认蕾米埃尔为 S 级流明异常，专属音擎「空羽复归之诗」，实装随 3.1「漫长的告别」更新（2026-07-29）；攻击类型、生日、CV、技能描述仍显示“待公布”。克拉蕾 wiki 特性写作「锋御」；米游社官方 3.2 更新公告已确认 S 级电·锋御，专属音擎「猩红渴望」。攻击类型与技能仍待公布。克拉蕾已写入 wiki 官方介绍，以及锋御认证章晋阶材料名（40/50 级 wiki 截断为「认证章」，不推测全称；生命/攻击/防御数值 wiki 报错，保持待公布）。希格莉德已写入 wiki 确认的官方介绍、详细情报、合作备注、晋阶与技能升级材料；技能仅收录已确认名称「普通攻击：敛枪式」「连携技：冰凌卷地」，描述与倍率仍为待公布。克拉蕾 / 希格莉德 / 蕾米埃尔图集只保留同源本地对象，禁止远程热链。角色页影画背景优先 `assets/mindscape/default/<id>.webp`；Default 包未收录时走本地 gallery 回退（克拉蕾、希格莉德与既有诺姆 / 佩洛伊斯 / 维琳娜同口径），不热链、不伪造影画。克拉蕾技能 wiki 仍是空模板，技能 Tab 继续显示“暂未录入”。
 
 - 基础事实优先核对绝区零官方 / 米游社百科归档；攻略建议可参考 Prydwen 等站，但必须标记来源。
 - 不复制官方 wiki 整站或第三方长篇攻略；站内只保留结构化事实、短摘要和来源链接。材料总量、配装、词条和配队未完成核验时显示“待核验”，不得用推测数字填充。
-- `stories.html` 是图四三段式角色目录：左侧固定站点导航，中部显示当前角色的大舞台，右侧显示 57 人人物卡网格；工作台内舞台与名录桌面分栏为 7:3。顶栏下的「代理人工作台」标题带收成一条薄带（约 56px），舞台高度按真实顶栏 78px + 该薄带计算，避免底栏名字区被挤出视口。舞台与底栏用硬表面实底，不用毛玻璃。舞台不再显示 SELECTED AGENT / FILE 顶栏、AGENT SPEC 参数板，以及基础/技能/装备三钮；底部名字、阵营与完整档案入口仍保留。搜索与阵营筛选收进原生 `details` disclosure，选择角色时无需刷新即可同步舞台、URL 与详情入口。中部舞台按游戏代理人选择屏：`full` 彩图实底铺满可见舞台，不留右侧空黑块；角色名描边大字改到名录面板后面慢速走，不挡人物。工作台、名录、底栏、标题带共用同一套斜纹硬表面，标题带右侧和名录叠一层主题色斜切块；整页慢速描边水印压在工作台后、不挡人物。待机有可见的水平游移、亮度呼吸和主题色扫光，不叠前景立绘。试镜横幅（`assets/auditions/`，现行 34 条）不再作为工作台主画面——覆盖不全，没片的角色会空台、两套脸更突兀。57 人对照与本机游戏 `Gacha_*.usm` 盘点见 `artifacts/audition-entrance-inventory.json`；加密低分辨率卡池片、动态壁纸、角色 PV，以及本机那两条非绝区零 1080p 录像，均不接入舞台。
+- `stories.html` 是图四三段式角色目录：左侧固定站点导航，中部显示当前角色的大舞台，右侧显示 59 人人物卡网格；工作台内舞台与名录桌面分栏为 7:3。顶栏下的「代理人工作台」标题带收成一条薄带（约 56px），舞台高度按真实顶栏 78px + 该薄带计算，避免底栏名字区被挤出视口。舞台与底栏用硬表面实底，不用毛玻璃。舞台不再显示 SELECTED AGENT / FILE 顶栏、AGENT SPEC 参数板，以及基础/技能/装备三钮；底部名字、阵营与完整档案入口仍保留。搜索与阵营筛选收进原生 `details` disclosure，选择角色时无需刷新即可同步舞台、URL 与详情入口。中部舞台按游戏代理人选择屏：公开站用已入库的 `assets/mindscape/default/<id>.webp` 铺满可见舞台；Default 缺失时回落到本地 gallery / 立绘，不请求未入库的 `full/`。角色名描边大字改到名录面板后面慢速走，不挡人物。工作台、名录、底栏、标题带共用同一套斜纹硬表面，标题带右侧和名录叠一层主题色斜切块；整页慢速描边水印压在工作台后、不挡人物。待机有可见的水平游移、亮度呼吸和主题色扫光，不叠前景立绘。试镜横幅（`assets/auditions/`，现行 34 条）不再作为工作台主画面——覆盖不全，没片的角色会空台、两套脸更突兀。既有 57 人对照与本机游戏 `Gacha_*.usm` 盘点见 `artifacts/audition-entrance-inventory.json`；加密低分辨率卡池片、动态壁纸、角色 PV，以及本机那两条非绝区零 1080p 录像，均不接入舞台。
 - `faction.html` 展示阵营摘要与成员；角色详情统一使用 `character.html?id=<id>`。详情页的四个 Hash tab 始终只显示一个活动 panel，支持浏览器 history、方向键、Home/End、roving tabindex，并把旧 hash 映射到当前模块；角色模块导航不再创建内部限宽/限高滚动条，站点侧栏保留栏目链接、展开/收起，以及上一/下一栏目和浏览器后退/前进控制；来源、版权归属、粉丝非官方与无隶属边界常显在 tab panel 之外。材料图标从本地 wiki 镜像复制到 `assets/materials/<epId>.<ext>`，页面只加载同源 `icon`；无图标时降级为等级字母。档案图集从镜像按原格式（含 GIF）复制到 `assets/gallery/<agentId>/<nn>.<ext>`，每角色最多 8 张，镜像缺失项跳过；页面只加载同源图集，禁止热链。材料详情若来自 `/zzz/wiki/...`，规范化为 `https://baike.mihoyo.com/...`，仅在用户点击时外跳。
 - `character-sample.html`、`tech-direction-demos.html`、`cinematic-slice.html`、`prototype/` 等仍是隔离实验/样板，不替换正式档案首页。
 - 重新生成 enrichment：`python scripts/build-agent-enrichment.py`（读取 `F:/website-archives/zzz-wiki`，写出 `artifacts/agent-enrichment.json`、`agent-enrichment.js`，并本地化材料图标到 `assets/materials/`、档案图集到 `assets/gallery/`）。
@@ -77,10 +77,10 @@
 
 - 阵营图标放入 `assets/icons/`；角色头像和立绘放入 `assets/portraits/`。只保存相对路径，静态页面不会上传本地文件。
 - `pv` 应标注为官方资料并链接到公开视频；`buildGuide` 必须标注“玩家整理”，并注明以游戏内实际版本为准；个人剧情和关联档案可用已有记录 ID 互相连接。
-- 现行角色视觉覆盖为 57 张本地 card 与 57 张完整透明 portrait：card 使用 `assets/portraits/<characterId>-card.webp`，portrait 使用 `assets/portraits/<characterId>-portrait.webp`。Stories / Character 只使用 portrait；roster / avatar / headshot 只使用 card，不得互相回流。
+- 现行角色视觉覆盖为 59 张本地 card 与 59 张完整透明 portrait：card 使用 `assets/portraits/<characterId>-card.webp`，portrait 使用 `assets/portraits/<characterId>-portrait.webp`。Stories / Character 只使用 portrait；roster / avatar / headshot 只使用 card，不得互相回流。
 - **2026-07-19 美术增强（历史批次）**：该轮当时为 17 个阵营配置本地 logo（`assets/icons/<factionId>.png`，由 `agent-catalog.js` 注入），并以当时的本地卡面替换列表首字母占位。现行覆盖已由 2026-07-29 的 18 阵营 / 57 角色合同接续；仅当 logo/头像字段仍为空时，目录才显示名称首字占位。
 - **批次A 官方 B 站媒体**：`media-catalog.js` 统一收录公测 PV 与世界观 PV；`data.js` 只保存对应 `mediaIds` / `sourceIds`，来源链接指向各自 B 站官方详情页。`mainline.html`、`events.html`、`behind-scenes.html` 会在 `data.js` 后、`page.js` 前加载媒体目录；`page.js` 用首个有效 `mediaIds` 派生缺失的视频、封面和官方详情来源，同时保留条目显式字段及本地编辑器覆盖，派生的目录对象不会写入导出数据。公开档案页不再运行时请求 B 站 API，已有媒体目录的正式条目只使用同源本地封面，图片和“资料来源”分别链接对应官方视频详情。维护时可执行 `python scripts/collect-official-bilibili.py`，脚本串行调用本机 yt-dlp、只采元数据、不下载视频，并把可恢复进度写入 `artifacts/bilibili-official-1636034895.json`；仅在 stderr 错误行或非零退出内容明确出现 HTTP 412、错误码/code=-352、风控文本时立即停止，正常 JSON stdout 中偶然出现数字 412/352 不视为风控；重试仍为 0，重新枚举不会清空已有 BVID 与 pending。2026-07-23 空间枚举仍停于 HTTP 412；当前两条 checked 明确标为 `manualVerifiedApiEvidence`，来自已人工核验的官方详情 API 证据，并非本次脚本在线成功。两张官方原缩略图已按原图 1920×1080 转为本地 WebP 且不去水印；证据记录本地 `coverSha256`，并对各自原 JPEG 仅做一次精确下载且成功记录 `sourceImageSha256`。`npm run test:content` 会读取该证据文件，逐条交叉核对身份、标题、日期、时长、转载状态、原图 URL、详情页，并用 Node 标准库解析本地 WebP 实际尺寸及校验 SHA-256，替换 fallback 或证据缺失均会失败。目录分别记录 `isReprint`（copyright）与 `noReprint`（rights.no_reprint），中文 P1 时长为 133/247 秒，总时长为 517/973 秒。世界观 PV 官方 pubdate 为 2024-07-06。
-- **立绘解析（维护时必看）**：Stories 的正式解析在 `src/stories.jsx` 的 `resolvePortrait()`，Character 的正式解析在 `character.js` 的 `CHARACTER_HERO_COMPOSITION` 与 portrait source；当前 57/57 均使用普通 `portrait` 分支与 `assets/portraits/<id>-portrait.webp`，并分别通过 `data-portrait-source` / `data-portrait-mode` 与 `data-portrait-source/path` 暴露真实分支，不存在 card fallback。Stories 主舞台与 Character Hero 使用 portrait；右侧 roster/avatar/headshot 仍独立使用 `<id>-card.webp`，不得把舞台立绘链与缩略图链合并。资源必须本地同源且真实存在，禁止依靠 404 回退；否则会触发 `console-error` 与 `local-http-error` 阻塞失败。
+- **立绘解析（维护时必看）**：Stories 的正式解析在 `src/stories.jsx` 的 `resolvePortrait()`，Character 的正式解析在 `character.js` 的 `CHARACTER_HERO_COMPOSITION` 与 portrait source；当前 59/59 均使用普通 `portrait` 分支与 `assets/portraits/<id>-portrait.webp`，并分别通过 `data-portrait-source` / `data-portrait-mode` 与 `data-portrait-source/path` 暴露真实分支，不存在 card fallback。Stories 主舞台与 Character Hero 使用 portrait；右侧 roster/avatar/headshot 仍独立使用 `<id>-card.webp`，不得把舞台立绘链与缩略图链合并。资源必须本地同源且真实存在，禁止依靠 404 回退；否则会触发 `console-error` 与 `local-http-error` 阻塞失败。
 - 图片未提供时会显示站内占位，阵营、成员和角色页面仍可正常打开。添加资源后，提交图片与更新后的 `agent-catalog.js` 一并发布。
 
 阵营成员区使用 vendored React Bits `SpotlightCard` 与基于 Motion 的 `TiltedCard`：图片仍只读取 `faction.js` 清洗后的同源本地路径，桌面 fine pointer 且未开启“减少动态效果”时启用轻量倾斜；触摸、粗指针或 reduced-motion 环境使用静止参数。React 不再读取或筛选 `archiveData`，原生 fallback 与 React 共用同一份安全 view model。
@@ -314,3 +314,11 @@ python -m http.server 8080
 - 蕾米埃尔的官方 Wiki 编号为 `2076`，英文名为 `REMIELLE`；她与达识结社的关系由官方角色页佐证，独立阵营资料待公布。尚未确认的等级、属性、特性、攻击类型、实装日期、生日、专属音擎、CV 等字段统一显示“待公布”。
 - 蕾米埃尔的 card 与 portrait 均来自官方 `display-1` 透明站姿，只允许等比缩小；Default 来自官方 `mindscape-1`，只允许等比缩小并居中封装到透明画布。整个转换链禁止裁切、放大、拉伸或抠图。
 - Stories 主舞台与 Character Hero 使用 portrait；roster、avatar、headshot 使用 card。蕾米埃尔的 `display-1` / `mindscape-1` 美术版权归米哈游，HOOXI 仅作粉丝非官方档案展示并保留官方 Wiki 来源与转换边界。Character Hero 仅使用单角色水平构图例外避免宽翼遮挡标题，不改变/裁切源资产；无需专属 CSS。
+
+## 2026-09-11 克拉蕾 / 希格莉德与现行 59 人维护合同
+
+- 本节覆盖当前正式站状态；上文 2026-07-29 的 57 人、18 阵营合同是对应日期的历史证据。现行统一为 **59 角色、20 阵营、59 card、59 张完整透明 portrait**。
+- 对照 bili wiki《角色图鉴》当前可玩名单补入：克拉蕾（Claret Flint，罗斯凯利法·弗林特工坊，2026-09-09 / 3.2）、希格莉德（Sigrid de L'Azur，罗斯凯利法·空域巡戍局，2026-08-19 / 3.1）。
+- 克拉蕾 wiki 特性写作「锋御」；米游社官方 3.2 更新公告确认 S 级电·锋御、专属音擎「猩红渴望」。攻击类型与技能仍待公布，不得用推测值补齐。希格莉德已确认冰 / 强攻 / 穿透；专属音擎按 wiki 音擎页首条「骁骑礼赞」收录，并与官方 3.1 更新公告一致。蕾米埃尔按官方 3.1 更新公告写入 S / 流明 / 异常 / 「空羽复归之诗」；攻击类型、生日、CV、技能描述仍为待公布。
+- 两人 card / portrait 来自 bili wiki 角色立绘透明 PNG，只允许去透明边距后等比缩小、水平居中、底部对齐封装到 374×512 / 1600×1800 透明画布，禁止裁切人物、放大、拉伸或抠图。阵营 logo 同规则封装到 220×220。
+- 仓库材料按 bili《材料筛选》差集追加 3 条（谐振核心仪、高维数据：深蚀回路、刻命残蜕）；wiki 图标文件仍为红链，站内用本地占位 WebP，不整表重写编号。驱动盘 30 套、音擎 95 把与 wiki 筛选页一致。仓库浮层背景改为 `wh-graffiti.webp` cover 铺满视口（含顶栏后方），顶底涂鸦条叠在整幅图之上、贴齐上下沿。

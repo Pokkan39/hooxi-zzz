@@ -145,6 +145,32 @@
     new MutationObserver(ensurePortraitCredit).observe(footerSource,{childList:true,characterData:true,subtree:true});
     ensurePortraitCredit();
   }
+  const detailPage=document.querySelector('.character-detail-page');
+  if(detailPage&&resolvedEnglishName){
+    const mqUnit=resolvedEnglishName+'\xa0\xb7\xa0';
+    const mqBase=mqUnit.repeat(14);
+    const mq=document.createElement('div');
+    mq.className='char-marquee';
+    mq.setAttribute('aria-hidden','true');
+    const mqBand=document.createElement('div');
+    mqBand.className='char-marquee__band';
+    ['','--rtl','--offset','--rtl',''].forEach(mod=>{
+      const row=document.createElement('div');
+      row.className='char-marquee__row'+(mod?' char-marquee__row'+mod:'');
+      const track=document.createElement('div');
+      track.className='char-marquee__track';
+      [mqBase,mqBase].forEach(txt=>{
+        const s=document.createElement('span');
+        s.className='char-marquee__text';
+        s.textContent=txt;
+        track.appendChild(s);
+      });
+      row.appendChild(track);
+      mqBand.appendChild(row);
+    });
+    mq.appendChild(mqBand);
+    detailPage.insertBefore(mq,detailPage.firstChild);
+  }
 
   document.querySelector('#characterName').innerHTML=`<span data-editor-id="character.${esc(character.id)}.name" data-editor-type="character" data-editor-field="name">${esc(character.name)}</span>`;
   const identity=[
@@ -156,10 +182,19 @@
 
   const allRecords=['mainline','stories','behindScenes','events'].flatMap(key=>data[key]||[]);
   const related=(character.relatedIds||[]).map(recordId=>allRecords.find(record=>record.id===recordId)).filter(Boolean);
-  const sourceLinks=(character.sources||[]).map(source=>{
+  const sourceKind=type=>{
+    const text=String(type||'');
+    if(text.includes('官方'))return 'official';
+    if(text.includes('百科')||text.includes('汇总'))return 'wiki';
+    if(text.includes('第三方'))return 'third';
+    if(text.includes('攻略'))return 'guide';
+    return 'other';
+  };
+  const sourceLinks=(character.sources||[]).map((source,index)=>{
     const href=safeUrl(source.url)||'#';
     const external=/^https?:/i.test(href);
-    return `<a class="related-record" data-source-action href="${esc(href)}" ${external?'target="_blank" rel="noreferrer"':''}><span>${esc(source.type||'资料来源')}</span><b>${esc(source.label||'未命名来源')}</b><small>${external?'前往来源 ↗':'站内查看 →'}</small></a>`;
+    const kind=sourceKind(source.type);
+    return `<a class="related-record" data-source-action data-source-kind="${kind}" data-source-index="${String(index+1).padStart(2,'0')}" href="${esc(href)}" ${external?'target="_blank" rel="noreferrer"':''}><span>${esc(source.type||'资料来源')}</span><b>${esc(source.label||'未命名来源')}</b><small>${external?'前往来源 ↗':'站内查看 →'}</small></a>`;
   }).join('');
 
   const storyCards=(character.personalStories||[]).map(story=>`<article class="character-content-card story"><span>${esc(story.source||'角色故事')}</span><h3>${esc(story.title||'角色故事')}</h3>${prose(story.summary)}</article>`).join('');
@@ -225,7 +260,21 @@
   const growthBody=growthStages.length?`<div class="wiki-growth-slider" data-growth-slider><div class="wiki-growth-slider-head"><span>滑动查看职级</span><b data-growth-label>${esc(growthStages[0].name||'阶段 1')}</b></div><label class="wiki-growth-range"><span class="sr-only">职级晋升阶段</span><input type="range" min="0" max="${Math.max(growthStages.length-1,0)}" value="0" step="1" data-growth-range aria-valuetext="${esc(growthStages[0].name||'阶段 1')}"/></label><div class="wiki-growth-ticks" role="tablist" aria-label="职级晋升阶段">${growthStages.map((stage,index)=>`<button id="growth-stage-tab-${index}" type="button" role="tab" aria-selected="${index===0}" aria-controls="growth-stage-panel-${index}" tabindex="${index===0?'0':'-1'}" data-growth-stage="${index}" class="${index===0?'is-active':''}">${esc(stage.name||`阶段 ${index+1}`)}</button>`).join('')}</div><div class="character-growth-stages">${growthStages.map((stage,index)=>`<div id="growth-stage-panel-${index}" class="character-growth-stage" role="tabpanel" aria-labelledby="growth-stage-tab-${index}" data-growth-panel="${index}" ${index?'hidden':''}>${(stage.sections||[]).map(part=>`<section class="character-growth-section"><h3>${esc(part.name||part.header?.join(' / ')||'属性数据')}</h3>${part.header?.length?`<div class="character-growth-header">${part.header.map(value=>`<b>${esc(value)}</b>`).join('')}</div>`:''}<div class="character-growth-rows">${(part.rows||[]).map(row=>`<div class="character-growth-row">${row.map(cell=>growthCell(cell)).join('')}</div>`).join('')}</div></section>`).join('')}${stage.materials?.length?`<section class="character-growth-section"><h3>晋升材料</h3><div class="character-growth-materials">${growthMaterials(stage.materials)}</div></section>`:''}</div>`).join('')}</div><p class="character-wiki-note">数据来自米哈游绝区零百科快照；实际数值与消耗请以游戏内当前版本为准。</p></div>`:'<p class="character-empty">成长数据正在核验，暂未录入职级晋升阶段。</p>';
   const buildBody=`<div class="character-wiki-columns"><div class="character-wiki-block"><h3>签名音擎</h3>${list(character.build?.wEngines,'签名音擎待整理。')}</div><div class="character-wiki-block"><h3>驱动盘</h3>${list(character.build?.driveDiscs,'驱动盘方案待整理。')}</div><div class="character-wiki-block"><h3>主词条</h3>${list(character.build?.mainStats,'主词条待整理。')}</div><div class="character-wiki-block"><h3>副词条</h3>${list(character.build?.subStats,'副词条优先级待整理。')}</div><div class="character-wiki-block"><h3>技能优先级</h3>${list(character.combat?.skillPriority,'技能优先级待整理。')}</div><div class="character-wiki-block"><h3>配队方向</h3>${list(character.build?.teams,'配队建议待整理。')}</div></div><p class="character-wiki-note">${esc(character.build?.note||'攻略内容会标为玩家整理，并以游戏内实际版本为准。')}</p>`;
 
-  const profileFacts=`<div class="character-data-grid"><div><span>代理人编号</span><b>${esc(String(character.id).toUpperCase())}</b></div><div><span>稀有度</span><b>${/^[SA]$/i.test(String(character.rank||''))?`<img class="char-rank-img" src="assets/rank-${esc(String(character.rank).toLowerCase())}.png" alt="${esc(character.rank)} 级"/>`:esc(character.rank||'待确认')}</b></div><div><span>所属阵营</span><b>${esc(faction?.name||'待确认')}</b></div><div><span>作战属性</span><b>${(window.ZZZIcons?.attrIcon(character.attribute,'')||'')}${esc(character.attribute||'待补充')}</b></div><div><span>战斗特性</span><b>${(window.ZZZIcons?.attrIcon(character.specialty,'')||'')}${esc(character.specialty||'待补充')}</b></div><div><span>攻击类型</span><b>${esc(character.attackType||'待补充')}</b></div><div><span>实装日期</span><b>${esc(character.releaseDate||'待核验')}</b></div><div><span>生日</span><b>${esc(character.birthday||'待核验')}</b></div></div>`;
+  // 字段图标：阵营用 assets/icons 官方徽标；作战属性/战斗特性/攻击类型用 assets/field-icons。
+  // 特性与攻击类型图标自官方角色卡片裁出，已用安比(电/击破/斩击)、莱卡恩(冰/击破/打击)、
+  // 妮可(以太/支援/打击)三张卡交叉验证：同值必同图。未收录官方图的值保持纯文字，不用近似图充数。
+  const FIELD_ICONS={
+    '电':'electric','冰':'ice','火':'fire','以太':'ether',
+    '击破':'stun','支援':'support',
+    '斩击':'slash','打击':'strike'
+  };
+  const fieldIconHtml=value=>{
+    const key=FIELD_ICONS[String(value||'').trim()];
+    return key?`<img class="char-field-icon" src="assets/field-icons/${key}.png" alt="" aria-hidden="true"/>`:'';
+  };
+  const factionIconHtml=faction?.logo
+    ?`<img class="char-field-icon" src="${esc(faction.logo)}" alt="" aria-hidden="true"/>`:'';
+  const profileFacts=`<div class="character-data-grid"><div><span>代理人编号</span><b>${esc(String(character.id).toUpperCase())}</b></div><div><span>稀有度</span><b>${/^[SA]$/i.test(String(character.rank||''))?`<img class="char-rank-img" src="assets/rank-${esc(String(character.rank).toLowerCase())}.png" alt="${esc(character.rank)} 级"/>`:esc(character.rank||'待确认')}</b></div><div><span>所属阵营</span><b>${factionIconHtml}${esc(faction?.name||'待确认')}</b></div><div><span>作战属性</span><b>${fieldIconHtml(character.attribute)}${esc(character.attribute||'待补充')}</b></div><div><span>战斗特性</span><b>${fieldIconHtml(character.specialty)}${esc(character.specialty||'待补充')}</b></div><div><span>攻击类型</span><b>${fieldIconHtml(character.attackType)}${esc(character.attackType||'待补充')}</b></div><div><span>实装日期</span><b>${esc(character.releaseDate||'待核验')}</b></div><div><span>生日</span><b>${esc(character.birthday||'待核验')}</b></div></div>`;
   const profileLong=`<details class="character-disclosure" data-archive-disclosure="profile-notes"><summary>角色印象与资料快照</summary><div class="character-wiki-block"><h3>角色印象</h3>${character.impression?prose(character.impression):`<p>${esc(character.summary||'印象待补充。')}</p>`}</div>${character.cv?`<div class="character-wiki-block"><h3>角色 CV / 语音摘录</h3>${prose(character.cv)}</div>`:''}<div class="character-wiki-block"><h3>资料快照</h3><p>更新于 ${esc(character.updatedAt||'待记录')}。本页优先维护角色关系导航与档案摘要。</p></div></details>`;
 
   /* ---------- 技能介绍（官方 Wiki role_talent 管道，agent-talents.js 生成） ---------- */
@@ -288,7 +337,7 @@
     lore:section('lore','个人剧情','剧情记录',`${storyCards||'<p class="character-empty">尚未录入个人剧情摘录。</p>'}${loreNotes}`,'尚未录入个人剧情摘录。'),
     profile:section('profile','角色资料','资料档案',`<p class="character-module-intro">${esc(character.summary||'角色简介待补充。')}</p>${profileFacts}${profileLong}${growthDisclosure}${buildDisclosure}`,'暂无角色资料。'),
     talents:section('talents','技能','技能档案',talentBody,'技能数据正在整理，暂未录入。'),
-    related:section('related','来源与关联','来源核对',`${sourceLinks||'<p class="character-empty">尚未录入角色资料来源。</p>'}${relatedRecords}`,'尚未关联资料来源或其他档案。',{source:true})
+    related:section('related','来源与关联','来源核对',`${sourceLinks?`<div class="related-record-list">${sourceLinks}</div>`:'<p class="character-empty">尚未录入角色资料来源。</p>'}${relatedRecords}`,'尚未关联资料来源或其他档案。',{source:true})
   };
   content.innerHTML=[modules.media,modules.lore,modules.profile,modules.talents,modules.related].join('');
   applyCharacterTheme(character.id,faction);
@@ -420,7 +469,7 @@
   const archivePanels=new Map([...content.querySelectorAll('.character-module[role="tabpanel"]')].map(panel=>[panel.id,panel]));
   const archiveRoutes={
     art:{panel:'media',view:'hero'},dossier:{panel:'media',view:'dossier'},
-    media:{panel:'media',view:'dossier'},lore:{panel:'lore',view:'dossier'},profile:{panel:'profile',view:'dossier'},related:{panel:'related',view:'dossier'},
+    media:{panel:'media',view:'dossier'},lore:{panel:'lore',view:'dossier'},profile:{panel:'profile',view:'dossier'},talents:{panel:'talents',view:'dossier'},related:{panel:'related',view:'dossier'},
     source:{panel:'related',view:'dossier'},story:{panel:'lore',view:'dossier'},
     growth:{panel:'profile',view:'dossier',disclosure:'growth'},build:{panel:'profile',view:'dossier',disclosure:'build'},
     talent:{panel:'profile',view:'dossier',disclosure:'talent'},skill:{panel:'profile',view:'dossier',disclosure:'talent'},
@@ -449,7 +498,9 @@
     const activePanel=archivePanels.get(key);
     if(activePanel&&animate&&previous&&previous!==key){
       activePanel.classList.add('is-panel-entering');
-      requestAnimationFrame(()=>requestAnimationFrame(()=>activePanel.classList.remove('is-panel-entering')));
+      const clear=()=>activePanel.classList.remove('is-panel-entering');
+      activePanel.addEventListener('animationend', clear, {once:true});
+      setTimeout(clear, 360);
     }
     if(focus)archiveTabs.find(tab=>tab.dataset.characterNav===key)?.focus({preventScroll:true});
     return key;

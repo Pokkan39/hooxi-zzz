@@ -253,4 +253,7 @@
     applyScroll(true);
     addEventListener('pageshow',updateScroll);
   }
+  document.addEventListener('visibilitychange',()=>{
+    document.documentElement.classList.toggle('is-page-hidden', document.hidden);
+  });
 })();

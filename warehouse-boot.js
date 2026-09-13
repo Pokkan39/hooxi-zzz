@@ -11,7 +11,14 @@
       fonts.textContent = "@font-face{font-family:'ZzzZH';src:url('assets/fonts/zzz/zzz-zh.ttf') format('truetype');font-display:swap;}@font-face{font-family:'ZzzEN';src:url('assets/fonts/zzz/zzz-en.ttf') format('truetype');font-display:swap;}";
       document.head.appendChild(fonts);
     }
-    const files = ["disc-sets.js", "wengine-data.js", "mat-data.js", "warehouse.js"];
+    if (!document.getElementById("wh-ui-css")) {
+      const css = document.createElement("link");
+      css.id = "wh-ui-css";
+      css.rel = "stylesheet";
+      css.href = "warehouse-ui.css?v=wh-ui-2";
+      document.head.appendChild(css);
+    }
+    const files = ["disc-sets.js", "wengine-data.js", "mat-data.js?v=mat-166", "warehouse.js?v=wh-cover-1"];
     const run = (i) => {
       if (i >= files.length) {
         document.querySelector('.nav-item[data-label="仓库"]')?.click();

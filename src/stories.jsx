@@ -74,8 +74,8 @@ function field(value) {
 /* 代理人品级 S/A/B 与「无限」使用官方徽章素材（assets/rank-*.png，游戏内菱形徽记）；
    「待公布」等尚无官方品级图的条目保留文字形态，避免拼出不存在的 PNG。 */
 const RANK_IMG = Object.freeze({
-  S: "assets/rank-s.png",
-  A: "assets/rank-a.png",
+  S: "assets/rank-s.png?v=rank-swap-1",
+  A: "assets/rank-a.png?v=rank-swap-1",
   B: "assets/rank-b.png",
   "∞": "assets/rank-infinity.png"
 });

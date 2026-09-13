@@ -93,7 +93,7 @@ export default function Navigation({ currentPage = 'events' }) {
               <svg className="ik-tab-highlight ik-tab-highlight--middle" viewBox="0 0 121.4 42" aria-hidden="true">
                 <path d="M 105.08 0 A 10 10 0 0 1 113.99 14.54 L 104.45 33.26 A 16 16 0 0 1 90.2 42 L 16.32 42 A 10 10 0 0 1 7.41 27.46 L 16.95 8.74 A 16 16 0 0 1 31.2 0 Z" fill="currentColor" />
               </svg>
-              <span className="ik-header-tab__content">委托</span>
+              <span className="ik-header-tab__content">绳网</span>
             </a>
             <a
               href="faction.html"

@@ -29,25 +29,45 @@
     });
   }
 
-  // ── 色散：自动注入 R/B 层 ──
+  // ── 色散：自动注入 R/B 层（进视野再克隆，避免一开页复制整列卡） ──
+  var chrIO = null;
+  function paintChromatic(container) {
+    if (container.querySelector(".gf-chr-r")) return;
+    var img = container.querySelector("img:not(.gf-chr-r):not(.gf-chr-b)");
+    if (!img) return;
+    var r = img.cloneNode(false);
+    var b = img.cloneNode(false);
+    r.className = "gf-chr-r";
+    b.className = "gf-chr-b";
+    r.removeAttribute("alt");
+    b.removeAttribute("alt");
+    r.setAttribute("aria-hidden", "true");
+    b.setAttribute("aria-hidden", "true");
+    r.setAttribute("loading", "lazy");
+    b.setAttribute("loading", "lazy");
+    r.setAttribute("decoding", "async");
+    b.setAttribute("decoding", "async");
+    img.parentNode.insertBefore(r, img);
+    img.parentNode.insertBefore(b, img);
+  }
   function injectChromatic() {
     var containers = document.querySelectorAll("[data-disperse]");
+    if (!("IntersectionObserver" in window)) {
+      containers.forEach(paintChromatic);
+      return;
+    }
+    if (!chrIO) {
+      chrIO = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          chrIO.unobserve(entry.target);
+          paintChromatic(entry.target);
+        });
+      }, { rootMargin: "120px 0px", threshold: 0.01 });
+    }
     containers.forEach(function (container) {
       if (container.querySelector(".gf-chr-r")) return;
-      var img = container.querySelector("img:not(.gf-chr-r):not(.gf-chr-b)");
-      if (!img) return;
-      var r = img.cloneNode(false);
-      var b = img.cloneNode(false);
-      r.className = "gf-chr-r";
-      b.className = "gf-chr-b";
-      r.removeAttribute("alt");
-      b.removeAttribute("alt");
-      r.setAttribute("aria-hidden", "true");
-      b.setAttribute("aria-hidden", "true");
-      r.removeAttribute("loading");
-      b.removeAttribute("loading");
-      img.parentNode.insertBefore(r, img);
-      img.parentNode.insertBefore(b, img);
+      chrIO.observe(container);
     });
   }
 

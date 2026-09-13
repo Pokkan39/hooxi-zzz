@@ -1,4 +1,4 @@
-/* 材料道具:bilibili wiki《材料筛选》163 项, 含 cat/get。图标为本地 WebP。 */
+/* 材料道具:bilibili wiki《材料筛选》166 项, 含 cat/get。图标为本地 WebP。m164-m166 为差集追加；wiki 图标文件仍为红链，现用站内占位图。 */
 window.MAT_DATA = [
  {
   "name": "以太镀剂",
@@ -1303,5 +1303,29 @@ window.MAT_DATA = [
   "cat": "N.E.C.F.",
   "icon": "assets/mat/m163.webp",
   "get": "充值"
+ },
+ {
+  "name": "谐振核心仪",
+  "desc": "在音像店进行高级调律时，可指定驱动盘的副属性。",
+  "r": 5,
+  "cat": "驱动盘材料",
+  "icon": "assets/mat/m164.webp",
+  "get": "丽都城募、合成"
+ },
+ {
+  "name": "高维数据：深蚀回路",
+  "desc": "提升代理人核心技等级所需的物品。",
+  "r": 4,
+  "cat": "角色技能材料",
+  "icon": "assets/mat/m165.webp",
+  "get": "专业挑战室"
+ },
+ {
+  "name": "刻命残蜕",
+  "desc": "提升代理人高等级核心技所需的重要物品。",
+  "r": 5,
+  "cat": "角色技能材料",
+  "icon": "assets/mat/m166.webp",
+  "get": "恶名狩猎"
  }
 ]

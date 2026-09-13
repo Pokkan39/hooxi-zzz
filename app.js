@@ -17,8 +17,10 @@
     const v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name));
     return Number.isFinite(v) ? v : fallback;
   };
-  let pos = 0, last = performance.now(), activeIdx = 0;
+  let pos = 0, last = performance.now(), activeIdx = 0, looping = false;
   const frame = (now) => {
+    if (document.hidden) { looping = false; return; }
+    looping = true;
     const dt = Math.min((now - last) / 1000, 0.1); // 后台标签切回时避免跳变
     last = now;
     pos += cssNum('--event-speed', 36) * dt; // px/s，约 8 秒滚过一张卡
@@ -37,6 +39,12 @@
     }
     requestAnimationFrame(frame);
   };
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && !looping) {
+      last = performance.now();
+      requestAnimationFrame(frame);
+    }
+  });
   requestAnimationFrame(frame);
 })();
 
@@ -68,11 +76,16 @@
 
   const mask = document.getElementById('wip-mask');
   const codeEl = document.getElementById('wip-code');
+  const modEl = document.getElementById('wip-mod');
+  const logEl = document.getElementById('wip-log');
   let lastBtn = null;
   const openWip = (code, btn) => {
     if (!mask) return;
     lastBtn = btn;
-    if (codeEl) codeEl.textContent = code;
+    const ch = code || 'STANDBY';
+    if (codeEl) codeEl.textContent = ch;
+    if (modEl) modEl.textContent = ch;
+    if (logEl) logEl.textContent = `> handshake timeout\n> ${ch} locked\n> return to HUD`;
     mask.hidden = false;
     mask.classList.remove('is-closing');
     document.getElementById('wip-close')?.focus();
