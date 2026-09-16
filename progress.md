@@ -4467,3 +4467,184 @@ Playwright (1440x900, localhost:8081/stories.html) 实测：
 
 范围说明:
 - 未提交 git、未上线。
+
+## 2026-09-16 - Task: 优化代理人界面与图片加载性能
+
+### What was done
+- 游戏式代理人页桌面主立绘改用已有的 `assets/mindscape/full/<id>.webp` 优化资源；缺少宽幅 WebP 的角色继续沿用现有逻辑回退到竖版 portrait，未删除原 PNG。
+- 代理人切换增加桌面端相邻角色空闲预取，最多预取前后两个角色，不影响移动端首屏请求量，也不改变现有入场动画与错误容错。
+- 旧代理人名录 `assets/data/agents.json` 的 56 条记录全部移除 `/wiki-assets/` 远程图片，改用本地卡面、立绘和阵营图标；卡片与弹窗图片补充尺寸、异步解码提示，减少失败等待与布局重排。
+- 角色详情页的大体积 `00.gif` 本轮只完成基线确认，未擅自替换动态素材。
+
+### Testing
+- 静态校验：59 个 catalog 角色、56 条旧名录数据；旧名录 224 个媒体字段变化全部为本地路径替换，无其他数据字段变化；JS 语法检查通过。
+- 桌面 `agents-game.html?id=soldier-11`：主图从原约 3.5MB 级 PNG 降至 `soldier-11.webp` 约 278KB；首屏图片总传输约 1.27MB；卡片 59 张；相邻 `ellen.webp` 已按空闲预取加载；无控制台错误或资源失败。
+- 代理人切换实测 5 个角色（艾莲、安比、朱鸢、雅、耀嘉音）：均正常显示 WebP，切换响应约 1–15ms，图片 naturalWidth 为 3840，未出现空白或旧角色闪回。
+- 旧 `agents.html`：56 张卡片正常渲染，首屏图片总传输约 0.84MB，0 个远程图片请求；点击首张卡片弹窗正常打开并加载本地卡面；无 JS 报错。
+- 移动端 390×844：游戏式代理人页使用竖版 portrait，宽幅 mindscape 请求数为 0；旧名录正常渲染 56 张卡片，0 个远程请求、0 个错误。
+- 例外角色 `pyrois`：因没有宽幅 WebP，正确回退到 `assets/portraits/pyrois-portrait.webp`，页面无报错。
+
+### Notes
+- 改动文件：
+  - `agent-catalog.js`：增加 54 个宽幅 WebP 的 ID 映射与 PNG/portrait 回退。
+  - `agents-game.js`：增加桌面端相邻代理人空闲预取。
+  - `agents-game.html`：缓存版本更新为 `agents-game-4`。
+  - `agents.html`：为卡片和弹窗图片增加尺寸与异步解码属性。
+  - `assets/data/agents.json`：56 条记录的 224 个媒体字段改为本地资源。
+- 未改动：角色详情页 `00.gif`、原始 PNG、动态效果与页面布局。
+- 回滚方式：还原上述 5 个代码/数据文件即可；原有图片未删除。若只回滚性能路径，将 `agent-catalog.js` 的 `mindscape` 恢复到 PNG 映射、删除 `agents-game.js` 的预取段，并恢复 `assets/data/agents.json` 的四类远程字段。
+- 本轮未提交 git、未推送、未部署 gh-pages。
+
+## 2026-09-16 - Task: 代理人性能优化复验与预取边界修正
+
+### What was done
+- 在既有改动范围内复验 `agents-game.html` 游戏样页与 `agents.html` 旧名录；正式主导航入口仍是 `stories.html`，本轮未宣称优化其交互跳转链路或全站速度。
+- 确认 59 条 catalog 使用 54 条 `assets/mindscape/full/<id>.webp` 白名单；`claret`、`norma`、`pyrois`、`sigrid`、`velina` 无宽幅图，继续使用 `agents-game.js` 的 portrait 回退，原有 PNG 保留。
+- 将预取边界收敛为：仅桌面宽度 `>920px`，当前图成功后低优先级空闲预取前后合计最多 2 个邻居；callback 检查最新选项与筛选条件；reduced-motion 只关闭动画；移动端不取额外宽幅；主图超时/失败不抢下载，后续成功后才允许预取。
+- 角色详情页 GIF 仅评估；`00.gif` 为图集首项，已有 lazy 仍可能落在加载阈值内先取，不能未经验证用 `00.webp` 替换。本轮不换、不删 GIF，不改原皮、影画、动效与页面布局。上一条历史记录中的旧结论全部保留，本条只追加复验结果与边界修正。
+
+### Testing
+- 本轮 explore 回传 `node scripts/verify-agent-performance.mjs`：`6/6 PASS`。覆盖卡片评级/模态、慢图超过 2.5 秒仍未成功时邻居请求为 0 且后续成功最多出现 2 个邻居、失败不取、idle callback 使用最新筛选/选择、reduced-motion 保留桌面预取但无动画、390px 移动端不取宽幅。
+- 无 `page.route` 的新 context 缓存命中验证：先由 `soldier-11` 空闲预取 `ellen`，真实点击 `ellen` 后新增请求数为 `0`，命中已取缓存；记录中的 `266754` 属于此前预取条目，不是点击产生的新传输量。
+- `agents.html` 桌面与移动回归均为 56 张卡、56 个评级、56/56 图片真实解码、失败数为 0；正常回归无 console/pageerror 或 HTTP `>=400`。注入失败 case 属于故意测试分支。
+- 五个无宽幅角色 `claret`、`norma`、`pyrois`、`sigrid`、`velina` 均成功解码 1600×1800 portrait；catalog=59、WebP 白名单=54、旧名录=56/224 个媒体字段本地化。
+- explore 回传：`node --check agents-game.js`、`node --check agent-catalog.js`、`node --check scripts/verify-agent-performance.mjs` 与定向 `git diff --check` 均通过；仅有 LF→CRLF 预警。`stories.html` 导航可加载且无 404/console/pageerror，但这不等于正式交互链路性能已验证。
+- 先前本机士兵 11 样本：PNG 为 3,505,346 bytes（含 300 bytes 开销），WebP 为 278,310 bytes，约下降 92%，尺寸均为 3840×1440；alpha 逐像素一致，但 PNG→WebP 并非无损等像素，不能宣称画面完全像素等价。此前本机切换采样的 1–15ms 仅代表本机图片加载/解码，不代表完整四阶段动效呈现或线上指标。
+
+### Notes
+- 改动文件清单：
+  - `agent-catalog.js`：54 条宽幅 WebP 映射（本任务前已改，本轮复验白名单与 5 条 portrait 回退）。
+  - `agents-game.js`：主图真正成功后才进行低优先级空闲邻居预取。
+  - `agents-game.html`：仅 JS 缓存戳更新为 `agents-game-4`；CSS 仍为 `agents-game-3`，本轮无 CSS 改动。
+  - `agents.html`：图片属性引号补齐。
+  - `assets/data/agents.json`：56 条记录的 `tachie_pc`、`tachie_m`、`icon_url`、`faction_icon` 共 224 个字段使用本地资源。
+  - `scripts/verify-agent-performance.mjs`：新增并作为本轮回归入口，可用 `BASE_URL` 指定地址；自动首选 8901，不可用时仅绑定 127.0.0.1 启动临时静态服务，不停止现有服务。
+  - `docs/README.md`：补充本轮范围与已验证预取边界。
+  - `progress.md`：追加本条记录。
+- 口径修正：`/wiki-assets/...` 是失效的同源根相对路径，不是外部互联网热链；旧首轮“56 张卡正常”记录漏检评级为 0 的问题，本轮补图片属性引号后恢复为 56 评级，复验为 56 卡、56 评级、56 图片、56 解码、0 失败；旧 55/57 数字已过时，当前以 59 catalog 与 56 旧名录为准。
+- 安全回滚：不执行全文件 `git checkout`/`git restore` 或批量删除；如只需关闭新增预取，使用 IDE 仅删除 `agents-game.js` 中新增的 `scheduleNeighborPrefetch` 调用，保留其余 WebP 与引号改动。若需完整回退，按本轮差异对上述文件逐 hunk 精确撤销，保留其他用户修改及全部 PNG/GIF/审计证据。
+- 本轮未提交 git、未推送、未部署 gh-pages。
+
+## 2026-09-17 - Task: 线上首屏白屏根因最终定性与修复方向验证
+
+### What was done
+- 定位并闭合"用链接打开线上站点时真实卡顿/白屏"的根因：**白屏时长等于壁纸视频就绪时长**。首屏遮罩必须等到 `home-ready` 事件才抬起，而该事件由壁纸视频 `playing` 触发；视频源（GitHub Release）在本网络的可达性呈**分钟级波动**，视频 1.5 秒就绪则白屏 2.1 秒，视频 7 秒就绪则白屏 7.9 秒，视频始终不就绪则只能等 12 秒兜底闹钟强拆。
+- 实测网络波动区间：同一 Release URL 在 20 分钟前 curl 3 次全部超时（`code=000`、0 字节），本轮 curl 3 次全部 200 且 1.6–6.6 秒下完 2.23MB。这解释了用户"有时 2 秒打开、有时 12 秒白屏"的间歇性观感，不是脚本 bug、也不是浏览器缓存问题。
+- 发现切源逻辑缺陷：`home-wallpaper.js` 仅在 `error` 事件时切换到队列下一个候选源；线上实际发生的是 `stalled`（不报错、只卡死），因此切源永远不触发，视频末态始终停在第一个候选源，从未回退到第二个。
+- 在视频源失效的极端条件下完成对照验证：让遮罩不再等待视频（提前派发 `hooxi:home-ready`）后，白屏解除时间从中位 5316ms（区间 2103–7902ms）稳定降到中位 1329ms（区间 1075–2692ms），带本地兜底源时中位 1602ms，三组 12 秒兜底占比均为 0。
+- 完成风险验证：模拟视频彻底挂死（拦截 mp4 并保持挂起）的网络条件下，改动前后末态截图的背景取样像素完全一致（`#0b0c10`/`#0d0f13`，主色 `#0b0d11` 计数 3213 相同），与用户当前实际末态同源，**不存在黑屏或视觉回归**；末态 `body.class` 保持 `has-bg-video has-home-wallpaper`。
+- 完成遮罩抬起瞬间观感验证：提前抬遮罩时首屏图 6/6 已就绪、导航图 12/12 已就绪、事件卡片尺寸正常（216×144），不存在"露出半成品页面"问题。
+- 发现一个已 git 跟踪、线上可达的替代视频源 `assets/home-video/lucy.mp4`（线上 200、`video/mp4`、7,407,168B，faststart 结构即 `moov` 在 `mdat` 之前可边下边播，GitHub Pages 支持 Range 返回 206），可摆脱对 GitHub Release 可达性的依赖。
+- 明确排除两条无效路线：`defer`/`lazy`/优先级调整全部无效，因为它们没有改变"遮罩等待 `home-ready`"这一等待条件；缩图路线作废，因为按 `object-fit:cover` 与 2x 反算目标宽度约 1193px，现有 1400px 大图并未超标，缩图只会损画质。
+- 本轮**未改动任何业务代码**，全部为观测与对照验证；方案待用户确认后才实施。
+
+### Testing
+- `node scripts/live-video-verdict.mjs` → `artifacts/__video-verdict.txt`：8 轮纯观测，8/8 全部触发 12 秒兜底（白屏 12.4–12.7s），视频末态 `rs0/ns2/stalled` 停在第一候选源，未回退第二候选源。
+- `node scripts/live-unblock-verify.mjs` → `artifacts/__unblock-verify.txt`：3 模式 × 3 轮对照（仅拦截 `home-wallpaper.js` 单文件，避免污染对照与 HTTP cache）。baseline 中位 5316ms / unblock 中位 1329ms / unblock-fb 中位 1602ms，12 秒兜底占比均 0/3，末态 `state=ready`、`homeReady=true`、`body.class` 三模式一致。
+- `node scripts/live-risk-verify.mjs` → 截图 `artifacts/__risk-baseline-hang.png`（685.1KB）、`artifacts/__risk-unblock-hang.png`（675.6KB）：拦截 mp4 并保持挂起模拟 `stalled`。baseline 白屏 13199ms、末态 `state=timeout`；unblock 白屏 1105ms 早解、末态 `state=ready`、`homeReady=true`。
+- `node scripts/live-masklift-check.mjs` → `artifacts/__masklift.txt` + 截图 `artifacts/__masklift-baseline.png` / `__masklift-unblock.png`：捕捉遮罩翻转瞬间。baseline 3144ms 抬起（首屏图 5/6、导航 12/12）、unblock 1120ms 抬起（首屏图 6/6、导航 12/12），卡片尺寸均 216×144、样式表均 2 个，无半成品。
+- 背景像素比对：以 Python/Pillow 对三张末态截图取样（右上/右中/右下/左中/顶部共 5 点 + 缩略图主色），`__risk-baseline-hang.png`、`__risk-unblock-hang.png`、`__observe-13143ms.png` 三张取样完全一致，确认无黑屏、无视觉回归。
+- 人工目视复核 `__risk-baseline-hang.png`、`__risk-unblock-hang.png`、`__masklift-unblock.png` 三张截图，页面内容与背景均正常渲染。
+- 说明：以上均为线上站（`https://pokkan39.github.io/hooxi-zzz/index.html`）实测；未改代码，故无需回归业务代码。
+
+### Notes
+- 改动文件清单：
+  - `scripts/live-video-verdict.mjs`：本轮新建，纯观测验证白屏时长与视频成败的对应关系（env `VV_BASE`/`VV_RUNS`/`VV_WAIT`）。
+  - `scripts/live-unblock-verify.mjs`：本轮新建，3 模式多轮对照脚本，仅拦截 `home-wallpaper.js` 单文件（env `UB_BASE`/`UB_WAIT`/`UB_MODES`）。
+  - `scripts/live-risk-verify.mjs`：本轮新建，模拟 `stalled`/快速失败的网络风险验证脚本，含截图（env 控制 `netmode`）。
+  - `scripts/live-masklift-check.mjs`：本轮新建，捕捉遮罩翻转瞬间的观感与首屏就绪度脚本。
+  - `artifacts/__video-verdict.txt`、`artifacts/__unblock-verify.txt`、`artifacts/__unblock-sim.txt`、`artifacts/__masklift.txt`：本轮观测与对照数据。
+  - `artifacts/__risk-baseline-hang.png`、`artifacts/__risk-unblock-hang.png`、`artifacts/__masklift-baseline.png`、`artifacts/__masklift-unblock.png`、`artifacts/__masklift-baseline-stable.png`、`artifacts/__masklift-unblock-stable.png`：风险与观感审计截图。
+  - `progress.md`：追加本条记录。
+  - `docs/README.md`：追加白屏根因与修复方向小节。
+- 本轮**未修改任何业务代码**，未提交 git、未推送、未部署。
+- 安全回滚：本轮只新增脚本、数据与截图，无业务改动。如需回退，仅删除上述 `scripts/live-*.mjs` 与本轮 `artifacts/__video-verdict.txt`、`__unblock-*.txt`、`__risk-*.png`、`__masklift*` 文件即可；`progress.md` 与 `docs/README.md` 只追加不改写，无需回退。保留全部未提交改动与历史审计截图。
+- 后续若用户批准修改方案，需按"仅拦截单文件、不启用通配 `page.route`"的既有约定复测，避免关闭 HTTP cache 污染对照。
+
+## 2026-09-17 - Task: 角色详情页大动图与大字体首屏必要性量化
+
+### What was done
+- 完成"角色详情页（耀嘉音 `character.html?id=astra-yao`）大动图与鸿蒙大字体是否为线上首屏必需"的量化定性，并产出经过实测的不损画质减重选项。
+- 结论一：**6.51MB 的 `assets/gallery/astra-yao/00.gif` 不属于首屏必需**。图集容器实测位于 `top=1270px`，而首屏视口仅 900px，元素虽已带 `loading="lazy"`，但浏览器的懒加载预取距离远大于此，导致它在首轮加载中就被拉取。它是整页 `load` 事件的关键路径（限速下 6.67MB 传输于 11455ms 收尾，与 11461ms 的 load 几乎同时），即"用户看不到它，却要为它等整套加载"。
+- 结论二：**3.66MB 的 `assets/vendor/fonts/hongmengti.woff2` 属于首屏必需**（首屏导航项 `.zzz-o-nav-item` 的 `font-family` 实际解析为 `Hongmeng`，属真实使用的字体），但**体积严重超配**：字体内含 21996 个字形（其中 CJK 汉字 20902 个），而站点实际用字远小于此。子集化到实际用字后为 471516 字节，即削减 87.7%，且被裁掉的是页面从不渲染的字形，属**真损失为零**。
+- 完成四模式限速对照（10Mbps/40ms，典型 4G，与既有 `throttle-audit.mjs` 同口径等 `load` 事件）：baseline `load=11461ms / 总传输 13.77MB`；仅延后大动图 `6284ms / 7.25MB`（省 5177ms、6.5MB）；仅换子集字体 `8498ms / 10.56MB`（省 2963ms、3.21MB）；两者同时 `3211ms / 4.04MB`（省 8250ms、9.7MB，降幅约 72%）。
+- 完成不损画质目视核验：baseline 与子集字体两种模式下，导航区域截图肉眼无差异，字体状态均为 `loaded`，均未回退到 `Microsoft YaHei` 兜底字体。
+- 本轮**未改动任何业务代码**，仅为量化与对照验证；减重方案待用户确认后才实施。
+
+### Testing
+- `AUDIT_ONLY="耀嘉音" node scripts/throttle-audit.mjs` → `artifacts/__char-throttle-baseline.txt`：建立与既有审计同口径的权威基线，`load=11460ms`、总传输 `13.77MB`（图片 7.54MB）、`00.gif 6.51MB @11455ms`、`hongmengti.woff2 3.66MB @9160ms`。
+- `node scripts/__char-slim-verify.mjs`（`CF_MODES=baseline,defer-gif,subset-font,both`）→ `artifacts/__char-slim-verify.txt`：四模式限速对照。严格只拦截 `astra-yao/00.gif` 与 `hongmengti.woff2` 两个单文件，未使用通配 `page.route`，避免关闭 HTTP cache 污染对照。实测 `load` 分别为 11461 / 6284 / 8498 / 3211ms。
+- 截图核验：`artifacts/__charslim-baseline.png`（14.7KB）与 `artifacts/__charslim-subset-font.png`（14.5KB），导航区域字体渲染目视一致；两模式 `document.fonts` 中 `Hongmeng` 状态均为 `loaded`。
+- 过程修正说明：首轮脚本以"网络静默即判定加载完成"作为等待条件，因进行中请求的 `responseEnd` 为 0 导致提前返回，测得的 3.59MB 与基线 13.77MB 不符，已废弃该轮数据并改为与基线一致的 `waitUntil:'load'` 口径重测。
+- 说明：本轮为本地站点（`http://127.0.0.1:8901`）限速实测；未改业务代码，故无需业务回归。
+
+### Notes
+- 改动文件清单：
+  - `scripts/__char-slim-verify.mjs`：本轮新建，角色详情页减重四模式限速对照脚本（env `CF_BASE`/`CF_URL`/`CF_MODES`/`CF_RUNS`/`CF_OUT`/`CF_IMG`）。
+  - `artifacts/__char-throttle-baseline.txt`：本轮新建，限速基线数据。
+  - `artifacts/__char-slim-verify.txt`：本轮新建，四模式对照数据与汇总。
+  - `artifacts/__charslim-baseline.png`、`artifacts/__charslim-defer-gif.png`、`artifacts/__charslim-subset-font.png`、`artifacts/__charslim-both.png`：本轮新建，各模式下导航区域渲染截图。
+  - `progress.md`：追加本条记录。
+- 本轮**未修改任何业务代码**，未提交 git、未推送、未部署。
+- 安全回滚：只新增脚本、数据与截图，无业务改动。如需回退，删除 `scripts/__char-slim-verify.mjs` 与本轮新增的 `artifacts/__char-throttle-baseline.txt`、`__char-slim-verify.txt`、`__charslim-*.png` 即可；`progress.md` 只追加不改写，无需回退。若实施减重方案，大动图只调整加载时机、不删文件、不重编码，原图 `00.gif` 与全量字体 `hongmengti.woff2` 均保留在仓库中作为回退点。
+- 复用资产：子集字体 `artifacts/__font-subset/hongmengti.subset.woff2`（471516B）为既有产物，本轮直接复用，未重新生成。
+
+## 2026-09-17 - Task: 角色详情页首屏减重落地（大动图延后 + 字体子集化）
+
+### What was done
+- 在用户确认的"零画质损失、零视觉差异"前提下，落地两项首屏减重：一是图集大动图移出 `load` 关键路径，二是鸿蒙字体改为"全站用字全覆盖"子集。
+- 大动图：图集 `<img>` 由 `src` 改为 `data-src`（保留 `loading="lazy"`），并在 DOM 就绪/`load` 之后统一把 `data-src` 回填为 `src`。图集尺寸完全由 CSS 决定（`width:100%` + `aspect-ratio:16/10`），因此延后加载不产生任何版面跳动；视差与动效只依赖元素是否存在与 CSS 尺寸，不依赖图片加载状态。
+- 字体：原字体只用在 3 处 UI 文案（导航项、天赋标签兜底、天赋面板标题），却内含 21996 个字形，绝大多数页面从不渲染。本轮**重新生成了覆盖全站用字的子集**，未沿用既有子集——既有子集经复核存在 9 个额外缺口（含页面实际用到的「札」「沓」），直接启用会把这两字掉回系统字体，故弃用。体积 3.66MiB → 461KiB。字体全站只在 `official-dna.css` 一处被引用、页面无 `preload`，落地改名只有 1 行。
+- 覆盖性结论：原字体自身就缺 128 个码位（emoji、韩文音节、箭头、制表符等），这些字符无论如何都走系统回退；新子集相对原字体**新增缺口为 0**，即原字体能渲染的字符子集全部能渲染，且字形映射与族名完全同源。
+- 最终态实测（10Mbps/40ms、1440x900、等 `load` 再等 3s）：`load=3549ms`、字体传输 461KB、FCP=1356ms、LCP=3700ms、CLS=0.00748；对照"未换字体"（`load=6247ms`、字体 3748KB）再省 2.7s，FCP/LCP 不退化、CLS 完全不变。
+
+### Testing
+- `node scripts/__char-font-subset-verify.mjs`（限速 A/B：两轮请求 URL 完全相同，旧轮把该请求改写到原字体文件，唯一变量是字体负载大小）→ `artifacts/__char-font-subset-verify.txt`：字体传输 3748KB → 461KB（降 88%）；`load` 6247ms → 3549ms（省 2.7s）；`FCP 1356→1356ms`、`LCP 3760→3700ms`、`CLS 0.00748→0.00748`。
+- 回退判定（决定性证据）：用 CDP `CSS.getPlatformFontsForNode` 检测页面上全部 5 个使用该字体的叶子文本元素，两轮实际栅格化字体均为同一自定义字体（`yinpinhongmengtijianfan`，每元素 2 个字形、`isCustomFont=true`），**无任何字符回退到 `Microsoft YaHei`**。
+- `node scripts/__char-font-subset-pixels.mjs` → `artifacts/__char-font-subset-pixels.txt`：把全站用字 **3093 个字符**在同一页面内用"子集"与"原字体"两份字体、同字号同基线各渲染一遍并逐格比对像素，**不一致字符数 0（PASS）**。说明：同轮 A/B 有 2 个导航元素截图哈希不同，经查为导航条动画相位噪声（过渡/动效），非字形差异，故改用上述无噪声的画布比对作为决定性依据。
+- 字体覆盖性验证（fontTools cmap 比对）：站点用字 3093 种；原字体缺失 128 种（两种方案都走系统回退，无差别）；新子集额外缺口 0；既有旧子集额外缺口 9 种（`U+00A0 U+00B0 U+00B1 U+00B7 U+00D7 U+00E9 U+00F7 U+672D(札) U+6C93(沓)`）→ 旧子集不可用；`document.fonts.check('16px "Hongmeng"','札'/'沓')` 新子集为 `true`。
+- 大动图（本轮之前已完成、同口径）：`node scripts/__char-gif-defer-verify.mjs` 与 `node scripts/__char-gif-defer-dom.mjs`：`load` 不再等 6.51MB 动图，动图仍自动加载并正常渲染，CLS=0.00748 与改动前一致；稳定态 DOM 与改动前逐字节等价（唯一差异为 `src` 属性书写顺序，零渲染影响），`data-src` 残留 0。
+- 与既有权威基线对照：`artifacts/__char-throttle-baseline.txt`（未优化原始态）`load=11461ms`、总传输 13.77MB → 本轮最终态 `load=3549ms`，动图+字体两项合计少下约 9.7MB。
+
+### Notes
+- 改动文件清单：
+  - `character.js`：图集 `<img>` 改用 `data-src`，新增 `hydrateGalleryImages()` 在 DOM 就绪/`load` 后回填 `src`（+7 −1 行）。
+  - `official-dna.css`：`@font-face 'Hongmeng'` 的 `src` 由 `hongmengti.woff2` 改为 `hongmengti.subset.woff2`（1 行）。
+  - `assets/vendor/fonts/hongmengti.subset.woff2`：新增，全站用字全覆盖子集（472052B）。
+  - `scripts/__char-font-subset-verify.mjs`：新增，字体 A/B 限速验证（含 CDP 平台字体回退判定）。
+  - `scripts/__char-font-subset-pixels.mjs`：新增，全站用字逐像素等价验证。
+  - `artifacts/__font-subset/charset-full.txt`：新增，全站用字字符集（3093 字）。
+  - `artifacts/__font-subset/hongmengti.subset-full.woff2`：新增，子集生成产物（与上线文件同源）。
+  - `artifacts/__char-font-subset-verify.txt`、`artifacts/__char-font-subset-pixels.txt`、`artifacts/__fontcheck-*.png`：本轮验证数据与截图。
+  - `docs/README.md`：追加本次落地的结论、维护约定与回滚方式。
+  - `progress.md`：追加本条记录。
+- 回滚方式（可执行）：字体回滚 = 把 `official-dna.css` 第 7 行改回 `src:url('assets/vendor/fonts/hongmengti.woff2') format('woff2');`（原字体文件完整保留，未删除未改动）；大动图回滚 = 把 `character.js` 第 223 行的 `data-src` 改回 `src`，并删除第 554–559 行的 `hydrateGalleryImages` 定义与调用（独立代码块，删除后语法自洽）。两处改动互相独立，可单独回滚。本轮未提交 git、未推送、未部署。
+- 后续维护约定（重要）：子集是按"当前全站用字"生成的。若新增角色/技能等文案引入了这 3093 字之外的汉字，该字在导航/天赋文案处会回退成系统字体。新增内容后应重新生成子集（字符集取全站文本后用 `python -m fontTools.subset ... --text-file=...`），并重跑 `scripts/__char-font-subset-pixels.mjs` 确认 0 差异。
+
+## 2026-09-17 - Task: 字体子集字符集口径修正（超集校验发现漏字，已重新生成上线）
+
+### What was done
+- 对上一条已落地的字体子集做"字符集是否真为超集"的复核，发现**上一条的字符集口径有漏洞**：当时扫描文本时带了目录排除规则（排除 `_site/`、`dist/`、`backend/`、`.tmp/`、`prototype/` 等），在"不预设任何目录排除"的全仓复扫下，全仓用字由 3079 种上升到 3609 种，即**当时漏掉了 325 种字符，其中 291 种是原字体确实能渲染的汉字**（如 `assets/` 下的 佚啧圾垃堵弯怜渺糟絮踩躺辩）。若这些字出现在那 3 处使用该字体的 UI 文案里，替换后会掉成雅黑，属真实视觉回归。
+- 已按严格加宽后的口径**重新生成并替换上线子集**：字符集改为"全仓文本扫描（不排除任何目录）∩ 原字体实际拥有的码位" = 3333 种，剔除的 276 种是原字体本就没有的码位（emoji、韩文音节、以及用忽略错误方式解码打包 JS 产生的二进制噪声字符），这些字符无论是否替换都走系统回退，渲染结果天然相同。
+- 修正后子集体积 530568B（原 472052B），相对原字体 3837152B 降 86.2%；**相对原字体的新增缺口为 0**。
+- 复核中发现并修正了一处验证脚本误报：逐像素比对最初对"两份字体都不含的码位"也判为差异（画布回退解析差异导致，5 个字符 U+0530/U+05F5/U+2EF7/U+ED75/U+F8EC 属此类）。这类字符不可能由鸿蒙字体渲染，真实页面上替换前后一致，故脚本范围收窄为"至少有一份字体拥有的字符"，并把排除数量打印出来，避免误报掩盖真问题。
+- 最终态限速复测：`load=3587ms`、字体传输 518KB、FCP=1340ms、LCP=3712ms、CLS=0.00748——与替换前同口径（`load=6274ms`、字体 3748KB、FCP=1520ms、LCP=3808ms）相比，`load` 省 2.7s，FCP/LCP/CLS 均未退化。
+
+### Testing
+- 超集校验（fontTools cmap 对全仓文本无排除扫描）：全仓用字 3609 种；凭"当时字符集"漏 325 种，其中 291 种原字体可渲染 → 判定上一条口径不达标。
+- 重新生成后校验：新子集对 3333 种"原字体可渲染"字符的新增缺口 = **0**；码位 3334/21996；体积 530568B（降 86.2%）。
+- `node scripts/__char-font-subset-pixels.mjs`（口径已修正）→ `artifacts/__char-font-subset-pixels.txt`：比对范围 3333 种（全仓 3609 种中 276 种两字体皆无、不纳入），**像素不一致字符数 0（PASS）**。
+- `node scripts/__char-font-subset-verify.mjs`（限速 A/B 复测）：字体传输 3748KB → 518KB（降 86%）；`load` 6274ms → 3587ms；`FCP 1520→1340ms`、`LCP 3808→3712ms`、`CLS 0.00748→0.00748`；CDP 平台字体检测 5 个元素仍全部为同一自定义字体，**无系统字体回退**。
+
+### Notes
+- 改动文件清单：
+  - `assets/vendor/fonts/hongmengti.subset.woff2`：替换为按修正口径重新生成的子集（472052B → 530568B）。
+  - `artifacts/__font-subset/charset-full.txt`：改写为无目录排除的全仓用字字符集（3609 种）。
+  - `artifacts/__font-subset/charset-final.txt`：新增，最终字符集口径（3333 种 = 全仓用字 ∩ 原字体可渲染）。
+  - `artifacts/__font-subset/hongmengti.subset-final.woff2`：新增，与上线文件同源的生成产物。
+  - `scripts/__char-font-subset-pixels.mjs`：修正比对范围口径并打印被排除字符数，消除对"两字体皆无"字符的误报。
+  - `artifacts/__char-font-subset-verify.txt`、`artifacts/__char-font-subset-pixels.txt`：更新为本轮复测数据。
+  - `docs/README.md`：把该小节的数据修正为上线真实值，并写明字符集口径与重新生成要求。
+  - `progress.md`：追加本条修正记录。
+- 说明：上一条记录中的 3093 字/472052B/-88%/`load=3549ms` 等数字已被本条的 3333 字/530568B/-86.2%/`load=3587ms` 取代（同为限速同口径，差值含逐次运行的正常波动）。上一条按"只追加不改写"原则保留原文。
+- 回滚方式（可执行）：字体回滚 = 把 `official-dna.css` 第 7 行改回 `src:url('assets/vendor/fonts/hongmengti.woff2') format('woff2');`（原字体完整保留未删）；大动图回滚 = 把 `character.js` 第 223 行 `data-src` 改回 `src` 并删除第 554–559 行的 `hydrateGalleryImages`。未提交 git、未推送、未部署。

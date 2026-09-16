@@ -322,3 +322,31 @@ python -m http.server 8080
 - 克拉蕾 wiki 特性写作「锋御」；米游社官方 3.2 更新公告确认 S 级电·锋御、专属音擎「猩红渴望」。攻击类型与技能仍待公布，不得用推测值补齐。希格莉德已确认冰 / 强攻 / 穿透；专属音擎按 wiki 音擎页首条「骁骑礼赞」收录，并与官方 3.1 更新公告一致。蕾米埃尔按官方 3.1 更新公告写入 S / 流明 / 异常 / 「空羽复归之诗」；攻击类型、生日、CV、技能描述仍为待公布。
 - 两人 card / portrait 来自 bili wiki 角色立绘透明 PNG，只允许去透明边距后等比缩小、水平居中、底部对齐封装到 374×512 / 1600×1800 透明画布，禁止裁切人物、放大、拉伸或抠图。阵营 logo 同规则封装到 220×220。
 - 仓库材料按 bili《材料筛选》差集追加 3 条（谐振核心仪、高维数据：深蚀回路、刻命残蜕）；wiki 图标文件仍为红链，站内用本地占位 WebP，不整表重写编号。驱动盘 30 套、音擎 95 把与 wiki 筛选页一致。仓库浮层背景改为 `wh-graffiti.webp` cover 铺满视口（含顶栏后方），顶底涂鸦条叠在整幅图之上、贴齐上下沿。
+
+## 2026-09-16 代理人媒体性能计划范围
+
+- 正式主导航的代理人入口仍是 `stories.html`。本轮计划只覆盖 `agents-game.html` 游戏样页与 `agents.html` 旧名录；共享 catalog 的媒体路径会被其他消费者使用，但不宣称已优化正式导航跳转链路或全站速度。
+- catalog 共 59 条；`assets/mindscape/full/<id>.webp` 白名单为 54 条。无宽幅的 `claret`、`norma`、`pyrois`、`sigrid`、`velina` 保持由 `agents-game.js` 使用 portrait 回退；既有 PNG 不删除。
+- `agents.html` 的 56 条记录中，`tachie_pc`、`tachie_m`、`icon_url`、`faction_icon` 共 224 个字段已有本地资源；旧 `/wiki-assets/...` 是同源根相对缺失路径，不是互联网热链。
+- 经本机回归验证：仅桌面宽度 `>920px`，当前图成功后再低优先级空闲预取前后合计最多 2 个邻居；callback 检查最新选项与筛选条件；reduced-motion 只关闭动画；移动端不取额外宽幅；主图超时或失败不抢下载，后续成功后才允许预取。`node scripts/verify-agent-performance.mjs` 已 6/6 PASS；这不宣称已优化正式主导航交互链路或全站速度。
+- 再跑：`node scripts/verify-agent-performance.mjs`；可用 `BASE_URL` 指定本地地址。脚本自动首选 `8901`，不可用时启动仅绑定 `127.0.0.1` 的临时静态服务，不停止现有服务。
+- 角色详情页 GIF 仅作评估，不能未经验证用 `00.webp` 替换 `00.gif`；本轮不改原皮、影画、动效与页面布局。缓存命中测试不要启用 `page.route`（会关闭 HTTP 缓存）；localhost 毫秒数仅代表本机，不作线上承诺；加载事件也不等于现有四阶段动画已完成。
+
+## 2026-09-17 线上首屏白屏根因与修复方向
+
+- 线上站（`https://pokkan39.github.io/hooxi-zzz/`）首屏白屏的现象：打开链接后页面长时间只有加载遮罩，时长在 2 秒到 12 秒以上之间波动，用户观感为“有时很快、有时一直等”。
+- 已定性根因：**白屏时长等于壁纸视频就绪时长**。首屏遮罩必须等到 `home-ready` 事件才抬起，而该事件仅在壁纸视频进入 `playing` 状态时派发。视频源使用 GitHub Release 直链，本网络对其可达性呈**分钟级波动**：可达时视频 1.5 秒就绪、白屏约 2 秒；不可达时视频始终不就绪，只能等 12 秒兜底闹钟强制拆掉遮罩。
+- 已排除的无效方向：`defer` 脚本、`loading="lazy"`、资源优先级调整均无效，因为它们没有改变“遮罩等待 `home-ready`”这一等待条件；缩图方案作废，现有 1400px 首屏大图按 `object-fit:cover` 与 2x 反算未超标，缩图只会损画质。
+- 已验证的修复方向：让首屏遮罩不再等待壁纸视频（提前派发 `home-ready`），白屏解除时间可从 baseline 中位 5316ms（区间 2103–7902ms）降至 unblock 中位 1329ms（区间 1075–2692ms），12 秒兜底占比由波动降为 0。该方向对画质无任何损失。
+- 已验证的伴随风险：在视频彻底不可达的极端条件下，改动前后末态背景取样像素完全一致（无黑屏、无视觉回归）；遮罩提前抬起时首屏图 6/6、导航图 12/12 均已就绪，不存在露出半成品页面。
+- 已知代码缺陷（未修）：`home-wallpaper.js` 仅在 `error` 事件时切换到下一个候选视频源，线上实际发生的是 `stalled`（不报错、只卡死），因此永远不触发切源，视频始终停在第一个候选源。
+- 可用的替代视频源：`assets/home-video/lucy.mp4` 已 git 跟踪且线上可达（HTTP 200、`video/mp4`、faststart 结构、GitHub Pages 支持 Range 返回 206），可摆脱对 GitHub Release 可达性的依赖。
+- 状态：根因与修复方向均已验证闭合，**尚未修改任何业务代码**；上述方案须经用户确认后方可实施。复测约定：仅拦截单个脚本文件（如 `home-wallpaper.js`），不使用通配 `page.route`，避免关闭 HTTP cache 污染对照数据；相关脚本为 `scripts/live-video-verdict.mjs`、`scripts/live-unblock-verify.mjs`、`scripts/live-risk-verify.mjs`、`scripts/live-masklift-check.mjs`。
+
+## 2026-09-17 角色详情页首屏减重已落地（大动图延后 + 字体子集化）
+
+- 已实施两项改动：① 角色详情页图集图片改为 `data-src`，在 DOM 就绪/`load` 之后统一回填 `src`（尺寸由 CSS 决定，零版面跳动）；② `official-dna.css` 中 `@font-face 'Hongmeng'` 改用子集字体 `assets/vendor/fonts/hongmengti.subset.woff2`（3.66MiB → 518KiB，降 86.2%）。
+- 实测（10Mbps/40ms、1440x900、等 `load` 再等 3s）：最终态 `load≈3.5–3.6s`、字体传输 3748KB → 518KB、FCP 1520→1340ms、LCP 3808→3712ms、CLS 0.00748 不变；对照未换字体 `load=6274ms`；对照未优化基线（`artifacts/__char-throttle-baseline.txt`）`load=11461ms`、总传输 13.77MB。FCP/LCP/CLS 均未退化。
+- 零视觉差异的证据：**全仓用字 ∩ 原字体可渲染字符 = 3333 种，逐像素渲染比对不一致为 0**；页面上 5 个使用该字体的元素经 CDP `CSS.getPlatformFontsForNode` 检测，实际栅格字体均为自定义字体，无系统字体回退。子集相对原字体的**新增缺口为 0**（原字体本身缺失的 276 种码位，如 emoji/韩文/二进制噪声字符，替换前后都走系统回退，无差别）。
+- 维护约定：子集是按"当前全仓用字 ∩ 原字体可渲染范围"生成的。**新增文案若引入新汉字，需重新生成子集并重跑 `scripts/__char-font-subset-pixels.mjs` 确认 0 差异**，否则该字符会回退为系统字体。字符集口径：全仓文本扫描（不排除任何目录）后仅保留原字体拥有的码位，见 `artifacts/__font-subset/charset-final.txt`。
+- 回滚：字体把 `official-dna.css` 的 `src` 改回 `hongmengti.woff2`（原文件保留未删）；动图把 `character.js` 图集的 `data-src` 改回 `src` 并移除 `hydrateGalleryImages`。

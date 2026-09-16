@@ -220,7 +220,7 @@
   const leftoverGallery=galleryRaw.filter(entry=>!usedGallery.has(entry.src));
   const galleryItems=[...mediaSlots.map(slot=>slot.hit).filter(Boolean),...leftoverGallery].slice(0,16);
   const galleryId=`character-gallery-${String(character.id).replace(/[^a-z0-9_-]/gi,'-')}`;
-  const galleryFigures=galleryItems.map(({item,src},index)=>`<figure id="${galleryId}-panel-${index}" class="character-gallery-item${index===0?' is-active':''}" role="tabpanel" aria-labelledby="${galleryId}-tab-${index}" aria-hidden="${index===0?'false':'true'}" tabindex="${index===0?'0':'-1'}" data-gallery-slide="${index}" ${index===0?'':'inert'}><img src="${esc(src)}" alt="${esc(item.title||character.name)}" loading="lazy"/><figcaption>${esc(item.title||'档案图')}</figcaption></figure>`).join('');
+  const galleryFigures=galleryItems.map(({item,src},index)=>`<figure id="${galleryId}-panel-${index}" class="character-gallery-item${index===0?' is-active':''}" role="tabpanel" aria-labelledby="${galleryId}-tab-${index}" aria-hidden="${index===0?'false':'true'}" tabindex="${index===0?'0':'-1'}" data-gallery-slide="${index}" ${index===0?'':'inert'}><img data-src="${esc(src)}" alt="${esc(item.title||character.name)}" loading="lazy"/><figcaption>${esc(item.title||'档案图')}</figcaption></figure>`).join('');
 
   const mediaFromStories=(character.personalStories||[]).filter(story=>story&&(story.video||story.url||story.cover)).map(story=>{
     const href=safeUrl(story.video||story.url)||'';
@@ -551,6 +551,12 @@
     navigateArchivePanel(archiveTabs[next].dataset.characterNav);
   });
   bindGallerySlider();
+  const hydrateGalleryImages=()=>{
+    const apply=()=>content.querySelectorAll('.character-gallery-item img[data-src]').forEach(img=>{img.src=img.dataset.src;img.removeAttribute('data-src');});
+    if(document.readyState==='complete')apply();
+    else addEventListener('load',apply,{once:true});
+  };
+  hydrateGalleryImages();
   bindTalentTabs();
   bindTalentGrowth();
   selectGrowthStage(content.querySelector('[data-growth-stage].is-active')||content.querySelector('[data-growth-stage]'));
