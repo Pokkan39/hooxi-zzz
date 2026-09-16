@@ -4654,7 +4654,7 @@ Playwright (1440x900, localhost:8081/stories.html) 实测：
 ### What was done
 - 用户确认"两项一起上线"后，按仓库发布流程完成提交与发布：只提交本轮两项改动涉及的文件（字体引用改动、图集延迟回填、新增子集字体）加两份记录文件，未夹带工作区内其他会话尚未提交的改动。
 - 发布前本地跑通仓库自带门禁 `npm run test:deploy -- --strict-tracked`：**DEPLOY_GATE_OK**（0 个错误、0 个警告，Git 必需文件 220/220 已跟踪）。
-- 提交 `04d1063` 推送 `main`，触发两个工作流并均 success（Deploy to GitHub Pages 约 5 分 47 秒、Create Release Package 约 1 分 29 秒）。
+- 提交 `04d1063` 推送 `main`，触发两个工作流并均 success：Deploy to GitHub Pages run `35132434387`（5 分 47 秒）、Create Release Package run `35132434548`（1 分 29 秒）。
 - 推送过程说明：git 配置指向的 `127.0.0.1:7892` 代理当时无监听，首次推送失败；改为本次命令级临时绕过代理后成功。**未修改任何 git 配置**（仅单次命令参数覆盖）。
 
 ### Testing
@@ -4669,3 +4669,21 @@ Playwright (1440x900, localhost:8081/stories.html) 实测：
   - `docs/README.md`：在该小节追加"已发布"状态、线上实测数据，并登记"部署产物 4.08GB 超 1GB 提示上限"这一既有风险。
 - 上线提交：`04d1063`（3 个功能文件 + 2 个记录文件，217 插入 / 2 删除）；上线前状态 `90fe4f5`。
 - 回滚方式（可执行）：① 字体 = `official-dna.css` 第 7 行改回 `src:url('assets/vendor/fonts/hongmengti.woff2') format('woff2');`（原字体完整保留未删）；② 动图 = `character.js` 第 223 行 `data-src` 改回 `src` 并删除 `hydrateGalleryImages`；③ 整体回退 = `git revert 04d1063` 后推送（会触发一次重新发布）。回滚点：`90fe4f5`。
+
+## 2026-09-17 - Task: 记录修正与远端同步
+
+### What was done
+- 把本地两条记录提交推送到远端 `main`（`04d1063..ca077f4`）。推送通路已查明：仓库 git 配置里原有的本机代理 `127.0.0.1:7892` 是唯一可用通路——此前代理进程未运行，直连与 SSH 均走不通（直连 443 超时、无 GitHub SSH 密钥），代理恢复后一次推送成功。**未修改任何 git 配置。**
+- 修正上一条记录里的编号问题：先前因检索不到编号，误判为"无出处"而删除；随后用 `gh run list` 复核，`35132434387`（Pages）与 `35132434548`（Release）确为 `04d1063` 那次的真实运行编号，已按证据恢复。
+- 记录本次"记录推送"自身的部署结果：Pages run `35139442597` success（5 分 18 秒）；`release.yml` 对纯文档提交按路径过滤未触发（正常行为）。
+
+### Testing
+- 部署后线上健康复核（curl 直取）：线上字体 md5 `3f105bc9bff667ff25cd47c97ce5bbe9`、`character.js` md5 `390aa107c46e0f52361b356cb179e1b9`，均与本地一致；线上 `official-dna.css` 仍引用 `hongmengti.subset.woff2`。
+- 同步校验：本地与远端 `main` 均为 `ca077f4`。
+- 既有告警复核：本次部署仍打印"Uploaded artifact size of 4088179830 bytes exceeds the allowed size of 1 GB"，但部署 success，站点无中断。
+
+### Notes
+- 改动文件清单：
+  - `progress.md`：恢复两个工作流编号，并追加本轮记录。
+  - `docs/README.md`：恢复 Pages 运行编号。
+- 回滚方式（可执行）：本轮只改记录文件，`git revert <本轮提交>` 即可，不影响站点功能；上一状态回滚点 `ca077f4`。
