@@ -4654,13 +4654,13 @@ Playwright (1440x900, localhost:8081/stories.html) 实测：
 ### What was done
 - 用户确认"两项一起上线"后，按仓库发布流程完成提交与发布：只提交本轮两项改动涉及的文件（字体引用改动、图集延迟回填、新增子集字体）加两份记录文件，未夹带工作区内其他会话尚未提交的改动。
 - 发布前本地跑通仓库自带门禁 `npm run test:deploy -- --strict-tracked`：**DEPLOY_GATE_OK**（0 个错误、0 个警告，Git 必需文件 220/220 已跟踪）。
-- 提交 `04d1063` 推送 `main`，触发 Pages 工作流 `35132434387`（success，5m47s）与发布包工作流 `35132434548`（success）。
+- 提交 `04d1063` 推送 `main`，触发两个工作流并均 success（Deploy to GitHub Pages 约 5 分 47 秒、Create Release Package 约 1 分 29 秒）。
 - 推送过程说明：git 配置指向的 `127.0.0.1:7892` 代理当时无监听，首次推送失败；改为本次命令级临时绕过代理后成功。**未修改任何 git 配置**（仅单次命令参数覆盖）。
 
 ### Testing
-- 线上字节核对：`official-dna.css` 已引用 `hongmengti.subset.woff2`；子集字体线上返回 HTTP 200、530568B、`font/woff2`，md5 `3f105bc9bff667ff25cd47c97ce5bbe9` 与本地一致；`character.js` 与本地逐字节一致（diff 无差异）。
-- 线上真机验证（`https://pokkan39.github.io/hooxi-zzz/character-anby.html`，Chromium 无头，等 `load` 后再等 3s）：`Hongmeng:loaded`、`document.fonts.check('16px Hongmeng')=true`、导航标签计算字体为 `Hongmeng, "Microsoft YaHei", sans-serif`；图集 `data-src` 残留 0、破图 0；字体资源实测传输 518KB；`domContentLoaded=2089ms`、`load=3012ms`。
-- 首屏关键路径证据（线上 navigation timing）：6.51MB 大动图 `00.gif` 请求起始 3028ms、结束 4614ms，**晚于 load 事件 3012ms**，确认已移出首屏关键路径。
+- 线上字节核对（curl 直取线上文件）：子集字体 HTTP 200、`Content-Length: 530568`、`Content-Type: font/woff2`，线上内容 md5 `3f105bc9bff667ff25cd47c97ce5bbe9` 与本地完全一致；`character.js` 线上 md5 `390aa107c46e0f52361b356cb179e1b9` 与本地一致。
+- 线上真机验证（`https://pokkan39.github.io/hooxi-zzz/character-anby.html`，Chromium 无头、冷缓存、等 `load` 后再等 3s，共 2 次独立复测）：`document.fonts` 中 `Hongmeng=loaded`、`document.fonts.check('16px Hongmeng')=true`；`official-dna.css` 的 `@font-face` 为 `url("assets/vendor/fonts/hongmengti.subset.woff2") format("woff2")`；导航标签计算字体为 `Hongmeng, "Microsoft YaHei", sans-serif`；图集 `data-src` 残留 0、破图 0；字体资源传输 518KB（解码 530568B）；第 2 次复测 `domContentLoaded=3036ms`、`load=3516ms`（该值随冷缓存与网络波动，单次值仅供参考）。
+- 首屏关键路径证据（线上 navigation timing，2 次复测结论一致）：6.51MB 大动图 `00.gif` 传输 6025KB，请求起始**晚于 `load` 事件**（第 1 次 3028ms vs `load` 3012ms；第 2 次 3522ms vs `load` 3516ms），确认已移出首屏关键路径。
 - 本地限速复测（同轮已记录）：`load` 6274→3587ms、字体传输 3748KB→518KB、FCP 1520→1340ms、LCP 3808→3712ms、CLS 0.00748 不变。
 
 ### Notes

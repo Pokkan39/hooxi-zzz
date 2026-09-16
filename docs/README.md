@@ -350,5 +350,5 @@ python -m http.server 8080
 - 零视觉差异的证据：**全仓用字 ∩ 原字体可渲染字符 = 3333 种，逐像素渲染比对不一致为 0**；页面上 5 个使用该字体的元素经 CDP `CSS.getPlatformFontsForNode` 检测，实际栅格字体均为自定义字体，无系统字体回退。子集相对原字体的**新增缺口为 0**（原字体本身缺失的 276 种码位，如 emoji/韩文/二进制噪声字符，替换前后都走系统回退，无差别）。
 - 维护约定：子集是按"当前全仓用字 ∩ 原字体可渲染范围"生成的。**新增文案若引入新汉字，需重新生成子集并重跑 `scripts/__char-font-subset-pixels.mjs` 确认 0 差异**，否则该字符会回退为系统字体。字符集口径：全仓文本扫描（不排除任何目录）后仅保留原字体拥有的码位，见 `artifacts/__font-subset/charset-final.txt`。
 - 回滚：字体把 `official-dna.css` 的 `src` 改回 `hongmengti.woff2`（原文件保留未删）；动图把 `character.js` 图集的 `data-src` 改回 `src` 并移除 `hydrateGalleryImages`。
-- **上线状态：已发布**（commit `04d1063`，Pages 工作流 `35132434387` success）。线上实测：`official-dna.css` 已引用子集；子集字体线上返回 200、530568B、md5 与本地一致；`character.js` 与本地逐字节一致；导航标签字体 `Hongmeng:loaded`、可用性 true，无系统字体回退；6.51MB 大动图 `00.gif` 的请求起始于 `load` 事件**之后**（起始 3028ms vs `load` 3012ms），确认已移出首屏关键路径；该页线上 `load≈3.0s`、字体实际传输 518KB。
+- **上线状态：已发布**（上线提交 `04d1063`，Pages 与发布包两个工作流均 success）。线上实测：`official-dna.css` 的 `@font-face` 已引用子集；子集字体线上 HTTP 200、530568B、`Content-Type: font/woff2`，md5 与本地一致；`character.js` 线上 md5 与本地一致；`Hongmeng=loaded`、字体可用性 true，无系统字体回退；6.51MB 大动图 `00.gif` 的请求起始**晚于** `load` 事件（两次复测：3028ms vs 3012ms、3522ms vs 3516ms），确认已移出首屏关键路径；字体线上传输 518KB。
 - 已知既有风险（非本次改动引入）：Pages 部署产物达 4.08GB，超过工作流提示的 1GB 上限（本次部署仍 success）。该体积由仓库既有已跟踪内容构成，本次新增仅 518KB；若后续部署失败，属既有体积问题，与本轮两项改动无关。
