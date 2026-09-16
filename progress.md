@@ -4648,3 +4648,24 @@ Playwright (1440x900, localhost:8081/stories.html) 实测：
   - `progress.md`：追加本条修正记录。
 - 说明：上一条记录中的 3093 字/472052B/-88%/`load=3549ms` 等数字已被本条的 3333 字/530568B/-86.2%/`load=3587ms` 取代（同为限速同口径，差值含逐次运行的正常波动）。上一条按"只追加不改写"原则保留原文。
 - 回滚方式（可执行）：字体回滚 = 把 `official-dna.css` 第 7 行改回 `src:url('assets/vendor/fonts/hongmengti.woff2') format('woff2');`（原字体完整保留未删）；大动图回滚 = 把 `character.js` 第 223 行 `data-src` 改回 `src` 并删除第 554–559 行的 `hydrateGalleryImages`。未提交 git、未推送、未部署。
+
+## 2026-09-17 - Task: 上线发布（字体子集 + 图集延迟加载）
+
+### What was done
+- 用户确认"两项一起上线"后，按仓库发布流程完成提交与发布：只提交本轮两项改动涉及的文件（字体引用改动、图集延迟回填、新增子集字体）加两份记录文件，未夹带工作区内其他会话尚未提交的改动。
+- 发布前本地跑通仓库自带门禁 `npm run test:deploy -- --strict-tracked`：**DEPLOY_GATE_OK**（0 个错误、0 个警告，Git 必需文件 220/220 已跟踪）。
+- 提交 `04d1063` 推送 `main`，触发 Pages 工作流 `35132434387`（success，5m47s）与发布包工作流 `35132434548`（success）。
+- 推送过程说明：git 配置指向的 `127.0.0.1:7892` 代理当时无监听，首次推送失败；改为本次命令级临时绕过代理后成功。**未修改任何 git 配置**（仅单次命令参数覆盖）。
+
+### Testing
+- 线上字节核对：`official-dna.css` 已引用 `hongmengti.subset.woff2`；子集字体线上返回 HTTP 200、530568B、`font/woff2`，md5 `3f105bc9bff667ff25cd47c97ce5bbe9` 与本地一致；`character.js` 与本地逐字节一致（diff 无差异）。
+- 线上真机验证（`https://pokkan39.github.io/hooxi-zzz/character-anby.html`，Chromium 无头，等 `load` 后再等 3s）：`Hongmeng:loaded`、`document.fonts.check('16px Hongmeng')=true`、导航标签计算字体为 `Hongmeng, "Microsoft YaHei", sans-serif`；图集 `data-src` 残留 0、破图 0；字体资源实测传输 518KB；`domContentLoaded=2089ms`、`load=3012ms`。
+- 首屏关键路径证据（线上 navigation timing）：6.51MB 大动图 `00.gif` 请求起始 3028ms、结束 4614ms，**晚于 load 事件 3012ms**，确认已移出首屏关键路径。
+- 本地限速复测（同轮已记录）：`load` 6274→3587ms、字体传输 3748KB→518KB、FCP 1520→1340ms、LCP 3808→3712ms、CLS 0.00748 不变。
+
+### Notes
+- 改动文件清单：
+  - `progress.md`：追加本条上线记录。
+  - `docs/README.md`：在该小节追加"已发布"状态、线上实测数据，并登记"部署产物 4.08GB 超 1GB 提示上限"这一既有风险。
+- 上线提交：`04d1063`（3 个功能文件 + 2 个记录文件，217 插入 / 2 删除）；上线前状态 `90fe4f5`。
+- 回滚方式（可执行）：① 字体 = `official-dna.css` 第 7 行改回 `src:url('assets/vendor/fonts/hongmengti.woff2') format('woff2');`（原字体完整保留未删）；② 动图 = `character.js` 第 223 行 `data-src` 改回 `src` 并删除 `hydrateGalleryImages`；③ 整体回退 = `git revert 04d1063` 后推送（会触发一次重新发布）。回滚点：`90fe4f5`。
